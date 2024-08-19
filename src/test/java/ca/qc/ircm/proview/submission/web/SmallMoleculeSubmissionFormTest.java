@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
 import static ca.qc.ircm.proview.sample.SampleType.SOLUTION;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
@@ -31,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
@@ -68,6 +69,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SmallMoleculeSubmissionForm.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   private SmallMoleculeSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -76,9 +84,6 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private Submission newSubmission;
   private SampleType sampleType = SampleType.SOLUTION;
   private String sampleName = "my sample";
@@ -105,7 +110,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE)).select(SMALL_MOLECULE.getLabel(locale));
+    test(test(view).find(Tabs.class).id(SERVICE))
+        .select(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
     form = test(view).find(SmallMoleculeSubmissionForm.class).id(SmallMoleculeSubmissionForm.ID);
   }
 
@@ -162,40 +168,50 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(SAMPLE_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLE_NAME), form.sampleName.getLabel());
-    assertEquals(submissionResources.message(SOLUTION_SOLVENT), form.solvent.getLabel());
-    assertEquals(submissionResources.message(FORMULA), form.formula.getLabel());
-    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), form.monoisotopicMass.getLabel());
-    assertEquals(submissionResources.message(AVERAGE_MASS), form.averageMass.getLabel());
-    assertEquals(submissionResources.message(TOXICITY), form.toxicity.getLabel());
-    assertEquals(submissionResources.message(LIGHT_SENSITIVE), form.lightSensitive.getLabel());
-    assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLE_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLE_NAME), form.sampleName.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOLUTION_SOLVENT),
+        form.solvent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + FORMULA), form.formula.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + MONOISOTOPIC_MASS),
+        form.monoisotopicMass.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + AVERAGE_MASS),
+        form.averageMass.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TOXICITY), form.toxicity.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + LIGHT_SENSITIVE),
+        form.lightSensitive.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + STORAGE_TEMPERATURE),
         form.storageTemperature.getLabel());
-    assertEquals(submissionResources.message(HIGH_RESOLUTION), form.highResolution.getLabel());
-    assertEquals(submissionResources.message(SOLVENTS), form.solvents.getLabel());
-    assertEquals(submissionResources.message(OTHER_SOLVENT), form.otherSolvent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + HIGH_RESOLUTION),
+        form.highResolution.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOLVENTS), form.solvents.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_SOLVENT),
+        form.otherSolvent.getLabel());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SmallMoleculeSubmissionForm.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(SAMPLE_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLE_NAME), form.sampleName.getLabel());
-    assertEquals(submissionResources.message(SOLUTION_SOLVENT), form.solvent.getLabel());
-    assertEquals(submissionResources.message(FORMULA), form.formula.getLabel());
-    assertEquals(submissionResources.message(MONOISOTOPIC_MASS), form.monoisotopicMass.getLabel());
-    assertEquals(submissionResources.message(AVERAGE_MASS), form.averageMass.getLabel());
-    assertEquals(submissionResources.message(TOXICITY), form.toxicity.getLabel());
-    assertEquals(submissionResources.message(LIGHT_SENSITIVE), form.lightSensitive.getLabel());
-    assertEquals(submissionResources.message(STORAGE_TEMPERATURE),
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLE_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLE_NAME), form.sampleName.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOLUTION_SOLVENT),
+        form.solvent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + FORMULA), form.formula.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + MONOISOTOPIC_MASS),
+        form.monoisotopicMass.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + AVERAGE_MASS),
+        form.averageMass.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TOXICITY), form.toxicity.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + LIGHT_SENSITIVE),
+        form.lightSensitive.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + STORAGE_TEMPERATURE),
         form.storageTemperature.getLabel());
-    assertEquals(submissionResources.message(HIGH_RESOLUTION), form.highResolution.getLabel());
-    assertEquals(submissionResources.message(SOLVENTS), form.solvents.getLabel());
-    assertEquals(submissionResources.message(OTHER_SOLVENT), form.otherSolvent.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + HIGH_RESOLUTION),
+        form.highResolution.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOLVENTS), form.solvents.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + OTHER_SOLVENT),
+        form.otherSolvent.getLabel());
   }
 
   @Test
@@ -204,7 +220,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(2, items.size());
     for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(SAMPLE_TYPE_PREFIX + value.name()),
           form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -215,7 +231,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(StorageTemperature.values().length, items.size());
     for (StorageTemperature value : StorageTemperature.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(STORAGE_TEMPERATURE_PREFIX + value.name()),
           form.storageTemperature.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -226,7 +242,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(Solvent.values().length, items.size());
     for (Solvent solvent : Solvent.values()) {
       assertTrue(items.contains(solvent));
-      assertEquals(solvent.getLabel(locale), form.solvents.getItemLabelGenerator().apply(solvent));
+      assertEquals(form.getTranslation(SOLVENT_PREFIX + solvent.name()),
+          form.solvents.getItemLabelGenerator().apply(solvent));
     }
   }
 
@@ -236,7 +253,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(2, items.size());
     for (Boolean value : new Boolean[] { false, true }) {
       assertTrue(items.contains(value));
-      assertEquals(submissionResources.message(property(HIGH_RESOLUTION, value)),
+      assertEquals(form.getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, value)),
           form.highResolution.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -309,7 +326,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -325,7 +342,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.sampleName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -341,7 +358,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.sampleName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(ALREADY_EXISTS, sampleName)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + ALREADY_EXISTS, sampleName)),
+        error.getMessage());
   }
 
   @Test
@@ -357,7 +375,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.solvent);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -385,7 +403,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.formula);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -401,7 +419,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.monoisotopicMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -417,7 +435,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.monoisotopicMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
+        error.getMessage());
   }
 
   @Test
@@ -433,7 +452,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.averageMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
+        error.getMessage());
   }
 
   @Test
@@ -449,7 +469,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.storageTemperature);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -465,7 +485,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.highResolution);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -481,7 +501,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.solvents);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test

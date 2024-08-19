@@ -2,11 +2,11 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import com.vaadin.flow.component.Component;
@@ -42,6 +42,8 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   public static final String ADDRESS = "address";
   public static final String PHONE = "phone";
   public static final String LINK = "link";
+  private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = -5066595299866514742L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
   protected H2 header = new H2();
@@ -92,28 +94,29 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    header.setText(resources.message(HEADER));
-    proteomicHeader.setText(resources.message(property(PROTEOMIC)));
-    proteomicName.setText(resources.message(property(PROTEOMIC, NAME)));
-    proteomicNameAnchor.setHref(resources.message(property(PROTEOMIC, NAME, LINK)));
-    proteomicAddress.setText(resources.message(property(PROTEOMIC, ADDRESS)));
-    proteomicAddressAnchor.setHref(resources.message(property(PROTEOMIC, ADDRESS, LINK)));
-    proteomicPhone.setText(resources.message(property(PROTEOMIC, PHONE)));
-    proteomicPhoneAnchor.setHref(resources.message(property(PROTEOMIC, PHONE, LINK)));
-    websiteHeader.setText(resources.message(property(WEBSITE)));
-    websiteName.setText(resources.message(property(WEBSITE, NAME)));
-    websiteNameAnchor.setHref(resources.message(property(WEBSITE, NAME, LINK)));
-    websiteAddress.setText(resources.message(property(WEBSITE, ADDRESS)));
-    websiteAddressAnchor.setHref(resources.message(property(WEBSITE, ADDRESS, LINK)));
-    websitePhone.setText(resources.message(property(WEBSITE, PHONE)));
-    websitePhoneAnchor.setHref(resources.message(property(WEBSITE, PHONE, LINK)));
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
+    proteomicHeader.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC)));
+    proteomicName.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)));
+    proteomicNameAnchor.setHref(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME, LINK)));
+    proteomicAddress.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, ADDRESS)));
+    proteomicAddressAnchor
+        .setHref(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, ADDRESS, LINK)));
+    proteomicPhone.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, PHONE)));
+    proteomicPhoneAnchor
+        .setHref(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, PHONE, LINK)));
+    websiteHeader.setText(getTranslation(MESSAGES_PREFIX + property(WEBSITE)));
+    websiteName.setText(getTranslation(MESSAGES_PREFIX + property(WEBSITE, NAME)));
+    websiteNameAnchor.setHref(getTranslation(MESSAGES_PREFIX + property(WEBSITE, NAME, LINK)));
+    websiteAddress.setText(getTranslation(MESSAGES_PREFIX + property(WEBSITE, ADDRESS)));
+    websiteAddressAnchor
+        .setHref(getTranslation(MESSAGES_PREFIX + property(WEBSITE, ADDRESS, LINK)));
+    websitePhone.setText(getTranslation(MESSAGES_PREFIX + property(WEBSITE, PHONE)));
+    websitePhoneAnchor.setHref(getTranslation(MESSAGES_PREFIX + property(WEBSITE, PHONE, LINK)));
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 }

@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -25,10 +27,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialogItTest.class);
   @Autowired
   private SubmissionRepository repository;
+  @Autowired
+  private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
   private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
@@ -43,7 +49,8 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   private void setFields(SubmissionDialogElement dialog) {
     Locale locale = this.currentLocale();
-    dialog.instrument().selectByText(instrument.getLabel(locale));
+    dialog.instrument().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
     dialog.dataAvailableDate().setDate(dataAvailableDate);
   }
 

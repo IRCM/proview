@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.treatment.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
@@ -24,11 +25,11 @@ import static ca.qc.ircm.proview.treatment.TreatmentType.SOLUBILISATION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.STANDARD_ADDITION;
 import static ca.qc.ircm.proview.treatment.TreatmentType.TRANSFER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.treatment.FractionationType;
 import ca.qc.ircm.proview.treatment.TreatedSample;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentService;
+import ca.qc.ircm.proview.treatment.TreatmentType;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -55,6 +56,11 @@ import org.springframework.context.annotation.Scope;
 public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   public static final String ID = "treatment-dialog";
   public static final String HEADER = "header";
+  private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
+  private static final String TREATMENT_PREFIX = messagePrefix(Treatment.class);
+  private static final String TREATED_SAMPLE_PREFIX = messagePrefix(TreatedSample.class);
+  private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
+  private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private static final long serialVersionUID = -3458086086713549138L;
   private static final Logger logger = LoggerFactory.getLogger(TreatmentDialog.class);
   protected Div deleted = new Div();
@@ -135,28 +141,26 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources treatmentResource = new AppResources(Treatment.class, getLocale());
-    final AppResources treatedSampleResource = new AppResources(TreatedSample.class, getLocale());
     updateHeaderTitle();
-    deleted.setText(treatmentResource.message(property(DELETED, true)));
-    samplesHeader.setText(treatmentResource.message(TREATED_SAMPLES));
-    sample.setHeader(treatedSampleResource.message(SAMPLE));
-    container.setHeader(treatedSampleResource.message(CONTAINER));
-    sourceVolume.setHeader(treatedSampleResource.message(SOURCE_VOLUME));
-    solvent.setHeader(treatedSampleResource.message(SOLVENT));
-    solventVolume.setHeader(treatedSampleResource.message(SOLVENT_VOLUME));
-    name.setHeader(treatedSampleResource.message(NAME));
-    quantity.setHeader(treatedSampleResource.message(QUANTITY));
-    destinationContainer.setHeader(treatedSampleResource.message(DESTINATION_CONTAINER));
-    number.setHeader(treatedSampleResource.message(NUMBER));
-    piInterval.setHeader(treatedSampleResource.message(PI_INTERVAL));
-    comment.setHeader(treatedSampleResource.message(COMMENT));
+    deleted.setText(getTranslation(TREATMENT_PREFIX + property(DELETED, true)));
+    samplesHeader.setText(getTranslation(TREATMENT_PREFIX + TREATED_SAMPLES));
+    sample.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + SAMPLE));
+    container.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + CONTAINER));
+    sourceVolume.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + SOURCE_VOLUME));
+    solvent.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT));
+    solventVolume.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT_VOLUME));
+    name.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + NAME));
+    quantity.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + QUANTITY));
+    destinationContainer.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + DESTINATION_CONTAINER));
+    number.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + NUMBER));
+    piInterval.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + PI_INTERVAL));
+    comment.setHeader(getTranslation(TREATED_SAMPLE_PREFIX + COMMENT));
   }
 
   private void updateHeaderTitle() {
-    final AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
-    setHeaderTitle(Optional.ofNullable(treatment).map(tr -> tr.getType().getLabel(getLocale()))
-        .orElse(resource.message(HEADER)));
+    setHeaderTitle(Optional.ofNullable(treatment)
+        .map(tr -> getTranslation(TREATMENT_TYPE_PREFIX + tr.getType().name()))
+        .orElse(getTranslation(MESSAGES_PREFIX + HEADER)));
   }
 
   public Long getTreatmentId() {
@@ -171,20 +175,21 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
    */
   public void setTreatmentId(Long id) {
     treatment = service.get(id).orElseThrow();
-    AppResources resource = new AppResources(TreatmentDialog.class, getLocale());
     updateHeaderTitle();
     if (treatment.getProtocol() != null) {
-      protocol.setText(resource.message(PROTOCOL, treatment.getProtocol().getName()));
+      protocol
+          .setText(getTranslation(MESSAGES_PREFIX + PROTOCOL, treatment.getProtocol().getName()));
       protocol.setVisible(true);
     }
     if (treatment.getFractionationType() != null) {
-      fractionationType.setText(resource.message(FRACTIONATION_TYPE,
-          treatment.getFractionationType().getLabel(getLocale())));
+      fractionationType.setText(getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
+          getTranslation(FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())));
       fractionationType.setVisible(true);
     }
     deleted.setVisible(treatment.isDeleted());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    date.setText(resource.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())));
+    date.setText(getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())));
     samples.setItems(treatment.getTreatedSamples());
     sourceVolume.setVisible(treatment.getType() == DILUTION);
     solvent.setVisible(treatment.getType() == DILUTION || treatment.getType() == SOLUBILISATION);

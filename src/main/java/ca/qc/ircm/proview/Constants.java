@@ -3,6 +3,8 @@ package ca.qc.ircm.proview;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
+import org.springframework.context.MessageSource;
 
 /**
  * Constants for Web.
@@ -36,6 +38,12 @@ public class Constants {
   public static final String UPLOAD = "upload";
 
   /**
+   * Strip this key from class name, if it matches.
+   */
+  private static final String STRIP_KEY =
+      Pattern.quote(Constants.class.getPackage().getName() + ".");
+
+  /**
    * Returns all valid locales for program.
    *
    * @return all valid locales for program
@@ -45,5 +53,24 @@ public class Constants {
     locales.add(ENGLISH);
     locales.add(FRENCH);
     return locales;
+  }
+
+  /**
+   * Key prefix to use to get messages from {@link MessageSource}.
+   * <p>
+   * Here is an example on how to use prefix.
+   *
+   * <pre>
+   * private static final String MESSAGE_PREFIX = messagePrefix(Constants.class);
+   * messageSource.getMessage(MESSAGE_PREFIX + "title", new Object[] {}, locale);
+   * </pre>
+   * </p>
+   *
+   * @param baseClass
+   *          class to use to obtain prefix
+   * @return key prefix to use to get messages from {@link MessageSource}
+   */
+  public static String messagePrefix(Class<?> baseClass) {
+    return baseClass.getName().replaceFirst(STRIP_KEY, "") + ".";
   }
 }

@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
@@ -41,7 +42,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.WEIGHT_MARKER_Q
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
@@ -125,6 +125,23 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       property(QUANTIFICATION_COMMENT, PLACEHOLDER);
   public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
       property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
+  private static final String MESSAGES_PREFIX = messagePrefix(LcmsmsSubmissionForm.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
+  private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
+  private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
+  private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -200,7 +217,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     standards.setId(id(STANDARDS));
     sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(SampleType.values());
-    sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    sampleType.setRenderer(
+        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     samplesCount.setId(id(SAMPLES_COUNT));
@@ -208,13 +226,13 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     samplesNames.setMinHeight("10em");
     separation.setId(id(SEPARATION));
     separation.setItems(GelSeparation.values());
-    separation.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    separation.setItemLabelGenerator(value -> getTranslation(GEL_SEPARATION_PREFIX + value.name()));
     thickness.setId(id(THICKNESS));
     thickness.setItems(GelThickness.values());
-    thickness.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    thickness.setItemLabelGenerator(value -> getTranslation(GEL_THICKNESS_PREFIX + value.name()));
     coloration.setId(id(COLORATION));
     coloration.setItems(GelColoration.values());
-    coloration.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    coloration.setItemLabelGenerator(value -> getTranslation(GEL_COLORATION_PREFIX + value.name()));
     coloration.addValueChangeListener(e -> colorationChanged());
     otherColoration.setId(id(OTHER_COLORATION));
     developmentTime.setId(id(DEVELOPMENT_TIME));
@@ -223,26 +241,31 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     proteinQuantity.setId(id(PROTEIN_QUANTITY));
     digestion.setId(id(DIGESTION));
     digestion.setItems(ProteolyticDigestion.values());
-    digestion.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    digestion.setItemLabelGenerator(
+        value -> getTranslation(PROTEOLYTIC_DIGESTION_PREFIX + value.name()));
     digestion.addValueChangeListener(e -> digestionChanged());
     usedDigestion.setId(id(USED_DIGESTION));
     otherDigestion.setId(id(OTHER_DIGESTION));
     proteinContent.setId(id(PROTEIN_CONTENT));
     proteinContent.setItems(ProteinContent.values());
-    proteinContent.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    proteinContent.setRenderer(
+        new TextRenderer<>(value -> getTranslation(PROTEIN_CONTENT_PREFIX + value.name())));
     proteinContent.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
-    instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    instrument.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     identification.setId(id(IDENTIFICATION));
     identification.setItems(ProteinIdentification.availables());
-    identification.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    identification.setRenderer(
+        new TextRenderer<>(value -> getTranslation(PROTEIN_IDENTIFICATION_PREFIX + value.name())));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     identification.addValueChangeListener(e -> identificationChanged());
     identificationLink.setId(id(IDENTIFICATION_LINK));
     quantification.setId(id(QUANTIFICATION));
     quantification.setItems(Quantification.values());
-    quantification.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    quantification
+        .setItemLabelGenerator(value -> getTranslation(QUANTIFICATION_PREFIX + value.name()));
     quantification.addValueChangeListener(e -> updateQuantificationComment());
     quantification.addValueChangeListener(e -> quantificationChanged());
     quantificationComment.setId(id(QUANTIFICATION_COMMENT));
@@ -251,126 +274,139 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   @Override
   public void localeChange(LocaleChangeEvent event) {
     Locale locale = getLocale();
-    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources sampleResources = new AppResources(Sample.class, locale);
-    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
-    experiment.setLabel(submissionResources.message(EXPERIMENT));
-    goal.setLabel(submissionResources.message(GOAL));
-    taxonomy.setLabel(submissionResources.message(TAXONOMY));
-    protein.setLabel(submissionResources.message(PROTEIN));
-    molecularWeight.setLabel(submissionSampleResources.message(MOLECULAR_WEIGHT));
+    experiment.setLabel(getTranslation(SUBMISSION_PREFIX + EXPERIMENT));
+    goal.setLabel(getTranslation(SUBMISSION_PREFIX + GOAL));
+    taxonomy.setLabel(getTranslation(SUBMISSION_PREFIX + TAXONOMY));
+    protein.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN));
+    molecularWeight.setLabel(getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT));
     postTranslationModification
-        .setLabel(submissionResources.message(POST_TRANSLATION_MODIFICATION));
-    quantity.setLabel(sampleResources.message(QUANTITY));
-    quantity.setPlaceholder(resources.message(QUANTITY_PLACEHOLDER));
-    volume.setLabel(sampleResources.message(VOLUME));
-    volume.setPlaceholder(resources.message(VOLUME_PLACEHOLDER));
-    contaminants.setLabel(submissionResources.message(CONTAMINANTS));
-    contaminants.setPlaceholder(resources.message(CONTAMINANTS_PLACEHOLDER));
-    standards.setLabel(submissionResources.message(STANDARDS));
-    standards.setPlaceholder(resources.message(STANDARDS_PLACEHOLDER));
-    sampleType.setLabel(resources.message(SAMPLES_TYPE));
-    samplesCount.setLabel(resources.message(SAMPLES_COUNT));
-    samplesNames.setLabel(resources.message(SAMPLES_NAMES));
-    samplesNames.setPlaceholder(resources.message(SAMPLES_NAMES_PLACEHOLDER));
-    samplesNames.getElement().setAttribute(TITLE, resources.message(SAMPLES_NAMES_TITLE));
-    separation.setLabel(submissionResources.message(SEPARATION));
-    thickness.setLabel(submissionResources.message(THICKNESS));
-    coloration.setLabel(submissionResources.message(COLORATION));
-    otherColoration.setLabel(submissionResources.message(OTHER_COLORATION));
-    developmentTime.setLabel(submissionResources.message(DEVELOPMENT_TIME));
-    developmentTime.setPlaceholder(resources.message(DEVELOPMENT_TIME_PLACEHOLDER));
-    destained.setLabel(submissionResources.message(DECOLORATION));
-    weightMarkerQuantity.setLabel(submissionResources.message(WEIGHT_MARKER_QUANTITY));
-    weightMarkerQuantity.setPlaceholder(resources.message(WEIGHT_MARKER_QUANTITY_PLACEHOLDER));
-    proteinQuantity.setLabel(submissionResources.message(PROTEIN_QUANTITY));
-    proteinQuantity.setPlaceholder(resources.message(PROTEIN_QUANTITY_PLACEHOLDER));
-    digestion.setLabel(submissionResources.message(DIGESTION));
-    usedDigestion.setLabel(submissionResources.message(USED_DIGESTION));
-    otherDigestion.setLabel(submissionResources.message(OTHER_DIGESTION));
-    proteinContent.setLabel(submissionResources.message(PROTEIN_CONTENT));
-    instrument.setLabel(submissionResources.message(INSTRUMENT));
-    identification.setLabel(submissionResources.message(IDENTIFICATION));
-    identificationLink.setLabel(submissionResources.message(IDENTIFICATION_LINK));
-    quantification.setLabel(submissionResources.message(QUANTIFICATION));
-    quantificationComment.setLabel(submissionResources.message(QUANTIFICATION_COMMENT));
-    quantificationComment.setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER));
-    binder.forField(experiment).asRequired(webResources.message(REQUIRED))
+        .setLabel(getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
+    quantity.setLabel(getTranslation(SAMPLE_PREFIX + QUANTITY));
+    quantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER));
+    volume.setLabel(getTranslation(SAMPLE_PREFIX + VOLUME));
+    volume.setPlaceholder(getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER));
+    contaminants.setLabel(getTranslation(SUBMISSION_PREFIX + CONTAMINANTS));
+    contaminants.setPlaceholder(getTranslation(MESSAGES_PREFIX + CONTAMINANTS_PLACEHOLDER));
+    standards.setLabel(getTranslation(SUBMISSION_PREFIX + STANDARDS));
+    standards.setPlaceholder(getTranslation(MESSAGES_PREFIX + STANDARDS_PLACEHOLDER));
+    sampleType.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE));
+    samplesCount.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT));
+    samplesNames.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES));
+    samplesNames.setPlaceholder(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_PLACEHOLDER));
+    samplesNames.getElement().setAttribute(TITLE,
+        getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_TITLE));
+    separation.setLabel(getTranslation(SUBMISSION_PREFIX + SEPARATION));
+    thickness.setLabel(getTranslation(SUBMISSION_PREFIX + THICKNESS));
+    coloration.setLabel(getTranslation(SUBMISSION_PREFIX + COLORATION));
+    otherColoration.setLabel(getTranslation(SUBMISSION_PREFIX + OTHER_COLORATION));
+    developmentTime.setLabel(getTranslation(SUBMISSION_PREFIX + DEVELOPMENT_TIME));
+    developmentTime.setPlaceholder(getTranslation(MESSAGES_PREFIX + DEVELOPMENT_TIME_PLACEHOLDER));
+    destained.setLabel(getTranslation(SUBMISSION_PREFIX + DECOLORATION));
+    weightMarkerQuantity.setLabel(getTranslation(SUBMISSION_PREFIX + WEIGHT_MARKER_QUANTITY));
+    weightMarkerQuantity
+        .setPlaceholder(getTranslation(MESSAGES_PREFIX + WEIGHT_MARKER_QUANTITY_PLACEHOLDER));
+    proteinQuantity.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN_QUANTITY));
+    proteinQuantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + PROTEIN_QUANTITY_PLACEHOLDER));
+    digestion.setLabel(getTranslation(SUBMISSION_PREFIX + DIGESTION));
+    usedDigestion.setLabel(getTranslation(SUBMISSION_PREFIX + USED_DIGESTION));
+    otherDigestion.setLabel(getTranslation(SUBMISSION_PREFIX + OTHER_DIGESTION));
+    proteinContent.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN_CONTENT));
+    instrument.setLabel(getTranslation(SUBMISSION_PREFIX + INSTRUMENT));
+    identification.setLabel(getTranslation(SUBMISSION_PREFIX + IDENTIFICATION));
+    identificationLink.setLabel(getTranslation(SUBMISSION_PREFIX + IDENTIFICATION_LINK));
+    quantification.setLabel(getTranslation(SUBMISSION_PREFIX + QUANTIFICATION));
+    quantificationComment.setLabel(getTranslation(SUBMISSION_PREFIX + QUANTIFICATION_COMMENT));
+    quantificationComment
+        .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
+    binder.forField(experiment).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(goal).withNullRepresentation("").bind(GOAL);
-    binder.forField(taxonomy).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .bind(TAXONOMY);
+    binder.forField(taxonomy).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("").bind(TAXONOMY);
     binder.forField(protein).withNullRepresentation("").bind(PROTEIN);
     firstSampleBinder.forField(molecularWeight).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .withConverter(
+            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MOLECULAR_WEIGHT);
     binder.forField(postTranslationModification).withNullRepresentation("")
         .bind(POST_TRANSLATION_MODIFICATION);
-    firstSampleBinder.forField(sampleType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
-    samplesBinder.forField(samplesCount).asRequired(webResources.message(REQUIRED))
+    firstSampleBinder.forField(sampleType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(TYPE);
+    samplesBinder.forField(samplesCount).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("")
-        .withConverter(new StringToIntegerConverter(webResources.message(INVALID_INTEGER)))
+        .withConverter(
+            new StringToIntegerConverter(getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)))
         .bind(SAMPLES_COUNT);
-    samplesBinder.forField(samplesNames).asRequired(webResources.message(REQUIRED))
+    samplesBinder.forField(samplesNames).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").withConverter(new SamplesNamesConverter())
         .withValidator(samplesNamesDuplicates(locale)).withValidator(samplesNamesExists(locale))
         .withValidator(samplesNamesCount(locale)).bind(SAMPLES_NAMES);
     quantity.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(quantity)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(QUANTITY);
     volume.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(volume)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(VOLUME);
     separation.setRequiredIndicatorVisible(true);
     binder.forField(separation)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(SEPARATION);
     thickness.setRequiredIndicatorVisible(true);
     binder.forField(thickness)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(THICKNESS);
     coloration.setRequiredIndicatorVisible(true);
     binder.forField(coloration)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(COLORATION);
     otherColoration.setRequiredIndicatorVisible(true);
     binder.forField(otherColoration)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_COLORATION);
     binder.forField(developmentTime).bind(DEVELOPMENT_TIME);
     binder.forField(destained).bind(DECOLORATION);
     binder.forField(weightMarkerQuantity).withNullRepresentation("")
         .withConverter(new IgnoreConversionIfDisabledConverter<>(
-            new StringToDoubleConverter(webResources.message(INVALID_NUMBER))))
+            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER))))
         .bind(WEIGHT_MARKER_QUANTITY);
     binder.forField(proteinQuantity).bind(PROTEIN_QUANTITY);
-    binder.forField(digestion).asRequired(webResources.message(REQUIRED)).bind(DIGESTION);
+    binder.forField(digestion).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(DIGESTION);
     usedDigestion.setRequiredIndicatorVisible(true);
     binder.forField(usedDigestion)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(USED_DIGESTION);
     otherDigestion.setRequiredIndicatorVisible(true);
     binder.forField(otherDigestion)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_DIGESTION);
-    binder.forField(proteinContent).asRequired(webResources.message(REQUIRED))
+    binder.forField(proteinContent).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(PROTEIN_CONTENT);
     binder.forField(instrument).withNullRepresentation(MassDetectionInstrument.NULL)
         .bind(INSTRUMENT);
-    binder.forField(identification).asRequired(webResources.message(REQUIRED)).bind(IDENTIFICATION);
+    binder.forField(identification).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(IDENTIFICATION);
     identificationLink.setRequiredIndicatorVisible(true);
     binder.forField(identificationLink)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(IDENTIFICATION_LINK);
     binder.forField(quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
     quantificationComment.setRequiredIndicatorVisible(true);
     binder.forField(quantificationComment)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(QUANTIFICATION_COMMENT);
     sampleTypeChanged();
     digestionChanged();
@@ -380,12 +416,12 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   }
 
   private void updateQuantificationComment() {
-    final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, getLocale());
     if (quantification.getValue() == Quantification.TMT) {
       quantificationComment
-          .setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));
+          .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));
     } else {
-      quantificationComment.setPlaceholder(resources.message(QUANTIFICATION_COMMENT_PLACEHOLDER));
+      quantificationComment
+          .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
     }
   }
 
@@ -440,8 +476,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       Optional<String> duplicate =
           values.stream().filter(name -> !duplicates.add(name)).findFirst();
       if (duplicate.isPresent()) {
-        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-        return ValidationResult.error(resources.message(SAMPLES_NAMES_DUPLICATES, duplicate.get()));
+        return ValidationResult
+            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, duplicate.get()));
       }
       return ValidationResult.ok();
     };
@@ -454,8 +490,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       if (exists.isPresent()) {
-        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-        return ValidationResult.error(resources.message(SAMPLES_NAMES_EXISTS, exists.get()));
+        return ValidationResult
+            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, exists.get()));
       }
       return ValidationResult.ok();
     };
@@ -465,9 +501,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     return (values, context) -> {
       Optional<Integer> samplesCount = samplesCount();
       if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
-        final AppResources resources = new AppResources(LcmsmsSubmissionForm.class, locale);
-        return ValidationResult
-            .error(resources.message(SAMPLES_NAMES_WRONG_COUNT, values.size(), samplesCount.get()));
+        return ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT,
+            values.size(), samplesCount.get()));
       }
       return ValidationResult.ok();
     };

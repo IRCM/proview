@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.msanalysis.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.ACQUISITION_FILE;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.COMMENT;
 import static ca.qc.ircm.proview.msanalysis.AcquisitionProperties.CONTAINER;
@@ -28,10 +29,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.AcquisitionRepository;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
+import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
@@ -58,6 +60,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class MsAnalysisDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(MsAnalysisDialog.class);
+  private static final String MS_ANALYSIS_PREFIX = messagePrefix(MsAnalysis.class);
+  private static final String ACQUISITION_PREFIX = messagePrefix(Acquisition.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
   private MsAnalysisDialog dialog;
   @MockBean
   private MsAnalysisService service;
@@ -66,9 +75,6 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   @Autowired
   private AcquisitionRepository acquisitionRepository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
-  private AppResources msAnalysisResources = new AppResources(MsAnalysis.class, locale);
-  private AppResources acquisitionResources = new AppResources(Acquisition.class, locale);
   private List<Acquisition> acquisitions;
 
   /**
@@ -102,45 +108,50 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
-    assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
-    assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MS_ANALYSIS_PREFIX + DELETED), dialog.deleted.getText());
+    assertEquals(dialog.getTranslation(MS_ANALYSIS_PREFIX + ACQUISITIONS),
+        dialog.acquisitionsHeader.getText());
     HeaderRow header = dialog.acquisitions.getHeaderRows().get(0);
-    assertEquals(acquisitionResources.message(SAMPLE), header.getCell(dialog.sample).getText());
-    assertEquals(acquisitionResources.message(CONTAINER),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + SAMPLE),
+        header.getCell(dialog.sample).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + CONTAINER),
         header.getCell(dialog.container).getText());
-    assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + NUMBER_OF_ACQUISITION),
         header.getCell(dialog.numberOfAcquisition).getText());
-    assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + SAMPLE_LIST_NAME),
         header.getCell(dialog.sampleListName).getText());
-    assertEquals(acquisitionResources.message(ACQUISITION_FILE),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + ACQUISITION_FILE),
         header.getCell(dialog.acquisitionFile).getText());
-    assertEquals(acquisitionResources.message(POSITION), header.getCell(dialog.position).getText());
-    assertEquals(acquisitionResources.message(COMMENT), header.getCell(dialog.comment).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + POSITION),
+        header.getCell(dialog.position).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + COMMENT),
+        header.getCell(dialog.comment).getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
-    final AppResources msAnalysisResources = new AppResources(MsAnalysis.class, locale);
-    final AppResources acquisitionResources = new AppResources(Acquisition.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), dialog.getHeaderTitle());
-    assertEquals(msAnalysisResources.message(DELETED), dialog.deleted.getText());
-    assertEquals(msAnalysisResources.message(ACQUISITIONS), dialog.acquisitionsHeader.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MS_ANALYSIS_PREFIX + DELETED), dialog.deleted.getText());
+    assertEquals(dialog.getTranslation(MS_ANALYSIS_PREFIX + ACQUISITIONS),
+        dialog.acquisitionsHeader.getText());
     HeaderRow header = dialog.acquisitions.getHeaderRows().get(0);
-    assertEquals(acquisitionResources.message(SAMPLE), header.getCell(dialog.sample).getText());
-    assertEquals(acquisitionResources.message(CONTAINER),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + SAMPLE),
+        header.getCell(dialog.sample).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + CONTAINER),
         header.getCell(dialog.container).getText());
-    assertEquals(acquisitionResources.message(NUMBER_OF_ACQUISITION),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + NUMBER_OF_ACQUISITION),
         header.getCell(dialog.numberOfAcquisition).getText());
-    assertEquals(acquisitionResources.message(SAMPLE_LIST_NAME),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + SAMPLE_LIST_NAME),
         header.getCell(dialog.sampleListName).getText());
-    assertEquals(acquisitionResources.message(ACQUISITION_FILE),
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + ACQUISITION_FILE),
         header.getCell(dialog.acquisitionFile).getText());
-    assertEquals(acquisitionResources.message(POSITION), header.getCell(dialog.position).getText());
-    assertEquals(acquisitionResources.message(COMMENT), header.getCell(dialog.comment).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + POSITION),
+        header.getCell(dialog.position).getText());
+    assertEquals(dialog.getTranslation(ACQUISITION_PREFIX + COMMENT),
+        header.getCell(dialog.comment).getText());
   }
 
   @Test
@@ -205,13 +216,19 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     assertFalse(dialog.deleted.isVisible());
-    assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
-        msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
+        dialog.instrument.getText());
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(msAnalysis.getInsertTime())), dialog.date.getText());
   }
 
   @Test
@@ -224,13 +241,19 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
     verify(service, times(2)).get(12L);
     assertTrue(dialog.deleted.isVisible());
-    assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
-        msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
+        dialog.instrument.getText());
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(msAnalysis.getInsertTime())), dialog.date.getText());
   }
 
   @Test
@@ -242,15 +265,20 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     Locale locale = Locale.FRENCH;
     UI.getCurrent().setLocale(locale);
 
-    final AppResources resources = new AppResources(MsAnalysisDialog.class, locale);
     assertFalse(dialog.deleted.isVisible());
-    assertEquals(resources.message(MASS_DETECTION_INSTRUMENT,
-        msAnalysis.getMassDetectionInstrument().getLabel(locale)), dialog.instrument.getText());
-    assertEquals(resources.message(SOURCE, msAnalysis.getSource().getLabel(locale)),
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
+        dialog.instrument.getText());
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
+            dialog.getTranslation(
+                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(msAnalysis.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(msAnalysis.getInsertTime())), dialog.date.getText());
   }
 
   @Test

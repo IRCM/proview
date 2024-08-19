@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.sample.web.SamplesStatusDialog.HEADER;
@@ -30,7 +31,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -76,6 +76,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SamplesStatusDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SamplesStatusDialog.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private SamplesStatusDialog dialog;
   @MockBean
   private SubmissionService service;
@@ -88,10 +93,6 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   @Autowired
   private SubmissionSampleRepository sampleRepository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
-  private AppResources sampleResources = new AppResources(Sample.class, locale);
-  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
   private List<SubmissionSample> samples;
   private SampleStatus status1 = SampleStatus.ANALYSED;
   private SampleStatus status2 = SampleStatus.DIGESTED;
@@ -135,40 +136,44 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     Submission submission = repository.findById(163L).get();
-    assertEquals(resources.message(HEADER, submission.getExperiment()), dialog.getHeaderTitle());
-    assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + property(STATUS, ALL)),
+        dialog.allStatus.getLabel());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
     HeaderRow header = dialog.samples.getHeaderRows().get(0);
     FooterRow footer = dialog.samples.getFooterRows().get(0);
-    assertEquals(sampleResources.message(NAME), header.getCell(dialog.name).getText());
-    assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
-    assertEquals(submissionSampleResources.message(STATUS),
+    assertEquals(dialog.getTranslation(SAMPLE_PREFIX + NAME),
+        header.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(SAMPLE_PREFIX + NAME),
+        footer.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
         header.getCell(dialog.status).getText());
-    assertEquals(submissionSampleResources.message(STATUS),
+    assertEquals(dialog.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
         footer.getCell(dialog.status).getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
-    final AppResources sampleResources = new AppResources(Sample.class, locale);
-    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
     Submission submission = repository.findById(163L).get();
-    assertEquals(resources.message(HEADER, submission.getExperiment()), dialog.getHeaderTitle());
-    assertEquals(resources.message(property(STATUS, ALL)), dialog.allStatus.getLabel());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + property(STATUS, ALL)),
+        dialog.allStatus.getLabel());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
     HeaderRow header = dialog.samples.getHeaderRows().get(0);
     FooterRow footer = dialog.samples.getFooterRows().get(0);
-    assertEquals(sampleResources.message(NAME), header.getCell(dialog.name).getText());
-    assertEquals(sampleResources.message(NAME), footer.getCell(dialog.name).getText());
-    assertEquals(submissionSampleResources.message(STATUS),
+    assertEquals(dialog.getTranslation(SAMPLE_PREFIX + NAME),
+        header.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(SAMPLE_PREFIX + NAME),
+        footer.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
         header.getCell(dialog.status).getText());
-    assertEquals(submissionSampleResources.message(STATUS),
+    assertEquals(dialog.getTranslation(SUBMISSION_SAMPLE_PREFIX + STATUS),
         footer.getCell(dialog.status).getText());
   }
 
@@ -197,7 +202,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
       List<SampleStatus> statuses = items(statusBox);
       assertEquals(Arrays.asList(SampleStatus.values()), statuses);
       for (SampleStatus status : statuses) {
-        assertEquals(status.getLabel(locale), statusBox.getItemLabelGenerator().apply(status));
+        assertEquals(dialog.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
+            statusBox.getItemLabelGenerator().apply(status));
       }
       assertSame(statusBox, dialog.status(sample));
     }
@@ -287,7 +293,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
         findValidationStatusByField(status, dialog.status(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
+        error.getMessage());
   }
 
   @Test
@@ -305,7 +312,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
         findValidationStatusByField(status, dialog.status(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
+        error.getMessage());
   }
 
   @Test
@@ -316,7 +324,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     dialog.save.click();
     verify(sampleService).updateStatus(submission.getSamples());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, submission.getExperiment()),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, submission.getExperiment()),
         test(notification).getText());
     assertFalse(dialog.isOpened());
     verify(savedListener).onComponentEvent(any());
@@ -344,8 +352,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     locale = Locale.FRENCH;
     UI.getCurrent().setLocale(locale);
 
-    final AppResources resources = new AppResources(SamplesStatusDialog.class, locale);
-    assertEquals(resources.message(HEADER, experiment), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, experiment),
+        dialog.getHeaderTitle());
   }
 
   @Test

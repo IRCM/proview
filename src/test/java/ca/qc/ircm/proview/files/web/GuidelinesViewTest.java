@@ -4,12 +4,12 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
@@ -33,12 +33,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class GuidelinesViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private GuidelinesView view;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(GuidelinesView.class, locale);
-  private AppResources generalResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -57,7 +57,7 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {
@@ -76,9 +76,8 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(GuidelinesView.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {
@@ -114,7 +113,7 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 }

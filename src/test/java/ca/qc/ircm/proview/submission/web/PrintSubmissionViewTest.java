@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SECOND_HEADER;
@@ -14,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
@@ -38,14 +38,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private PrintSubmissionView view;
   @MockBean
   private SubmissionService service;
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(PrintSubmissionView.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -66,23 +67,24 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
+        view.secondHeader.getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    AppResources resources = new AppResources(PrintSubmissionView.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
+        view.secondHeader.getText());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -93,7 +95,8 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(mock(BeforeEvent.class), 33L);
 
     verify(service).get(33L);
-    assertEquals(Service.SMALL_MOLECULE.getLabel(locale), view.secondHeader.getText());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.SMALL_MOLECULE.name()),
+        view.secondHeader.getText());
     assertEquals(submission, view.printContent.getSubmission());
   }
 
@@ -104,7 +107,8 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(mock(BeforeEvent.class), 35L);
 
     verify(service).get(35L);
-    assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
+        view.secondHeader.getText());
     assertNull(view.printContent.getSubmission());
   }
 
@@ -114,7 +118,8 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
     view.setParameter(mock(BeforeEvent.class), null);
 
-    assertEquals(Service.LC_MS_MS.getLabel(locale), view.secondHeader.getText());
+    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
+        view.secondHeader.getText());
     assertNull(view.printContent.getSubmission());
   }
 }

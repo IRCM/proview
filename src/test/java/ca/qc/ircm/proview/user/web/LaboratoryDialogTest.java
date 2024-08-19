@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.NAME;
@@ -22,7 +23,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -54,6 +54,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class LaboratoryDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
+  private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private LaboratoryDialog dialog;
   @MockBean
   private LaboratoryService service;
@@ -64,9 +67,6 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Autowired
   private LaboratoryRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(LaboratoryDialog.class, locale);
-  private AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -96,24 +96,23 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
-    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
-    assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(LABORATORY_PREFIX + NAME), dialog.name.getLabel());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(LaboratoryDialog.class, locale);
-    final AppResources laboratoryResources = new AppResources(Laboratory.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
     Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
-    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
-    assertEquals(laboratoryResources.message(NAME), dialog.name.getLabel());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(CANCEL), dialog.cancel.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(LABORATORY_PREFIX + NAME), dialog.name.getLabel());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + CANCEL), dialog.cancel.getText());
   }
 
   @Test
@@ -139,7 +138,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   public void setLaboratoryId() {
     Laboratory laboratory = repository.findById(2L).get();
     dialog.setLaboratoryId(2L);
-    assertEquals(resources.message(HEADER, 1, laboratory.getName()), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
+        dialog.getHeaderTitle());
     assertEquals(laboratory.getName(), dialog.name.getValue());
     assertFalse(dialog.name.isReadOnly());
     assertTrue(dialog.save.isVisible());
@@ -149,7 +149,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Test
   public void setLaboratoryId_Null() {
     dialog.setLaboratoryId(null);
-    assertEquals(resources.message(HEADER, 0), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 0), dialog.getHeaderTitle());
     assertEquals("", dialog.name.getValue());
     assertFalse(dialog.name.isReadOnly());
     assertTrue(dialog.save.isVisible());
@@ -169,7 +169,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
         findValidationStatusByField(status, dialog.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
+        error.getMessage());
     verify(service, never()).save(any());
     assertFalse($(Notification.class).exists());
     assertTrue(dialog.isOpened());
@@ -191,7 +192,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
     assertEquals(name, laboratory.getName());
     assertNull(laboratory.getDirector());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, name), test(notification).getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
+        test(notification).getText());
     assertFalse(dialog.isOpened());
     verify(savedListener).onComponentEvent(any());
   }
@@ -211,7 +213,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
     assertEquals(name, laboratory.getName());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
     Notification notification = $(Notification.class).first();
-    assertEquals(resources.message(SAVED, name), test(notification).getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
+        test(notification).getText());
     assertFalse(dialog.isOpened());
     verify(savedListener).onComponentEvent(any());
   }

@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.ID;
@@ -23,7 +24,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
@@ -49,6 +49,8 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 @ServiceTestAnnotations
 @WithAnonymousUser
 public class UseForgotPasswordViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private UseForgotPasswordView view;
   @MockBean
   private ForgotPasswordService service;
@@ -57,8 +59,6 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   @Mock
   private ForgotPassword forgotPassword;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -80,21 +80,19 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(MESSAGE), view.message.getText());
-    assertEquals(webResources.message(SAVE), view.save.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + MESSAGE), view.message.getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(UseForgotPasswordView.class, locale);
-    final AppResources webResources = new AppResources(Constants.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(MESSAGE), view.message.getText());
-    assertEquals(webResources.message(SAVE), view.save.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + MESSAGE), view.message.getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
   }
 
   @Test
@@ -130,13 +128,13 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     verify(service).updatePassword(eq(forgotPassword), eq(password));
     assertTrue($(SigninView.class).exists());
     Notification notification = $(Notification.class).last();
-    assertEquals(resources.message(SAVED), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED), test(notification).getText());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, webResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
@@ -159,7 +157,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, parameter);
     verify(service, never()).get(any(), any());
     Notification notification = $(Notification.class).last();
-    assertEquals(resources.message(INVALID), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
     verify(view.form).setEnabled(false);
   }
@@ -171,7 +169,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, parameter);
     verify(service, never()).get(any(), any());
     Notification notification = $(Notification.class).last();
-    assertEquals(resources.message(INVALID), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
     verify(view.form).setEnabled(false);
   }
@@ -185,7 +183,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, parameter);
     verify(service).get(id, confirmNumber);
     Notification notification = $(Notification.class).last();
-    assertEquals(resources.message(INVALID), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
     verify(view.form).setEnabled(false);
   }
@@ -196,7 +194,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, null);
     verify(service, never()).get(any(), any());
     Notification notification = $(Notification.class).last();
-    assertEquals(resources.message(INVALID), test(notification).getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
     verify(view.form).setEnabled(false);
   }

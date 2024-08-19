@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
 import static ca.qc.ircm.proview.sample.SampleType.DRY;
@@ -36,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -46,6 +46,7 @@ import ca.qc.ircm.proview.sample.SampleType;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
+import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -72,6 +73,18 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(IntactProteinSubmissionForm.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private IntactProteinSubmissionForm form;
   @MockBean
   private SubmissionSampleService sampleService;
@@ -80,11 +93,6 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   @Autowired
   private SubmissionRepository repository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
-  private AppResources sampleResources = new AppResources(Sample.class, locale);
-  private AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
   private String experiment = "my experiment";
   private String goal = "my goal";
   private String taxonomy = "my taxon";
@@ -109,7 +117,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE)).select(INTACT_PROTEIN.getLabel(locale));
+    test(test(view).find(Tabs.class).id(SERVICE))
+        .select(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
     form = test(view).find(IntactProteinSubmissionForm.class).id(ID);
   }
 
@@ -173,50 +182,56 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
-    assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + GOAL), form.goal.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN), form.protein.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT),
         form.molecularWeight.getLabel());
-    assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION),
         form.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
-    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
-    assertEquals(submissionResources.message(INJECTION_TYPE), form.injection.getLabel());
-    assertEquals(submissionResources.message(SOURCE), form.source.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        form.samplesCount.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES),
+        form.samplesNames.getLabel());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + QUANTITY), form.quantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER),
+        form.quantity.getPlaceholder());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + VOLUME), form.volume.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER),
+        form.volume.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INJECTION_TYPE),
+        form.injection.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOURCE), form.source.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INSTRUMENT), form.instrument.getLabel());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
-    final AppResources sampleResources = new AppResources(Sample.class, locale);
-    final AppResources submissionSampleResources = new AppResources(SubmissionSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(submissionResources.message(GOAL), form.goal.getLabel());
-    assertEquals(submissionResources.message(TAXONOMY), form.taxonomy.getLabel());
-    assertEquals(submissionResources.message(PROTEIN), form.protein.getLabel());
-    assertEquals(submissionSampleResources.message(MOLECULAR_WEIGHT),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + GOAL), form.goal.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + TAXONOMY), form.taxonomy.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + PROTEIN), form.protein.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT),
         form.molecularWeight.getLabel());
-    assertEquals(submissionResources.message(POST_TRANSLATION_MODIFICATION),
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION),
         form.postTranslationModification.getLabel());
-    assertEquals(resources.message(SAMPLES_TYPE), form.sampleType.getLabel());
-    assertEquals(resources.message(SAMPLES_COUNT), form.samplesCount.getLabel());
-    assertEquals(resources.message(SAMPLES_NAMES), form.samplesNames.getLabel());
-    assertEquals(sampleResources.message(QUANTITY), form.quantity.getLabel());
-    assertEquals(resources.message(QUANTITY_PLACEHOLDER), form.quantity.getPlaceholder());
-    assertEquals(sampleResources.message(VOLUME), form.volume.getLabel());
-    assertEquals(resources.message(VOLUME_PLACEHOLDER), form.volume.getPlaceholder());
-    assertEquals(submissionResources.message(INJECTION_TYPE), form.injection.getLabel());
-    assertEquals(submissionResources.message(SOURCE), form.source.getLabel());
-    assertEquals(submissionResources.message(INSTRUMENT), form.instrument.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE), form.sampleType.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT),
+        form.samplesCount.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES),
+        form.samplesNames.getLabel());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + QUANTITY), form.quantity.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER),
+        form.quantity.getPlaceholder());
+    assertEquals(form.getTranslation(SAMPLE_PREFIX + VOLUME), form.volume.getLabel());
+    assertEquals(form.getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER),
+        form.volume.getPlaceholder());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INJECTION_TYPE),
+        form.injection.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + SOURCE), form.source.getLabel());
+    assertEquals(form.getTranslation(SUBMISSION_PREFIX + INSTRUMENT), form.instrument.getLabel());
   }
 
   @Test
@@ -272,7 +287,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(2, items.size());
     for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(SAMPLE_TYPE_PREFIX + value.name()),
           form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -283,7 +298,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(InjectionType.values().length, items.size());
     for (InjectionType value : InjectionType.values()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(INJECTION_TYPE_PREFIX + value.name()),
           form.injection.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -294,7 +309,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(MassDetectionInstrumentSource.availables().size(), items.size());
     for (MassDetectionInstrumentSource value : MassDetectionInstrumentSource.availables()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale),
+      assertEquals(form.getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name()),
           form.source.getItemRenderer().createComponent(value).getElement().getText());
     }
   }
@@ -305,7 +320,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(MassDetectionInstrument.userChoices().size(), items.size());
     for (MassDetectionInstrument value : MassDetectionInstrument.userChoices()) {
       assertTrue(items.contains(value));
-      assertEquals(value.getLabel(locale), form.instrument.getItemLabelGenerator().apply(value));
+      assertEquals(form.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()),
+          form.instrument.getItemLabelGenerator().apply(value));
     }
   }
 
@@ -321,7 +337,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.experiment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -336,7 +352,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.taxonomy);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -361,7 +377,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.molecularWeight);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_NUMBER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
+        error.getMessage());
   }
 
   @Test
@@ -376,7 +393,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -391,7 +408,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -406,7 +423,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(INVALID_INTEGER)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)),
+        error.getMessage());
   }
 
   @Test
@@ -505,7 +523,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -520,7 +538,9 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -536,7 +556,9 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -568,7 +590,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_DUPLICATES, sampleName2)),
+    assertEquals(
+        Optional.of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, sampleName2)),
         error.getMessage());
   }
 
@@ -584,7 +607,9 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -600,7 +625,9 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
+    assertEquals(
+        Optional
+            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
         error.getMessage());
   }
 
@@ -616,7 +643,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(resources.message(SAMPLES_NAMES_EXISTS, sampleName2)),
+    assertEquals(
+        Optional.of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, sampleName2)),
         error.getMessage());
   }
 
@@ -646,7 +674,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.quantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -661,7 +689,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -687,7 +715,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.injection);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test
@@ -702,7 +730,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         findValidationStatusByField(status, form.source);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(Optional.of(webResources.message(REQUIRED)), error.getMessage());
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
   }
 
   @Test

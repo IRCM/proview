@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
 import ca.qc.ircm.proview.plate.Plate;
@@ -44,6 +44,7 @@ import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -55,6 +56,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @WithMockUser(authorities = { UserRole.ADMIN })
 public class ActivityServiceTest extends AbstractServiceTestCase {
   private static final QActivity qactivity = QActivity.activity;
+  private static final String MESSAGES_PREFIX = messagePrefix(ActivityService.class);
   @Autowired
   private ActivityService activityService;
   @Autowired
@@ -65,8 +67,9 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private SampleRepository sampleRepository;
   @Autowired
   private PlateRepository plateRepository;
+  @Autowired
+  private MessageSource messageSource;
   private Locale locale = Locale.ENGLISH;
-  private AppResources resources = new AppResources(ActivityService.class, locale);
 
   @Test
   public void record_Digestion() throws Exception {
@@ -695,8 +698,11 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<String> description = activityService.description(activity, locale);
 
-    assertEquals(resources.message("activity", activity.getActionType().ordinal(),
-        activity.getTableName(), submission.getExperiment(), activity.getRecordId()),
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + "activity",
+            new Object[] { activity.getActionType().ordinal(), activity.getTableName(),
+                submission.getExperiment(), activity.getRecordId() },
+            locale),
         description.orElse(""));
   }
 
@@ -708,8 +714,11 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     Optional<String> description = activityService.description(activity, locale);
 
     String[] descriptionLines = description.orElse("").split("\n", -1);
-    assertEquals(resources.message("activity", activity.getActionType().ordinal(),
-        activity.getTableName(), submission.getExperiment(), activity.getRecordId()),
+    assertEquals(
+        messageSource.getMessage(
+            MESSAGES_PREFIX + "activity", new Object[] { activity.getActionType().ordinal(),
+                activity.getTableName(), submission.getExperiment(), activity.getRecordId() },
+            locale),
         descriptionLines[0]);
     for (int i = 0; i < activity.getUpdates().size(); i++) {
       UpdateActivity update = activity.getUpdates().get(i);
@@ -722,10 +731,11 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
       } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
         name = plateRepository.findById(update.getRecordId()).map(su -> su.getName()).orElse(null);
       }
-      assertEquals(
-          resources.message("update", update.getActionType().ordinal(), update.getTableName(), name,
-              update.getRecordId(), update.getColumn(), update.getOldValue(), update.getNewValue()),
-          descriptionLines[i + 1]);
+      assertEquals(messageSource.getMessage(MESSAGES_PREFIX + "update",
+          new Object[] { update.getActionType().ordinal(), update.getTableName(), name,
+              update.getRecordId(), update.getColumn(), update.getOldValue(),
+              update.getNewValue() },
+          locale), descriptionLines[i + 1]);
     }
   }
 

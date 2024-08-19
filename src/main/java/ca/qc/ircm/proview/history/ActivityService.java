@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.history.QActivity.activity;
 import static ca.qc.ircm.proview.history.QUpdateActivity.updateActivity;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
@@ -20,7 +21,6 @@ import static ca.qc.ircm.proview.user.QPhoneNumber.phoneNumber;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.Acquisition;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,10 +60,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ActivityService {
+  private static final String MESSAGES_PREFIX = messagePrefix(ActivityService.class);
   @Autowired
   private ActivityRepository repository;
   @Autowired
   private JPAQueryFactory queryFactory;
+  @Autowired
+  private MessageSource messageSource;
 
   protected ActivityService() {
   }
@@ -353,20 +357,22 @@ public class ActivityService {
       return Optional.empty();
     }
 
-    AppResources resources = new AppResources(ActivityService.class, locale);
     StringBuilder builder = new StringBuilder();
     Object record = record(activity.getTableName(), activity.getRecordId()).orElse(null);
     String name = record instanceof Named ? ((Named) record).getName() : "";
-    builder.append(resources.message("activity", activity.getActionType().ordinal(),
-        activity.getTableName(), name, activity.getRecordId()));
+    builder.append(messageSource.getMessage(MESSAGES_PREFIX + "activity", new Object[] {
+        activity.getActionType().ordinal(), activity.getTableName(), name, activity.getRecordId() },
+        locale));
     if (activity.getUpdates() != null) {
       for (UpdateActivity update : activity.getUpdates()) {
         Object updateRecord = record(update.getTableName(), update.getRecordId()).orElse(null);
         String updateName = updateRecord instanceof Named ? ((Named) updateRecord).getName() : "";
         builder.append("\n");
-        builder.append(resources.message("update", update.getActionType().ordinal(),
-            update.getTableName(), updateName, update.getRecordId(), update.getColumn(),
-            update.getOldValue(), update.getNewValue()));
+        builder.append(messageSource.getMessage(MESSAGES_PREFIX + "update",
+            new Object[] { update.getActionType().ordinal(), update.getTableName(), updateName,
+                update.getRecordId(), update.getColumn(), update.getOldValue(),
+                update.getNewValue() },
+            locale));
       }
     }
     return Optional.of(builder.toString());

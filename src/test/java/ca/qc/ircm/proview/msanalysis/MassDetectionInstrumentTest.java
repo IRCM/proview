@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.msanalysis;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.LTQ_ORBI_TRAP;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.NULL;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.ORBITRAP_FUSION;
@@ -10,14 +11,23 @@ import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.TSQ_VANTAGE;
 import static ca.qc.ircm.proview.msanalysis.MassDetectionInstrument.VELOS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import java.util.List;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 
 /**
  * Tests for {@link MassDetectionInstrument}.
  */
+@NonTransactionalTestAnnotations
 public class MassDetectionInstrumentTest {
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  @Autowired
+  private MessageSource messageSource;
+
   @Test
   public void userChoices() {
     List<MassDetectionInstrument> availables = MassDetectionInstrument.userChoices();
@@ -49,55 +59,73 @@ public class MassDetectionInstrumentTest {
 
   @Test
   public void getNullLabel() {
-    assertEquals("Specialist's choice", MassDetectionInstrument.getNullLabel(Locale.ENGLISH));
-    assertEquals("Choix du spécialiste", MassDetectionInstrument.getNullLabel(Locale.FRENCH));
+    assertEquals("Specialist's choice",
+        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, Locale.ENGLISH));
+    assertEquals("Choix du spécialiste",
+        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Null() {
-    assertEquals("Specialist's choice", NULL.getLabel(Locale.ENGLISH));
-    assertEquals("Choix du spécialiste", NULL.getLabel(Locale.FRENCH));
+    assertEquals("Specialist's choice", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + NULL.name(), null, Locale.ENGLISH));
+    assertEquals("Choix du spécialiste", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + NULL.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Velos() {
-    assertEquals("LTQ-ORBITRAP-VELOS", VELOS.getLabel(Locale.ENGLISH));
-    assertEquals("LTQ-ORBITRAP-VELOS", VELOS.getLabel(Locale.FRENCH));
+    assertEquals("LTQ-ORBITRAP-VELOS", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + VELOS.name(), null, Locale.ENGLISH));
+    assertEquals("LTQ-ORBITRAP-VELOS", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + VELOS.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Qexactive() {
-    assertEquals("Q-Exactive", Q_EXACTIVE.getLabel(Locale.ENGLISH));
-    assertEquals("Q-Exactive", Q_EXACTIVE.getLabel(Locale.FRENCH));
+    assertEquals("Q-Exactive", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + Q_EXACTIVE.name(), null, Locale.ENGLISH));
+    assertEquals("Q-Exactive", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + Q_EXACTIVE.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Vantage() {
-    assertEquals("TSQ-Vantage", TSQ_VANTAGE.getLabel(Locale.ENGLISH));
-    assertEquals("TSQ-Vantage", TSQ_VANTAGE.getLabel(Locale.FRENCH));
+    assertEquals("TSQ-Vantage", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + TSQ_VANTAGE.name(), null, Locale.ENGLISH));
+    assertEquals("TSQ-Vantage", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + TSQ_VANTAGE.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Fusion() {
-    assertEquals("Orbitrap-FUSION", ORBITRAP_FUSION.getLabel(Locale.ENGLISH));
-    assertEquals("Orbitrap-FUSION", ORBITRAP_FUSION.getLabel(Locale.FRENCH));
+    assertEquals("Orbitrap-FUSION", messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + ORBITRAP_FUSION.name(), null, Locale.ENGLISH));
+    assertEquals("Orbitrap-FUSION", messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + ORBITRAP_FUSION.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Orbitrap() {
-    assertEquals("LTQ-ORBI Trap", LTQ_ORBI_TRAP.getLabel(Locale.ENGLISH));
-    assertEquals("LTQ-ORBI Trap", LTQ_ORBI_TRAP.getLabel(Locale.FRENCH));
+    assertEquals("LTQ-ORBI Trap", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + LTQ_ORBI_TRAP.name(), null, Locale.ENGLISH));
+    assertEquals("LTQ-ORBI Trap", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + LTQ_ORBI_TRAP.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Qtof() {
-    assertEquals("Q-TOF II", Q_TOF.getLabel(Locale.ENGLISH));
-    assertEquals("Q-TOF II", Q_TOF.getLabel(Locale.FRENCH));
+    assertEquals("Q-TOF II", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + Q_TOF.name(), null, Locale.ENGLISH));
+    assertEquals("Q-TOF II", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + Q_TOF.name(), null, Locale.FRENCH));
   }
 
   @Test
   public void getLabel_Tof() {
-    assertEquals("MALDI TOF", TOF.getLabel(Locale.ENGLISH));
-    assertEquals("MALDI TOF", TOF.getLabel(Locale.FRENCH));
+    assertEquals("MALDI TOF", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + TOF.name(), null, Locale.ENGLISH));
+    assertEquals("MALDI TOF", messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + TOF.name(), null, Locale.FRENCH));
   }
 }

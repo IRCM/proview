@@ -1,11 +1,11 @@
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -34,6 +34,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,6 +48,7 @@ import org.thymeleaf.context.Context;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionService {
+  private static final String MESSAGE_PREFIX = messagePrefix(SubmissionService.class);
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
   @Autowired
   private SubmissionRepository repository;
@@ -68,6 +70,8 @@ public class SubmissionService {
   private EmailService emailService;
   @Autowired
   private AuthenticatedUser authenticatedUser;
+  @Autowired
+  private MessageSource messageSource;
 
   protected SubmissionService() {
   }
@@ -184,7 +188,7 @@ public class SubmissionService {
     plateRepository.findBySubmission(submission)
         .ifPresent(plate -> context.setVariable("plate", plate));
 
-    String templateLocation = "/submission/print.html";
+    String templateLocation = "submission/print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }
@@ -252,13 +256,13 @@ public class SubmissionService {
     context.setVariable("sampleCount", submission.getSamples().size());
     context.setVariable("samples", submission.getSamples());
 
-    AppResources resource = new AppResources(SubmissionService.class, Locale.ENGLISH);
     final List<User> proteomicUsers = adminUsers();
     MimeMessageHelper email = emailService.htmlEmail();
-    email.setSubject(resource.message("subject." + type.name()));
-    String htmlTemplateLocation = "/submission/email.html";
+    email.setSubject(
+        messageSource.getMessage(MESSAGE_PREFIX + "subject." + type.name(), null, Locale.ENGLISH));
+    String htmlTemplateLocation = "submission/email.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/submission/email.txt";
+    String textTemplateLocation = "submission/email.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
     for (User proteomicUser : proteomicUsers) {

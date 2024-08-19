@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.INVALID_INTEGER;
 import static ca.qc.ircm.proview.Constants.INVALID_NUMBER;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
@@ -24,7 +25,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.TAXONOMY;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -90,6 +90,17 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
+  private static final String MESSAGES_PREFIX = messagePrefix(IntactProteinSubmissionForm.class);
+  private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final long serialVersionUID = 7704703308278059432L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -143,7 +154,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     volume.setId(id(VOLUME));
     sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(DRY, SOLUTION);
-    sampleType.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    sampleType.setRenderer(
+        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     samplesCount.setId(id(SAMPLES_COUNT));
@@ -151,72 +163,74 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     samplesNames.setMinHeight("10em");
     injection.setId(id(INJECTION_TYPE));
     injection.setItems(InjectionType.values());
-    injection.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    injection.setRenderer(
+        new TextRenderer<>(value -> getTranslation(INJECTION_TYPE_PREFIX + value.name())));
     injection.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     source.setId(id(SOURCE));
     source.setItems(MassDetectionInstrumentSource.availables());
-    source.setRenderer(new TextRenderer<>(value -> value.getLabel(getLocale())));
+    source.setRenderer(new TextRenderer<>(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name())));
     source.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
-    instrument.setItemLabelGenerator(value -> value.getLabel(getLocale()));
+    instrument.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, getLocale());
-    final AppResources submissionResources = new AppResources(Submission.class, getLocale());
-    final AppResources sampleResources = new AppResources(Sample.class, getLocale());
-    final AppResources submissionSampleResources =
-        new AppResources(SubmissionSample.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    experiment.setLabel(submissionResources.message(EXPERIMENT));
-    goal.setLabel(submissionResources.message(GOAL));
-    taxonomy.setLabel(submissionResources.message(TAXONOMY));
-    protein.setLabel(submissionResources.message(PROTEIN));
-    molecularWeight.setLabel(submissionSampleResources.message(MOLECULAR_WEIGHT));
+    experiment.setLabel(getTranslation(SUBMISSION_PREFIX + EXPERIMENT));
+    goal.setLabel(getTranslation(SUBMISSION_PREFIX + GOAL));
+    taxonomy.setLabel(getTranslation(SUBMISSION_PREFIX + TAXONOMY));
+    protein.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN));
+    molecularWeight.setLabel(getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT));
     postTranslationModification
-        .setLabel(submissionResources.message(POST_TRANSLATION_MODIFICATION));
-    quantity.setLabel(sampleResources.message(QUANTITY));
-    quantity.setPlaceholder(resources.message(QUANTITY_PLACEHOLDER));
-    volume.setLabel(sampleResources.message(VOLUME));
-    volume.setPlaceholder(resources.message(VOLUME_PLACEHOLDER));
-    sampleType.setLabel(resources.message(SAMPLES_TYPE));
-    samplesCount.setLabel(resources.message(SAMPLES_COUNT));
-    samplesNames.setLabel(resources.message(SAMPLES_NAMES));
-    injection.setLabel(submissionResources.message(INJECTION_TYPE));
-    source.setLabel(submissionResources.message(SOURCE));
-    instrument.setLabel(submissionResources.message(INSTRUMENT));
-    binder.forField(experiment).asRequired(webResources.message(REQUIRED))
+        .setLabel(getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
+    quantity.setLabel(getTranslation(SAMPLE_PREFIX + QUANTITY));
+    quantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER));
+    volume.setLabel(getTranslation(SAMPLE_PREFIX + VOLUME));
+    volume.setPlaceholder(getTranslation(MESSAGES_PREFIX + VOLUME_PLACEHOLDER));
+    sampleType.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_TYPE));
+    samplesCount.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT));
+    samplesNames.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES));
+    injection.setLabel(getTranslation(SUBMISSION_PREFIX + INJECTION_TYPE));
+    source.setLabel(getTranslation(SUBMISSION_PREFIX + SOURCE));
+    instrument.setLabel(getTranslation(SUBMISSION_PREFIX + INSTRUMENT));
+    binder.forField(experiment).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(goal).withNullRepresentation("").bind(GOAL);
-    binder.forField(taxonomy).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .bind(TAXONOMY);
+    binder.forField(taxonomy).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("").bind(TAXONOMY);
     binder.forField(protein).withNullRepresentation("").bind(PROTEIN);
     firstSampleBinder.forField(molecularWeight).withNullRepresentation("")
-        .withConverter(new StringToDoubleConverter(webResources.message(INVALID_NUMBER)))
+        .withConverter(
+            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MOLECULAR_WEIGHT);
     binder.forField(postTranslationModification).withNullRepresentation("")
         .bind(POST_TRANSLATION_MODIFICATION);
-    firstSampleBinder.forField(sampleType).asRequired(webResources.message(REQUIRED)).bind(TYPE);
-    samplesBinder.forField(samplesCount).asRequired(webResources.message(REQUIRED))
+    firstSampleBinder.forField(sampleType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(TYPE);
+    samplesBinder.forField(samplesCount).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("")
-        .withConverter(new StringToIntegerConverter(webResources.message(INVALID_INTEGER)))
+        .withConverter(
+            new StringToIntegerConverter(getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)))
         .bind(SAMPLES_COUNT);
-    samplesBinder.forField(samplesNames).asRequired(webResources.message(REQUIRED))
+    samplesBinder.forField(samplesNames).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("")
         .withConverter(new IntactProteinSubmissionForm.SamplesNamesConverter())
         .withValidator(samplesNamesDuplicates(getLocale()))
         .withValidator(samplesNamesExists(getLocale()))
         .withValidator(samplesNamesCount(getLocale())).bind(SAMPLES_NAMES);
-    firstSampleBinder.forField(quantity).asRequired(webResources.message(REQUIRED))
+    firstSampleBinder.forField(quantity).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(QUANTITY);
     volume.setRequiredIndicatorVisible(true);
     firstSampleBinder.forField(volume)
-        .withValidator(new RequiredIfEnabledValidator<>(webResources.message(REQUIRED)))
+        .withValidator(
+            new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(VOLUME);
-    binder.forField(injection).asRequired(webResources.message(REQUIRED)).bind(INJECTION_TYPE);
-    binder.forField(source).asRequired(webResources.message(REQUIRED)).bind(SOURCE);
+    binder.forField(injection).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .bind(INJECTION_TYPE);
+    binder.forField(source).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED)).bind(SOURCE);
     binder.forField(instrument).withNullRepresentation(MassDetectionInstrument.NULL)
         .bind(INSTRUMENT);
     sampleTypeChanged();
@@ -261,8 +275,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
       Optional<String> duplicate =
           values.stream().filter(name -> !duplicates.add(name)).findFirst();
       if (duplicate.isPresent()) {
-        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-        return ValidationResult.error(resources.message(SAMPLES_NAMES_DUPLICATES, duplicate.get()));
+        return ValidationResult
+            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, duplicate.get()));
       }
       return ValidationResult.ok();
     };
@@ -275,8 +289,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       if (exists.isPresent()) {
-        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-        return ValidationResult.error(resources.message(SAMPLES_NAMES_EXISTS, exists.get()));
+        return ValidationResult
+            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, exists.get()));
       }
       return ValidationResult.ok();
     };
@@ -286,9 +300,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     return (values, context) -> {
       Optional<Integer> samplesCount = samplesCount();
       if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
-        final AppResources resources = new AppResources(IntactProteinSubmissionForm.class, locale);
-        return ValidationResult
-            .error(resources.message(SAMPLES_NAMES_WRONG_COUNT, values.size(), samplesCount.get()));
+        return ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT,
+            values.size(), samplesCount.get()));
       }
       return ValidationResult.ok();
     };

@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SIGNOUT_URL;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
@@ -27,7 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
@@ -58,13 +58,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private ViewLayout view;
   @MockBean
   private SwitchUserService switchUserService;
   @Mock
   private AfterNavigationListener navigationListener;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(ViewLayout.class, locale);
   private User user = new User(1L, "myuser");
 
   /**
@@ -102,35 +102,38 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
-    assertEquals(resources.message(PROFILE), view.profile.getLabel());
-    assertEquals(resources.message(USERS), view.users.getLabel());
-    assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
-    assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
-    assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
-    assertEquals(resources.message(CONTACT), view.contact.getLabel());
-    assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
-    assertEquals(resources.message(EDIT), view.edit.getLabel());
-    assertEquals(resources.message(PRINT), view.print.getLabel());
-    assertEquals(resources.message(HISTORY), view.history.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.submissions.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.profile.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.users.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EXIT_SWITCH_USER),
+        view.exitSwitchUser.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
+        view.changeLanguage.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PRINT), view.print.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(ViewLayout.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(SUBMISSIONS), view.submissions.getLabel());
-    assertEquals(resources.message(PROFILE), view.profile.getLabel());
-    assertEquals(resources.message(USERS), view.users.getLabel());
-    assertEquals(resources.message(EXIT_SWITCH_USER), view.exitSwitchUser.getLabel());
-    assertEquals(resources.message(SIGNOUT), view.signout.getLabel());
-    assertEquals(resources.message(CHANGE_LANGUAGE), view.changeLanguage.getLabel());
-    assertEquals(resources.message(CONTACT), view.contact.getLabel());
-    assertEquals(resources.message(GUIDELINES), view.guidelines.getLabel());
-    assertEquals(resources.message(EDIT), view.edit.getLabel());
-    assertEquals(resources.message(PRINT), view.print.getLabel());
-    assertEquals(resources.message(HISTORY), view.history.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.submissions.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.profile.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.users.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EXIT_SWITCH_USER),
+        view.exitSwitchUser.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
+        view.changeLanguage.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PRINT), view.print.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
   }
 
   @Test

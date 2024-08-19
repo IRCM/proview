@@ -1,8 +1,5 @@
 package ca.qc.ircm.proview.sample;
 
-import ca.qc.ircm.proview.AppResources;
-import java.util.Locale;
-
 /**
  * All statuses of a sample.
  */
@@ -34,19 +31,5 @@ public enum SampleStatus {
 
   public static SampleStatus[] analysedStatuses() {
     return new SampleStatus[] { CANCELLED, ANALYSED };
-  }
-
-  private static AppResources getResources(Locale locale) {
-    return new AppResources(SampleStatus.class, locale);
-  }
-
-  public static String getNullLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message("NULL");
-  }
-
-  public String getLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message(name());
   }
 }

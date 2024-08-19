@@ -5,9 +5,9 @@ import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.user.User;
@@ -46,6 +46,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AnonymousAllowed
 public class ForgotPasswordView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle, NotificationComponent, UrlComponent {
+  private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordView.class);
   public static final String VIEW_NAME = "forgotpassword";
@@ -92,22 +95,20 @@ public class ForgotPasswordView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources userResources = new AppResources(User.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
-    header.setText(resources.message(HEADER));
-    message.setText(resources.message(MESSAGE));
-    email.setLabel(userResources.message(EMAIL));
-    save.setText(webResources.message(SAVE));
-    binder.forField(email).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .withValidator(new EmailValidator(webResources.message(INVALID_EMAIL))).bind(EMAIL);
+    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
+    message.setText(getTranslation(MESSAGES_PREFIX + MESSAGE));
+    email.setLabel(getTranslation(USER_PREFIX + EMAIL));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
+    binder.forField(email).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("")
+        .withValidator(new EmailValidator(getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)))
+        .bind(EMAIL);
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   BinderValidationStatus<User> validateUser() {
@@ -126,8 +127,7 @@ public class ForgotPasswordView extends VerticalLayout
         service.insert(email, (fp, locale) -> getUrl(UseForgotPasswordView.VIEW_NAME) + "/"
             + fp.getId() + UseForgotPasswordView.SEPARATOR + fp.getConfirmNumber());
       }
-      final AppResources resources = new AppResources(ForgotPasswordView.class, getLocale());
-      showNotification(resources.message(SAVED, email));
+      showNotification(getTranslation(MESSAGES_PREFIX + SAVED, email));
       UI.getCurrent().navigate(SigninView.class);
     }
   }

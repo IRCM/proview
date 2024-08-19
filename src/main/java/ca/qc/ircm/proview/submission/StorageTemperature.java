@@ -1,8 +1,5 @@
 package ca.qc.ircm.proview.submission;
 
-import ca.qc.ircm.proview.AppResources;
-import java.util.Locale;
-
 /**
  * Available storage temperatures.
  */
@@ -20,19 +17,5 @@ public enum StorageTemperature {
 
   public int getTemperature() {
     return temperature;
-  }
-
-  private static AppResources getResources(Locale locale) {
-    return new AppResources(StorageTemperature.class, locale);
-  }
-
-  public static String getNullLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message("NULL");
-  }
-
-  public String getLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message(name());
   }
 }

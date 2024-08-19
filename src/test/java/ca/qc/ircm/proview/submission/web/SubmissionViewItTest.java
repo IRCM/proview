@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
@@ -10,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -57,10 +58,32 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final QSubmission qsubmission = QSubmission.submission;
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
+  private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
+  private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
+  private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
   @Autowired
   private SubmissionRepository repository;
+  @Autowired
+  private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
   @Value("${download-home}")
@@ -137,37 +160,46 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.protein().setValue(protein);
     form.molecularWeight().setValue(String.valueOf(molecularWeight));
     form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.samplesCount().setValue(String.valueOf(samplesCount));
     form.samplesNames().setValue(sampleNamesString);
     if (sampleType != SampleType.GEL) {
       form.quantity().setValue(quantity);
       form.volume().setValue(volume);
     } else {
-      form.separation().selectByText(separation.getLabel(locale));
-      form.thickness().selectByText(thickness.getLabel(locale));
-      form.coloration().selectByText(coloration.getLabel(locale));
+      form.separation().selectByText(
+          messageSource.getMessage(GEL_SEPARATION_PREFIX + separation.name(), null, locale));
+      form.thickness().selectByText(
+          messageSource.getMessage(GEL_THICKNESS_PREFIX + thickness.name(), null, locale));
+      form.coloration().selectByText(
+          messageSource.getMessage(GEL_COLORATION_PREFIX + coloration.name(), null, locale));
       form.otherColoration().setValue(otherColoration);
       form.developmentTime().setValue(developmentTime);
       form.destained().setChecked(destained);
       form.weightMarkerQuantity().setValue(String.valueOf(weightMarkerQuantity));
       form.proteinQuantity().setValue(proteinQuantity);
     }
-    form.digestion().selectByText(digestion.getLabel(locale));
+    form.digestion().selectByText(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + digestion.name(), null, locale));
     form.usedDigestion().setValue(usedDigestion);
     form.otherDigestion().setValue(otherDigestion);
-    form.proteinContent().selectByText(proteinContent.getLabel(locale));
-    form.instrument().selectByText(instrument.getLabel(locale));
-    form.identification().selectByText(identification.getLabel(locale));
+    form.proteinContent().selectByText(
+        messageSource.getMessage(PROTEIN_CONTENT_PREFIX + proteinContent.name(), null, locale));
+    form.instrument().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
+    form.identification().selectByText(messageSource
+        .getMessage(PROTEIN_IDENTIFICATION_PREFIX + identification.name(), null, locale));
     form.identificationLink().setValue(identificationLink);
-    form.quantification().selectByText(quantification.getLabel(locale));
+    form.quantification().selectByText(
+        messageSource.getMessage(QUANTIFICATION_PREFIX + quantification.name(), null, locale));
     form.quantificationComment().setValue(quantificationComment);
   }
 
   private void setFields(SmallMoleculeSubmissionFormElement form) {
     Locale locale = currentLocale();
-    AppResources submissionResource = new AppResources(Submission.class, locale);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.sampleName().setValue(sampleName1);
     form.solvent().setValue(solvent);
     form.formula().setValue(formula);
@@ -175,12 +207,14 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.averageMass().setValue(String.valueOf(averageMass));
     form.toxicity().setValue(toxicity);
     form.lightSensitive().setChecked(lightSensitive);
-    form.storageTemperature().selectByText(storageTemperature.getLabel(locale));
-    form.highResolution()
-        .selectByText(submissionResource.message(property(HIGH_RESOLUTION, highResolution)));
-    Stream.of(Solvent.values())
-        .forEach(solvent -> form.solvents().deselectByText(solvent.getLabel(currentLocale())));
-    solvents.forEach(solvent -> form.solvents().selectByText(solvent.getLabel(currentLocale())));
+    form.storageTemperature().selectByText(messageSource
+        .getMessage(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name(), null, locale));
+    form.highResolution().selectByText(messageSource
+        .getMessage(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, highResolution), null, locale));
+    Stream.of(Solvent.values()).forEach(solvent -> form.solvents()
+        .deselectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
+    solvents.forEach(solvent -> form.solvents()
+        .selectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
     form.otherSolvent().setValue(otherSolvent);
   }
 
@@ -192,14 +226,18 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     form.protein().setValue(protein);
     form.molecularWeight().setValue(String.valueOf(molecularWeight));
     form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(sampleType.getLabel(locale));
+    form.sampleType().selectByText(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
     form.samplesCount().setValue(String.valueOf(samplesCount));
     form.samplesNames().setValue(sampleNamesString);
     form.quantity().setValue(quantity);
     form.volume().setValue(volume);
-    form.injection().selectByText(injection.getLabel(locale));
-    form.source().selectByText(source.getLabel(locale));
-    form.instrument().selectByText(instrument.getLabel(locale));
+    form.injection().selectByText(
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + injection.name(), null, locale));
+    form.source().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + source.name(), null, locale));
+    form.instrument().selectByText(messageSource
+        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
   }
 
   @Test
@@ -214,8 +252,12 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(SubmissionView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test
@@ -250,8 +292,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
@@ -307,8 +349,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
@@ -370,8 +412,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, sampleName1), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { sampleName1 },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1)).get();
     assertEquals(sampleName1, submission.getExperiment());
     assertEquals(solvent, submission.getSolutionSolvent());
@@ -411,8 +453,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    AppResources resources = this.resources(SubmissionView.class);
-    assertEquals(resources.message(SAVED, experiment), notification.getText());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+        currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());

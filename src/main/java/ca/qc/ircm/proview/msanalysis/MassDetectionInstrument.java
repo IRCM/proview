@@ -1,10 +1,8 @@
 package ca.qc.ircm.proview.msanalysis;
 
-import ca.qc.ircm.proview.AppResources;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Instruments available for protein mass detection.
@@ -48,20 +46,7 @@ public enum MassDetectionInstrument {
     return new ArrayList<>(FILTER_CHOICES);
   }
 
-  public static String getNullLabel(Locale locale) {
-    return NULL.getLabel(locale);
-  }
-
   public boolean isAvailable() {
     return USER_CHOICES.contains(this);
-  }
-
-  private AppResources getResources(Locale locale) {
-    return new AppResources(MassDetectionInstrument.class, locale);
-  }
-
-  public String getLabel(Locale locale) {
-    AppResources resources = getResources(locale);
-    return resources.message(name());
   }
 }

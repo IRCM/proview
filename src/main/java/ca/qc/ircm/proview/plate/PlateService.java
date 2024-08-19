@@ -128,7 +128,7 @@ public class PlateService {
     context.setVariable("plate", plate);
     context.setVariable("locale", locale);
 
-    String templateLocation = "/plate/print.html";
+    String templateLocation = "plate/print.html";
     String content = emailTemplateEngine.process(templateLocation, context);
     return content;
   }

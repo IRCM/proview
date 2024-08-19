@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.treatment.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.COMMENT;
 import static ca.qc.ircm.proview.treatment.TreatedSampleProperties.CONTAINER;
@@ -30,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.submission.web.HistoryView;
@@ -64,6 +64,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
+  private static final String TREATMENT_PREFIX = messagePrefix(Treatment.class);
+  private static final String TREATED_SAMPLE_PREFIX = messagePrefix(TreatedSample.class);
+  private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
+  private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private TreatmentDialog dialog;
   @MockBean
   private TreatmentService service;
@@ -72,9 +77,6 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   @Autowired
   private TreatedSampleRepository treatedSampleRepository;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(TreatmentDialog.class, locale);
-  private AppResources treatmentResources = new AppResources(Treatment.class, locale);
-  private AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
   private List<TreatedSample> treatedSamples;
 
   /**
@@ -109,64 +111,67 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
-    assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
-    assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_PREFIX + DELETED), dialog.deleted.getText());
+    assertEquals(dialog.getTranslation(TREATMENT_PREFIX + TREATED_SAMPLES),
+        dialog.samplesHeader.getText());
     HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
-    assertEquals(treatedSampleResources.message(SAMPLE),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SAMPLE),
         headerRow.getCell(dialog.sample).getText());
-    assertEquals(treatedSampleResources.message(CONTAINER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + CONTAINER),
         headerRow.getCell(dialog.container).getText());
-    assertEquals(treatedSampleResources.message(SOURCE_VOLUME),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOURCE_VOLUME),
         headerRow.getCell(dialog.sourceVolume).getText());
-    assertEquals(treatedSampleResources.message(SOLVENT),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT),
         headerRow.getCell(dialog.solvent).getText());
-    assertEquals(treatedSampleResources.message(SOLVENT_VOLUME),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT_VOLUME),
         headerRow.getCell(dialog.solventVolume).getText());
-    assertEquals(treatedSampleResources.message(NAME), headerRow.getCell(dialog.name).getText());
-    assertEquals(treatedSampleResources.message(QUANTITY),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + NAME),
+        headerRow.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + QUANTITY),
         headerRow.getCell(dialog.quantity).getText());
-    assertEquals(treatedSampleResources.message(DESTINATION_CONTAINER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + DESTINATION_CONTAINER),
         headerRow.getCell(dialog.destinationContainer).getText());
-    assertEquals(treatedSampleResources.message(NUMBER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + NUMBER),
         headerRow.getCell(dialog.number).getText());
-    assertEquals(treatedSampleResources.message(PI_INTERVAL),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + PI_INTERVAL),
         headerRow.getCell(dialog.piInterval).getText());
-    assertEquals(treatedSampleResources.message(COMMENT),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + COMMENT),
         headerRow.getCell(dialog.comment).getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(TreatmentDialog.class, locale);
-    final AppResources treatmentResources = new AppResources(Treatment.class, locale);
-    final AppResources treatedSampleResources = new AppResources(TreatedSample.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(TreatmentType.TRANSFER.getLabel(locale), dialog.getHeaderTitle());
-    assertEquals(treatmentResources.message(DELETED), dialog.deleted.getText());
-    assertEquals(treatmentResources.message(TREATED_SAMPLES), dialog.samplesHeader.getText());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name()),
+        dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_PREFIX + DELETED), dialog.deleted.getText());
+    assertEquals(dialog.getTranslation(TREATMENT_PREFIX + TREATED_SAMPLES),
+        dialog.samplesHeader.getText());
     HeaderRow headerRow = dialog.samples.getHeaderRows().get(0);
-    assertEquals(treatedSampleResources.message(SAMPLE),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SAMPLE),
         headerRow.getCell(dialog.sample).getText());
-    assertEquals(treatedSampleResources.message(CONTAINER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + CONTAINER),
         headerRow.getCell(dialog.container).getText());
-    assertEquals(treatedSampleResources.message(SOURCE_VOLUME),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOURCE_VOLUME),
         headerRow.getCell(dialog.sourceVolume).getText());
-    assertEquals(treatedSampleResources.message(SOLVENT),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT),
         headerRow.getCell(dialog.solvent).getText());
-    assertEquals(treatedSampleResources.message(SOLVENT_VOLUME),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + SOLVENT_VOLUME),
         headerRow.getCell(dialog.solventVolume).getText());
-    assertEquals(treatedSampleResources.message(NAME), headerRow.getCell(dialog.name).getText());
-    assertEquals(treatedSampleResources.message(QUANTITY),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + NAME),
+        headerRow.getCell(dialog.name).getText());
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + QUANTITY),
         headerRow.getCell(dialog.quantity).getText());
-    assertEquals(treatedSampleResources.message(DESTINATION_CONTAINER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + DESTINATION_CONTAINER),
         headerRow.getCell(dialog.destinationContainer).getText());
-    assertEquals(treatedSampleResources.message(NUMBER),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + NUMBER),
         headerRow.getCell(dialog.number).getText());
-    assertEquals(treatedSampleResources.message(PI_INTERVAL),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + PI_INTERVAL),
         headerRow.getCell(dialog.piInterval).getText());
-    assertEquals(treatedSampleResources.message(COMMENT),
+    assertEquals(dialog.getTranslation(TREATED_SAMPLE_PREFIX + COMMENT),
         headerRow.getCell(dialog.comment).getText());
   }
 
@@ -241,13 +246,14 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(1L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertTrue(dialog.solvent.isVisible());
     assertTrue(dialog.solventVolume.isVisible());
@@ -264,16 +270,19 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(2L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertEquals(
-        resources.message(FRACTIONATION_TYPE, treatment.getFractionationType().getLabel(locale)),
+        dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
+            dialog.getTranslation(
+                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -291,16 +300,19 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(2L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertEquals(
-        resources.message(FRACTIONATION_TYPE, treatment.getFractionationType().getLabel(locale)),
+        dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
+            dialog.getTranslation(
+                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -317,13 +329,14 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(3L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -340,13 +353,14 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(4L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertTrue(dialog.sourceVolume.isVisible());
     assertTrue(dialog.solvent.isVisible());
     assertTrue(dialog.solventVolume.isVisible());
@@ -363,13 +377,14 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(5L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -386,15 +401,17 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(6L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
-    assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + PROTOCOL, treatment.getProtocol().getName()),
         dialog.protocol.getText());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -411,15 +428,17 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(7L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
-    assertEquals(resources.message(PROTOCOL, treatment.getProtocol().getName()),
+    assertEquals(
+        dialog.getTranslation(MESSAGES_PREFIX + PROTOCOL, treatment.getProtocol().getName()),
         dialog.protocol.getText());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());
@@ -436,13 +455,14 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
     dialog.setTreatmentId(323L);
 
-    assertEquals(treatment.getType().getLabel(locale), dialog.getHeaderTitle());
+    assertEquals(dialog.getTranslation(TREATMENT_TYPE_PREFIX + treatment.getType().name()),
+        dialog.getHeaderTitle());
     assertTrue(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertFalse(dialog.fractionationType.isVisible());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-    assertEquals(resources.message(INSERT_TIME, dateFormatter.format(treatment.getInsertTime())),
-        dialog.date.getText());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
+        dateFormatter.format(treatment.getInsertTime())), dialog.date.getText());
     assertFalse(dialog.sourceVolume.isVisible());
     assertFalse(dialog.solvent.isVisible());
     assertFalse(dialog.solventVolume.isVisible());

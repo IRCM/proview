@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.user.web;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,6 +21,7 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -29,6 +31,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UserDialogItTest extends AbstractTestBenchTestCase {
+  private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private UserRepository repository;
   @Autowired
@@ -37,6 +40,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private EntityManager entityManager;
+  @Autowired
+  private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
   private String email = "test@ircm.qc.ca";
@@ -103,7 +108,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().state().setValue(state);
     dialog.userForm().country().setValue(country);
     dialog.userForm().postalCode().setValue(postalCode);
-    dialog.userForm().phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.userForm().phoneType().selectByText(
+        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
     dialog.userForm().number().setValue(number);
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
@@ -155,7 +161,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().state().setValue(state);
     dialog.userForm().country().setValue(country);
     dialog.userForm().postalCode().setValue(postalCode);
-    dialog.userForm().phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.userForm().phoneType().selectByText(
+        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
     dialog.userForm().number().setValue(number);
     dialog.userForm().extension().setValue(extension);
     dialog.cancel().click();
@@ -185,7 +192,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().state().setValue(state);
     dialog.userForm().country().setValue(country);
     dialog.userForm().postalCode().setValue(postalCode);
-    dialog.userForm().phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.userForm().phoneType().selectByText(
+        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
     dialog.userForm().number().setValue(number);
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
@@ -237,7 +245,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().state().setValue(state);
     dialog.userForm().country().setValue(country);
     dialog.userForm().postalCode().setValue(postalCode);
-    dialog.userForm().phoneType().selectByText(phoneType.getLabel(locale));
+    dialog.userForm().phoneType().selectByText(
+        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
     dialog.userForm().number().setValue(number);
     dialog.userForm().extension().setValue(extension);
     dialog.cancel().click();

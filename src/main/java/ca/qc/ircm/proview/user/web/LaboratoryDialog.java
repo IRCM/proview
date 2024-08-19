@@ -3,10 +3,10 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.NAME;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.user.Laboratory;
@@ -43,6 +43,9 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LaboratoryDialog extends Dialog
     implements LocaleChangeObserver, NotificationComponent {
+  private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
+  private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 3285639770914046262L;
   private static final Logger logger = LoggerFactory.getLogger(LaboratoryDialog.class);
   public static final String ID = "laboratory-dialog";
@@ -95,22 +98,19 @@ public class LaboratoryDialog extends Dialog
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources laboratoryResources = new AppResources(Laboratory.class, getLocale());
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
-    name.setLabel(laboratoryResources.message(NAME));
-    save.setText(webResources.message(SAVE));
-    cancel.setText(webResources.message(CANCEL));
-    binder.forField(name).asRequired(webResources.message(REQUIRED)).withNullRepresentation("")
-        .bind(NAME);
+    name.setLabel(getTranslation(LABORATORY_PREFIX + NAME));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
+    cancel.setText(getTranslation(CONSTANTS_PREFIX + CANCEL));
+    binder.forField(name).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
+        .withNullRepresentation("").bind(NAME);
   }
 
   private void updateHeader() {
-    final AppResources resources = new AppResources(LaboratoryDialog.class, getLocale());
     if (binder.getBean() != null && binder.getBean().getId() != null) {
-      setHeaderTitle(resources.message(HEADER, 1, binder.getBean().getName()));
+      setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 1, binder.getBean().getName()));
     } else {
-      setHeaderTitle(resources.message(HEADER, 0));
+      setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 0));
     }
   }
 
@@ -152,9 +152,8 @@ public class LaboratoryDialog extends Dialog
   void save() {
     if (isValid()) {
       Laboratory laboratory = binder.getBean();
-      final AppResources resources = new AppResources(LaboratoryDialog.class, getLocale());
       service.save(laboratory);
-      showNotification(resources.message(SAVED, laboratory.getName()));
+      showNotification(getTranslation(MESSAGES_PREFIX + SAVED, laboratory.getName()));
       close();
       fireSavedEvent();
     }

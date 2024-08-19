@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
 import static ca.qc.ircm.proview.submission.web.SubmissionDialog.ID;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
@@ -56,6 +56,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionDialogTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
+  private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
   private SubmissionDialog dialog;
   @MockBean
   private SubmissionService service;
@@ -64,9 +69,6 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @Mock
   private ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SubmissionDialog.class, locale);
-  private AppResources webResources = new AppResources(Constants.class, locale);
-  private AppResources submissionResources = new AppResources(Submission.class, locale);
   private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
   private LocalDate dataAvailableDate = LocalDate.of(2019, 8, 2);
 
@@ -118,40 +120,40 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   public void labels() {
     Submission submission = repository.findById(32L).get();
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
-    assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
+    assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
+        dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
-      assertEquals(instrument.getLabel(locale),
+      assertEquals(dialog.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
     validateEquals(englishDatePickerI18n(), dialog.dataAvailableDate.getI18n());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(EDIT), dialog.edit.getText());
-    assertEquals(webResources.message(PRINT), dialog.print.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + EDIT), dialog.edit.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + PRINT), dialog.print.getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources webResources = new AppResources(Constants.class, locale);
-    final AppResources submissionResources = new AppResources(Submission.class, locale);
     UI.getCurrent().setLocale(locale);
     Submission submission = repository.findById(32L).get();
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
-    assertEquals(submissionResources.message(INSTRUMENT), dialog.instrument.getLabel());
+    assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
+        dialog.instrument.getLabel());
     for (MassDetectionInstrument instrument : MassDetectionInstrument.userChoices()) {
-      assertEquals(instrument.getLabel(locale),
+      assertEquals(dialog.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
           dialog.instrument.getItemLabelGenerator().apply(instrument));
     }
-    assertEquals(submissionResources.message(DATA_AVAILABLE_DATE),
+    assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + DATA_AVAILABLE_DATE),
         dialog.dataAvailableDate.getLabel());
     assertEquals(ENGLISH, dialog.dataAvailableDate.getLocale());
     validateEquals(frenchDatePickerI18n(), dialog.dataAvailableDate.getI18n());
-    assertEquals(webResources.message(SAVE), dialog.save.getText());
-    assertEquals(webResources.message(EDIT), dialog.edit.getText());
-    assertEquals(webResources.message(PRINT), dialog.print.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + EDIT), dialog.edit.getText());
+    assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + PRINT), dialog.print.getText());
   }
 
   @Test

@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.security.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.web.AccessDeniedView.HEADER;
 import static ca.qc.ircm.proview.security.web.AccessDeniedView.HOME;
 import static ca.qc.ircm.proview.security.web.AccessDeniedView.MESSAGE;
@@ -10,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -28,10 +28,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class AccessDeniedViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(AccessDeniedView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private AccessDeniedView view;
   private Locale locale = Locale.ENGLISH;
-  private AppResources resources = new AppResources(AccessDeniedView.class, locale);
-  private AppResources generalResources = new AppResources(Constants.class, locale);
 
   @BeforeEach
   public void beforeTest() {
@@ -50,25 +50,24 @@ public class AccessDeniedViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(MESSAGE), view.message.getText());
-    assertEquals(resources.message(HOME), view.home.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + MESSAGE), view.message.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HOME), view.home.getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = Locale.FRENCH;
-    final AppResources resources = new AppResources(AccessDeniedView.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(MESSAGE), view.message.getText());
-    assertEquals(resources.message(HOME), view.home.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + MESSAGE), view.message.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HOME), view.home.getText());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test

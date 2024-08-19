@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -17,7 +18,6 @@ import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
@@ -35,10 +35,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ContactViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ContactView view;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(ContactView.class, locale);
-  private AppResources generalResources = new AppResources(Constants.class, locale);
 
   /**
    * Before test.
@@ -65,31 +65,42 @@ public class ContactViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(PROTEOMIC), view.proteomicHeader.getText());
-    assertEquals(resources.message(property(PROTEOMIC, NAME)), view.proteomicName.getText());
-    assertEquals(resources.message(property(PROTEOMIC, ADDRESS)), view.proteomicAddress.getText());
-    assertEquals(resources.message(property(PROTEOMIC, PHONE)), view.proteomicPhone.getText());
-    assertEquals(resources.message(WEBSITE), view.websiteHeader.getText());
-    assertEquals(resources.message(property(WEBSITE, NAME)), view.websiteName.getText());
-    assertEquals(resources.message(property(WEBSITE, ADDRESS)), view.websiteAddress.getText());
-    assertEquals(resources.message(property(WEBSITE, PHONE)), view.websitePhone.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROTEOMIC), view.proteomicHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)),
+        view.proteomicName.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, ADDRESS)),
+        view.proteomicAddress.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, PHONE)),
+        view.proteomicPhone.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + WEBSITE), view.websiteHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, NAME)),
+        view.websiteName.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, ADDRESS)),
+        view.websiteAddress.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, PHONE)),
+        view.websitePhone.getText());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(ContactView.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.header.getText());
-    assertEquals(resources.message(PROTEOMIC), view.proteomicHeader.getText());
-    assertEquals(resources.message(property(PROTEOMIC, NAME)), view.proteomicName.getText());
-    assertEquals(resources.message(property(PROTEOMIC, ADDRESS)), view.proteomicAddress.getText());
-    assertEquals(resources.message(property(PROTEOMIC, PHONE)), view.proteomicPhone.getText());
-    assertEquals(resources.message(WEBSITE), view.websiteHeader.getText());
-    assertEquals(resources.message(property(WEBSITE, NAME)), view.websiteName.getText());
-    assertEquals(resources.message(property(WEBSITE, ADDRESS)), view.websiteAddress.getText());
-    assertEquals(resources.message(property(WEBSITE, PHONE)), view.websitePhone.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROTEOMIC), view.proteomicHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)),
+        view.proteomicName.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, ADDRESS)),
+        view.proteomicAddress.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, PHONE)),
+        view.proteomicPhone.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + WEBSITE), view.websiteHeader.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, NAME)),
+        view.websiteName.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, ADDRESS)),
+        view.websiteAddress.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, PHONE)),
+        view.websitePhone.getText());
   }
 
   @Test
@@ -109,23 +120,23 @@ public class ContactViewTest extends SpringUIUnitTest {
 
   @Test
   public void hrefs() {
-    assertEquals(resources.message(property(PROTEOMIC, NAME, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME, LINK)),
         view.proteomicNameAnchor.getHref());
-    assertEquals(resources.message(property(PROTEOMIC, ADDRESS, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, ADDRESS, LINK)),
         view.proteomicAddressAnchor.getHref());
-    assertEquals(resources.message(property(PROTEOMIC, PHONE, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, PHONE, LINK)),
         view.proteomicPhoneAnchor.getHref());
-    assertEquals(resources.message(property(WEBSITE, NAME, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, NAME, LINK)),
         view.websiteNameAnchor.getHref());
-    assertEquals(resources.message(property(WEBSITE, ADDRESS, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, ADDRESS, LINK)),
         view.websiteAddressAnchor.getHref());
-    assertEquals(resources.message(property(WEBSITE, PHONE, LINK)),
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(WEBSITE, PHONE, LINK)),
         view.websitePhoneAnchor.getHref());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 }

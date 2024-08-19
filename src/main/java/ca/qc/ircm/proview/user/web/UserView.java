@@ -3,10 +3,10 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
@@ -39,6 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RolesAllowed({ MANAGER, ADMIN })
 public class UserView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle, HasUrlParameter<Long>, NotificationComponent {
+  private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(UserView.class);
   public static final String VIEW_NAME = "user";
@@ -75,25 +77,22 @@ public class UserView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
-    save.setText(webResources.message(SAVE));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
   }
 
   private void updateHeader() {
-    final AppResources resources = new AppResources(UserView.class, getLocale());
     if (form.getUser() != null && form.getUser().getId() != null) {
-      header.setText(resources.message(HEADER, 1, form.getUser().getName()));
+      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName()));
     } else {
-      header.setText(resources.message(HEADER, 0));
+      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, 0));
     }
   }
 
   @Override
   public String getPageTitle() {
-    final AppResources resources = new AppResources(getClass(), getLocale());
-    final AppResources generalResources = new AppResources(Constants.class, getLocale());
-    return resources.message(TITLE, generalResources.message(APPLICATION_NAME));
+    return getTranslation(MESSAGES_PREFIX + TITLE,
+        getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
   @Override
@@ -109,8 +108,7 @@ public class UserView extends VerticalLayout
       String password = form.getPassword();
       logger.debug("save user {} in laboratory {}", user, user.getLaboratory());
       service.save(user, password);
-      final AppResources resources = new AppResources(UserView.class, getLocale());
-      showNotification(resources.message(SAVED, user.getName()));
+      showNotification(getTranslation(MESSAGES_PREFIX + SAVED, user.getName()));
       UI.getCurrent().navigate(UsersView.class);
     }
   }

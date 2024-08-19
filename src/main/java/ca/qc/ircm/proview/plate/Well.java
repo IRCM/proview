@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -15,7 +14,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.io.Serializable;
-import java.util.Locale;
+import java.text.MessageFormat;
 
 /**
  * A plate well.
@@ -83,8 +82,7 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
 
   @Override
   public String getFullName() {
-    AppResources resources = new AppResources(Well.class, Locale.getDefault());
-    return resources.message("fullname", plate.getName(), Plate.rowLabel(row),
+    return MessageFormat.format("{0} ({1}-{2})", plate.getName(), Plate.rowLabel(row),
         Plate.columnLabel(column));
   }
 

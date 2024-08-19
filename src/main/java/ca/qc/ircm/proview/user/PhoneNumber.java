@@ -4,7 +4,6 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.AppResources;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -13,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Locale;
 
 /**
  * Phone number.
@@ -61,19 +59,6 @@ public class PhoneNumber implements Serializable {
   public String toString() {
     return "PhoneNumber [id=" + id + ", type=" + type + ", number=" + number + ", extension="
         + extension + "]";
-  }
-
-  /**
-   * Returns value to show in user interface for this phone number.
-   *
-   * @param locale
-   *          user's locale
-   * @return value to show in user interface for this phone number
-   */
-  public String getValue(Locale locale) {
-    AppResources resources = new AppResources(PhoneNumber.class, locale);
-    return resources.message("value", number, extension != null && !extension.isEmpty() ? 1 : 0,
-        extension);
   }
 
   public Long getId() {

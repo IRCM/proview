@@ -2,9 +2,9 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.CANCEL;
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserDialog extends Dialog implements LocaleChangeObserver {
+  private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 3285639770914046262L;
   private static final Logger logger = LoggerFactory.getLogger(UserDialog.class);
   public static final String ID = "user-dialog";
@@ -76,18 +78,16 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    final AppResources webResources = new AppResources(Constants.class, getLocale());
     updateHeader();
-    save.setText(webResources.message(SAVE));
-    cancel.setText(webResources.message(CANCEL));
+    save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
+    cancel.setText(getTranslation(CONSTANTS_PREFIX + CANCEL));
   }
 
   private void updateHeader() {
-    final AppResources resources = new AppResources(UserDialog.class, getLocale());
     if (form.getUser() != null && form.getUser().getId() != null) {
-      setHeaderTitle(resources.message(HEADER, 1, form.getUser().getName()));
+      setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName()));
     } else {
-      setHeaderTitle(resources.message(HEADER, 0));
+      setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 0));
     }
   }
 

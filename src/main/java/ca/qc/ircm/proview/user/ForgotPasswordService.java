@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.user;
 
-import ca.qc.ircm.proview.AppResources;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
+
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.EmailService;
 import jakarta.mail.MessagingException;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +32,7 @@ public class ForgotPasswordService {
    * Period for which {@link ForgotPassword} instances are valid.
    */
   public static final Period VALID_PERIOD = Period.ofDays(2);
+  private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordService.class);
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
   @Autowired
   private ForgotPasswordRepository repository;
@@ -43,6 +46,8 @@ public class ForgotPasswordService {
   private EmailService emailService;
   @Autowired
   private ApplicationConfiguration applicationConfiguration;
+  @Autowired
+  private MessageSource messageSource;
 
   protected ForgotPasswordService() {
   }
@@ -115,15 +120,14 @@ public class ForgotPasswordService {
 
     // Prepare email content.
     MimeMessageHelper email = emailService.htmlEmail();
-    AppResources resources = new AppResources(ForgotPasswordService.class, locale);
-    String subject = resources.message("subject");
+    String subject = messageSource.getMessage(MESSAGES_PREFIX + "subject", null, locale);
     email.setSubject(subject);
     email.addTo(emailAddress);
     Context context = new Context(locale);
     context.setVariable("url", url);
-    String htmlTemplateLocation = "/user/forgotpassword.html";
+    String htmlTemplateLocation = "user/forgotpassword.html";
     String htmlEmail = emailTemplateEngine.process(htmlTemplateLocation, context);
-    String textTemplateLocation = "/user/forgotpassword.txt";
+    String textTemplateLocation = "user/forgotpassword.txt";
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 

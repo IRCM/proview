@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission;
 
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -39,10 +40,10 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
+import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.text.MessageResource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -67,6 +68,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -81,6 +83,24 @@ import org.springframework.security.test.context.support.WithMockUser;
 public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
   private static final String WRITE = "write";
+  private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
+      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
+      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX =
+      messagePrefix(ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
+      messagePrefix(ProteolyticDigestion.class);
+  private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
+  private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
+  private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
+  private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
+  private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
+  private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
+  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -93,6 +113,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private PlateRepository plateRepository;
+  @Autowired
+  private MessageSource messageSource;
   @MockBean
   private SubmissionActivityService submissionActivityService;
   @MockBean
@@ -691,7 +713,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -711,7 +742,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
@@ -739,20 +771,25 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
-    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
-    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
-    assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
@@ -903,7 +940,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertTrue(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains(submission.getUsedDigestion()));
     assertFalse(content.contains("class=\"otherDigestion\""));
@@ -918,7 +956,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains(submission.getOtherDigestion()));
@@ -944,8 +983,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(
-        content.contains(MassDetectionInstrument.getNullLabel(locale).replaceAll("'", "&#39;")));
+    assertTrue(content
+        .contains(messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, locale)
+            .replaceAll("'", "&#39;")));
   }
 
   @Test
@@ -1007,10 +1047,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment", null, locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1023,10 +1063,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment", null, locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1038,10 +1078,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1054,10 +1094,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(resources.message("submission.quantificationComment.TMT")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1070,7 +1110,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    final MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
@@ -1079,7 +1118,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1099,7 +1147,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
@@ -1110,16 +1159,20 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"sample-quantity\""));
     assertFalse(content.contains("class=\"sample-volume\""));
     assertTrue(content.contains("class=\"separation\""));
-    assertTrue(content.contains(submission.getSeparation().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(GEL_SEPARATION_PREFIX + submission.getSeparation().name(), null, locale)));
     assertTrue(content.contains("class=\"thickness\""));
-    assertTrue(content.contains(submission.getThickness().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(GEL_THICKNESS_PREFIX + submission.getThickness().name(), null, locale)));
     assertTrue(content.contains("class=\"coloration\""));
-    assertTrue(content.contains(submission.getColoration().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(GEL_COLORATION_PREFIX + submission.getColoration().name(), null, locale)));
     assertFalse(content.contains("class=\"otherColoration\""));
     assertTrue(content.contains("class=\"developmentTime\""));
     assertTrue(content.contains(submission.getDevelopmentTime()));
     assertTrue(content.contains("class=\"decoloration\""));
-    assertTrue(content.contains(resources.message("submission.decoloration.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.decoloration.true", null, locale)));
     assertTrue(content.contains("class=\"weightMarkerQuantity\""));
     assertTrue(content.contains(String.valueOf(submission.getWeightMarkerQuantity())));
     assertTrue(content.contains("class=\"proteinQuantity\""));
@@ -1132,20 +1185,25 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
-    assertTrue(content.contains(submission.getDigestion().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
-    assertTrue(content.contains(submission.getProteinContent().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
-    assertTrue(content.contains(submission.getIdentification().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
-    assertTrue(content.contains(submission.getQuantification().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
@@ -1287,7 +1345,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
 
-    final MessageResource resources = new MessageResource("submission.print", locale);
     assertFalse(content.contains("??"));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     assertTrue(content.contains("class=\"submissionDate\""));
@@ -1296,7 +1353,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1312,7 +1378,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"goal\""));
     assertFalse(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertFalse(content.contains("class=\"protein\""));
     assertFalse(content.contains("class=\"sample-molecularWeight\""));
     assertFalse(content.contains("class=\"postTranslationModification\""));
@@ -1337,9 +1404,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"toxicity\""));
     assertTrue(content.contains(submission.getToxicity()));
     assertTrue(content.contains("class=\"lightSensitive\""));
-    assertTrue(content.contains(resources.message("submission.lightSensitive.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.lightSensitive.true", null, locale)));
     assertTrue(content.contains("class=\"storageTemperature\""));
-    assertTrue(content.contains(submission.getStorageTemperature().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        STORAGE_TEMPERATURE_PREFIX + submission.getStorageTemperature().name(), null, locale)));
     assertFalse(content.contains("class=\"digestion\""));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
@@ -1352,12 +1421,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"quantification\""));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertTrue(content.contains("class=\"highResolution\""));
-    assertTrue(content.contains(resources.message("submission.highResolution.true")));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.highResolution.true", null, locale)));
     assertTrue(content.contains("class=\"solvent\""));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(solvent.getLabel(locale)), solvent.name());
+          content.contains(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
+          solvent.name());
     }
     assertTrue(content.contains("class=\"comment\""));
     assertTrue(content.contains(formatMultiline(submission.getComment())));
@@ -1454,9 +1525,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Locale locale = Locale.getDefault();
 
     String content = service.print(submission, locale);
-    MessageResource resources = new MessageResource("submission.print", locale);
     assertTrue(content.contains("class=\"highResolution\""));
-    assertTrue(content.contains(resources.message("submission.highResolution.false")));
+    assertTrue(content.contains(messageSource
+        .getMessage("submission.print.submission.highResolution.false", null, locale)));
   }
 
   @Test
@@ -1480,12 +1551,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"solvent\""));
-    assertFalse(content.contains(Solvent.OTHER.getLabel(locale)));
+    assertFalse(content
+        .contains(messageSource.getMessage(SOLVENT_PREFIX + Solvent.OTHER.name(), null, locale)));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(
-              solvent == Solvent.OTHER ? submission.getOtherSolvent() : solvent.getLabel(locale)),
+          content.contains(solvent == Solvent.OTHER ? submission.getOtherSolvent()
+              : messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
           solvent.name());
     }
   }
@@ -1520,7 +1592,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"user-name\""));
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
-    assertTrue(content.contains(submission.getUser().getPhoneNumbers().get(0).getValue(locale)));
+    PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
+    assertTrue(
+        content
+            .contains(
+                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+                    new Object[] { phoneNumber.getNumber(),
+                        Optional.ofNullable(phoneNumber.getExtension())
+                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
+                        phoneNumber.getExtension() },
+                    locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1540,7 +1621,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"taxonomy\""));
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getType().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertTrue(content.contains(submission.getProtein()));
     assertFalse(content.contains("class=\"sample-molecularWeight\""));
@@ -1569,12 +1651,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains("class=\"injectionType\""));
-    assertTrue(content.contains(submission.getInjectionType().getLabel(locale)));
+    assertTrue(content.contains(messageSource
+        .getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null, locale)));
     assertTrue(content.contains("class=\"source\""));
-    assertTrue(content.contains(submission.getSource().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + submission.getSource().name(), null, locale)));
     assertFalse(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content.contains(submission.getInstrument().getLabel(locale)));
+    assertTrue(content.contains(messageSource.getMessage(
+        MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertFalse(content.contains("class=\"identification\""));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertFalse(content.contains("class=\"quantification\""));

@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
@@ -9,15 +10,16 @@ import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.web.ForgotPasswordViewElement;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -25,8 +27,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 public class SigninViewItTest extends AbstractTestBenchTestCase {
+  private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Autowired
   private transient SecurityConfiguration configuration;
+  @Autowired
+  private MessageSource messageSource;
 
   private void open() {
     openView(VIEW_NAME);
@@ -36,8 +42,12 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   public void title() throws Throwable {
     open();
 
-    assertEquals(resources(SigninView.class).message(TITLE,
-        resources(Constants.class).message(APPLICATION_NAME)), getDriver().getTitle());
+    Locale locale = currentLocale();
+    String applicationName =
+        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        getDriver().getTitle());
   }
 
   @Test
@@ -57,7 +67,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
-    assertEquals(new AppResources(SigninView.class, currentLocale()).message(FAIL),
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
@@ -69,7 +79,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
-    assertEquals(new AppResources(SigninView.class, currentLocale()).message(DISABLED),
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
         view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
@@ -83,8 +93,10 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
       view.getPasswordField().setValue("notright");
       view.getSubmitButton().click();
     }
-    assertEquals(new AppResources(SigninView.class, currentLocale()).message(LOCKED,
-        configuration.lockDuration().getSeconds() / 60), view.getErrorMessage());
+    assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
+            new Object[] { configuration.lockDuration().getSeconds() / 60 }, currentLocale()),
+        view.getErrorMessage());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
 
