@@ -2,9 +2,9 @@ package ca.qc.ircm.proview.test.config;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedView;
 import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
@@ -17,19 +17,30 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 
 /**
  * Additional functions for TestBenchTestCase.
  */
 public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
+  private static final String LAYOUT_PREFIX = messagePrefix(ViewLayout.class);
+  private static final String SIGNIN_PREFIX = messagePrefix(SigninView.class);
+  private static final String USE_FORGOT_PASSWORD_PREFIX =
+      messagePrefix(UseForgotPasswordView.class);
+  private static final String ACCESS_DENIED_PREFIX = messagePrefix(AccessDeniedView.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final Logger logger = LoggerFactory.getLogger(AbstractTestBenchTestCase.class);
   @Value("http://localhost:${local.server.port}${server.servlet.context-path:}")
   protected String baseUrl;
+  @Autowired
+  private MessageSource messageSource;
 
   protected String homeUrl() {
     return baseUrl + "/";
@@ -61,29 +72,34 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
 
   protected Locale currentLocale() {
     List<Locale> locales = Constants.getLocales();
+    Function<Locale, String> applicationName =
+        locale -> messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     TabElement home =
         optional(() -> $(TabsElement.class).first().$(TabElement.class).first()).orElse(null);
-    Optional<Locale> optlocale =
-        locales.stream().filter(locale -> new AppResources(ViewLayout.class, locale)
-            .message(SUBMISSIONS).equals(home != null ? home.getText() : "")).findAny();
+    Optional<Locale> optlocale = locales.stream()
+        .filter(locale -> messageSource.getMessage(LAYOUT_PREFIX + SUBMISSIONS, null, locale)
+            .equals(home != null ? home.getText() : ""))
+        .findAny();
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
-          .filter(locale -> new AppResources(SigninView.class, locale)
-              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+          .filter(locale -> messageSource.getMessage(SIGNIN_PREFIX + TITLE,
+              new Object[] { applicationName.apply(locale) }, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
-          .filter(locale -> new AppResources(UseForgotPasswordView.class, locale)
-              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+          .filter(locale -> messageSource
+              .getMessage(USE_FORGOT_PASSWORD_PREFIX + TITLE,
+                  new Object[] { applicationName.apply(locale) }, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
     if (!optlocale.isPresent()) {
       optlocale = locales.stream()
-          .filter(locale -> new AppResources(AccessDeniedView.class, locale)
-              .message(TITLE, new AppResources(Constants.class, locale).message(APPLICATION_NAME))
+          .filter(locale -> messageSource
+              .getMessage(ACCESS_DENIED_PREFIX + TITLE,
+                  new Object[] { applicationName.apply(locale) }, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
