@@ -3,9 +3,9 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ADD;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
@@ -63,6 +63,7 @@ public class ViewLayout extends VerticalLayout
   public static final String GUIDELINES = "guidelines";
   public static final String HISTORY = "history";
   public static final String TAB = "tab";
+  private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected Tabs tabs = new Tabs();
@@ -138,19 +139,18 @@ public class ViewLayout extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    AppResources resources = new AppResources(ViewLayout.class, getLocale());
-    submissions.setLabel(resources.message(SUBMISSIONS));
-    profile.setLabel(resources.message(PROFILE));
-    users.setLabel(resources.message(USERS));
-    exitSwitchUser.setLabel(resources.message(EXIT_SWITCH_USER));
-    signout.setLabel(resources.message(SIGNOUT));
-    changeLanguage.setLabel(resources.message(CHANGE_LANGUAGE));
-    contact.setLabel(resources.message(CONTACT));
-    guidelines.setLabel(resources.message(GUIDELINES));
-    add.setLabel(resources.message(ADD));
-    edit.setLabel(resources.message(EDIT));
-    print.setLabel(resources.message(PRINT));
-    history.setLabel(resources.message(HISTORY));
+    submissions.setLabel(getTranslation(MESSAGES_PREFIX + SUBMISSIONS));
+    profile.setLabel(getTranslation(MESSAGES_PREFIX + PROFILE));
+    users.setLabel(getTranslation(MESSAGES_PREFIX + USERS));
+    exitSwitchUser.setLabel(getTranslation(MESSAGES_PREFIX + EXIT_SWITCH_USER));
+    signout.setLabel(getTranslation(MESSAGES_PREFIX + SIGNOUT));
+    changeLanguage.setLabel(getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE));
+    contact.setLabel(getTranslation(MESSAGES_PREFIX + CONTACT));
+    guidelines.setLabel(getTranslation(MESSAGES_PREFIX + GUIDELINES));
+    add.setLabel(getTranslation(MESSAGES_PREFIX + ADD));
+    edit.setLabel(getTranslation(MESSAGES_PREFIX + EDIT));
+    print.setLabel(getTranslation(MESSAGES_PREFIX + PRINT));
+    history.setLabel(getTranslation(MESSAGES_PREFIX + HISTORY));
   }
 
   private void selectTab(Tab previous) {
