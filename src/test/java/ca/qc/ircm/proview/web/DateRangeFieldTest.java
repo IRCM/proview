@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatusByField;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
 import static ca.qc.ircm.proview.text.Strings.property;
@@ -17,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -45,9 +45,9 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class DateRangeFieldTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(DateRangeField.class);
   private DateRangeField dateRange;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(DateRangeField.class, locale);
 
   /**
    * Before each test.
@@ -74,11 +74,13 @@ public class DateRangeFieldTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HELPER), dateRange.getHelperText());
-    assertEquals(resources.message(property(FROM, PLACEHOLDER)), dateRange.from.getPlaceholder());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + HELPER), dateRange.getHelperText());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + property(FROM, PLACEHOLDER)),
+        dateRange.from.getPlaceholder());
     validateEquals(englishDatePickerI18n(), dateRange.from.getI18n());
     assertEquals(Locale.CANADA, dateRange.from.getLocale());
-    assertEquals(resources.message(property(TO, PLACEHOLDER)), dateRange.to.getPlaceholder());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + property(TO, PLACEHOLDER)),
+        dateRange.to.getPlaceholder());
     validateEquals(englishDatePickerI18n(), dateRange.to.getI18n());
     assertEquals(Locale.CANADA, dateRange.to.getLocale());
   }
@@ -87,12 +89,13 @@ public class DateRangeFieldTest extends SpringUIUnitTest {
   public void localeChange() {
     locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    AppResources resources = new AppResources(DateRangeField.class, locale);
-    assertEquals(resources.message(HELPER), dateRange.getHelperText());
-    assertEquals(resources.message(property(FROM, PLACEHOLDER)), dateRange.from.getPlaceholder());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + HELPER), dateRange.getHelperText());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + property(FROM, PLACEHOLDER)),
+        dateRange.from.getPlaceholder());
     validateEquals(frenchDatePickerI18n(), dateRange.from.getI18n());
     assertEquals(Locale.CANADA, dateRange.from.getLocale());
-    assertEquals(resources.message(property(TO, PLACEHOLDER)), dateRange.to.getPlaceholder());
+    assertEquals(dateRange.getTranslation(MESSAGES_PREFIX + property(TO, PLACEHOLDER)),
+        dateRange.to.getPlaceholder());
     validateEquals(frenchDatePickerI18n(), dateRange.to.getI18n());
     assertEquals(Locale.CANADA, dateRange.to.getLocale());
   }

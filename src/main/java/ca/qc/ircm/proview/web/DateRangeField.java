@@ -1,10 +1,10 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
 
-import ca.qc.ircm.proview.AppResources;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.customfield.CustomFieldVariant;
@@ -31,6 +31,7 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
   public static final String FROM = "from";
   public static final String TO = "to";
   public static final String HELPER = "helper";
+  private static final String MESSAGES_PREFIX = messagePrefix(DateRangeField.class);
   private static final long serialVersionUID = -4145468405854590525L;
   protected FormLayout layout = new FormLayout();
   protected DatePicker from = new DatePicker();
@@ -57,13 +58,12 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    AppResources resources = new AppResources(DateRangeField.class, getLocale());
-    setHelperText(resources.message(HELPER));
+    setHelperText(getTranslation(MESSAGES_PREFIX + HELPER));
     from.setI18n(datePickerI18n(getLocale()));
-    from.setPlaceholder(resources.message(property(FROM, PLACEHOLDER)));
+    from.setPlaceholder(getTranslation(MESSAGES_PREFIX + property(FROM, PLACEHOLDER)));
     from.setLocale(Locale.CANADA); // ISO format.
     to.setI18n(datePickerI18n(getLocale()));
-    to.setPlaceholder(resources.message(property(TO, PLACEHOLDER)));
+    to.setPlaceholder(getTranslation(MESSAGES_PREFIX + property(TO, PLACEHOLDER)));
     to.setLocale(Locale.CANADA); // ISO format.
     binder.forField(from).bind(TO);
     binder.forField(to).bind(FROM);
