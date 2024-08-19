@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
+import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.HASHED_PASSWORD;
@@ -21,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import ca.qc.ircm.proview.AppResources;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
@@ -49,6 +49,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 @ServiceTestAnnotations
 @WithAnonymousUser
 public class SigninViewTest extends SpringUIUnitTest {
+  private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private SigninView view;
   @Autowired
   private SecurityConfiguration configuration;
@@ -61,9 +64,6 @@ public class SigninViewTest extends SpringUIUnitTest {
   @Mock
   private QueryParameters queryParameters;
   private Locale locale = ENGLISH;
-  private AppResources resources = new AppResources(SigninView.class, locale);
-  private AppResources userResources = new AppResources(User.class, locale);
-  private AppResources generalResources = new AppResources(Constants.class, locale);
   private Map<String, List<String>> parameters = new HashMap<>();
 
   /**
@@ -92,42 +92,52 @@ public class SigninViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.i18n.getHeader().getTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        view.i18n.getHeader().getDescription());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADDITIONAL_INFORMATION),
+        view.i18n.getAdditionalInformation());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FORM_TITLE), view.i18n.getForm().getTitle());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), view.i18n.getForm().getUsername());
+    assertEquals(view.getTranslation(USER_PREFIX + HASHED_PASSWORD),
+        view.i18n.getForm().getPassword());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FORGOT_PASSWORD),
+        view.i18n.getForm().getForgotPassword());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(FAIL, TITLE)),
+        view.i18n.getErrorMessage().getTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FAIL),
+        view.i18n.getErrorMessage().getMessage());
     assertFalse(view.isError());
   }
 
   @Test
   public void localeChange() {
     Locale locale = FRENCH;
-    final AppResources resources = new AppResources(SigninView.class, locale);
-    final AppResources userResources = new AppResources(User.class, locale);
     UI.getCurrent().setLocale(locale);
-    assertEquals(resources.message(HEADER), view.i18n.getHeader().getTitle());
-    assertEquals(resources.message(DESCRIPTION), view.i18n.getHeader().getDescription());
-    assertEquals(resources.message(ADDITIONAL_INFORMATION), view.i18n.getAdditionalInformation());
-    assertEquals(resources.message(FORM_TITLE), view.i18n.getForm().getTitle());
-    assertEquals(userResources.message(EMAIL), view.i18n.getForm().getUsername());
-    assertEquals(userResources.message(HASHED_PASSWORD), view.i18n.getForm().getPassword());
-    assertEquals(resources.message(SIGNIN), view.i18n.getForm().getSubmit());
-    assertEquals(resources.message(FORGOT_PASSWORD), view.i18n.getForm().getForgotPassword());
-    assertEquals(resources.message(property(FAIL, TITLE)), view.i18n.getErrorMessage().getTitle());
-    assertEquals(resources.message(FAIL), view.i18n.getErrorMessage().getMessage());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.i18n.getHeader().getTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + DESCRIPTION),
+        view.i18n.getHeader().getDescription());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + ADDITIONAL_INFORMATION),
+        view.i18n.getAdditionalInformation());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FORM_TITLE), view.i18n.getForm().getTitle());
+    assertEquals(view.getTranslation(USER_PREFIX + EMAIL), view.i18n.getForm().getUsername());
+    assertEquals(view.getTranslation(USER_PREFIX + HASHED_PASSWORD),
+        view.i18n.getForm().getPassword());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNIN), view.i18n.getForm().getSubmit());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FORGOT_PASSWORD),
+        view.i18n.getForm().getForgotPassword());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(FAIL, TITLE)),
+        view.i18n.getErrorMessage().getTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + FAIL),
+        view.i18n.getErrorMessage().getMessage());
     assertFalse(view.isError());
   }
 
   @Test
   public void getPageTitle() {
-    assertEquals(resources.message(TITLE, generalResources.message(APPLICATION_NAME)),
-        view.getPageTitle());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + TITLE,
+        view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME)), view.getPageTitle());
   }
 
   @Test
