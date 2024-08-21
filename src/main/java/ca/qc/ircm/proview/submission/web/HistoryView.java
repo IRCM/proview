@@ -103,12 +103,11 @@ public class HistoryView extends VerticalLayout
   void init() {
     logger.debug("history view");
     setId(ID);
-    setSizeFull();
+    setHeightFull();
     add(header, activities);
     expand(activities);
     header.setId(HEADER);
     activities.setId(ACTIVITIES);
-    activities.setSizeFull();
     view = activities
         .addColumn(
             LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view", ac -> view(ac, getLocale())))

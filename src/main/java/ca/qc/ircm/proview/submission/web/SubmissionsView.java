@@ -181,7 +181,7 @@ public class SubmissionsView extends VerticalLayout
   void init() {
     logger.debug("submissions view");
     setId(ID);
-    setSizeFull();
+    setHeightFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     buttonsLayout.add(add, editStatus, history, hideColumns);
     add(header, submissions, buttonsLayout);

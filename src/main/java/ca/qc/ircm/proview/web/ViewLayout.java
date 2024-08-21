@@ -18,7 +18,6 @@ import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -97,16 +96,13 @@ public class ViewLayout extends VerticalLayout
   @PostConstruct
   void init() {
     setId(ID);
-    setHeightFull();
-    UI.getCurrent().getPage()
-        .retrieveExtendedClientDetails(details -> setWidth(details.getScreenWidth(), Unit.PIXELS));
+    setSizeFull();
     setPadding(false);
     setSpacing(false);
     add(tabs);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
         guidelines, add, edit, print, history);
-    tabs.setWidthFull();
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));

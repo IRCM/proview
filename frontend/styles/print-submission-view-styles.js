@@ -2,7 +2,7 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style> 
   <style>
-    body {
+    #print-submission-view {
       width: 11in;
     }
     #print-submission-view h1 {
