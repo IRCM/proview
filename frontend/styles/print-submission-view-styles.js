@@ -25,7 +25,6 @@ $_documentContainer.innerHTML = `<custom-style>
     body {
       color-adjust: exact;
       -webkit-print-color-adjust: exact;
-      width: 11in;
     }
     #view-layout-tabs {
       display: none;
