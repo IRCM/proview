@@ -8,8 +8,12 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.ID;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SECOND_HEADER;
+import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SUBMISSIONS_VIEW;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -21,7 +25,9 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
@@ -60,13 +66,18 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void styles() {
+    assertFalse($(ViewLayout.class).exists());
     assertEquals(ID, view.getId().orElse(""));
+    assertEquals(SUBMISSIONS_VIEW, view.submissionsView.getId().orElse(""));
+    validateIcon(VaadinIcon.ARROW_BACKWARD.create(), view.submissionsView.getIcon());
     assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(SECOND_HEADER, view.secondHeader.getId().orElse(""));
   }
 
   @Test
   public void labels() {
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS_VIEW),
+        view.submissionsView.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
         view.secondHeader.getText());
@@ -76,9 +87,17 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS_VIEW),
+        view.submissionsView.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
         view.secondHeader.getText());
+  }
+
+  @Test
+  public void submissionsView() {
+    test(view.submissionsView).click();
+    assertTrue($(SubmissionsView.class).exists());
   }
 
   @Test

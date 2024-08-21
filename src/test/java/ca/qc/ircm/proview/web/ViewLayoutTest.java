@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
-import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SIGNOUT_URL;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -31,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
-import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -96,7 +94,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(styleName(CONTACT, TAB), view.contact.getId().orElse(""));
     assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
     assertEquals(styleName(EDIT, TAB), view.edit.getId().orElse(""));
-    assertEquals(styleName(PRINT, TAB), view.print.getId().orElse(""));
     assertEquals(styleName(HISTORY, TAB), view.history.getId().orElse(""));
   }
 
@@ -113,7 +110,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + PRINT), view.print.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
   }
 
@@ -132,7 +128,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + PRINT), view.print.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
   }
 
@@ -146,7 +141,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
     assertFalse(view.edit.isVisible());
-    assertFalse(view.print.isVisible());
     assertFalse(view.history.isVisible());
   }
 
@@ -380,25 +374,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     view.tabs.setSelectedTab(view.submissions);
 
     assertFalse(view.edit.isVisible());
-  }
-
-  @Test
-  public void afterNavigation_Print() {
-    navigate(PrintSubmissionView.class, 35L);
-    view = $(ViewLayout.class).first();
-
-    assertEquals(view.print, view.tabs.getSelectedTab());
-    assertTrue(view.print.isVisible());
-  }
-
-  @Test
-  public void tabs_PrintHideAfterChange() {
-    navigate(PrintSubmissionView.class, 35L);
-    view = $(ViewLayout.class).first();
-
-    view.tabs.setSelectedTab(view.submissions);
-
-    assertFalse(view.print.isVisible());
   }
 
   @Test

@@ -9,10 +9,12 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -29,13 +31,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Print submission view.
  */
-@Route(value = PrintSubmissionView.VIEW_NAME, layout = ViewLayout.class)
+@Route(value = PrintSubmissionView.VIEW_NAME)
 @RolesAllowed({ UserRole.USER })
 @JsModule("./styles/print-submission-view-styles.js")
 public class PrintSubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
   public static final String VIEW_NAME = "print-submission";
   public static final String ID = "print-submission-view";
+  public static final String SUBMISSIONS_VIEW = "submissionsView";
   public static final String HEADER = "header";
   public static final String SECOND_HEADER = "header-2";
   private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
@@ -43,6 +46,7 @@ public class PrintSubmissionView extends VerticalLayout
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmissionView.class);
+  protected Button submissionsView = new Button();
   protected H2 header = new H2();
   protected H3 secondHeader = new H3();
   protected PrintSubmission printContent;
@@ -60,13 +64,17 @@ public class PrintSubmissionView extends VerticalLayout
     logger.debug("print submission view");
     setId(ID);
     setWidth("");
-    add(header, secondHeader, printContent);
+    add(submissionsView, header, secondHeader, printContent);
+    submissionsView.setId(SUBMISSIONS_VIEW);
+    submissionsView.setIcon(VaadinIcon.ARROW_BACKWARD.create());
+    submissionsView.addClickListener(e -> UI.getCurrent().navigate(SubmissionsView.class));
     header.setId(HEADER);
     secondHeader.setId(SECOND_HEADER);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    submissionsView.setText(getTranslation(MESSAGES_PREFIX + SUBMISSIONS_VIEW));
     header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     updateSecondHeader();
   }

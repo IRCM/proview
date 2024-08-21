@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.ADD;
 import static ca.qc.ircm.proview.Constants.EDIT;
-import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
@@ -69,10 +68,6 @@ public class ViewLayoutElement extends VerticalLayoutElement {
 
   public TabElement edit() {
     return $(TabElement.class).id(styleName(EDIT, TAB));
-  }
-
-  public TabElement print() {
-    return $(TabElement.class).id(styleName(PRINT, TAB));
   }
 
   public TabElement history() {

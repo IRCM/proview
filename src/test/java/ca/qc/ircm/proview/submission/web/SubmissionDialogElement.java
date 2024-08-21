@@ -25,6 +25,10 @@ public class SubmissionDialogElement extends DialogElement {
     return $(H2Element.class).first();
   }
 
+  public PrintSubmissionElement printSubmission() {
+    return $(PrintSubmissionElement.class).first();
+  }
+
   public ComboBoxElement instrument() {
     return $(ComboBoxElement.class).id(id(INSTRUMENT));
   }

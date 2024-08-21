@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.ADD;
 import static ca.qc.ircm.proview.Constants.EDIT;
-import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
@@ -11,7 +10,6 @@ import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
-import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.user.web.ProfileView;
@@ -76,7 +74,6 @@ public class ViewLayout extends VerticalLayout
   protected Tab guidelines = new Tab();
   protected Tab add = new Tab();
   protected Tab edit = new Tab();
-  protected Tab print = new Tab();
   protected Tab history = new Tab();
   private Map<Tab, String> tabsHref = new HashMap<>();
   private String currentHref;
@@ -102,7 +99,7 @@ public class ViewLayout extends VerticalLayout
     add(tabs);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
-        guidelines, add, edit, print, history);
+        guidelines, add, edit, history);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
@@ -117,8 +114,6 @@ public class ViewLayout extends VerticalLayout
     add.setVisible(false);
     edit.setId(styleName(EDIT, TAB));
     edit.setVisible(false);
-    print.setId(styleName(PRINT, TAB));
-    print.setVisible(false);
     history.setId(styleName(HISTORY, TAB));
     history.setVisible(false);
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
@@ -128,7 +123,6 @@ public class ViewLayout extends VerticalLayout
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
     tabsHref.put(add, SubmissionView.VIEW_NAME);
     tabsHref.put(edit, SubmissionView.VIEW_NAME + "/\\d+");
-    tabsHref.put(print, PrintSubmissionView.VIEW_NAME + "/\\d+");
     tabsHref.put(history, HistoryView.VIEW_NAME + "/\\d+");
     tabs.addSelectedChangeListener(e -> selectTab(e.getPreviousTab()));
   }
@@ -145,7 +139,6 @@ public class ViewLayout extends VerticalLayout
     guidelines.setLabel(getTranslation(MESSAGES_PREFIX + GUIDELINES));
     add.setLabel(getTranslation(MESSAGES_PREFIX + ADD));
     edit.setLabel(getTranslation(MESSAGES_PREFIX + EDIT));
-    print.setLabel(getTranslation(MESSAGES_PREFIX + PRINT));
     history.setLabel(getTranslation(MESSAGES_PREFIX + HISTORY));
   }
 
@@ -169,7 +162,7 @@ public class ViewLayout extends VerticalLayout
       UI.getCurrent().setLocale(newLocale);
       tabs.setSelectedTab(previous);
     } else if (add == tabs.getSelectedTab() || edit == tabs.getSelectedTab()
-        || print == tabs.getSelectedTab() || history == tabs.getSelectedTab()) {
+        || history == tabs.getSelectedTab()) {
       // Do nothing.
     } else {
       if (!currentHref.equals(tabsHref.get(tabs.getSelectedTab()))) {
@@ -183,7 +176,6 @@ public class ViewLayout extends VerticalLayout
   public void afterNavigation(AfterNavigationEvent event) {
     add.setVisible(false);
     edit.setVisible(false);
-    print.setVisible(false);
     history.setVisible(false);
     users.setVisible(authenticatedUser.isAuthorized(UsersView.class));
     exitSwitchUser

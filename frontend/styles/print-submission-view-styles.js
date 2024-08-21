@@ -27,7 +27,7 @@ $_documentContainer.innerHTML = `<custom-style>
       color-adjust: exact;
       -webkit-print-color-adjust: exact;
     }
-    #view-layout-tabs {
+    #submissionsView {
       display: none;
     }
   </style> 

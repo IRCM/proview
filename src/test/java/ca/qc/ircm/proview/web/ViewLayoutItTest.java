@@ -11,8 +11,6 @@ import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.files.web.GuidelinesViewElement;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.HistoryViewElement;
-import ca.qc.ircm.proview.submission.web.PrintSubmissionView;
-import ca.qc.ircm.proview.submission.web.PrintSubmissionViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionDialogElement;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionViewElement;
@@ -57,7 +55,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.changeLanguage()).isPresent());
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
-    assertFalse(optional(() -> view.print()).isPresent());
     assertFalse(optional(() -> view.history()).isPresent());
   }
 
@@ -74,7 +71,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.changeLanguage()).isPresent());
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
-    assertFalse(optional(() -> view.print()).isPresent());
     assertFalse(optional(() -> view.history()).isPresent());
   }
 
@@ -91,7 +87,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.changeLanguage()).isPresent());
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
-    assertFalse(optional(() -> view.print()).isPresent());
     assertFalse(optional(() -> view.history()).isPresent());
   }
 
@@ -112,7 +107,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.changeLanguage()).isPresent());
     assertTrue(optional(() -> view.contact()).isPresent());
     assertTrue(optional(() -> view.guidelines()).isPresent());
-    assertFalse(optional(() -> view.print()).isPresent());
     assertFalse(optional(() -> view.history()).isPresent());
   }
 
@@ -222,23 +216,6 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.guidelines().click();
     $(GuidelinesViewElement.class).waitForFirst();
     assertEquals("true", view.edit().getAttribute("hidden"));
-  }
-
-  @Test
-  public void print() throws Throwable {
-    open();
-    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    view.submissions().click();
-    SubmissionsViewElement submissionsView = $(SubmissionsViewElement.class).waitForFirst();
-    submissionsView.submissions().experimentCell(0).doubleClick();
-    SubmissionDialogElement submissionDialog = $(SubmissionDialogElement.class).waitForFirst();
-    submissionDialog.clickPrint();
-    $(PrintSubmissionViewElement.class).waitForFirst();
-    assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
-    assertTrue(optional(() -> view.print()).isPresent());
-    view.guidelines().click();
-    $(GuidelinesViewElement.class).waitForFirst();
-    assertEquals("true", view.print().getAttribute("hidden"));
   }
 
   @Test
