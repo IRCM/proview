@@ -2,14 +2,17 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style> 
   <style>
+    #print-submission {
+      font-size: 16px;
+    }
     #print-submission .section {
-      min-width: 55em;
+      min-width: 880px;
       border-style: solid;
-      margin: 1em 0;
-      padding: 1em;
+      margin: 16px 0;
+      padding: 16px;
     }
     #print-submission .section &gt; div {
-      margin: 0.3em 0;
+      margin: 5px 0;
     }
     #print-submission .two-columns {
       height: auto;
@@ -19,30 +22,30 @@ $_documentContainer.innerHTML = `<custom-style>
       display: inline-block;
     }
     #print-submission .two-columns .left {
-      min-width: 25em;
+      min-width: 400px;
       width: auto;
       overflow: hidden;
     }
     #print-submission .two-columns .right {
-      width: 25em;
-      margin-left: 2em;
+      width: 400px;
+      margin-left: 32px;
       float: right;
     }
     #print-submission .user-information .label {
-      min-width: 5em;
+      min-width: 80px;
     }
     #print-submission .sample-information .label {
-      min-width: 10em;
+      min-width: 160px;
     }
     #print-submission .sample-information span {
       display: inline-block;
     }
     #print-submission .sample-name-separator {
-      margin-right: 0.3em;
+      margin-right: 5px;
     }
     #print-submission .service-information .label {
       vertical-align: top;
-      min-width: 15em;
+      min-width: 240px;
     }
     #print-submission .service-information span {
       display: inline-block;
@@ -70,6 +73,9 @@ $_documentContainer.innerHTML = `<custom-style>
     #print-submission .files td {
       margin: 0;
       padding: 0;
+    }
+    #print-submission .plate-information {
+      width: 1248px;
     }
     #print-submission .plate-information table {
       border-collapse: collapse;
@@ -109,19 +115,11 @@ $_documentContainer.innerHTML = `<custom-style>
   </style> 
   <style media="print">
     #print-submission .section {
-      width: 11in;
+      width: 1056px;
     }
     #print-submission .plate-information {
-      width: 13in;
-      transform: rotate(90deg) translateX(2.1in); 
-    }
-    #print-submission .plate-information td {
-      width: 1.05in;
-      height: 1.05in;
-    }
-    #print-submission .plate-information span {
-      width: 0.8in;
-      height: 0.8in;
+      width: 1248px;
+      transform: rotate(90deg) translateX(202px);
     }
     #print-submission .pagebreak {
       page-break-before: always;
