@@ -40,6 +40,7 @@ import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
@@ -52,7 +53,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -66,12 +67,14 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ViewLayout view;
-  @MockBean
+  @SpyBean
   private SwitchUserService switchUserService;
   @Mock
   private AfterNavigationListener navigationListener;
   @Autowired
   private SubmissionRepository submissionRepository;
+  @Autowired
+  private UserRepository userRepository;
   private Locale locale = ENGLISH;
   private User user = new User(1L, "myuser");
 
@@ -305,7 +308,10 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
+  @WithUserDetails("proview@ircm.qc.ca")
   public void tabs_SelectExitSwitchUser() {
+    switchUserService.switchUser(userRepository.findById(10L).get(),
+        VaadinServletRequest.getCurrent());
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
 

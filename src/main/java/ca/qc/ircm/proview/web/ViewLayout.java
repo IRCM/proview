@@ -13,6 +13,7 @@ import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.user.web.ExitSwitchUserView;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.component.UrlComponent;
@@ -138,6 +139,7 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     tabsHref.put(submissions, SubmissionsView.VIEW_NAME);
     tabsHref.put(profile, ProfileView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
+    tabsHref.put(exitSwitchUser, ExitSwitchUserView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
     tabsHref.put(add, SubmissionView.VIEW_NAME);
@@ -171,10 +173,6 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
           new CookieClearingLogoutHandler("remember-me"), new SecurityContextLogoutHandler());
       logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),
           VaadinServletResponse.getCurrent().getHttpServletResponse(), null);
-    } else if (tabs.getSelectedTab() == exitSwitchUser) {
-      logger.debug("Exit switch user");
-      switchUserService.exitSwitchUser(VaadinServletRequest.getCurrent());
-      UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
     } else if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
       Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))
