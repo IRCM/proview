@@ -36,6 +36,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
+import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -44,7 +45,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -83,8 +83,8 @@ import org.springframework.util.FileCopyUtils;
  */
 @Route(value = SubmissionView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.USER })
-public class SubmissionView extends VerticalLayout
-    implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent {
+public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
+    HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent, ViewLayoutChild {
   public static final String VIEW_NAME = "submission";
   public static final String ID = "submission-view";
   public static final String HEADER = "header";
@@ -100,7 +100,6 @@ public class SubmissionView extends VerticalLayout
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
-  protected H2 header = new H2();
   protected Tabs service = new Tabs();
   protected Tab lcmsms = new Tab();
   protected Tab smallMolecule = new Tab();
@@ -138,10 +137,9 @@ public class SubmissionView extends VerticalLayout
   void init() {
     logger.debug("submission view");
     setId(ID);
-    add(header, service, lcmsmsSubmissionForm, smallMoleculeSubmissionForm,
-        intactProteinSubmissionForm, comment, upload, files, save);
+    add(service, lcmsmsSubmissionForm, smallMoleculeSubmissionForm, intactProteinSubmissionForm,
+        comment, upload, files, save);
     expand(lcmsmsSubmissionForm, smallMoleculeSubmissionForm, intactProteinSubmissionForm, comment);
-    header.setId(HEADER);
     service.setId(SERVICE);
     service.add(lcmsms, smallMolecule, intactProtein);
     service.setSelectedTab(lcmsms);
@@ -199,7 +197,6 @@ public class SubmissionView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     lcmsms.setLabel(getTranslation(SERVICE_PREFIX + LC_MS_MS.name()));
     smallMolecule.setLabel(getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
     intactProtein.setLabel(getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
@@ -210,6 +207,13 @@ public class SubmissionView extends VerticalLayout
     save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
     binder.forField(comment).withNullRepresentation("").bind(COMMENT);
     setReadOnly();
+    updateHeader();
+  }
+
+  private void updateHeader() {
+    Submission submission = binder.getBean();
+    viewLayout().ifPresent(layout -> layout.setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER,
+        submission.getId() != null ? 1 : 0, submission.getExperiment())));
   }
 
   @Override
@@ -327,6 +331,7 @@ public class SubmissionView extends VerticalLayout
     smallMoleculeSubmissionForm.setSubmission(submission);
     intactProteinSubmissionForm.setSubmission(submission);
     setReadOnly();
+    updateHeader();
   }
 
   private void setReadOnly() {

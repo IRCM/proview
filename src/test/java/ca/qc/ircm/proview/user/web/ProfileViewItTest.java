@@ -85,7 +85,6 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     ProfileViewElement view = $(ProfileViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.userForm()).isPresent());
     assertTrue(optional(() -> view.save()).isPresent());
   }

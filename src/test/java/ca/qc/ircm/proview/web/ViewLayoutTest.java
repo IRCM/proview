@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.web;
 
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
@@ -8,9 +9,11 @@ import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SIGNOUT_U
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
+import static ca.qc.ircm.proview.web.ViewLayout.DRAWER_TOGGLE;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
+import static ca.qc.ircm.proview.web.ViewLayout.HEADER;
 import static ca.qc.ircm.proview.web.ViewLayout.HISTORY;
 import static ca.qc.ircm.proview.web.ViewLayout.ID;
 import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
@@ -27,8 +30,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.security.SwitchUserService;
+import ca.qc.ircm.proview.submission.Submission;
+import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.submission.web.SubmissionView;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
@@ -45,6 +51,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -57,11 +64,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ViewLayout view;
   @MockBean
   private SwitchUserService switchUserService;
   @Mock
   private AfterNavigationListener navigationListener;
+  @Autowired
+  private SubmissionRepository submissionRepository;
   private Locale locale = ENGLISH;
   private User user = new User(1L, "myuser");
 
@@ -84,6 +94,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
+    assertEquals(styleName(APPLICATION_NAME), view.applicationName.getId().orElse(""));
+    assertEquals(styleName(ID, HEADER), view.header.getId().orElse(""));
+    assertEquals(DRAWER_TOGGLE, view.drawerToggle.getId().orElse(""));
     assertEquals(TABS, view.tabs.getId().orElse(""));
     assertEquals(styleName(SUBMISSIONS, TAB), view.submissions.getId().orElse(""));
     assertEquals(styleName(PROFILE, TAB), view.profile.getId().orElse(""));
@@ -95,10 +108,13 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
     assertEquals(styleName(EDIT, TAB), view.edit.getId().orElse(""));
     assertEquals(styleName(HISTORY, TAB), view.history.getId().orElse(""));
+    assertFalse(view.isDrawerOpened());
   }
 
   @Test
   public void labels() {
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME),
+        view.applicationName.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.submissions.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.profile.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.users.getLabel());
@@ -117,6 +133,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME),
+        view.applicationName.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.submissions.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.profile.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.users.getLabel());
@@ -154,6 +172,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.submissions, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
     assertTrue($(SubmissionsView.class).exists());
     assertNoExecuteJs();
   }
@@ -166,6 +185,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener, never()).afterNavigation(any());
     assertEquals(view.submissions, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
     assertTrue($(SubmissionsView.class).exists());
     assertNoExecuteJs();
   }
@@ -178,6 +198,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.profile, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
     assertTrue($(ProfileView.class).exists());
     assertNoExecuteJs();
   }
@@ -192,6 +213,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener, never()).afterNavigation(any());
     assertEquals(view.profile, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
     assertTrue($(ProfileView.class).exists());
     assertNoExecuteJs();
   }
@@ -205,6 +227,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.users, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
     assertTrue($(UsersView.class).exists());
     assertNoExecuteJs();
   }
@@ -220,6 +243,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener, never()).afterNavigation(any());
     assertEquals(view.users, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
     assertTrue($(UsersView.class).exists());
     assertNoExecuteJs();
   }
@@ -232,6 +256,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.contact, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
     assertTrue($(ContactView.class).exists());
     assertNoExecuteJs();
   }
@@ -246,6 +271,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener, never()).afterNavigation(any());
     assertEquals(view.contact, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
     assertTrue($(ContactView.class).exists());
     assertNoExecuteJs();
   }
@@ -258,6 +284,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.guidelines, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
     assertTrue($(GuidelinesView.class).exists());
     assertNoExecuteJs();
   }
@@ -272,6 +299,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     verify(navigationListener, never()).afterNavigation(any());
     assertEquals(view.guidelines, view.tabs.getSelectedTab());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
     assertTrue($(GuidelinesView.class).exists());
     assertNoExecuteJs();
   }
@@ -345,6 +373,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     assertEquals(view.add, view.tabs.getSelectedTab());
     assertTrue(view.add.isVisible());
+    assertEquals(
+        view.getTranslation(messagePrefix(SubmissionView.class) + SubmissionView.HEADER, 0, ""),
+        view.header.getText());
   }
 
   @Test
@@ -364,6 +395,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     assertEquals(view.edit, view.tabs.getSelectedTab());
     assertTrue(view.edit.isVisible());
+    Submission submission = submissionRepository.findById(35L).get();
+    assertEquals(view.getTranslation(messagePrefix(SubmissionView.class) + SubmissionView.HEADER, 1,
+        submission.getExperiment()), view.header.getText());
   }
 
   @Test
@@ -384,6 +418,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     assertEquals(view.history, view.tabs.getSelectedTab());
     assertTrue(view.history.isVisible());
+    Submission submission = submissionRepository.findById(35L).get();
+    assertEquals(view.getTranslation(messagePrefix(HistoryView.class) + HistoryView.HEADER,
+        submission.getExperiment()), view.header.getText());
   }
 
   @Test

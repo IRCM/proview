@@ -14,7 +14,6 @@ import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -41,9 +40,7 @@ public class ProfileView extends VerticalLayout
   private static final Logger logger = LoggerFactory.getLogger(ProfileView.class);
   public static final String VIEW_NAME = "profile";
   public static final String ID = "profile-view";
-  public static final String HEADER = "header";
   public static final String SAVED = "saved";
-  protected H2 header = new H2();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected UserForm form;
@@ -64,9 +61,8 @@ public class ProfileView extends VerticalLayout
   protected void init() {
     logger.debug("profile view");
     setId(ID);
-    add(header, form, buttonsLayout);
+    add(form, buttonsLayout);
     buttonsLayout.add(save);
-    header.setId(HEADER);
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -76,7 +72,6 @@ public class ProfileView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     save.setText(getTranslation(CONSTANTS_PREFIX + SAVE));
   }
 

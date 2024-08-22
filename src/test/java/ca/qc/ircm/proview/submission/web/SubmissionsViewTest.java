@@ -19,7 +19,6 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDDEN_BUTTON;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HIDE_COLUMNS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HISTORY;
@@ -178,7 +177,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(SUBMISSIONS, view.submissions.getId().orElse(""));
     assertEquals(ADD, view.add.getId().orElse(""));
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
@@ -194,7 +192,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void labels() {
     view.submissions.setItems(submissions);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
@@ -281,7 +278,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.submissions.setItems(submissions);
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());

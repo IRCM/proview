@@ -118,7 +118,6 @@ $_documentContainer.innerHTML = `<custom-style>
       width: 1056px;
     }
     #print-submission .plate-information {
-      width: 1248px;
       transform: rotate(90deg) translateX(202px);
     }
     #print-submission .pagebreak {

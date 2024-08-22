@@ -9,7 +9,6 @@ import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
 
 import com.vaadin.flow.component.html.testbench.AnchorElement;
-import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.html.testbench.H3Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.annotations.Attribute;
@@ -21,10 +20,6 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = ContactView.ID)
 public class ContactViewElement extends VerticalLayoutElement {
-  public H2Element header() {
-    return $(H2Element.class).id(HEADER);
-  }
-
   public H3Element proteomicHeader() {
     return $(H3Element.class).id(styleName(PROTEOMIC, HEADER));
   }

@@ -5,7 +5,6 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
-import static ca.qc.ircm.proview.files.web.GuidelinesView.HEADER;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,12 +51,10 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   @Test
   public void ids() {
     assertEquals(ID, view.getId().orElse(null));
-    assertEquals(HEADER, view.header.getId().orElse(null));
   }
 
   @Test
   public void labels() {
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {
@@ -77,7 +74,6 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {

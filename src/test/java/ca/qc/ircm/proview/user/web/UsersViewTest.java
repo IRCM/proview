@@ -21,7 +21,6 @@ import static ca.qc.ircm.proview.user.UserProperties.NAME;
 import static ca.qc.ircm.proview.user.web.UsersView.ACTIVE_BUTTON;
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
 import static ca.qc.ircm.proview.user.web.UsersView.EDIT_BUTTON;
-import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.ID;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
@@ -151,7 +150,6 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(USERS, view.users.getId().orElse(""));
     assertEquals(ERROR_TEXT, view.error.getId().orElse(""));
     assertEquals(ADD, view.add.getId().orElse(""));
@@ -161,7 +159,6 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow headerRow = view.users.getHeaderRows().get(0);
     FooterRow footerRow = view.users.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),
@@ -203,7 +200,6 @@ public class UsersViewTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     HeaderRow headerRow = view.users.getHeaderRows().get(0);
     FooterRow footerRow = view.users.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + EDIT),

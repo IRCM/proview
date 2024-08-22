@@ -111,7 +111,6 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.userForm()).isPresent());
     assertTrue(optional(() -> view.save()).isPresent());
   }

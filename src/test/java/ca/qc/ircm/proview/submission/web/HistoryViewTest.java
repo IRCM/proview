@@ -47,6 +47,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
+import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -129,7 +130,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(ACTIVITIES, view.activities.getId().orElse(""));
   }
 
@@ -137,7 +137,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
   public void labels() {
     Submission submission = submissionRepository.findById(1L).get();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
-        view.header.getText());
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
@@ -168,7 +168,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
-        view.header.getText());
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
@@ -354,7 +354,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
     assertEquals(1L, view.getSubmissionId());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, experiment), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, experiment),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 
   @Test
@@ -363,7 +364,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
     assertNull(view.getSubmissionId());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, ""), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, ""),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 
   @Test
@@ -372,6 +374,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
     Submission submission = submissionRepository.findById(1L).get();
     assertEquals(1L, view.getSubmissionId());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
-        view.header.getText());
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 }

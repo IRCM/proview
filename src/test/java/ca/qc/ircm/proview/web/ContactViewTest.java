@@ -52,7 +52,6 @@ public class ContactViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, HEADER), view.proteomicHeader.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, NAME), view.proteomicNameAnchor.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, ADDRESS), view.proteomicAddressAnchor.getId().orElse(""));
@@ -65,7 +64,6 @@ public class ContactViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROTEOMIC), view.proteomicHeader.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)),
         view.proteomicName.getText());
@@ -86,7 +84,6 @@ public class ContactViewTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROTEOMIC), view.proteomicHeader.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)),
         view.proteomicName.getText());

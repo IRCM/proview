@@ -36,7 +36,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -69,7 +68,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     AfterNavigationObserver, NotificationComponent, UrlComponent {
   public static final String VIEW_NAME = "users";
   public static final String ID = "users-view";
-  public static final String HEADER = "header";
   public static final String USERS = "users";
   public static final String USERS_REQUIRED = property(USERS, REQUIRED);
   public static final String SWITCH_USER = "switchUser";
@@ -90,7 +88,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
-  protected H2 header = new H2();
   protected Grid<User> users = new Grid<>();
   protected Column<User> edit;
   protected Column<User> email;
@@ -133,10 +130,9 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     setId(ID);
     setHeightFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    add(header, users, error, buttonsLayout);
+    add(users, error, buttonsLayout);
     expand(users);
     buttonsLayout.add(add, switchUser, viewLaboratory);
-    header.setId(HEADER);
     users.setId(USERS);
     users.addItemDoubleClickListener(e -> {
       if (e.getColumn() == laboratory) {
@@ -218,7 +214,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     String editHeader = getTranslation(CONSTANTS_PREFIX + EDIT);
     edit.setHeader(editHeader).setFooter(editHeader);
     String emailHeader = getTranslation(USER_PREFIX + EMAIL);

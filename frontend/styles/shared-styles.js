@@ -2,8 +2,12 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style>  
   <style>
+    html {
+      --vaadin-app-layout-drawer-width: 13em;
+    }
+
     .main-layout {
-        padding: 20px;
+      padding: 20px;
     }
     
     /* Font sizes */

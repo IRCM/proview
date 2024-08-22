@@ -47,6 +47,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_User() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
+    assertTrue(optional(() -> view.applicationName()).isPresent());
+    assertTrue(optional(() -> view.header()).isPresent());
+    assertTrue(optional(() -> view.drawerToggle()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertFalse(optional(() -> view.users()).isPresent());
@@ -63,6 +66,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Manager() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
+    assertTrue(optional(() -> view.applicationName()).isPresent());
+    assertTrue(optional(() -> view.header()).isPresent());
+    assertTrue(optional(() -> view.drawerToggle()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
@@ -79,6 +85,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() throws Throwable {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
+    assertTrue(optional(() -> view.applicationName()).isPresent());
+    assertTrue(optional(() -> view.header()).isPresent());
+    assertTrue(optional(() -> view.drawerToggle()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());
@@ -99,6 +108,9 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     usersView.users().select(1);
     usersView.switchUser().click();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
+    assertTrue(optional(() -> view.applicationName()).isPresent());
+    assertTrue(optional(() -> view.header()).isPresent());
+    assertTrue(optional(() -> view.drawerToggle()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.profile()).isPresent());
     assertTrue(optional(() -> view.users()).isPresent());

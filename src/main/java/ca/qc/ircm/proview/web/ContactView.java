@@ -11,7 +11,6 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -46,7 +45,6 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = -5066595299866514742L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
-  protected H2 header = new H2();
   protected H3 proteomicHeader = new H3();
   protected Anchor proteomicNameAnchor = new Anchor();
   protected Span proteomicName = new Span();
@@ -66,10 +64,8 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   void init() {
     logger.debug("contact view");
     setId(ID);
-    add(header);
     add(proteomicHeader, proteomicNameAnchor, proteomicAddressAnchor, proteomicPhoneAnchor);
     add(websiteHeader, websiteNameAnchor, websiteAddressAnchor, websitePhoneAnchor);
-    header.setId(HEADER);
     proteomicHeader.setId(styleName(PROTEOMIC, HEADER));
     proteomicNameAnchor.setId(styleName(PROTEOMIC, NAME));
     proteomicNameAnchor.add(addIcon(VaadinIcon.ENVELOPE.create(), proteomicName));
@@ -94,7 +90,6 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     proteomicHeader.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC)));
     proteomicName.setText(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME)));
     proteomicNameAnchor.setHref(getTranslation(MESSAGES_PREFIX + property(PROTEOMIC, NAME, LINK)));

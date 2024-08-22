@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.ADD;
+import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -16,14 +17,19 @@ import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeLeaveEvent;
+import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
@@ -45,9 +51,11 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
  * Main layout.
  */
 @JsModule("./styles/shared-styles.js")
-public class ViewLayout extends VerticalLayout
-    implements RouterLayout, LocaleChangeObserver, AfterNavigationObserver, UrlComponent {
+public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeObserver,
+    BeforeLeaveObserver, AfterNavigationObserver, UrlComponent {
   public static final String ID = "view-layout";
+  public static final String HEADER = "header";
+  public static final String DRAWER_TOGGLE = "drawerToggle";
   public static final String TABS = styleName(ID, "tabs");
   public static final String SUBMISSIONS = "submissions";
   public static final String PROFILE = "profile";
@@ -61,8 +69,12 @@ public class ViewLayout extends VerticalLayout
   public static final String HISTORY = "history";
   public static final String TAB = "tab";
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
+  protected H1 applicationName = new H1();
+  protected H2 header = new H2();
+  protected DrawerToggle drawerToggle = new DrawerToggle();
   protected Tabs tabs = new Tabs();
   protected Tab submissions = new Tab();
   protected Tab profile = new Tab();
@@ -93,13 +105,20 @@ public class ViewLayout extends VerticalLayout
   @PostConstruct
   void init() {
     setId(ID);
-    setSizeFull();
-    setPadding(false);
-    setSpacing(false);
-    add(tabs);
+    addToDrawer(applicationName, tabs);
+    addToNavbar(drawerToggle, header);
+    setPrimarySection(Section.DRAWER);
+    applicationName.setId(styleName(APPLICATION_NAME));
+    applicationName.getStyle().set("font-size", "var(--lumo-font-size-l)")
+        .set("line-height", "var(--lumo-size-l)")
+        .set("margin", "var(--lumo-space-s) var(--lumo-space-m)");
+    header.setId(styleName(ID, HEADER));
+    header.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
+    drawerToggle.setId(DRAWER_TOGGLE);
     tabs.setId(TABS);
     tabs.add(submissions, profile, users, exitSwitchUser, signout, changeLanguage, contact,
         guidelines, add, edit, history);
+    tabs.setOrientation(Tabs.Orientation.VERTICAL);
     submissions.setId(styleName(SUBMISSIONS, TAB));
     profile.setId(styleName(PROFILE, TAB));
     users.setId(styleName(USERS, TAB));
@@ -125,10 +144,12 @@ public class ViewLayout extends VerticalLayout
     tabsHref.put(edit, SubmissionView.VIEW_NAME + "/\\d+");
     tabsHref.put(history, HistoryView.VIEW_NAME + "/\\d+");
     tabs.addSelectedChangeListener(e -> selectTab(e.getPreviousTab()));
+    setDrawerOpened(false);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    applicationName.setText(getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
     submissions.setLabel(getTranslation(MESSAGES_PREFIX + SUBMISSIONS));
     profile.setLabel(getTranslation(MESSAGES_PREFIX + PROFILE));
     users.setLabel(getTranslation(MESSAGES_PREFIX + USERS));
@@ -173,6 +194,11 @@ public class ViewLayout extends VerticalLayout
   }
 
   @Override
+  public void beforeLeave(BeforeLeaveEvent event) {
+    header.setText("");
+  }
+
+  @Override
   public void afterNavigation(AfterNavigationEvent event) {
     add.setVisible(false);
     edit.setVisible(false);
@@ -186,6 +212,17 @@ public class ViewLayout extends VerticalLayout
     currentTab.ifPresent(tab -> {
       tabs.setSelectedTab(tab);
       tab.setVisible(true);
+      if (header.getText().isEmpty()) {
+        header.setText(tab.getLabel());
+      }
     });
+  }
+
+  public String getHeaderText() {
+    return header.getText();
+  }
+
+  public void setHeaderText(String text) {
+    header.setText(text);
   }
 }
