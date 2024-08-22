@@ -32,8 +32,6 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeLeaveEvent;
 import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinServletResponse;
 import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Locale;
@@ -43,9 +41,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
-import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 
 /**
@@ -140,6 +135,7 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     tabsHref.put(profile, ProfileView.VIEW_NAME);
     tabsHref.put(users, UsersView.VIEW_NAME);
     tabsHref.put(exitSwitchUser, ExitSwitchUserView.VIEW_NAME);
+    tabsHref.put(signout, SignoutView.VIEW_NAME);
     tabsHref.put(contact, ContactView.VIEW_NAME);
     tabsHref.put(guidelines, GuidelinesView.VIEW_NAME);
     tabsHref.put(add, SubmissionView.VIEW_NAME);
@@ -166,14 +162,7 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   }
 
   private void selectTab(Tab previous) {
-    if (tabs.getSelectedTab() == signout) {
-      logger.debug("Sign out user {}", authenticatedUser);
-      UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
-      CompositeLogoutHandler logoutHandler = new CompositeLogoutHandler(
-          new CookieClearingLogoutHandler("remember-me"), new SecurityContextLogoutHandler());
-      logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),
-          VaadinServletResponse.getCurrent().getHttpServletResponse(), null);
-    } else if (tabs.getSelectedTab() == changeLanguage) {
+    if (tabs.getSelectedTab() == changeLanguage) {
       Locale locale = UI.getCurrent().getLocale();
       Locale newLocale = Constants.getLocales().stream().filter(lo -> !lo.equals(locale))
           .findFirst().orElse(Constants.DEFAULT_LOCALE);

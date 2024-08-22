@@ -24,7 +24,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.TABS;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -49,12 +49,10 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -325,14 +323,17 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
-  @Disabled("Fails because of invalidated session")
   public void tabs_SelectSignout() {
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
+    // Invalidated session.
     test(view.tabs).select(view.signout.getLabel());
+    assertThrows(IllegalStateException.class, () -> {
+      VaadinServletRequest.getCurrent().getWrappedSession(false).getAttributeNames();
+    });
 
-    verify(navigationListener, never()).afterNavigation(any());
-    assertNull(SecurityContextHolder.getContext().getAuthentication());
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
+        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
+            && i.getInvocation().getParameters().size() > 0
+            && i.getInvocation().getParameters().get(0).equals("/")));
   }
 
   @Test
