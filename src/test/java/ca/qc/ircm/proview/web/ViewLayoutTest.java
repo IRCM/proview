@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
@@ -14,20 +13,18 @@ import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER_FORM;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
 import static ca.qc.ircm.proview.web.ViewLayout.HEADER;
-import static ca.qc.ircm.proview.web.ViewLayout.HISTORY;
 import static ca.qc.ircm.proview.web.ViewLayout.ID;
+import static ca.qc.ircm.proview.web.ViewLayout.NAV;
 import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
+import static ca.qc.ircm.proview.web.ViewLayout.SIDE_NAV;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
-import static ca.qc.ircm.proview.web.ViewLayout.TAB;
-import static ca.qc.ircm.proview.web.ViewLayout.TABS;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import ca.qc.ircm.proview.Constants;
@@ -98,17 +95,15 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(styleName(APPLICATION_NAME), view.applicationName.getId().orElse(""));
     assertEquals(styleName(ID, HEADER), view.header.getId().orElse(""));
     assertEquals(DRAWER_TOGGLE, view.drawerToggle.getId().orElse(""));
-    assertEquals(TABS, view.tabs.getId().orElse(""));
-    assertEquals(styleName(SUBMISSIONS, TAB), view.submissions.getId().orElse(""));
-    assertEquals(styleName(PROFILE, TAB), view.profile.getId().orElse(""));
-    assertEquals(styleName(USERS, TAB), view.users.getId().orElse(""));
-    assertEquals(styleName(EXIT_SWITCH_USER, TAB), view.exitSwitchUser.getId().orElse(""));
-    assertEquals(styleName(SIGNOUT, TAB), view.signout.getId().orElse(""));
-    assertEquals(styleName(CHANGE_LANGUAGE, TAB), view.changeLanguage.getId().orElse(""));
-    assertEquals(styleName(CONTACT, TAB), view.contact.getId().orElse(""));
-    assertEquals(styleName(GUIDELINES, TAB), view.guidelines.getId().orElse(""));
-    assertEquals(styleName(EDIT, TAB), view.edit.getId().orElse(""));
-    assertEquals(styleName(HISTORY, TAB), view.history.getId().orElse(""));
+    assertEquals(SIDE_NAV, view.sideNav.getId().orElse(""));
+    assertEquals(styleName(SUBMISSIONS, NAV), view.submissions.getId().orElse(""));
+    assertEquals(styleName(PROFILE, NAV), view.profile.getId().orElse(""));
+    assertEquals(styleName(USERS, NAV), view.users.getId().orElse(""));
+    assertEquals(styleName(EXIT_SWITCH_USER, NAV), view.exitSwitchUser.getId().orElse(""));
+    assertEquals(styleName(SIGNOUT, NAV), view.signout.getId().orElse(""));
+    assertEquals(styleName(CONTACT, NAV), view.contact.getId().orElse(""));
+    assertEquals(styleName(GUIDELINES, NAV), view.guidelines.getId().orElse(""));
+    assertEquals(CHANGE_LANGUAGE, view.changeLanguage.getId().orElse(""));
     assertFalse(view.isDrawerOpened());
   }
 
@@ -122,12 +117,10 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EXIT_SWITCH_USER),
         view.exitSwitchUser.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
-        view.changeLanguage.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
+        view.changeLanguage.getText());
   }
 
   @Test
@@ -142,16 +135,14 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EXIT_SWITCH_USER),
         view.exitSwitchUser.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
-        view.changeLanguage.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT), view.edit.getLabel());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getLabel());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
+        view.changeLanguage.getText());
   }
 
   @Test
-  public void tabs() {
+  public void sideNavItems() {
     assertTrue(view.submissions.isVisible());
     assertTrue(view.profile.isVisible());
     assertFalse(view.users.isVisible());
@@ -159,61 +150,31 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertTrue(view.signout.isVisible());
     assertTrue(view.contact.isVisible());
     assertTrue(view.guidelines.isVisible());
-    assertFalse(view.edit.isVisible());
-    assertFalse(view.history.isVisible());
   }
 
   @Test
-  public void tabs_SelectSubmissions() {
+  public void sideNav_SelectSubmissions() {
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.submissions.getLabel());
+    test(view.sideNav).clickItem(view.submissions.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.submissions, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
     assertTrue($(SubmissionsView.class).exists());
     assertNoExecuteJs();
   }
 
   @Test
-  public void tabs_SelectSubmissionsNoChange() {
+  public void sideNav_SelectProfile() {
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.submissions.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
-    assertEquals(view.submissions, view.tabs.getSelectedTab());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
-    assertTrue($(SubmissionsView.class).exists());
-    assertNoExecuteJs();
-  }
-
-  @Test
-  public void tabs_SelectProfile() {
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
-    test(view.tabs).select(view.profile.getLabel());
+    test(view.sideNav).clickItem(view.profile.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.profile, view.tabs.getSelectedTab());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
-    assertTrue($(ProfileView.class).exists());
-    assertNoExecuteJs();
-  }
-
-  @Test
-  public void tabs_SelectProfileNoChange() {
-    navigate(ProfileView.class);
-    view = $(ViewLayout.class).first();
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
-    test(view.tabs).select(view.profile.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
-    assertEquals(view.profile, view.tabs.getSelectedTab());
+    assertEquals(view.profile, view.selectedSideNavItem().orElse(null));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
     assertTrue($(ProfileView.class).exists());
     assertNoExecuteJs();
@@ -221,85 +182,39 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_SelectUsers() {
+  public void sideNav_SelectUsers() {
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.users.getLabel());
+    test(view.sideNav).clickItem(view.users.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.users, view.tabs.getSelectedTab());
+    assertEquals(view.users, view.selectedSideNavItem().orElse(null));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
     assertTrue($(UsersView.class).exists());
     assertNoExecuteJs();
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_SelectUsersNoChange() {
-    navigate(UsersView.class);
-    view = $(ViewLayout.class).first();
+  public void sideNav_SelectContact() {
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.users.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
-    assertEquals(view.users, view.tabs.getSelectedTab());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
-    assertTrue($(UsersView.class).exists());
-    assertNoExecuteJs();
-  }
-
-  @Test
-  public void tabs_SelectContact() {
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
-    test(view.tabs).select(view.contact.getLabel());
+    test(view.sideNav).clickItem(view.contact.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.contact, view.tabs.getSelectedTab());
+    assertEquals(view.contact, view.selectedSideNavItem().orElse(null));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
     assertTrue($(ContactView.class).exists());
     assertNoExecuteJs();
   }
 
   @Test
-  public void tabs_SelectContactNoChange() {
-    navigate(ContactView.class);
-    view = $(ViewLayout.class).first();
+  public void sideNav_SelectGuidelines() {
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.contact.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
-    assertEquals(view.contact, view.tabs.getSelectedTab());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
-    assertTrue($(ContactView.class).exists());
-    assertNoExecuteJs();
-  }
-
-  @Test
-  public void tabs_SelectGuidelines() {
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
-    test(view.tabs).select(view.guidelines.getLabel());
+    test(view.sideNav).clickItem(view.guidelines.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.guidelines, view.tabs.getSelectedTab());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
-    assertTrue($(GuidelinesView.class).exists());
-    assertNoExecuteJs();
-  }
-
-  @Test
-  public void tabs_SelectGuidelinesNoChange() {
-    navigate(GuidelinesView.class);
-    view = $(ViewLayout.class).first();
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
-
-    test(view.tabs).select(view.guidelines.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
-    assertEquals(view.guidelines, view.tabs.getSelectedTab());
+    assertEquals(view.guidelines, view.selectedSideNavItem().orElse(null));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
     assertTrue($(GuidelinesView.class).exists());
     assertNoExecuteJs();
@@ -307,13 +222,13 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_SelectExitSwitchUser() {
+  public void sideNav_SelectExitSwitchUser() {
     switchUserService.switchUser(userRepository.findById(10L).get(),
         VaadinServletRequest.getCurrent());
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
 
-    view.tabs.setSelectedTab(view.exitSwitchUser);
+    test(view.sideNav).clickItem(view.exitSwitchUser.getLabel());
 
     verify(switchUserService).exitSwitchUser(VaadinServletRequest.getCurrent());
     assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
@@ -323,9 +238,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void tabs_SelectSignout() {
+  public void sideNav_SelectSignout() {
     // Invalidated session.
-    test(view.tabs).select(view.signout.getLabel());
+    test(view.sideNav).clickItem(view.signout.getLabel());
     assertThrows(IllegalStateException.class, () -> {
       VaadinServletRequest.getCurrent().getWrappedSession(false).getAttributeNames();
     });
@@ -337,126 +252,85 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void tabs_ChangeLanguage_ToFrench() {
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
+  public void sideNav_ChangeLanguage_ToFrench() {
+    test(view.changeLanguage).click();
 
-    test(view.tabs).select(view.changeLanguage.getLabel());
-
-    verify(navigationListener, never()).afterNavigation(any());
     assertEquals(FRENCH, UI.getCurrent().getLocale());
-    assertEquals(view.submissions, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
   }
 
   @Test
-  public void tabs_ChangeLanguage_ToEnglish() {
+  public void sideNav_ChangeLanguage_ToEnglish() {
     UI.getCurrent().setLocale(Locale.FRENCH);
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    test(view.tabs).select(view.changeLanguage.getLabel());
+    test(view.changeLanguage).click();
 
-    verify(navigationListener, never()).afterNavigation(any());
     assertEquals(ENGLISH, UI.getCurrent().getLocale());
-    assertEquals(view.submissions, view.tabs.getSelectedTab());
+    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_ChangeLanguage_ToFrenchFromUsers() {
+  public void sideNav_ChangeLanguage_ToFrenchFromUsers() {
     navigate(UsersView.class);
     view = $(ViewLayout.class).first();
-    UI.getCurrent().addAfterNavigationListener(navigationListener);
 
-    view.tabs.setSelectedTab(view.changeLanguage);
+    test(view.changeLanguage).click();
 
-    verify(navigationListener, never()).afterNavigation(any());
     assertEquals(FRENCH, UI.getCurrent().getLocale());
-    assertEquals(view.users, view.tabs.getSelectedTab());
+    assertEquals(view.users, view.selectedSideNavItem().orElse(null));
   }
 
   @Test
-  public void tabs_Add() {
+  public void sideNav_AddSubmission() {
     navigate(SubmissionView.class);
     view = $(ViewLayout.class).first();
 
-    assertEquals(view.add, view.tabs.getSelectedTab());
-    assertTrue(view.add.isVisible());
+    assertFalse(view.selectedSideNavItem().isPresent());
     assertEquals(
         view.getTranslation(messagePrefix(SubmissionView.class) + SubmissionView.HEADER, 0, ""),
         view.header.getText());
   }
 
   @Test
-  public void tabs_AddHideAfterChange() {
-    navigate(SubmissionView.class);
-    view = $(ViewLayout.class).first();
-
-    view.tabs.setSelectedTab(view.submissions);
-
-    assertFalse(view.add.isVisible());
-  }
-
-  @Test
-  public void tabs_Edit() {
+  public void sideNav_EditSubmission() {
     navigate(SubmissionView.class, 35L);
     view = $(ViewLayout.class).first();
 
-    assertEquals(view.edit, view.tabs.getSelectedTab());
-    assertTrue(view.edit.isVisible());
+    assertFalse(view.selectedSideNavItem().isPresent());
     Submission submission = submissionRepository.findById(35L).get();
     assertEquals(view.getTranslation(messagePrefix(SubmissionView.class) + SubmissionView.HEADER, 1,
         submission.getExperiment()), view.header.getText());
   }
 
   @Test
-  public void tabs_EditHideAfterChange() {
-    navigate(SubmissionView.class, 35L);
-    view = $(ViewLayout.class).first();
-
-    view.tabs.setSelectedTab(view.submissions);
-
-    assertFalse(view.edit.isVisible());
-  }
-
-  @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_History() {
+  public void sideNav_History() {
     navigate(HistoryView.class, 35L);
     view = $(ViewLayout.class).first();
 
-    assertEquals(view.history, view.tabs.getSelectedTab());
-    assertTrue(view.history.isVisible());
+    assertFalse(view.selectedSideNavItem().isPresent());
     Submission submission = submissionRepository.findById(35L).get();
     assertEquals(view.getTranslation(messagePrefix(HistoryView.class) + HistoryView.HEADER,
         submission.getExperiment()), view.header.getText());
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_HistoryHideAfterChange() {
-    navigate(HistoryView.class, 35L);
-    view = $(ViewLayout.class).first();
-
-    view.tabs.setSelectedTab(view.submissions);
-
-    assertFalse(view.history.isVisible());
-  }
-
-  @Test
-  public void tabs_UserVisibility() {
+  public void sideNav_UserVisibility() {
     assertFalse(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
   }
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void tabs_ManagerVisibility() {
+  public void sideNav_ManagerVisibility() {
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void tabs_AdminVisibility() {
+  public void sideNav_AdminVisibility() {
     assertTrue(view.users.isVisible());
     assertFalse(view.exitSwitchUser.isVisible());
   }
@@ -465,7 +339,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   @WithMockUser(
       username = "christopher.anderson@ircm.qc.ca",
       roles = { "USER", "PREVIOUS_ADMINISTRATOR" })
-  public void tabs_SwitchedUserVisibility() {
+  public void sideNav_SwitchedUserVisibility() {
     assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());
   }
