@@ -236,6 +236,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     switchUser.setIcon(VaadinIcon.BUG.create());
     viewLaboratory.setText(getTranslation(MESSAGES_PREFIX + VIEW_LABORATORY));
     viewLaboratory.setIcon(VaadinIcon.EDIT.create());
+    users.getDataProvider().refreshAll();
   }
 
   @Override
