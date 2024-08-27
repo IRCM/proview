@@ -57,10 +57,6 @@ $_documentContainer.innerHTML = `<custom-style>
       margin-left: auto;
     }
 
-    vaadin-button.pointer {
-      cursor: pointer;
-    }
-
     /* Ordered layout with borders */
     vaadin-vertical-layout.border, vaadin-horizontal-layout.border {
       border: 1px solid var(--lumo-contrast-40pct);

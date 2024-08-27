@@ -18,11 +18,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -75,6 +76,7 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   protected SideNavItem signout;
   protected SideNavItem contact;
   protected SideNavItem guidelines;
+  protected HorizontalLayout changeLanguageLayout = new HorizontalLayout();
   protected Button changeLanguage = new Button();
   @Autowired
   private transient SwitchUserService switchUserService;
@@ -92,8 +94,8 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   @PostConstruct
   void init() {
     setId(ID);
-    addToDrawer(applicationName, sideNav, changeLanguage);
-    addToNavbar(drawerToggle, header);
+    addToDrawer(applicationName, sideNav);
+    addToNavbar(drawerToggle, header, changeLanguageLayout);
     setPrimarySection(Section.DRAWER);
     applicationName.setId(styleName(APPLICATION_NAME));
     applicationName.getStyle().set("font-size", "var(--lumo-font-size-l)")
@@ -121,10 +123,13 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     guidelines = new SideNavItem("Guidelines", GuidelinesView.class, VaadinIcon.BOOK.create());
     guidelines.setId(styleName(GUIDELINES, NAV));
     sideNav.addItem(submissions, profile, users, exitSwitchUser, signout, contact, guidelines);
+    changeLanguageLayout.setId(styleName(CHANGE_LANGUAGE, "layout"));
+    changeLanguageLayout.add(changeLanguage);
+    changeLanguageLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+    changeLanguageLayout.setWidthFull();
+    changeLanguageLayout.setMargin(true);
     changeLanguage.setId(CHANGE_LANGUAGE);
     changeLanguage.setIcon(VaadinIcon.GLOBE.create());
-    changeLanguage.addClassName("pointer");
-    changeLanguage.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     changeLanguage.addClickListener(e -> changeLanguage());
     setDrawerOpened(false);
   }

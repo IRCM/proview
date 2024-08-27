@@ -41,6 +41,7 @@ import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
@@ -119,6 +120,11 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
+    assertEquals(styleName(CHANGE_LANGUAGE, "layout"),
+        view.changeLanguageLayout.getId().orElse(""));
+    assertEquals(FlexComponent.JustifyContentMode.END,
+        view.changeLanguageLayout.getJustifyContentMode());
+    assertEquals("100%", view.changeLanguageLayout.getWidth());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
         view.changeLanguage.getText());
   }

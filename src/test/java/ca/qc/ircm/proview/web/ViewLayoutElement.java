@@ -89,7 +89,6 @@ public class ViewLayoutElement extends VerticalLayoutElement {
   }
 
   public ButtonElement changeLanguage() {
-    openSideNav();
     return $(ButtonElement.class).id(CHANGE_LANGUAGE);
   }
 }
