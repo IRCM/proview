@@ -264,7 +264,6 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.service()).isPresent());
     assertTrue(optional(() -> view.lcmsms()).isPresent());
     view.lcmsms().click();

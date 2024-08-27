@@ -58,6 +58,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_User() throws Throwable {
     SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
+    assertTrue(optional(() -> dialog.printSubmission()).isPresent());
     assertFalse(optional(() -> dialog.instrument()).isPresent());
     assertFalse(optional(() -> dialog.dataAvailableDate()).isPresent());
     assertFalse(optional(() -> dialog.save()).isPresent());
@@ -70,6 +71,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() throws Throwable {
     SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
+    assertTrue(optional(() -> dialog.printSubmission()).isPresent());
     assertTrue(optional(() -> dialog.instrument()).isPresent());
     assertTrue(optional(() -> dialog.dataAvailableDate()).isPresent());
     assertTrue(optional(() -> dialog.save()).isPresent());

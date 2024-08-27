@@ -8,7 +8,6 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.web.ViewLayout;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -29,12 +28,10 @@ public class GuidelinesView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle {
   public static final String VIEW_NAME = "guidelines";
   public static final String ID = "guidelines-view";
-  public static final String HEADER = "header";
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 1881767150748374598L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
-  protected H2 header = new H2();
   private transient GuidelinesConfiguration guidelinesConfiguration;
 
   @Autowired
@@ -46,15 +43,11 @@ public class GuidelinesView extends VerticalLayout
   void init() {
     logger.debug("guidelines view");
     setId(ID);
-    add(header);
-    header.setId(HEADER);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
     removeAll();
-    add(header);
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     guidelinesConfiguration.categories(getLocale())
         .forEach(category -> add(new CategoryComponent(category)));
   }

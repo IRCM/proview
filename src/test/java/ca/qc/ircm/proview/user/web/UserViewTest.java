@@ -25,6 +25,7 @@ import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -72,14 +73,14 @@ public class UserViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(SAVE, view.save.getId().orElse(""));
     assertTrue(view.save.hasThemeName(ButtonVariant.LUMO_PRIMARY.getVariantName()));
   }
 
   @Test
   public void labels() {
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
@@ -89,7 +90,8 @@ public class UserViewTest extends SpringUIUnitTest {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
   }
 
@@ -103,12 +105,18 @@ public class UserViewTest extends SpringUIUnitTest {
   public void setParameter() {
     view.form = mock(UserForm.class);
     User user = mock(User.class);
+    when(view.form.getUser()).thenReturn(user);
+    when(user.getId()).thenReturn(12L);
+    String name = "Christian Poitras";
+    when(user.getName()).thenReturn(name);
     when(service.get(any(Long.class))).thenReturn(Optional.of(user));
 
     view.setParameter(beforeEvent, 12L);
 
     verify(view.form).setUser(user);
     verify(service).get(12L);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, name),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 
   @Test
@@ -119,6 +127,8 @@ public class UserViewTest extends SpringUIUnitTest {
 
     verify(view.form, never()).setUser(any());
     verify(service, never()).get(any(Long.class));
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 
   @Test

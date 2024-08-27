@@ -54,7 +54,6 @@ import com.vaadin.flow.component.customfield.CustomFieldVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -97,7 +96,6 @@ public class SubmissionsView extends VerticalLayout
     implements HasDynamicTitle, LocaleChangeObserver, NotificationComponent {
   public static final String VIEW_NAME = "submissions";
   public static final String ID = "submissions-view";
-  public static final String HEADER = "header";
   public static final String SUBMISSIONS = "submissions";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
   public static final String SAMPLES_VALUE = property(SAMPLES, "value");
@@ -128,7 +126,6 @@ public class SubmissionsView extends VerticalLayout
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
-  protected H2 header = new H2();
   protected Grid<Submission> submissions = new Grid<>();
   protected Column<Submission> experiment;
   protected Column<Submission> user;
@@ -184,7 +181,7 @@ public class SubmissionsView extends VerticalLayout
     setHeightFull();
     HorizontalLayout buttonsLayout = new HorizontalLayout();
     buttonsLayout.add(add, editStatus, history, hideColumns);
-    add(header, submissions, buttonsLayout);
+    add(submissions, buttonsLayout);
     expand(submissions);
 
     columnProperties.put(EXPERIMENT, submission.experiment);
@@ -197,7 +194,6 @@ public class SubmissionsView extends VerticalLayout
     columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
     columnProperties.put(HIDDEN, submission.hidden);
 
-    header.setId(HEADER);
     submissions.setId(SUBMISSIONS);
     submissions.setMinHeight("500px");
     submissions.addItemDoubleClickListener(e -> view(e.getItem()));
@@ -413,7 +409,6 @@ public class SubmissionsView extends VerticalLayout
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    header.setText(getTranslation(MESSAGES_PREFIX + HEADER));
     String experimentHeader = getTranslation(SUBMISSION_PREFIX + EXPERIMENT);
     experiment.setHeader(experimentHeader).setFooter(experimentHeader);
     String userHeader = getTranslation(SUBMISSION_PREFIX + USER);

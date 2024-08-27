@@ -1,14 +1,12 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.user.web.UsersView.ADD;
-import static ca.qc.ircm.proview.user.web.UsersView.HEADER;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_FAILED;
 import static ca.qc.ircm.proview.user.web.UsersView.SWITCH_USER;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_LABORATORY;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
-import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.annotations.Attribute;
@@ -21,10 +19,6 @@ import org.openqa.selenium.By;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = UsersView.ID)
 public class UsersViewElement extends VerticalLayoutElement {
-  public H2Element header() {
-    return $(H2Element.class).id(HEADER);
-  }
-
   public UsersViewUsersElement users() {
     return $(UsersViewUsersElement.class).first();
   }

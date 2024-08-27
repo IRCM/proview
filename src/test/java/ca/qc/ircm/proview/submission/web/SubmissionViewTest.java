@@ -64,6 +64,7 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
+import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -326,7 +327,6 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
-    assertEquals(HEADER, view.header.getId().orElse(""));
     assertEquals(SERVICE, view.service.getId().orElse(""));
     assertEquals(LC_MS_MS.name(), view.lcmsms.getId().orElse(""));
     assertEquals(SMALL_MOLECULE.name(), view.smallMolecule.getId().orElse(""));
@@ -341,7 +341,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
@@ -358,11 +359,11 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER), view.header.getText());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
@@ -895,6 +896,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 163L);
 
     verify(service).get(163L);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, submission.getExperiment()),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -919,6 +922,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 35L);
 
     verify(service).get(35L);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, submission.getExperiment()),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertTrue(view.comment.isReadOnly());
     assertFalse(view.upload.isVisible());
     assertFalse(view.files.getColumnByKey(REMOVE).isVisible());
@@ -942,6 +947,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, 2L);
 
     verify(service).get(2L);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -971,6 +978,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     view.setParameter(beforeEvent, null);
 
     verify(service, never()).get(any());
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
+        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());

@@ -23,10 +23,10 @@ import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ViewLayout;
+import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -51,8 +51,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = HistoryView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ UserRole.ADMIN })
-public class HistoryView extends VerticalLayout
-    implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent {
+public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasUrlParameter<Long>,
+    LocaleChangeObserver, NotificationComponent, ViewLayoutChild {
   public static final String VIEW_NAME = "history";
   public static final String ID = "history-view";
   public static final String HEADER = "header";
@@ -72,7 +72,6 @@ public class HistoryView extends VerticalLayout
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
-  protected H2 header = new H2();
   protected Grid<Activity> activities = new Grid<>();
   protected Column<Activity> view;
   protected Column<Activity> user;
@@ -104,9 +103,8 @@ public class HistoryView extends VerticalLayout
     logger.debug("history view");
     setId(ID);
     setHeightFull();
-    add(header, activities);
+    add(activities);
     expand(activities);
-    header.setId(HEADER);
     activities.setId(ACTIVITIES);
     view = activities
         .addColumn(
@@ -155,9 +153,11 @@ public class HistoryView extends VerticalLayout
 
   private void updateHeader() {
     if (submission != null && submission.getId() != null) {
-      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()));
+      viewLayout().ifPresent(layout -> layout
+          .setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment())));
     } else {
-      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, ""));
+      viewLayout()
+          .ifPresent(layout -> layout.setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, "")));
     }
   }
 

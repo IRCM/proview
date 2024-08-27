@@ -75,7 +75,6 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertFalse(optional(() -> view.editStatus()).isPresent());
@@ -87,7 +86,6 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() throws Throwable {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.submissions()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
     assertTrue(optional(() -> view.editStatus()).isPresent());

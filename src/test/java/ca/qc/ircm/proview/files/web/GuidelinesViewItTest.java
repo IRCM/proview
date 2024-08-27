@@ -76,7 +76,6 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     open();
 
     GuidelinesViewElement view = $(GuidelinesViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     List<Category> categories = guidelinesConfiguration.categories(currentLocale());
     assertEquals(categories.size(), view.categories().size());
     for (int i = 0; i < categories.size(); i++) {

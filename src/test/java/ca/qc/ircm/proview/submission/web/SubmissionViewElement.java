@@ -7,10 +7,8 @@ import static ca.qc.ircm.proview.submission.Service.LC_MS_MS;
 import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
-import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.flow.component.tabs.testbench.TabElement;
 import com.vaadin.flow.component.tabs.testbench.TabsElement;
@@ -25,10 +23,6 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = SubmissionView.ID)
 public class SubmissionViewElement extends VerticalLayoutElement {
-  public H2Element header() {
-    return $(H2Element.class).id(HEADER);
-  }
-
   public TabsElement service() {
     return $(TabsElement.class).id(SERVICE);
   }

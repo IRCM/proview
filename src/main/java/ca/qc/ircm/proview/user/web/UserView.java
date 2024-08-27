@@ -11,11 +11,11 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ViewLayout;
+import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,8 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = UserView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({ MANAGER, ADMIN })
-public class UserView extends VerticalLayout
-    implements LocaleChangeObserver, HasDynamicTitle, HasUrlParameter<Long>, NotificationComponent {
+public class UserView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,
+    HasUrlParameter<Long>, NotificationComponent, ViewLayoutChild {
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 4760310643370830640L;
@@ -47,7 +47,6 @@ public class UserView extends VerticalLayout
   public static final String ID = "user-view";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
-  protected H2 header = new H2();
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected UserForm form;
@@ -66,9 +65,8 @@ public class UserView extends VerticalLayout
   protected void init() {
     logger.debug("user view");
     setId(ID);
-    add(header, form, buttonsLayout);
+    add(form, buttonsLayout);
     buttonsLayout.add(save);
-    header.setId(HEADER);
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -83,9 +81,11 @@ public class UserView extends VerticalLayout
 
   private void updateHeader() {
     if (form.getUser() != null && form.getUser().getId() != null) {
-      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName()));
+      viewLayout().ifPresent(layout -> layout
+          .setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName())));
     } else {
-      header.setText(getTranslation(MESSAGES_PREFIX + HEADER, 0));
+      viewLayout()
+          .ifPresent(layout -> layout.setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, 0)));
     }
   }
 
@@ -100,6 +100,7 @@ public class UserView extends VerticalLayout
     if (parameter != null) {
       form.setUser(service.get(parameter).orElse(null));
     }
+    updateHeader();
   }
 
   void save() {

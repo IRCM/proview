@@ -1,81 +1,94 @@
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.Constants.ADD;
-import static ca.qc.ircm.proview.Constants.EDIT;
-import static ca.qc.ircm.proview.Constants.PRINT;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
 import static ca.qc.ircm.proview.web.ViewLayout.EXIT_SWITCH_USER;
 import static ca.qc.ircm.proview.web.ViewLayout.GUIDELINES;
-import static ca.qc.ircm.proview.web.ViewLayout.HISTORY;
+import static ca.qc.ircm.proview.web.ViewLayout.NAV;
 import static ca.qc.ircm.proview.web.ViewLayout.PROFILE;
 import static ca.qc.ircm.proview.web.ViewLayout.SIGNOUT;
 import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
-import static ca.qc.ircm.proview.web.ViewLayout.TAB;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 
+import com.vaadin.flow.component.applayout.testbench.DrawerToggleElement;
+import com.vaadin.flow.component.button.testbench.ButtonElement;
+import com.vaadin.flow.component.html.testbench.H1Element;
+import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
-import com.vaadin.flow.component.tabs.testbench.TabElement;
-import com.vaadin.flow.component.tabs.testbench.TabsElement;
+import com.vaadin.flow.component.sidenav.testbench.SideNavElement;
+import com.vaadin.flow.component.sidenav.testbench.SideNavItemElement;
 import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
 /**
  * {@link ViewLayout} element.
  */
-@Element("vaadin-vertical-layout")
+@Element("vaadin-app-layout")
 @Attribute(name = "id", value = ViewLayout.ID)
 public class ViewLayoutElement extends VerticalLayoutElement {
-  public TabsElement tabs() {
-    return $(TabsElement.class).first();
+  public H1Element applicationName() {
+    return $(H1Element.class).first();
   }
 
-  public TabElement submissions() {
-    return $(TabElement.class).id(styleName(SUBMISSIONS, TAB));
+  public H2Element header() {
+    return $(H2Element.class).first();
   }
 
-  public TabElement profile() {
-    return $(TabElement.class).id(styleName(PROFILE, TAB));
+  public DrawerToggleElement drawerToggle() {
+    return $(DrawerToggleElement.class).first();
   }
 
-  public TabElement users() {
-    return $(TabElement.class).id(styleName(USERS, TAB));
+  /**
+   * Opens side navigation. If side navigation is already open, this method does nothing.
+   */
+  private void openSideNav() {
+    if (!"true".equals(drawerToggle().getAttribute("aria-expanded"))) {
+      drawerToggle().click();
+    }
   }
 
-  public TabElement exitSwitchUser() {
-    return $(TabElement.class).id(styleName(EXIT_SWITCH_USER, TAB));
+  public SideNavElement sideNav() {
+    openSideNav();
+    return $(SideNavElement.class).first();
   }
 
-  public TabElement signout() {
-    return $(TabElement.class).id(styleName(SIGNOUT, TAB));
+  public SideNavItemElement submissions() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(SUBMISSIONS, NAV));
   }
 
-  public TabElement changeLanguage() {
-    return $(TabElement.class).id(styleName(CHANGE_LANGUAGE, TAB));
+  public SideNavItemElement profile() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(PROFILE, NAV));
   }
 
-  public TabElement contact() {
-    return $(TabElement.class).id(styleName(CONTACT, TAB));
+  public SideNavItemElement users() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(USERS, NAV));
   }
 
-  public TabElement guidelines() {
-    return $(TabElement.class).id(styleName(GUIDELINES, TAB));
+  public SideNavItemElement exitSwitchUser() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(EXIT_SWITCH_USER, NAV));
   }
 
-  public TabElement add() {
-    return $(TabElement.class).id(styleName(ADD, TAB));
+  public SideNavItemElement signout() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(SIGNOUT, NAV));
   }
 
-  public TabElement edit() {
-    return $(TabElement.class).id(styleName(EDIT, TAB));
+  public SideNavItemElement contact() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(CONTACT, NAV));
   }
 
-  public TabElement print() {
-    return $(TabElement.class).id(styleName(PRINT, TAB));
+  public SideNavItemElement guidelines() {
+    openSideNav();
+    return $(SideNavItemElement.class).id(styleName(GUIDELINES, NAV));
   }
 
-  public TabElement history() {
-    return $(TabElement.class).id(styleName(HISTORY, TAB));
+  public ButtonElement changeLanguage() {
+    return $(ButtonElement.class).id(CHANGE_LANGUAGE);
   }
 }

@@ -2,8 +2,12 @@ const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style>  
   <style>
+    html {
+      --vaadin-app-layout-drawer-width: 13em;
+    }
+
     .main-layout {
-        padding: 20px;
+      padding: 20px;
     }
     
     /* Font sizes */
@@ -52,7 +56,7 @@ $_documentContainer.innerHTML = `<custom-style>
     vaadin-button.right {
       margin-left: auto;
     }
-    
+
     /* Ordered layout with borders */
     vaadin-vertical-layout.border, vaadin-horizontal-layout.border {
       border: 1px solid var(--lumo-contrast-40pct);

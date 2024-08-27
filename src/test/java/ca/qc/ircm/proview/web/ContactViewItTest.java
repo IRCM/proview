@@ -56,7 +56,6 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() throws Throwable {
     open();
     ContactViewElement view = $(ContactViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.header()).isPresent());
     assertTrue(optional(() -> view.proteomicHeader()).isPresent());
     assertTrue(optional(() -> view.proteomicName()).isPresent());
     assertTrue(optional(() -> view.proteomicAddress()).isPresent());
