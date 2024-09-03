@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
@@ -94,6 +93,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(styleName(APPLICATION_NAME), view.applicationName.getId().orElse(""));
+    assertEquals(styleName(HEADER, "layout"), view.headerLayout.getId().orElse(""));
+    assertEquals("100%", view.headerLayout.getWidth());
     assertEquals(styleName(ID, HEADER), view.header.getId().orElse(""));
     assertEquals(DRAWER_TOGGLE, view.drawerToggle.getId().orElse(""));
     assertEquals(SIDE_NAV, view.sideNav.getId().orElse(""));
@@ -104,6 +105,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(styleName(SIGNOUT, NAV), view.signout.getId().orElse(""));
     assertEquals(styleName(CONTACT, NAV), view.contact.getId().orElse(""));
     assertEquals(styleName(GUIDELINES, NAV), view.guidelines.getId().orElse(""));
+    assertEquals(styleName(CHANGE_LANGUAGE, "layout"),
+        view.changeLanguageLayout.getId().orElse(""));
     assertEquals(CHANGE_LANGUAGE, view.changeLanguage.getId().orElse(""));
     assertFalse(view.isDrawerOpened());
   }
@@ -120,11 +123,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SIGNOUT), view.signout.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.contact.getLabel());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.guidelines.getLabel());
-    assertEquals(styleName(CHANGE_LANGUAGE, "layout"),
-        view.changeLanguageLayout.getId().orElse(""));
-    assertEquals(FlexComponent.JustifyContentMode.END,
-        view.changeLanguageLayout.getJustifyContentMode());
-    assertEquals("100%", view.changeLanguageLayout.getWidth());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CHANGE_LANGUAGE),
         view.changeLanguage.getText());
   }

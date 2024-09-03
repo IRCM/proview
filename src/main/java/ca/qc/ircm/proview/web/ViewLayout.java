@@ -22,7 +22,6 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
@@ -66,6 +65,7 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected H1 applicationName = new H1();
+  protected HorizontalLayout headerLayout = new HorizontalLayout();
   protected H2 header = new H2();
   protected DrawerToggle drawerToggle = new DrawerToggle();
   protected SideNav sideNav = new SideNav();
@@ -95,12 +95,15 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   void init() {
     setId(ID);
     addToDrawer(applicationName, sideNav);
-    addToNavbar(drawerToggle, header, changeLanguageLayout);
+    addToNavbar(drawerToggle, headerLayout, changeLanguageLayout);
     setPrimarySection(Section.DRAWER);
     applicationName.setId(styleName(APPLICATION_NAME));
     applicationName.getStyle().set("font-size", "var(--lumo-font-size-l)")
         .set("line-height", "var(--lumo-size-l)")
         .set("margin", "var(--lumo-space-s) var(--lumo-space-m)");
+    headerLayout.setId(styleName(HEADER, "layout"));
+    headerLayout.add(header);
+    headerLayout.setWidthFull();
     header.setId(styleName(ID, HEADER));
     header.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
     drawerToggle.setId(DRAWER_TOGGLE);
@@ -125,8 +128,6 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     sideNav.addItem(submissions, profile, users, exitSwitchUser, signout, contact, guidelines);
     changeLanguageLayout.setId(styleName(CHANGE_LANGUAGE, "layout"));
     changeLanguageLayout.add(changeLanguage);
-    changeLanguageLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-    changeLanguageLayout.setWidthFull();
     changeLanguageLayout.setMargin(true);
     changeLanguage.setId(CHANGE_LANGUAGE);
     changeLanguage.setIcon(VaadinIcon.GLOBE.create());
