@@ -1,8 +1,11 @@
 package ca.qc.ircm.proview.files.web;
 
 import static ca.qc.ircm.proview.files.web.CategoryComponent.CATEGORY;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +13,9 @@ import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -55,6 +61,12 @@ public class CategoryComponentTest extends SpringUIUnitTest {
   @Test
   public void styles() {
     assertTrue(component.hasClassName(CATEGORY));
+    List<Anchor> anchors = findChildren(component, Anchor.class);
+    for (int i = 0; i < category.getGuidelines().size(); i++) {
+      Anchor anchor = anchors.get(i);
+      validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
+      assertNotNull(findChild(anchor, Span.class).orElse(null));
+    }
   }
 
   @Test
@@ -64,7 +76,8 @@ public class CategoryComponentTest extends SpringUIUnitTest {
     for (int i = 0; i < category.getGuidelines().size(); i++) {
       Guideline guideline = category.getGuidelines().get(i);
       Anchor anchor = anchors.get(i);
-      assertEquals(guideline.getName(), anchor.getText());
+      Span text = findChild(anchor, Span.class).get();
+      assertEquals(guideline.getName(), text.getText());
     }
   }
 

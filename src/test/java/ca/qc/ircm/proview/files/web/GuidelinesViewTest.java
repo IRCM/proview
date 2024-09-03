@@ -6,7 +6,9 @@ import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.files.web.GuidelinesView.ID;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.Constants;
@@ -17,6 +19,9 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.google.common.net.UrlEscapers;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.List;
@@ -65,7 +70,9 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
       for (int j = 0; j < category.getGuidelines().size(); j++) {
         Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        assertEquals(guideline.getName(), anchor.getText());
+        Span text = findChild(anchor, Span.class).get();
+        assertEquals(guideline.getName(), text.getText());
+        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
       }
     }
   }
@@ -84,7 +91,9 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
       for (int j = 0; j < category.getGuidelines().size(); j++) {
         Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        assertEquals(guideline.getName(), anchor.getText());
+        Span text = findChild(anchor, Span.class).get();
+        assertEquals(guideline.getName(), text.getText());
+        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
       }
     }
   }
