@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
@@ -54,12 +55,21 @@ public class ContactViewTest extends SpringUIUnitTest {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, HEADER), view.proteomicHeader.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, NAME), view.proteomicNameAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.ENVELOPE.create(),
+        findChild(view.proteomicNameAnchor, Icon.class).get());
     assertEquals(styleName(PROTEOMIC, ADDRESS), view.proteomicAddressAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.MAP_MARKER.create(),
+        findChild(view.proteomicAddressAnchor, Icon.class).get());
     assertEquals(styleName(PROTEOMIC, PHONE), view.proteomicPhoneAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.PHONE.create(), findChild(view.proteomicPhoneAnchor, Icon.class).get());
     assertEquals(styleName(WEBSITE, HEADER), view.websiteHeader.getId().orElse(""));
     assertEquals(styleName(WEBSITE, NAME), view.websiteNameAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.ENVELOPE.create(), findChild(view.websiteNameAnchor, Icon.class).get());
     assertEquals(styleName(WEBSITE, ADDRESS), view.websiteAddressAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.MAP_MARKER.create(),
+        findChild(view.websiteAddressAnchor, Icon.class).get());
     assertEquals(styleName(WEBSITE, PHONE), view.websitePhoneAnchor.getId().orElse(""));
+    validateIcon(VaadinIcon.PHONE.create(), findChild(view.websitePhoneAnchor, Icon.class).get());
   }
 
   @Test
