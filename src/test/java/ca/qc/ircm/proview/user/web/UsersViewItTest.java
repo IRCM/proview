@@ -91,15 +91,18 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> view.users()).isPresent());
     assertFalse(optional(() -> view.switchFailed()).isPresent());
     assertTrue(optional(() -> view.add()).isPresent());
+    assertTrue(optional(() -> view.edit()).isPresent());
     assertTrue(optional(() -> view.switchUser()).isPresent());
+    assertTrue(optional(() -> view.viewLaboratory()).isPresent());
   }
 
   @Test
   public void edit() throws Throwable {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
+    view.users().select(0);
 
-    view.users().edit(0).click();
+    view.edit().click();
 
     assertTrue(view.dialog().isOpen());
   }
