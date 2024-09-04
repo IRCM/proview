@@ -93,8 +93,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(styleName(APPLICATION_NAME), view.applicationName.getId().orElse(""));
-    assertEquals(styleName(HEADER, "layout"), view.headerLayout.getId().orElse(""));
-    assertEquals("100%", view.headerLayout.getWidth());
+    assertEquals("100%", view.header.getWidth());
     assertEquals(styleName(ID, HEADER), view.header.getId().orElse(""));
     assertEquals(DRAWER_TOGGLE, view.drawerToggle.getId().orElse(""));
     assertEquals(SIDE_NAV, view.sideNav.getId().orElse(""));
@@ -105,8 +104,6 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertEquals(styleName(SIGNOUT, NAV), view.signout.getId().orElse(""));
     assertEquals(styleName(CONTACT, NAV), view.contact.getId().orElse(""));
     assertEquals(styleName(GUIDELINES, NAV), view.guidelines.getId().orElse(""));
-    assertEquals(styleName(CHANGE_LANGUAGE, "layout"),
-        view.changeLanguageLayout.getId().orElse(""));
     assertEquals(CHANGE_LANGUAGE, view.changeLanguage.getId().orElse(""));
     assertFalse(view.isDrawerOpened());
   }

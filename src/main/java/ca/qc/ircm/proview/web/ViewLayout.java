@@ -22,7 +22,6 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -65,7 +64,6 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   private static final long serialVersionUID = 710800815636494374L;
   private static final Logger logger = LoggerFactory.getLogger(ViewLayout.class);
   protected H1 applicationName = new H1();
-  protected HorizontalLayout headerLayout = new HorizontalLayout();
   protected H2 header = new H2();
   protected DrawerToggle drawerToggle = new DrawerToggle();
   protected SideNav sideNav = new SideNav();
@@ -76,7 +74,6 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   protected SideNavItem signout;
   protected SideNavItem contact;
   protected SideNavItem guidelines;
-  protected HorizontalLayout changeLanguageLayout = new HorizontalLayout();
   protected Button changeLanguage = new Button();
   @Autowired
   private transient SwitchUserService switchUserService;
@@ -95,17 +92,15 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   void init() {
     setId(ID);
     addToDrawer(applicationName, sideNav);
-    addToNavbar(drawerToggle, headerLayout, changeLanguageLayout);
+    addToNavbar(drawerToggle, header, changeLanguage);
     setPrimarySection(Section.DRAWER);
     applicationName.setId(styleName(APPLICATION_NAME));
     applicationName.getStyle().set("font-size", "var(--lumo-font-size-l)")
         .set("line-height", "var(--lumo-size-l)")
         .set("margin", "var(--lumo-space-s) var(--lumo-space-m)");
-    headerLayout.setId(styleName(HEADER, "layout"));
-    headerLayout.add(header);
-    headerLayout.setWidthFull();
     header.setId(styleName(ID, HEADER));
     header.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
+    header.setWidthFull();
     drawerToggle.setId(DRAWER_TOGGLE);
     sideNav.setId(SIDE_NAV);
     submissions = new SideNavItem("Submissions", SubmissionsView.class, VaadinIcon.FLASK.create());
@@ -126,10 +121,8 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     guidelines = new SideNavItem("Guidelines", GuidelinesView.class, VaadinIcon.BOOK.create());
     guidelines.setId(styleName(GUIDELINES, NAV));
     sideNav.addItem(submissions, profile, users, exitSwitchUser, signout, contact, guidelines);
-    changeLanguageLayout.setId(styleName(CHANGE_LANGUAGE, "layout"));
-    changeLanguageLayout.add(changeLanguage);
-    changeLanguageLayout.setMargin(true);
     changeLanguage.setId(CHANGE_LANGUAGE);
+    changeLanguage.getStyle().set("margin", "0 var(--lumo-space-m)");
     changeLanguage.setIcon(VaadinIcon.GLOBE.create());
     changeLanguage.addClickListener(e -> changeLanguage());
     setDrawerOpened(false);
