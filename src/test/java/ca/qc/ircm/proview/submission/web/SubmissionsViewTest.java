@@ -29,7 +29,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionsView.SAMPLES_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_SPAN;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.STATUS_VALUE;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.SUBMISSIONS;
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
@@ -67,6 +66,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.ContactView;
+import ca.qc.ircm.proview.web.ErrorNotification;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -180,6 +180,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(SUBMISSIONS, view.submissions.getId().orElse(""));
     assertEquals(ADD, view.add.getId().orElse(""));
     validateIcon(VaadinIcon.PLUS.create(), view.add.getIcon());
+    assertEquals(VIEW, view.view.getId().orElse(""));
+    validateIcon(VaadinIcon.EYE.create(), view.view.getIcon());
     assertEquals(EDIT_STATUS, view.editStatus.getId().orElse(""));
     validateIcon(VaadinIcon.EDIT.create(), view.editStatus.getIcon());
     assertEquals(HISTORY, view.history.getId().orElse(""));
@@ -194,8 +196,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.submissions.setItems(submissions);
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         header.getCell(view.experiment).getText());
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
@@ -265,11 +265,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
             view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT_STATUS), view.editStatus.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
-        test(view.submissions).getCellText(2, 6));
+        test(view.submissions).getCellText(2, 5));
   }
 
   @Test
@@ -280,8 +281,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     HeaderRow header = view.submissions.getHeaderRows().get(0);
     FooterRow footer = view.submissions.getFooterRows().get(0);
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         header.getCell(view.experiment).getText());
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
@@ -351,11 +350,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
             view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + EDIT_STATUS), view.editStatus.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
-        test(view.submissions).getCellText(2, 6));
+        test(view.submissions).getCellText(2, 5));
   }
 
   @Test
@@ -426,9 +426,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_Columns() {
-    assertEquals(12, view.submissions.getColumns().size());
-    assertNotNull(view.submissions.getColumnByKey(VIEW));
-    assertFalse(view.submissions.getColumnByKey(VIEW).isSortable());
+    assertEquals(11, view.submissions.getColumns().size());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(USER));
@@ -460,14 +458,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.samples.setVisible(true);
     for (int i = 0; i < submissions.size(); i++) {
       Submission submission = submissions.get(i);
-      Renderer<Submission> viewRawRenderer = view.submissions.getColumnByKey(VIEW).getRenderer();
-      assertTrue(viewRawRenderer instanceof LitRenderer<Submission>);
-      LitRenderer<Submission> viewRenderer = (LitRenderer<Submission>) viewRawRenderer;
-      assertEquals(VIEW_BUTTON, rendererTemplate(viewRenderer));
-      assertTrue(functions(viewRenderer).containsKey("view"));
-      functions(viewRenderer).get("view").accept(submission, null);
-      SubmissionDialog dialog = $(SubmissionDialog.class).first();
-      assertTrue(dialog.isOpened());
       assertEquals(submission.getExperiment(),
           test(view.submissions).getCellText(i, indexOfColumn(EXPERIMENT)));
       assertEquals(submission.getUser().getName(),
@@ -592,7 +582,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_HiddenColumnsUser() {
-    verify(userPreferenceService, never()).get(view, view.view.getKey());
     verify(userPreferenceService, never()).get(view, view.experiment.getKey());
     verify(userPreferenceService, never()).get(view, view.user.getKey());
     verify(userPreferenceService, never()).get(view, view.director.getKey());
@@ -618,8 +607,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertTrue(view.status.isVisible());
     assertFalse(view.hidden.isVisible());
     test(view.hideColumnsContextMenu).open();
-    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
-        .withText(header.getCell(view.view).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.experiment).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
@@ -667,7 +654,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void submissions_HiddenColumnsManager() {
-    verify(userPreferenceService, never()).get(view, view.view.getKey());
     verify(userPreferenceService, never()).get(view, view.experiment.getKey());
     verify(userPreferenceService).get(view, view.user.getKey());
     verify(userPreferenceService, never()).get(view, view.director.getKey());
@@ -693,8 +679,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertTrue(view.status.isVisible());
     assertFalse(view.hidden.isVisible());
     test(view.hideColumnsContextMenu).open();
-    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
-        .withText(header.getCell(view.view).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.experiment).getText()).exists());
     assertTrue(
@@ -746,7 +730,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void submissions_HiddenColumnsAdmin() {
-    verify(userPreferenceService, never()).get(view, view.view.getKey());
     verify(userPreferenceService, never()).get(view, view.experiment.getKey());
     verify(userPreferenceService).get(view, view.user.getKey());
     verify(userPreferenceService).get(view, view.director.getKey());
@@ -772,8 +755,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertTrue(view.status.isVisible());
     assertTrue(view.hidden.isVisible());
     test(view.hideColumnsContextMenu).open();
-    assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
-        .withText(header.getCell(view.view).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.experiment).getText()).exists());
     assertTrue(
@@ -1112,7 +1093,6 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void getHeaderText() {
     view = navigate(SubmissionsView.class);
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.getHeaderText(view.view));
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + EXPERIMENT),
         view.getHeaderText(view.experiment));
     assertEquals(view.getTranslation(SUBMISSION_PREFIX + USER), view.getHeaderText(view.user));
@@ -1144,6 +1124,53 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void view_Enabled() {
+    view.submissions.setItems(submissions);
+    assertFalse(view.view.isEnabled());
+    test(view.submissions).select(1);
+    assertTrue(view.view.isEnabled());
+    view.submissions.deselectAll();
+    assertFalse(view.view.isEnabled());
+  }
+
+  @Test
+  public void view() {
+    view.submissions.setItems(submissions);
+    Submission submission = submissions.get(1);
+    when(service.get(any())).thenReturn(Optional.of(submission));
+    test(view.submissions).select(1);
+
+    test(view.view).click();
+
+    verify(service).get(32L);
+    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    assertEquals(32L, dialog.getSubmissionId());
+  }
+
+  @Test
+  public void view_NoSelection() {
+    view.submissions.setItems(submissions);
+    view.view();
+
+    assertFalse($(SamplesStatusDialog.class).exists());
+    Notification error = $(Notification.class).first();
+    assertTrue(error instanceof ErrorNotification);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
+        ((ErrorNotification) error).getText());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void editStatus_Enabled() {
+    view.submissions.setItems(submissions);
+    assertFalse(view.editStatus.isEnabled());
+    test(view.submissions).select(1);
+    assertTrue(view.editStatus.isEnabled());
+    view.submissions.deselectAll();
+    assertFalse(view.editStatus.isEnabled());
+  }
+
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus() {
     view.submissions.setItems(submissions);
@@ -1162,12 +1189,24 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus_NoSelection() {
     view.submissions.setItems(submissions);
-    test(view.editStatus).click();
+    view.editStatus();
 
     assertFalse($(SamplesStatusDialog.class).exists());
-    Notification notification = $(Notification.class).first();
+    Notification error = $(Notification.class).first();
+    assertTrue(error instanceof ErrorNotification);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
-        test(notification).getText());
+        ((ErrorNotification) error).getText());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void history_Enabled() {
+    view.submissions.setItems(submissions);
+    assertFalse(view.history.isEnabled());
+    test(view.submissions).select(1);
+    assertTrue(view.history.isEnabled());
+    view.submissions.deselectAll();
+    assertFalse(view.history.isEnabled());
   }
 
   @Test
@@ -1189,12 +1228,13 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void history_NoSelection() {
     view.submissions.setItems(submissions);
-    test(view.history).click();
+    view.history();
 
     assertFalse($(HistoryView.class).exists());
-    Notification notification = $(Notification.class).first();
+    Notification error = $(Notification.class).first();
+    assertTrue(error instanceof ErrorNotification);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
-        test(notification).getText());
+        ((ErrorNotification) error).getText());
   }
 
   @Test
