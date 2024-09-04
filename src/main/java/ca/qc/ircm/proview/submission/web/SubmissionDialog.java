@@ -87,14 +87,14 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   void init() {
     logger.debug("submission dialog");
     setId(ID);
-    setWidth("1400px");
+    setWidth(authenticatedUser.hasRole(ADMIN) ? "1400px" : "1090px");
     setHeight("800px");
     setResizable(true);
     VerticalLayout layout = new VerticalLayout();
     add(layout);
     HorizontalLayout formLayout = new HorizontalLayout();
     Scroller printContentLayout = new Scroller(printContent);
-    printContentLayout.setHeight("600px");
+    printContentLayout.setHeight("650px");
     printContentLayout.setMinWidth("920px");
     printContentLayout.setMaxWidth("1090px");
     printContentLayout.setScrollDirection(Scroller.ScrollDirection.BOTH);
