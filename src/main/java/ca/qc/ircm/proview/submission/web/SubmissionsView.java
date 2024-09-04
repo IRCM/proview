@@ -38,6 +38,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.DateRangeField;
+import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.google.common.collect.Range;
@@ -76,7 +77,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -112,9 +112,6 @@ public class SubmissionsView extends VerticalLayout
       "<vaadin-button class='" + HIDDEN + "' .theme='${item.hiddenTheme}' @click='${toggleHidden}'>"
           + "<vaadin-icon .icon='${item.hiddenIcon}' slot='prefix'></vaadin-icon>"
           + "${item.hiddenValue}" + "</vaadin-button>";
-  public static final String VIEW_BUTTON =
-      "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
-          + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
@@ -138,7 +135,6 @@ public class SubmissionsView extends VerticalLayout
   protected Column<Submission> samples;
   protected Column<Submission> status;
   protected Column<Submission> hidden;
-  protected Column<Submission> view;
   protected TextField experimentFilter = new TextField();
   protected TextField userFilter = new TextField();
   protected TextField directorFilter = new TextField();
@@ -150,6 +146,7 @@ public class SubmissionsView extends VerticalLayout
   protected ComboBox<SampleStatus> statusFilter = new ComboBox<>();
   protected ComboBox<Boolean> hiddenFilter = new ComboBox<>();
   protected Button add = new Button();
+  protected Button view = new Button();
   protected Button editStatus = new Button();
   protected Button history = new Button();
   protected Button hideColumns = new Button();
@@ -179,10 +176,16 @@ public class SubmissionsView extends VerticalLayout
     logger.debug("submissions view");
     setId(ID);
     setHeightFull();
+    VerticalLayout submissionsLayout = new VerticalLayout();
+    submissionsLayout.setWidthFull();
+    submissionsLayout.setPadding(false);
+    submissionsLayout.setSpacing(false);
+    submissionsLayout.add(new HorizontalLayout(add, hideColumns), submissions);
+    submissionsLayout.expand(submissions);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    buttonsLayout.add(add, editStatus, history, hideColumns);
-    add(submissions, buttonsLayout);
-    expand(submissions);
+    buttonsLayout.add(view, editStatus, history);
+    add(submissionsLayout, buttonsLayout);
+    expand(submissionsLayout);
 
     columnProperties.put(EXPERIMENT, submission.experiment);
     columnProperties.put(USER, submission.user.name);
@@ -204,12 +207,15 @@ public class SubmissionsView extends VerticalLayout
         history(e.getItem());
       }
     });
+    submissions.addSelectionListener(e -> {
+      view.setEnabled(e.getAllSelectedItems().size() == 1);
+      editStatus.setEnabled(e.getAllSelectedItems().size() == 1);
+      history.setEnabled(e.getAllSelectedItems().size() == 1);
+    });
     Function<Column<Submission>, Boolean> columnVisibility = column -> {
       Optional<Boolean> value = userPreferenceService.get(this, column.getKey());
       return value.orElse(true);
     };
-    view = submissions.addColumn(LitRenderer.<Submission>of(VIEW_BUTTON).withFunction("view",
-        submission -> view(submission))).setKey(VIEW).setSortable(false).setFlexGrow(0);
     ValueProvider<Submission, String> submissionExperiment =
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
@@ -322,14 +328,20 @@ public class SubmissionsView extends VerticalLayout
     add.setId(ADD);
     add.setIcon(VaadinIcon.PLUS.create());
     add.addClickListener(e -> add());
+    view.setId(VIEW);
+    view.setIcon(VaadinIcon.EYE.create());
+    view.addClickListener(e -> view());
+    view.setEnabled(false);
     editStatus.setId(EDIT_STATUS);
     editStatus.setIcon(VaadinIcon.EDIT.create());
-    editStatus.addClickListener(e -> editSelectedStatus(getLocale()));
+    editStatus.addClickListener(e -> editStatus());
     editStatus.setVisible(authenticatedUser.hasRole(ADMIN));
+    editStatus.setEnabled(false);
     history.setId(HISTORY);
     history.setIcon(VaadinIcon.ARCHIVE.create());
-    history.addClickListener(e -> historySelected(getLocale()));
+    history.addClickListener(e -> history());
     history.setVisible(authenticatedUser.hasRole(ADMIN));
+    history.setEnabled(false);
     hideColumns.setId(HIDE_COLUMNS);
     hideColumns.setIcon(VaadinIcon.COG.create());
     hideColumnsContextMenu = new ColumnToggleContextMenu(hideColumns);
@@ -431,8 +443,6 @@ public class SubmissionsView extends VerticalLayout
     status.setHeader(statusHeader).setFooter(statusHeader);
     String hiddenHeader = getTranslation(SUBMISSION_PREFIX + HIDDEN);
     hidden.setHeader(hiddenHeader).setFooter(hiddenHeader);
-    String viewHeader = getTranslation(CONSTANTS_PREFIX + VIEW);
-    view.setHeader(viewHeader).setFooter(viewHeader);
     experimentFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     userFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     directorFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
@@ -449,6 +459,7 @@ public class SubmissionsView extends VerticalLayout
     hiddenFilter.setItemLabelGenerator(
         value -> getTranslation(SUBMISSION_PREFIX + property(HIDDEN, value)));
     add.setText(getTranslation(MESSAGES_PREFIX + ADD));
+    view.setText(getTranslation(CONSTANTS_PREFIX + VIEW));
     editStatus.setText(getTranslation(MESSAGES_PREFIX + EDIT_STATUS));
     history.setText(getTranslation(MESSAGES_PREFIX + HISTORY));
     hideColumns.setText(getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS));
@@ -518,11 +529,35 @@ public class SubmissionsView extends VerticalLayout
     submissions.getDataProvider().refreshAll();
   }
 
+  void add() {
+    UI.getCurrent().navigate(SubmissionView.class);
+  }
+
+  void view() {
+    Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      view(os.get());
+    } else {
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
+          .open();
+    }
+  }
+
   void view(Submission submission) {
     SubmissionDialog dialog = dialogFactory.getObject();
     dialog.setSubmissionId(submission.getId());
     dialog.open();
     dialog.addSavedListener(e -> loadSubmissions());
+  }
+
+  void editStatus() {
+    Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      editStatus(os.get());
+    } else {
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
+          .open();
+    }
   }
 
   void editStatus(Submission submission) {
@@ -534,31 +569,19 @@ public class SubmissionsView extends VerticalLayout
     }
   }
 
-  void history(Submission submission) {
-    if (authenticatedUser.hasRole(ADMIN)) {
-      UI.getCurrent().navigate(HistoryView.class, submission.getId());
-    }
-  }
-
-  void add() {
-    UI.getCurrent().navigate(SubmissionView.class);
-  }
-
-  void editSelectedStatus(Locale locale) {
-    Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
-    if (os.isPresent()) {
-      editStatus(os.get());
-    } else {
-      showNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)));
-    }
-  }
-
-  void historySelected(Locale locale) {
+  void history() {
     Optional<Submission> os = submissions.getSelectedItems().stream().findFirst();
     if (os.isPresent()) {
       history(os.get());
     } else {
-      showNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)));
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
+          .open();
+    }
+  }
+
+  void history(Submission submission) {
+    if (authenticatedUser.hasRole(ADMIN)) {
+      UI.getCurrent().navigate(HistoryView.class, submission.getId());
     }
   }
 

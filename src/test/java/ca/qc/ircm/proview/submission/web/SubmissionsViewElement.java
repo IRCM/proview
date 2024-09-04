@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.ADD;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.EDIT_STATUS;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.HISTORY;
@@ -25,6 +26,10 @@ public class SubmissionsViewElement extends VerticalLayoutElement {
 
   public ButtonElement add() {
     return $(ButtonElement.class).id(ADD);
+  }
+
+  public ButtonElement view() {
+    return $(ButtonElement.class).id(VIEW);
   }
 
   public ButtonElement editStatus() {

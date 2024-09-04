@@ -128,7 +128,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
-    view.submissions().view(0).click();
+    view.submissions().select(0);
+    view.view().click();
 
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());

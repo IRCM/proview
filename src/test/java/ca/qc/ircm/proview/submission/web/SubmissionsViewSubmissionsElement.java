@@ -14,8 +14,8 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = SUBMISSIONS)
 public class SubmissionsViewSubmissionsElement extends GridElement {
-  private static final int EXPERIMENT_COLUMN = 1;
-  private static final int VISIBLE_COLUMN = 11;
+  private static final int EXPERIMENT_COLUMN = 0;
+  private static final int VISIBLE_COLUMN = 10;
 
   public GridTHTDElement experimentCell(int row) {
     return getCell(row, EXPERIMENT_COLUMN);
@@ -23,9 +23,5 @@ public class SubmissionsViewSubmissionsElement extends GridElement {
 
   public ButtonElement visible(int row) {
     return getCell(row, VISIBLE_COLUMN).$(ButtonElement.class).first();
-  }
-
-  public ButtonElement view(int row) {
-    return getCell(row, 0).$(ButtonElement.class).first();
   }
 }

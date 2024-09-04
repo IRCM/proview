@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.PRINT;
-import static ca.qc.ircm.proview.Constants.RIGHT;
 import static ca.qc.ircm.proview.Constants.SAVE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.security.Permission.WRITE;
@@ -123,7 +122,6 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     print.addClickListener(e -> print());
     edit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     edit.setId(id(EDIT));
-    edit.addClassName(RIGHT);
     edit.setIcon(VaadinIcon.EDIT.create());
     edit.addClickListener(e -> edit());
   }

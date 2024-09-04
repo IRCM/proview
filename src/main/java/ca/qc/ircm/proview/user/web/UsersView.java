@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.Constants.ALL;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.EDIT;
-import static ca.qc.ircm.proview.Constants.ERROR_TEXT;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
@@ -23,6 +22,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
@@ -35,7 +35,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -80,16 +79,12 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       "<vaadin-button class='" + ACTIVE + "' .theme='${item.activeTheme}' @click='${toggleActive}'>"
           + "<vaadin-icon .icon='${item.activeIcon}' slot='prefix'></vaadin-icon>"
           + "${item.activeValue}" + "</vaadin-button>";
-  public static final String EDIT_BUTTON =
-      "<vaadin-button class='" + EDIT + "' theme='icon' @click='${edit}'>"
-          + "<vaadin-icon icon='vaadin:edit' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected Grid<User> users = new Grid<>();
-  protected Column<User> edit;
   protected Column<User> email;
   protected Column<User> name;
   protected Column<User> laboratory;
@@ -98,8 +93,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   protected TextField nameFilter = new TextField();
   protected TextField laboratoryFilter = new TextField();
   protected ComboBox<Optional<Boolean>> activeFilter = new ComboBox<>();
-  protected Div error = new Div();
   protected Button add = new Button();
+  protected Button edit = new Button();
   protected Button switchUser = new Button();
   protected Button viewLaboratory = new Button();
   private WebUserFilter filter = new WebUserFilter();
@@ -129,21 +124,29 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     logger.debug("users view");
     setId(ID);
     setHeightFull();
+    VerticalLayout usersLayout = new VerticalLayout();
+    usersLayout.setWidthFull();
+    usersLayout.setPadding(false);
+    usersLayout.setSpacing(false);
+    usersLayout.add(add, users);
+    usersLayout.expand(users);
     HorizontalLayout buttonsLayout = new HorizontalLayout();
-    add(users, error, buttonsLayout);
-    expand(users);
-    buttonsLayout.add(add, switchUser, viewLaboratory);
+    buttonsLayout.add(edit, switchUser, viewLaboratory);
+    add(usersLayout, buttonsLayout);
+    expand(usersLayout);
     users.setId(USERS);
     users.addItemDoubleClickListener(e -> {
       if (e.getColumn() == laboratory) {
         viewLaboratory(e.getItem().getLaboratory());
       } else {
-        view(e.getItem());
+        edit(e.getItem());
       }
     });
-    edit =
-        users.addColumn(LitRenderer.<User>of(EDIT_BUTTON).withFunction("edit", user -> view(user)))
-            .setKey(EDIT).setSortable(false).setFlexGrow(0);
+    users.addSelectionListener(e -> {
+      edit.setEnabled(e.getAllSelectedItems().size() == 1);
+      switchUser.setEnabled(e.getAllSelectedItems().size() == 1);
+      viewLaboratory.setEnabled(e.getAllSelectedItems().size() == 1);
+    });
     email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
         .setComparator(NormalizedComparator.of(user -> user.getEmail())).setFlexGrow(3);
     name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
@@ -178,17 +181,25 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     activeFilter.setItems(Optional.empty(), Optional.of(false), Optional.of(true));
     activeFilter.addValueChangeListener(e -> filterActive(e.getValue().orElse(null)));
     activeFilter.setSizeFull();
-    error.setId(ERROR_TEXT);
-    error.setVisible(false);
     add.setId(ADD);
+    add.setIcon(VaadinIcon.PLUS.create());
     add.addClickListener(e -> add());
     add.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
+    edit.setId(EDIT);
+    edit.setIcon(VaadinIcon.EDIT.create());
+    edit.addClickListener(e -> edit());
+    edit.setVisible(authenticatedUser.hasRole(ADMIN));
+    edit.setEnabled(false);
     switchUser.setId(SWITCH_USER);
+    switchUser.setIcon(VaadinIcon.BUG.create());
     switchUser.addClickListener(e -> switchUser());
     switchUser.setVisible(authenticatedUser.hasRole(ADMIN));
+    switchUser.setEnabled(false);
     viewLaboratory.setId(VIEW_LABORATORY);
+    viewLaboratory.setIcon(VaadinIcon.EDIT.create());
     viewLaboratory.addClickListener(e -> viewLaboratory());
     viewLaboratory.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
+    viewLaboratory.setEnabled(false);
 
     loadUsers();
   }
@@ -214,8 +225,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    String editHeader = getTranslation(CONSTANTS_PREFIX + EDIT);
-    edit.setHeader(editHeader).setFooter(editHeader);
+    edit.setText(getTranslation(CONSTANTS_PREFIX + EDIT));
     String emailHeader = getTranslation(USER_PREFIX + EMAIL);
     email.setHeader(emailHeader).setFooter(emailHeader);
     String nameHeader = getTranslation(USER_PREFIX + NAME);
@@ -231,11 +241,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
         value -> value.map(bv -> getTranslation(USER_PREFIX + property(ACTIVE, bv)))
             .orElse(getTranslation(CONSTANTS_PREFIX + ALL)));
     add.setText(getTranslation(MESSAGES_PREFIX + ADD));
-    add.setIcon(VaadinIcon.PLUS.create());
     switchUser.setText(getTranslation(MESSAGES_PREFIX + SWITCH_USER));
-    switchUser.setIcon(VaadinIcon.BUG.create());
     viewLaboratory.setText(getTranslation(MESSAGES_PREFIX + VIEW_LABORATORY));
-    viewLaboratory.setIcon(VaadinIcon.EDIT.create());
     users.getDataProvider().refreshAll();
   }
 
@@ -265,18 +272,22 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     users.getDataProvider().refreshAll();
   }
 
-  private void clearError() {
-    error.setVisible(false);
-  }
-
   @Override
   public String getPageTitle() {
     return getTranslation(MESSAGES_PREFIX + TITLE,
         getTranslation(CONSTANTS_PREFIX + APPLICATION_NAME));
   }
 
-  void view(User user) {
-    clearError();
+  void edit() {
+    User user = users.getSelectedItems().stream().findFirst().orElse(null);
+    if (user == null) {
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED)).open();
+    } else {
+      edit(user);
+    }
+  }
+
+  void edit(User user) {
     UserDialog dialog = dialogFactory.getObject();
     dialog.setUserId(user.getId());
     dialog.open();
@@ -284,18 +295,15 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   void viewLaboratory() {
-    clearError();
     User user = users.getSelectedItems().stream().findFirst().orElse(null);
     if (user == null) {
-      error.setText(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED));
-      error.setVisible(true);
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED)).open();
     } else {
       viewLaboratory(user.getLaboratory());
     }
   }
 
   void viewLaboratory(Laboratory laboratory) {
-    clearError();
     LaboratoryDialog laboratoryDialog = laboratoryDialogFactory.getObject();
     laboratoryDialog.setLaboratoryId(laboratory != null ? laboratory.getId() : null);
     laboratoryDialog.open();
@@ -303,18 +311,15 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   void toggleActive(User user) {
-    clearError();
     user.setActive(!user.isActive());
     service.save(user, null);
     users.getDataProvider().refreshItem(user);
   }
 
   void switchUser() {
-    clearError();
     User user = users.getSelectedItems().stream().findFirst().orElse(null);
     if (user == null) {
-      error.setText(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED));
-      error.setVisible(true);
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED)).open();
     } else {
       switchUserService.switchUser(user, VaadinServletRequest.getCurrent());
       UI.getCurrent().getPage().setLocation(getUrl(MainView.VIEW_NAME));
