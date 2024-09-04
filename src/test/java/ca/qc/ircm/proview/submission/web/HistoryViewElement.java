@@ -1,9 +1,12 @@
 package ca.qc.ircm.proview.submission.web;
 
+import static ca.qc.ircm.proview.Constants.VIEW;
+
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
+import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.annotations.Attribute;
@@ -18,6 +21,10 @@ import org.openqa.selenium.By;
 public class HistoryViewElement extends VerticalLayoutElement {
   public HistoryViewActivitiesElement activities() {
     return $(HistoryViewActivitiesElement.class).first();
+  }
+
+  public ButtonElement view() {
+    return $(ButtonElement.class).id(VIEW);
   }
 
   public SubmissionDialogElement dialog() {

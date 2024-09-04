@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
@@ -16,11 +17,11 @@ import static ca.qc.ircm.proview.submission.web.HistoryView.DESCRIPTION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.EXPLANATION_SPAN;
 import static ca.qc.ircm.proview.submission.web.HistoryView.HEADER;
 import static ca.qc.ircm.proview.submission.web.HistoryView.ID;
-import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_BUTTON;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_ERROR;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.functions;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
+import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
+import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,10 +48,12 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
+import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -131,6 +134,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(ACTIVITIES, view.activities.getId().orElse(""));
+    assertEquals(VIEW, view.view.getId().orElse(""));
+    validateIcon(VaadinIcon.EYE.create(), view.view.getIcon());
   }
 
   @Test
@@ -140,8 +145,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
         view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), header.getCell(view.user).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), footer.getCell(view.user).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
@@ -160,6 +163,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
         header.getCell(view.explanation).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         footer.getCell(view.explanation).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
   }
 
   @Test
@@ -171,8 +175,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
         view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     HeaderRow header = view.activities.getHeaderRows().get(0);
     FooterRow footer = view.activities.getFooterRows().get(0);
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), header.getCell(view.view).getText());
-    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), footer.getCell(view.view).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), header.getCell(view.user).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + USER), footer.getCell(view.user).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + ACTION_TYPE),
@@ -191,13 +193,12 @@ public class HistoryViewTest extends SpringUIUnitTest {
         header.getCell(view.explanation).getText());
     assertEquals(view.getTranslation(ACTIVITY_PREFIX + EXPLANATION),
         footer.getCell(view.explanation).getText());
+    assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
   }
 
   @Test
   public void activities_Columns() {
-    assertEquals(6, view.activities.getColumns().size());
-    assertNotNull(view.activities.getColumnByKey(VIEW));
-    assertFalse(view.activities.getColumnByKey(VIEW).isSortable());
+    assertEquals(5, view.activities.getColumns().size());
     assertNotNull(view.activities.getColumnByKey(USER));
     assertTrue(view.activities.getColumnByKey(USER).isSortable());
     assertNotNull(view.activities.getColumnByKey(ACTION_TYPE));
@@ -219,13 +220,6 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.setParameter(mock(BeforeEvent.class), 1L);
     for (int i = 0; i < activities.size(); i++) {
       Activity activity = activities.get(i);
-      Renderer<Activity> viewRawRenderer = test(view.activities).getColumn(VIEW).getRenderer();
-      assertTrue(viewRawRenderer instanceof LitRenderer<Activity>);
-      LitRenderer<Activity> viewRenderer = (LitRenderer<Activity>) viewRawRenderer;
-      assertEquals(VIEW_BUTTON, rendererTemplate(viewRenderer));
-      assertTrue(functions(viewRenderer).containsKey("view"));
-      functions(viewRenderer).get("view").accept(activity, null);
-      // TODO Test view
       assertEquals(activity.getUser().getName(),
           test(view.activities).getCellText(i, indexOfColumn(USER)));
       assertEquals(view.getTranslation(ACTION_TYPE_PREFIX + activity.getActionType().name()),
@@ -256,6 +250,37 @@ public class HistoryViewTest extends SpringUIUnitTest {
       assertEquals(activity.getExplanation(),
           explanationRenderer.getValueProviders().get("explanationTitle").apply(activity));
     }
+  }
+
+  @Test
+  public void view_Enabled() {
+    assertFalse(view.view.isEnabled());
+    test(view.activities).select(0);
+    assertTrue(view.view.isEnabled());
+    view.activities.deselectAll();
+    assertFalse(view.view.isEnabled());
+  }
+
+  @Test
+  public void view() {
+    Submission submission = mock(Submission.class);
+    Activity activity = items(view.activities).get(0);
+    when(service.record(activity)).thenReturn(Optional.of(submission));
+    test(view.activities).select(0);
+    test(view.view).click();
+
+    verify(dialog).setSubmissionId(submission.getId());
+    verify(dialog).open();
+  }
+
+  @Test
+  public void view_NoSelection() {
+    view.view();
+
+    Notification error = $(Notification.class).first();
+    assertTrue(error instanceof ErrorNotification);
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + property(ACTIVITIES, REQUIRED)),
+        ((ErrorNotification) error).getText());
   }
 
   @Test

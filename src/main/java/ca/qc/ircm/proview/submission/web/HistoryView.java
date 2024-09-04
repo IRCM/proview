@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
+import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
@@ -8,6 +9,7 @@ import static ca.qc.ircm.proview.history.ActivityProperties.ACTION_TYPE;
 import static ca.qc.ircm.proview.history.ActivityProperties.EXPLANATION;
 import static ca.qc.ircm.proview.history.ActivityProperties.TIMESTAMP;
 import static ca.qc.ircm.proview.history.ActivityProperties.USER;
+import static ca.qc.ircm.proview.text.Strings.property;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.history.ActionType;
@@ -22,11 +24,14 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.user.UserRole;
+import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -40,7 +45,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
@@ -59,9 +64,6 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   public static final String ACTIVITIES = "activities";
   public static final String DESCRIPTION = "description";
   public static final String VIEW_ERROR = "description";
-  public static final String VIEW_BUTTON =
-      "<vaadin-button class='" + VIEW + "' theme='icon' @click='${view}'>"
-          + "<vaadin-icon icon='vaadin:eye' slot='prefix'></vaadin-icon>" + "</vaadin-button>";
   public static final String DESCRIPTION_SPAN =
       "<span .title='${item.descriptionTitle}'>${item.descriptionValue}</span>";
   public static final String EXPLANATION_SPAN =
@@ -73,12 +75,12 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected Grid<Activity> activities = new Grid<>();
-  protected Column<Activity> view;
   protected Column<Activity> user;
   protected Column<Activity> type;
   protected Column<Activity> date;
   protected Column<Activity> description;
   protected Column<Activity> explanation;
+  protected Button view = new Button();
   private Submission submission;
   private transient ObjectFactory<SubmissionDialog> dialogFactory;
   private transient ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
@@ -103,13 +105,9 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
     logger.debug("history view");
     setId(ID);
     setHeightFull();
-    add(activities);
+    add(activities, view);
     expand(activities);
     activities.setId(ACTIVITIES);
-    view = activities
-        .addColumn(
-            LitRenderer.<Activity>of(VIEW_BUTTON).withFunction("view", ac -> view(ac, getLocale())))
-        .setKey(VIEW).setSortable(false).setFlexGrow(0);
     user = activities.addColumn(ac -> ac.getUser().getName(), USER).setKey(USER).setFlexGrow(5);
     type =
         activities.addColumn(ac -> getTranslation(ACTION_TYPE_PREFIX + ac.getActionType().name()),
@@ -127,13 +125,16 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
             .withProperty("explanationTitle", ac -> ac.getExplanation())
             .withProperty("explanationValue", ac -> ac.getExplanation()))
         .setKey(EXPLANATION).setSortable(false).setFlexGrow(5);
-    activities.addItemDoubleClickListener(e -> view(e.getItem(), getLocale()));
+    activities.addItemDoubleClickListener(e -> view(e.getItem()));
+    activities.addSelectionListener(e -> view.setEnabled(e.getAllSelectedItems().size() == 1));
+    view.setId(VIEW);
+    view.setIcon(VaadinIcon.EYE.create());
+    view.addClickListener(e -> view());
+    view.setEnabled(false);
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
-    String viewHeader = getTranslation(CONSTANTS_PREFIX + VIEW);
-    view.setHeader(viewHeader).setFooter(viewHeader);
     String userHeader = getTranslation(ACTIVITY_PREFIX + USER);
     user.setHeader(userHeader).setFooter(userHeader);
     String typeHeader = getTranslation(ACTIVITY_PREFIX + ACTION_TYPE);
@@ -144,6 +145,7 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
     description.setHeader(descriptionHeader).setFooter(descriptionHeader);
     String explanationHeader = getTranslation(ACTIVITY_PREFIX + EXPLANATION);
     explanation.setHeader(explanationHeader).setFooter(explanationHeader);
+    view.setText(getTranslation(CONSTANTS_PREFIX + VIEW));
     updateHeader();
   }
 
@@ -189,7 +191,17 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
     }
   }
 
-  void view(Activity activity, Locale locale) {
+  void view() {
+    Optional<Activity> os = activities.getSelectedItems().stream().findFirst();
+    if (os.isPresent()) {
+      view(os.get());
+    } else {
+      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(ACTIVITIES, REQUIRED)))
+          .open();
+    }
+  }
+
+  void view(Activity activity) {
     Object record = service.record(activity).orElse(new Object());
     if (record instanceof SubmissionSample) {
       record = ((SubmissionSample) record).getSubmission();

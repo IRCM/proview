@@ -19,7 +19,8 @@ public class TreatmentDialogItTest extends AbstractTestBenchTestCase {
   private void open() throws Throwable {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
-    view.activities().view(3).click();
+    view.activities().select(3);
+    view.view().click();
     $(TreatmentDialogElement.class).waitForFirst();
   }
 

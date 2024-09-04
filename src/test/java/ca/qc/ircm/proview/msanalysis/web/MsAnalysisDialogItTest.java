@@ -19,7 +19,8 @@ public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
   private void open() {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
-    view.activities().view(5).click();
+    view.activities().select(5);
+    view.view().click();
     $(MsAnalysisDialogElement.class).waitForFirst();
   }
 
