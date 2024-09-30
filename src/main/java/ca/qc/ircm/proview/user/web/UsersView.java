@@ -221,6 +221,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(null)
         : service.all(null, authenticatedUser.getUser().get().getLaboratory());
     this.users.setItems(users);
+    this.users.getListDataView().setFilter(filter);
   }
 
   @Override
