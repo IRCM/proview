@@ -32,14 +32,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
-  @Autowired
-  private SampleActivityService sampleActivityService;
-  @Autowired
-  private SubmissionRepository repository;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final SampleActivityService sampleActivityService;
+  private final SubmissionRepository repository;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected SubmissionActivityService() {
+  @Autowired
+  protected SubmissionActivityService(SampleActivityService sampleActivityService,
+      SubmissionRepository repository, AuthenticatedUser authenticatedUser) {
+    this.sampleActivityService = sampleActivityService;
+    this.repository = repository;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**

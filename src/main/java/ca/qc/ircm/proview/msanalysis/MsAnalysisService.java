@@ -22,12 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MsAnalysisService {
-  @Autowired
-  private MsAnalysisRepository repository;
-  @Autowired
-  private JPAQueryFactory queryFactory;
+  private final MsAnalysisRepository repository;
+  private final JPAQueryFactory queryFactory;
 
-  protected MsAnalysisService() {
+  @Autowired
+  protected MsAnalysisService(MsAnalysisRepository repository, JPAQueryFactory queryFactory) {
+    this.repository = repository;
+    this.queryFactory = queryFactory;
   }
 
   /**

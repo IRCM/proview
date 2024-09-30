@@ -22,14 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserPreferenceService {
-  @Autowired
-  private UserPreferenceRepository repository;
-  @Autowired
-  private PreferenceRepository preferenceRepository;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final UserPreferenceRepository repository;
+  private final PreferenceRepository preferenceRepository;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected UserPreferenceService() {
+  @Autowired
+  protected UserPreferenceService(UserPreferenceRepository repository,
+      PreferenceRepository preferenceRepository, AuthenticatedUser authenticatedUser) {
+    this.repository = repository;
+    this.preferenceRepository = preferenceRepository;
+    this.authenticatedUser = authenticatedUser;
   }
 
   private String toString(Object referer) {

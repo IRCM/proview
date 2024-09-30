@@ -34,22 +34,26 @@ import org.thymeleaf.context.Context;
 @Transactional
 public class PlateService {
   public static final String PLATE = "plate";
-  @Autowired
-  private PlateRepository repository;
-  @Autowired
-  private WellRepository wellRepository;
-  @Autowired
-  private JPAQueryFactory queryFactory;
-  @Autowired
-  private PlateActivityService plateActivityService;
-  @Autowired
-  private ActivityService activityService;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
-  @Autowired
-  private TemplateEngine emailTemplateEngine;
+  private final PlateRepository repository;
+  private final WellRepository wellRepository;
+  private final JPAQueryFactory queryFactory;
+  private final PlateActivityService plateActivityService;
+  private final ActivityService activityService;
+  private final AuthenticatedUser authenticatedUser;
+  private final TemplateEngine emailTemplateEngine;
 
-  protected PlateService() {
+  @Autowired
+  protected PlateService(PlateRepository repository, WellRepository wellRepository,
+      JPAQueryFactory queryFactory, PlateActivityService plateActivityService,
+      ActivityService activityService, AuthenticatedUser authenticatedUser,
+      TemplateEngine emailTemplateEngine) {
+    this.repository = repository;
+    this.wellRepository = wellRepository;
+    this.queryFactory = queryFactory;
+    this.plateActivityService = plateActivityService;
+    this.activityService = activityService;
+    this.authenticatedUser = authenticatedUser;
+    this.emailTemplateEngine = emailTemplateEngine;
   }
 
   /**

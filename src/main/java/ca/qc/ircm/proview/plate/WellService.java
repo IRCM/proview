@@ -14,10 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class WellService {
-  @Autowired
-  private WellRepository wellRepository;
+  private final WellRepository wellRepository;
 
-  protected WellService() {
+  @Autowired
+  protected WellService(WellRepository wellRepository) {
+    this.wellRepository = wellRepository;
   }
 
   /**

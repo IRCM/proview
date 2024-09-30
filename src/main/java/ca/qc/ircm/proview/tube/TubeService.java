@@ -18,10 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TubeService {
-  @Autowired
-  private TubeRepository repository;
+  private final TubeRepository repository;
 
-  protected TubeService() {
+  @Autowired
+  protected TubeService(TubeRepository repository) {
+    this.repository = repository;
   }
 
   /**

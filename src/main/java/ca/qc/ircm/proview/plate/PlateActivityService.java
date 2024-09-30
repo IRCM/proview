@@ -28,14 +28,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlateActivityService {
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(PlateActivityService.class);
-  @Autowired
-  private PlateRepository repository;
-  @Autowired
-  private WellRepository wellRepository;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final PlateRepository repository;
+  private final WellRepository wellRepository;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected PlateActivityService() {
+  @Autowired
+  protected PlateActivityService(PlateRepository repository, WellRepository wellRepository,
+      AuthenticatedUser authenticatedUser) {
+    this.repository = repository;
+    this.wellRepository = wellRepository;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**

@@ -28,14 +28,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class SampleActivityService {
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
-  @Autowired
-  private SampleRepository repository;
-  @Autowired
-  private SubmissionSampleRepository submissionSampleRepository;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final SampleRepository repository;
+  private final SubmissionSampleRepository submissionSampleRepository;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected SampleActivityService() {
+  @Autowired
+  protected SampleActivityService(SampleRepository repository,
+      SubmissionSampleRepository submissionSampleRepository, AuthenticatedUser authenticatedUser) {
+    this.repository = repository;
+    this.submissionSampleRepository = submissionSampleRepository;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**

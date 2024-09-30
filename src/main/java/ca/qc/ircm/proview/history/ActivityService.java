@@ -61,14 +61,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ActivityService {
   private static final String MESSAGES_PREFIX = messagePrefix(ActivityService.class);
-  @Autowired
-  private ActivityRepository repository;
-  @Autowired
-  private JPAQueryFactory queryFactory;
-  @Autowired
-  private MessageSource messageSource;
+  private final ActivityRepository repository;
+  private final JPAQueryFactory queryFactory;
+  private final MessageSource messageSource;
 
-  protected ActivityService() {
+  @Autowired
+  public ActivityService(ActivityRepository repository, JPAQueryFactory queryFactory,
+      MessageSource messageSource) {
+    this.repository = repository;
+    this.queryFactory = queryFactory;
+    this.messageSource = messageSource;
   }
 
   /**

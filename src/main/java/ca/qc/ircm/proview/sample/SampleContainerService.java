@@ -13,10 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SampleContainerService {
-  @Autowired
-  private SampleContainerRepository repository;
+  private final SampleContainerRepository repository;
 
-  protected SampleContainerService() {
+  @Autowired
+  protected SampleContainerService(SampleContainerRepository repository) {
+    this.repository = repository;
   }
 
   /**

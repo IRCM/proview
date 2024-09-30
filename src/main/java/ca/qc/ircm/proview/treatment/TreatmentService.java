@@ -20,10 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TreatmentService {
-  @Autowired
-  private TreatmentRepository repository;
+  private final TreatmentRepository repository;
 
-  protected TreatmentService() {
+  @Autowired
+  protected TreatmentService(TreatmentRepository repository) {
+    this.repository = repository;
   }
 
   /**

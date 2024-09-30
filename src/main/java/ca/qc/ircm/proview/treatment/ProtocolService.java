@@ -15,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProtocolService {
-  @Autowired
-  private ProtocolRepository repository;
+  private final ProtocolRepository repository;
 
-  protected ProtocolService() {
+  @Autowired
+  protected ProtocolService(ProtocolRepository repository) {
+    this.repository = repository;
   }
 
   /**

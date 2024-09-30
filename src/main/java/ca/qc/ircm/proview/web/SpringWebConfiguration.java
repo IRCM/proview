@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.DEFAULT_LOCALE;
 
 import ca.qc.ircm.proview.logging.web.MdcFilter;
+import ca.qc.ircm.proview.security.AuthenticatedUser;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,12 @@ import org.springframework.web.util.IntrospectorCleanupListener;
  */
 @Configuration
 public class SpringWebConfiguration implements WebMvcConfigurer {
+  private final AuthenticatedUser authenticatedUser;
+
+  protected SpringWebConfiguration(AuthenticatedUser authenticatedUser) {
+    this.authenticatedUser = authenticatedUser;
+  }
+
   /**
    * Spring's request logging filter.
    *
@@ -42,7 +49,7 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
 
   @Bean(name = MdcFilter.BEAN_NAME)
   public MdcFilter mdcFilter() {
-    return new MdcFilter();
+    return new MdcFilter(authenticatedUser);
   }
 
   @Bean

@@ -17,26 +17,30 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service class for Sample.
  */
-@org.springframework.stereotype.Service
+@Service
 @Transactional
 public class SubmissionSampleService {
-  @Autowired
-  private SubmissionSampleRepository repository;
-  @Autowired
-  private SubmissionRepository submissionRepository;
-  @Autowired
-  private SampleActivityService sampleActivityService;
-  @Autowired
-  private ActivityService activityService;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final SubmissionSampleRepository repository;
+  private final SubmissionRepository submissionRepository;
+  private final SampleActivityService sampleActivityService;
+  private final ActivityService activityService;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected SubmissionSampleService() {
+  @Autowired
+  protected SubmissionSampleService(SubmissionSampleRepository repository,
+      SubmissionRepository submissionRepository, SampleActivityService sampleActivityService,
+      ActivityService activityService, AuthenticatedUser authenticatedUser) {
+    this.repository = repository;
+    this.submissionRepository = submissionRepository;
+    this.sampleActivityService = sampleActivityService;
+    this.activityService = activityService;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**

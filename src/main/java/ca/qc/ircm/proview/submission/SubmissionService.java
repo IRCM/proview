@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -50,30 +49,34 @@ import org.thymeleaf.context.Context;
 public class SubmissionService {
   private static final String MESSAGE_PREFIX = messagePrefix(SubmissionService.class);
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
-  @Autowired
-  private SubmissionRepository repository;
-  @Autowired
-  private SampleRepository sampleRepository;
-  @Autowired
-  private PlateRepository plateRepository;
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private JPAQueryFactory queryFactory;
-  @Autowired
-  private SubmissionActivityService submissionActivityService;
-  @Autowired
-  private ActivityService activityService;
-  @Autowired
-  private TemplateEngine emailTemplateEngine;
-  @Autowired
-  private EmailService emailService;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
-  @Autowired
-  private MessageSource messageSource;
+  private final SubmissionRepository repository;
+  private final SampleRepository sampleRepository;
+  private final PlateRepository plateRepository;
+  private final UserRepository userRepository;
+  private final JPAQueryFactory queryFactory;
+  private final SubmissionActivityService submissionActivityService;
+  private final ActivityService activityService;
+  private final TemplateEngine emailTemplateEngine;
+  private final EmailService emailService;
+  private final AuthenticatedUser authenticatedUser;
+  private final MessageSource messageSource;
 
-  protected SubmissionService() {
+  public SubmissionService(SubmissionRepository repository, SampleRepository sampleRepository,
+      PlateRepository plateRepository, UserRepository userRepository, JPAQueryFactory queryFactory,
+      SubmissionActivityService submissionActivityService, ActivityService activityService,
+      TemplateEngine emailTemplateEngine, EmailService emailService,
+      AuthenticatedUser authenticatedUser, MessageSource messageSource) {
+    this.repository = repository;
+    this.sampleRepository = sampleRepository;
+    this.plateRepository = plateRepository;
+    this.userRepository = userRepository;
+    this.queryFactory = queryFactory;
+    this.submissionActivityService = submissionActivityService;
+    this.activityService = activityService;
+    this.emailTemplateEngine = emailTemplateEngine;
+    this.emailService = emailService;
+    this.authenticatedUser = authenticatedUser;
+    this.messageSource = messageSource;
   }
 
   /**

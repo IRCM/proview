@@ -28,16 +28,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
   private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
-  @Autowired
-  private UserRepository repository;
-  @Autowired
-  private LaboratoryRepository laboratoryRepository;
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
+  private final UserRepository repository;
+  private final LaboratoryRepository laboratoryRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final AuthenticatedUser authenticatedUser;
 
-  protected UserService() {
+  @Autowired
+  protected UserService(UserRepository repository, LaboratoryRepository laboratoryRepository,
+      PasswordEncoder passwordEncoder, AuthenticatedUser authenticatedUser) {
+    this.repository = repository;
+    this.laboratoryRepository = laboratoryRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.authenticatedUser = authenticatedUser;
   }
 
   /**

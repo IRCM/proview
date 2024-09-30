@@ -34,22 +34,26 @@ public class ForgotPasswordService {
   public static final Period VALID_PERIOD = Period.ofDays(2);
   private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordService.class);
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordService.class);
-  @Autowired
-  private ForgotPasswordRepository repository;
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-  @Autowired
-  private TemplateEngine emailTemplateEngine;
-  @Autowired
-  private EmailService emailService;
-  @Autowired
-  private ApplicationConfiguration applicationConfiguration;
-  @Autowired
-  private MessageSource messageSource;
+  private final ForgotPasswordRepository repository;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final TemplateEngine emailTemplateEngine;
+  private final EmailService emailService;
+  private final ApplicationConfiguration applicationConfiguration;
+  private final MessageSource messageSource;
 
-  protected ForgotPasswordService() {
+  @Autowired
+  protected ForgotPasswordService(ForgotPasswordRepository repository,
+      UserRepository userRepository, PasswordEncoder passwordEncoder,
+      TemplateEngine emailTemplateEngine, EmailService emailService,
+      ApplicationConfiguration applicationConfiguration, MessageSource messageSource) {
+    this.repository = repository;
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+    this.emailTemplateEngine = emailTemplateEngine;
+    this.emailService = emailService;
+    this.applicationConfiguration = applicationConfiguration;
+    this.messageSource = messageSource;
   }
 
   /**

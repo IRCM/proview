@@ -75,14 +75,10 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   protected SideNavItem contact;
   protected SideNavItem guidelines;
   protected Button changeLanguage = new Button();
-  @Autowired
   private transient SwitchUserService switchUserService;
-  @Autowired
   private transient AuthenticatedUser authenticatedUser;
 
-  protected ViewLayout() {
-  }
-
+  @Autowired
   protected ViewLayout(SwitchUserService switchUserService, AuthenticatedUser authenticatedUser) {
     this.switchUserService = switchUserService;
     this.authenticatedUser = authenticatedUser;
