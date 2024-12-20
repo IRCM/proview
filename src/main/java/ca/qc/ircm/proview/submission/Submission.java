@@ -5,7 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -49,7 +49,7 @@ import java.util.List;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Submission implements Data, Named, LaboratoryData, Serializable {
+public class Submission implements DataNullableId, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;
 

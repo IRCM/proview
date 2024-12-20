@@ -4,7 +4,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "activityupdate")
 @GeneratePropertyNames
-public class UpdateActivity implements Data {
+public class UpdateActivity implements DataNullableId {
   /**
    * Database identifier of update activity.
    */

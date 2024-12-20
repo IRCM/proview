@@ -4,7 +4,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = Protocol.TABLE_NAME)
 @GeneratePropertyNames
-public class Protocol implements Data, Serializable, Named {
+public class Protocol implements DataNullableId, Serializable, Named {
   /**
    * Protocol types.
    */

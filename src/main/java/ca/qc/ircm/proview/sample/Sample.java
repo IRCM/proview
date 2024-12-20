@@ -5,7 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "category")
 @GeneratePropertyNames
-public abstract class Sample implements Data, Named, Serializable {
+public abstract class Sample implements DataNullableId, Named, Serializable {
   /**
    * Sample category.
    */

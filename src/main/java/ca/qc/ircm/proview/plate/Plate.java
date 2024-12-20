@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Plate implements Data, Serializable, Named {
+public class Plate implements DataNullableId, Serializable, Named {
   public static final String TABLE_NAME = "plate";
   public static final int DEFAULT_COLUMN_COUNT = 12;
   public static final int DEFAULT_ROW_COUNT = 8;

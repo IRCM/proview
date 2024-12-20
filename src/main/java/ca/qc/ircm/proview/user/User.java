@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
@@ -31,7 +31,7 @@ import java.util.Locale;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class User implements Data, Named, Serializable {
+public class User implements DataNullableId, Named, Serializable {
   public static final String TABLE_NAME = "users";
   public static final String LOCALE_PREFERENCE = "locale";
   public static final long ROBOT_ID = 1L;
