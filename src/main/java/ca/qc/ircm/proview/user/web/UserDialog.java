@@ -84,7 +84,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   }
 
   private void updateHeader() {
-    if (form.getUser() != null && form.getUser().getId() != null) {
+    if (form.getUser() != null && form.getUser().getId() != 0) {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName()));
     } else {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 0));
@@ -107,7 +107,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Long getUserId() {
+  public long getUserId() {
     return form.getUser().getId();
   }
 
@@ -117,8 +117,8 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
    * @param id
    *          user's id
    */
-  public void setUserId(Long id) {
-    User user = id != null ? service.get(id).orElseThrow() : null;
+  public void setUserId(long id) {
+    User user = id != 0 ? service.get(id).orElseThrow() : null;
     form.setUser(user);
     updateHeader();
   }

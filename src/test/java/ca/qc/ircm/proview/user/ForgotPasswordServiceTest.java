@@ -112,11 +112,6 @@ public class ForgotPasswordServiceTest {
   }
 
   @Test
-  public void get_NullId() throws Exception {
-    assertFalse(service.get(null, confirmNumber).isPresent());
-  }
-
-  @Test
   public void get_NullConfirmNumber() throws Exception {
     assertFalse(service.get(7L, null).isPresent());
   }

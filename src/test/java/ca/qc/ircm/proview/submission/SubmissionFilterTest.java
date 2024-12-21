@@ -997,7 +997,7 @@ public class SubmissionFilterTest {
 
   private Submission user(String email, String userName) {
     Submission submission = new Submission();
-    User user = new User(null, email);
+    User user = new User(0, email);
     user.setName(userName);
     submission.setUser(user);
     submission.setSamples(Collections.emptyList());

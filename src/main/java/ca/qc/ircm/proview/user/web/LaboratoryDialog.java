@@ -93,7 +93,7 @@ public class LaboratoryDialog extends Dialog
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
     cancel.addClickListener(e -> cancel());
-    setLaboratoryId(null);
+    setLaboratoryId(0);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class LaboratoryDialog extends Dialog
   }
 
   private void updateHeader() {
-    if (binder.getBean() != null && binder.getBean().getId() != null) {
+    if (binder.getBean() != null && binder.getBean().getId() != 0) {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 1, binder.getBean().getName()));
     } else {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 0));
@@ -131,12 +131,12 @@ public class LaboratoryDialog extends Dialog
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Long getLaboratoryId() {
+  public long getLaboratoryId() {
     return binder.getBean().getId();
   }
 
-  public void setLaboratoryId(Long id) {
-    Laboratory laboratory = id != null ? service.get(id).orElseThrow() : new Laboratory();
+  public void setLaboratoryId(long id) {
+    Laboratory laboratory = id != 0 ? service.get(id).orElseThrow() : new Laboratory();
     binder.setBean(laboratory);
     updateHeader();
   }

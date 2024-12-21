@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,11 +51,6 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals("Translational Proteomics", laboratory.getName());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
-  }
-
-  @Test
-  public void get_NullId() throws Throwable {
-    assertFalse(service.get((Long) null).isPresent());
   }
 
   @Test

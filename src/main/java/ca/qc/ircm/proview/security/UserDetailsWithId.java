@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.security;
 
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.User;
 /**
  * An authenticated user.
  */
-public class UserDetailsWithId extends User implements DataNullableId {
+public class UserDetailsWithId extends User implements Data {
   private static final long serialVersionUID = -5167464958438112402L;
-  private final Long id;
+  private final long id;
 
   /**
    * Construct the <code>AuthenticatedUser</code> with the details required by authentication.
@@ -90,7 +90,7 @@ public class UserDetailsWithId extends User implements DataNullableId {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 }

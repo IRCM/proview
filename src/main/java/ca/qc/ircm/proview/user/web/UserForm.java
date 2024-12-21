@@ -236,7 +236,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
 
   private void updateReadOnly() {
     boolean readOnly =
-        user.getId() != null && !authenticatedUser.hasPermission(user, Permission.WRITE);
+        user.getId() != 0 && !authenticatedUser.hasPermission(user, Permission.WRITE);
     binder.setReadOnly(readOnly);
     laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
     laboratory
@@ -300,7 +300,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
       user.getLaboratory().setId(laboratory.getValue().getId());
       user.getLaboratory().setName(laboratory.getValue().getName());
     } else {
-      user.getLaboratory().setId(null);
+      user.getLaboratory().setId(0);
       user.getLaboratory().setName(newLaboratoryName.getValue());
     }
     return user;
@@ -316,7 +316,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     if (!laboratoriesDataProvider.getItems().isEmpty()) {
       final Laboratory laboratory = user.getLaboratory();
       this.laboratory.setValue(laboratoriesDataProvider.getItems().stream()
-          .filter(lab -> lab.getId() != null && lab.getId().equals(laboratory.getId())).findAny()
+          .filter(lab -> lab.getId() != 0 && lab.getId() == laboratory.getId()).findAny()
           .orElse(laboratoriesDataProvider.getItems().iterator().next()));
       user.setLaboratory(
           laboratoryService.get(this.laboratory.getValue().getId()).orElse(new Laboratory()));
@@ -332,7 +332,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     }
     this.user = user;
     binder.setBean(user);
-    passwords.setRequired(user.getId() == null);
+    passwords.setRequired(user.getId() == 0);
     addressBinder.setBean(user.getAddress());
     phoneNumberBinder.setBean(user.getPhoneNumbers().get(0));
     updateReadOnly();

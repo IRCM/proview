@@ -319,7 +319,7 @@ public class SubmissionService {
   private void validateUpdateSubmission(Submission submission) {
     if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
       Submission old = repository.findById(submission.getId()).orElse(null);
-      if (!old.getUser().getId().equals(submission.getUser().getId())) {
+      if (old.getUser().getId() != submission.getUser().getId()) {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
 

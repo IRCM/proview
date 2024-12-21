@@ -147,8 +147,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setLaboratoryId_Null() {
-    dialog.setLaboratoryId(null);
+  public void setLaboratoryId_0() {
+    dialog.setLaboratoryId(0);
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 0), dialog.getHeaderTitle());
     assertEquals("", dialog.name.getValue());
     assertFalse(dialog.name.isReadOnly());
@@ -180,7 +180,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   @Test
   public void save_New() {
     dialog.addSavedListener(savedListener);
-    dialog.setLaboratoryId(null);
+    dialog.setLaboratoryId(0);
     String name = "My lab";
     dialog.name.setValue(name);
 
@@ -188,7 +188,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
     verify(service).save(laboratoryCaptor.capture());
     Laboratory laboratory = laboratoryCaptor.getValue();
-    assertNull(laboratory.getId());
+    assertEquals(0, laboratory.getId());
     assertEquals(name, laboratory.getName());
     assertNull(laboratory.getDirector());
     Notification notification = $(Notification.class).first();

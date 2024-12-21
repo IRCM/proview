@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -97,7 +98,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void save_Invalid() {
-    when(service.get(any(), any())).thenReturn(Optional.of(forgotPassword));
+    when(service.get(anyLong(), any())).thenReturn(Optional.of(forgotPassword));
     long id = 34925;
     String confirmNumber = "feafet23ts";
     String parameter = id + SEPARATOR + confirmNumber;
@@ -112,7 +113,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void save() {
-    when(service.get(any(), any())).thenReturn(Optional.of(forgotPassword));
+    when(service.get(anyLong(), any())).thenReturn(Optional.of(forgotPassword));
     long id = 34925;
     String confirmNumber = "feafet23ts";
     String parameter = id + SEPARATOR + confirmNumber;
@@ -139,7 +140,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter() {
-    when(service.get(any(), any())).thenReturn(Optional.of(forgotPassword));
+    when(service.get(anyLong(), any())).thenReturn(Optional.of(forgotPassword));
     view.form = mock(PasswordsForm.class);
     long id = 34925;
     String confirmNumber = "feafet23ts";
@@ -155,7 +156,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.form = mock(PasswordsForm.class);
     String parameter = "A434GS" + SEPARATOR + "feafet23ts";
     view.setParameter(beforeEvent, parameter);
-    verify(service, never()).get(any(), any());
+    verify(service, never()).get(anyLong(), any());
     Notification notification = $(Notification.class).last();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
@@ -167,7 +168,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     view.form = mock(PasswordsForm.class);
     String parameter = "34925";
     view.setParameter(beforeEvent, parameter);
-    verify(service, never()).get(any(), any());
+    verify(service, never()).get(anyLong(), any());
     Notification notification = $(Notification.class).last();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());
@@ -192,7 +193,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   public void setParameter_Null() {
     view.form = mock(PasswordsForm.class);
     view.setParameter(beforeEvent, null);
-    verify(service, never()).get(any(), any());
+    verify(service, never()).get(anyLong(), any());
     Notification notification = $(Notification.class).last();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());
     assertFalse(view.save.isEnabled());

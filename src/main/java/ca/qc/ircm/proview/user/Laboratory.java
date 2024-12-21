@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.user;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = Laboratory.TABLE_NAME)
 @GeneratePropertyNames
-public class Laboratory implements DataNullableId, Named, Serializable {
+public class Laboratory implements Data, Named, Serializable {
   public static final String TABLE_NAME = "laboratory";
   private static final long serialVersionUID = 8294913257061846746L;
 
@@ -29,7 +29,7 @@ public class Laboratory implements DataNullableId, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Name.
    */
@@ -60,11 +60,11 @@ public class Laboratory implements DataNullableId, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

@@ -66,22 +66,22 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
     if (currentUser == null) {
       return false;
     }
-    if (user.getId() != null && user.getId() == ROBOT_ID && permission.equals(Permission.WRITE)
+    if (user.getId() != 0 && user.getId() == ROBOT_ID && permission.equals(Permission.WRITE)
         && !user.isActive()) {
       return false;
     }
     if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
-    if (user.getId() == null) {
+    if (user.getId() == 0) {
       if (roleValidator.hasRole(MANAGER) && user.getLaboratory() != null
-          && user.getLaboratory().getId() != null && currentUser.getLaboratory() != null
-          && user.getLaboratory().getId().equals(currentUser.getLaboratory().getId())) {
+          && user.getLaboratory().getId() != 0 && currentUser.getLaboratory() != null
+          && user.getLaboratory().getId() == currentUser.getLaboratory().getId()) {
         return true;
       }
       return false;
     }
-    if (user.getId().equals(currentUser.getId())) {
+    if (user.getId() == currentUser.getId()) {
       return true;
     }
     boolean authorized = false;

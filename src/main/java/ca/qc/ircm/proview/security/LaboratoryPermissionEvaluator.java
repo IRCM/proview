@@ -67,7 +67,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
     if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
-    if (laboratory.getId() == null) {
+    if (laboratory.getId() == 0) {
       return false;
     }
     boolean authorized = false;
