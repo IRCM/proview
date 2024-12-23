@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -151,7 +152,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
       return file;
     }).collect(Collectors.toList());
     submission = repository.findById(1L).orElse(null);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     view = navigate(SubmissionView.class);
   }
 
@@ -581,7 +582,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     verify(service).insert(submissionCaptor.capture());
     verify(service, never()).update(any(), any());
     Submission saved = submissionCaptor.getValue();
-    assertNull(saved.getId());
+    assertEquals(0, saved.getId());
     assertEquals(Service.LC_MS_MS, saved.getService());
     assertEquals(submission.getExperiment(), saved.getExperiment());
     assertEquals(submission.getGoal(), saved.getGoal());
@@ -633,7 +634,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   public void save_UpdateLcmsms() {
     Submission database = repository.findById(1L).get();
     entityManager.detach(database);
-    when(service.get(any())).thenReturn(Optional.of(database));
+    when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);
     view.service.setSelectedTab(view.lcmsms);
@@ -706,7 +707,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     verify(service).insert(submissionCaptor.capture());
     verify(service, never()).update(any(), any());
     Submission saved = submissionCaptor.getValue();
-    assertNull(saved.getId());
+    assertEquals(0, saved.getId());
     assertEquals(Service.SMALL_MOLECULE, saved.getService());
     assertEquals(1, saved.getSamples().size());
     assertEquals(submission.getSamples().get(0).getType(), saved.getSamples().get(0).getType());
@@ -741,7 +742,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   public void save_UpdateSmallMolecule() {
     Submission database = repository.findById(1L).get();
     entityManager.detach(database);
-    when(service.get(any())).thenReturn(Optional.of(database));
+    when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);
     view.service.setSelectedTab(view.smallMolecule);
@@ -796,7 +797,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     verify(service).insert(submissionCaptor.capture());
     verify(service, never()).update(any(), any());
     Submission saved = submissionCaptor.getValue();
-    assertNull(saved.getId());
+    assertEquals(0, saved.getId());
     assertEquals(Service.INTACT_PROTEIN, saved.getService());
     assertEquals(submission.getExperiment(), saved.getExperiment());
     assertEquals(submission.getGoal(), saved.getGoal());
@@ -835,7 +836,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   public void save_UpdateIntactProtein() {
     Submission database = repository.findById(1L).get();
     entityManager.detach(database);
-    when(service.get(any())).thenReturn(Optional.of(database));
+    when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
     view.setParameter(beforeEvent, 1L);
     view.service.setSelectedTab(view.intactProtein);
@@ -891,7 +892,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     Submission submission = repository.findById(163L).get();
     submission.setComment(comment);
     submission.setSubmissionDate(LocalDateTime.now().minusMinutes(1));
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
 
     view.setParameter(beforeEvent, 163L);
 
@@ -917,7 +918,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter_ReadOnly() {
     Submission submission = repository.findById(35L).get();
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
 
     view.setParameter(beforeEvent, 35L);
 
@@ -942,7 +943,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_EmptySubmission() {
-    when(service.get(any())).thenReturn(Optional.empty());
+    when(service.get(anyLong())).thenReturn(Optional.empty());
 
     view.setParameter(beforeEvent, 2L);
 
@@ -957,7 +958,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     assertEquals(submission, view.lcmsmsSubmissionForm.getSubmission());
     assertEquals(submission, view.smallMoleculeSubmissionForm.getSubmission());
     assertEquals(submission, view.intactProteinSubmissionForm.getSubmission());
-    assertNull(submission.getId());
+    assertEquals(0, submission.getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
     assertEquals(GelSeparation.ONE_DIMENSION, submission.getSeparation());
@@ -977,7 +978,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   public void setParameter_Null() {
     view.setParameter(beforeEvent, null);
 
-    verify(service, never()).get(any());
+    verify(service, never()).get(anyLong());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
         view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     assertFalse(view.comment.isReadOnly());
@@ -988,7 +989,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     assertEquals(submission, view.lcmsmsSubmissionForm.getSubmission());
     assertEquals(submission, view.smallMoleculeSubmissionForm.getSubmission());
     assertEquals(submission, view.intactProteinSubmissionForm.getSubmission());
-    assertNull(submission.getId());
+    assertEquals(0, submission.getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals(StorageTemperature.MEDIUM, submission.getStorageTemperature());
     assertEquals(GelSeparation.ONE_DIMENSION, submission.getSeparation());

@@ -40,10 +40,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -134,8 +134,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
-    when(service.get(any())).thenAnswer(
-        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
+    when(service.get(anyLong())).thenAnswer(i -> repository.findById(i.getArgument(0)));
     when(userPreferenceService.get(any(), eq(SAMPLES))).thenReturn(Optional.of(false));
     when(userPreferenceService.get(any(), eq(STATUS))).thenReturn(Optional.of(true));
     UI.getCurrent().setLocale(locale);
@@ -842,7 +841,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void singleClickSubmission_ShiftAdmin() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().shift());
 
     verify(service).get(1L);
@@ -863,7 +862,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void singleClickSubmission_ControlAdmin() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
     verify(service).get(1L);
@@ -884,7 +883,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void singleClickSubmission_MetaAdmin() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().meta());
 
     verify(service).get(1L);
@@ -905,7 +904,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void singleClickSubmission_AltAdmin() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().alt());
 
     verify(service).get(1L);
@@ -917,7 +916,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void doubleClickSubmission() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(0);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).doubleClickRow(0);
 
     verify(service).get(1L);
@@ -1120,7 +1119,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     test(view.add).click();
 
     SubmissionView view = $(SubmissionView.class).first();
-    assertNull(view.getSubmission().getId());
+    assertEquals(0, view.getSubmission().getId());
   }
 
   @Test
@@ -1137,7 +1136,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void view() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).select(1);
 
     test(view.view).click();
@@ -1175,7 +1174,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void editStatus() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).select(1);
 
     test(view.editStatus).click();
@@ -1214,7 +1213,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   public void history() {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).select(1);
 
     test(view.history).click();

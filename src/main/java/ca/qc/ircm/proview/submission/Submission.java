@@ -5,7 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
@@ -49,7 +49,7 @@ import java.util.List;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Submission implements DataNullableId, Named, LaboratoryData, Serializable {
+public class Submission implements Data, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
   private static final long serialVersionUID = 2223809698076034086L;
 
@@ -59,7 +59,7 @@ public class Submission implements DataNullableId, Named, LaboratoryData, Serial
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Version number.
    */
@@ -352,7 +352,7 @@ public class Submission implements DataNullableId, Named, LaboratoryData, Serial
   public Submission() {
   }
 
-  public Submission(Long id) {
+  public Submission(long id) {
     this.id = id;
   }
 
@@ -367,11 +367,11 @@ public class Submission implements DataNullableId, Named, LaboratoryData, Serial
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

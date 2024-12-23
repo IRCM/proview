@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,7 +60,7 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   @BeforeEach
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
-    when(service.get(any())).thenReturn(repository.findById(164L));
+    when(service.get(anyLong())).thenReturn(repository.findById(164L));
     view = navigate(PrintSubmissionView.class, 164L);
   }
 
@@ -109,7 +109,7 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter() {
     Submission submission = repository.findById(33L).get();
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
 
     view.setParameter(mock(BeforeEvent.class), 33L);
 
@@ -121,22 +121,11 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_EmptySubmission() {
-    when(service.get(any())).thenReturn(Optional.empty());
+    when(service.get(anyLong())).thenReturn(Optional.empty());
 
     view.setParameter(mock(BeforeEvent.class), 35L);
 
     verify(service).get(35L);
-    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
-        view.secondHeader.getText());
-    assertNull(view.printContent.getSubmission());
-  }
-
-  @Test
-  public void setParameter_NullParameter() {
-    when(service.get(any())).thenReturn(Optional.empty());
-
-    view.setParameter(mock(BeforeEvent.class), null);
-
     assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
         view.secondHeader.getText());
     assertNull(view.printContent.getSubmission());

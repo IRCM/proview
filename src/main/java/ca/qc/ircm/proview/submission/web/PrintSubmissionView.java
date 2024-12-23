@@ -93,7 +93,7 @@ public class PrintSubmissionView extends VerticalLayout
   }
 
   private void updateSecondHeader() {
-    if (submission != null && submission.getId() != null) {
+    if (submission != null && submission.getId() != 0) {
       secondHeader.setText(getTranslation(SERVICE_PREFIX + submission.getService().name()));
     } else {
       secondHeader.setText(getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()));

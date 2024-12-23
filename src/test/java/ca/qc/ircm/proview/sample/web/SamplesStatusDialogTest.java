@@ -357,7 +357,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setSubmissionId_Null() {
-    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(null));
+  public void setSubmissionId_0() {
+    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(0));
   }
 }

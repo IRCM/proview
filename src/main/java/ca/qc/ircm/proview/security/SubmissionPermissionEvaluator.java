@@ -71,7 +71,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
-    if (submission.getId() == null) {
+    if (submission.getId() == 0) {
       return roleValidator.hasRole(USER);
     }
     User owner = submission.getUser();
