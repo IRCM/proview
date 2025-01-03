@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.DIGESTION;
 import static ca.qc.ircm.proview.treatment.Protocol.Type.ENRICHMENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,8 +45,8 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    assertFalse(service.get(null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test
@@ -70,8 +70,8 @@ public class ProtocolServiceTest {
     List<Protocol> protocols = service.all(DIGESTION);
 
     assertEquals(2, protocols.size());
-    assertTrue(find(protocols, 1L).isPresent());
-    assertTrue(find(protocols, 3L).isPresent());
+    assertTrue(findData(protocols, 1L).isPresent());
+    assertTrue(findData(protocols, 3L).isPresent());
   }
 
   @Test
@@ -79,8 +79,8 @@ public class ProtocolServiceTest {
     List<Protocol> protocols = service.all(ENRICHMENT);
 
     assertEquals(2, protocols.size());
-    assertTrue(find(protocols, 2L).isPresent());
-    assertTrue(find(protocols, 4L).isPresent());
+    assertTrue(findData(protocols, 2L).isPresent());
+    assertTrue(findData(protocols, 4L).isPresent());
   }
 
   @Test

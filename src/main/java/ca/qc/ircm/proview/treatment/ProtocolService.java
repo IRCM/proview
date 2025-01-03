@@ -30,11 +30,7 @@ public class ProtocolService {
    * @return protocol
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Optional<Protocol> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Protocol> get(long id) {
     return repository.findById(id);
   }
 

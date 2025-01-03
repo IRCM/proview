@@ -5,7 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Treatment implements DataNullableId, Serializable {
+public class Treatment implements Data, Serializable {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
@@ -57,7 +57,7 @@ public class Treatment implements DataNullableId, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Type of treatment.
    */
@@ -107,16 +107,16 @@ public class Treatment implements DataNullableId, Serializable {
   public Treatment() {
   }
 
-  public Treatment(Long id) {
+  public Treatment(long id) {
     this.id = id;
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

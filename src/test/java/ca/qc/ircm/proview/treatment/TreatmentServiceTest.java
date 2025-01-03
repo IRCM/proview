@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.treatment;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,8 +79,8 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    assertFalse(treatmentService.get(null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(treatmentService.get(0).isPresent());
   }
 
   @Test
@@ -106,8 +106,8 @@ public class TreatmentServiceTest {
     List<Treatment> treatments = treatmentService.all(submission);
 
     assertEquals(2, treatments.size());
-    assertTrue(find(treatments, 194L).isPresent());
-    assertTrue(find(treatments, 195L).isPresent());
+    assertTrue(findData(treatments, 194L).isPresent());
+    assertTrue(findData(treatments, 195L).isPresent());
   }
 
   @Test
@@ -118,10 +118,10 @@ public class TreatmentServiceTest {
 
     assertEquals(12, treatments.size());
     for (long id = 209; id < 214; id++) {
-      assertTrue(find(treatments, id).isPresent(), "Treatment " + id + " not found");
+      assertTrue(findData(treatments, id).isPresent(), "Treatment " + id + " not found");
     }
     for (long id = 215; id <= 221; id++) {
-      assertTrue(find(treatments, id).isPresent(), "Treatment " + id + " not found");
+      assertTrue(findData(treatments, id).isPresent(), "Treatment " + id + " not found");
     }
   }
 

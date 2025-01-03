@@ -35,11 +35,7 @@ public class TreatmentService {
    * @return treatment
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Optional<Treatment> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Treatment> get(long id) {
     return repository.findById(id);
   }
 

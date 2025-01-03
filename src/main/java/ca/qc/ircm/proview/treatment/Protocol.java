@@ -4,7 +4,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = Protocol.TABLE_NAME)
 @GeneratePropertyNames
-public class Protocol implements DataNullableId, Serializable, Named {
+public class Protocol implements Data, Serializable, Named {
   /**
    * Protocol types.
    */
@@ -38,7 +38,7 @@ public class Protocol implements DataNullableId, Serializable, Named {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Name of the Protocol.
    */
@@ -55,11 +55,11 @@ public class Protocol implements DataNullableId, Serializable, Named {
   public Protocol() {
   }
 
-  public Protocol(Long id) {
+  public Protocol(long id) {
     this.id = id;
   }
 
-  public Protocol(Long id, String name) {
+  public Protocol(long id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -70,11 +70,11 @@ public class Protocol implements DataNullableId, Serializable, Named {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
