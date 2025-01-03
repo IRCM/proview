@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.test.utils;
 
 import ca.qc.ircm.proview.Data;
-import ca.qc.ircm.proview.DataNullableId;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -13,11 +12,7 @@ import java.util.Optional;
  * Search utilities.
  */
 public class SearchUtils {
-  public static <D extends Data> Optional<D> findData(Collection<D> datas, long id) {
-    return datas.stream().filter(data -> data.getId() == id).findFirst();
-  }
-
-  public static <D extends DataNullableId> Optional<D> find(Collection<D> datas, long id) {
+  public static <D extends Data> Optional<D> find(Collection<D> datas, long id) {
     return datas.stream().filter(data -> data.getId() == id).findFirst();
   }
 

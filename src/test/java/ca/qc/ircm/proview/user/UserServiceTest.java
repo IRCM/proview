@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.user;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -188,8 +188,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     verify(filter).predicate();
     assertEquals(12, users.size());
-    assertTrue(findData(users, 2).isPresent());
-    assertFalse(findData(users, 1).isPresent());
+    assertTrue(find(users, 2).isPresent());
+    assertFalse(find(users, 1).isPresent());
   }
 
   @Test
@@ -198,18 +198,18 @@ public class UserServiceTest extends AbstractServiceTestCase {
     List<User> users = service.all(null);
 
     assertEquals(12, users.size());
-    assertTrue(findData(users, 2).isPresent());
-    assertTrue(findData(users, 3).isPresent());
-    assertTrue(findData(users, 4).isPresent());
-    assertTrue(findData(users, 5).isPresent());
-    assertTrue(findData(users, 10).isPresent());
-    assertTrue(findData(users, 11).isPresent());
-    assertTrue(findData(users, 12).isPresent());
-    assertTrue(findData(users, 19).isPresent());
-    assertTrue(findData(users, 24).isPresent());
-    assertTrue(findData(users, 25).isPresent());
-    assertTrue(findData(users, 26).isPresent());
-    assertTrue(findData(users, 27).isPresent());
+    assertTrue(find(users, 2).isPresent());
+    assertTrue(find(users, 3).isPresent());
+    assertTrue(find(users, 4).isPresent());
+    assertTrue(find(users, 5).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 11).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 19).isPresent());
+    assertTrue(find(users, 24).isPresent());
+    assertTrue(find(users, 25).isPresent());
+    assertTrue(find(users, 26).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test
@@ -245,8 +245,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     verify(filter).predicate();
     assertEquals(4, users.size());
-    assertTrue(findData(users, 3).isPresent());
-    assertFalse(findData(users, 2).isPresent());
+    assertTrue(find(users, 3).isPresent());
+    assertFalse(find(users, 2).isPresent());
   }
 
   @Test
@@ -257,8 +257,8 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     assertEquals(4, users.size());
-    assertTrue(findData(users, 3).isPresent());
-    assertFalse(findData(users, 2).isPresent());
+    assertTrue(find(users, 3).isPresent());
+    assertFalse(find(users, 2).isPresent());
   }
 
   @Test

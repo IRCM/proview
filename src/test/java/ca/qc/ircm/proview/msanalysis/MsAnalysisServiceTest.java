@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.msanalysis;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
@@ -62,7 +62,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     List<MsAnalysis> msAnalyses = service.all(submission);
 
     assertEquals(1, msAnalyses.size());
-    assertTrue(findData(msAnalyses, 21).isPresent());
+    assertTrue(find(msAnalyses, 21).isPresent());
   }
 
   @Test
