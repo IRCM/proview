@@ -25,8 +25,7 @@ public class ComparableUpdateActivity {
         + ((updateActivity.getNewValue() == null) ? 0 : updateActivity.getNewValue().hashCode());
     result = prime * result
         + ((updateActivity.getOldValue() == null) ? 0 : updateActivity.getOldValue().hashCode());
-    result = prime * result
-        + ((updateActivity.getRecordId() == null) ? 0 : updateActivity.getRecordId().hashCode());
+    result = prime * result + Long.hashCode(updateActivity.getRecordId());
     result = prime * result
         + ((updateActivity.getTableName() == null) ? 0 : updateActivity.getTableName().hashCode());
     return result;
@@ -68,11 +67,7 @@ public class ComparableUpdateActivity {
     } else if (!updateActivity.getOldValue().equals(other.updateActivity.getOldValue())) {
       return false;
     }
-    if (updateActivity.getRecordId() == null) {
-      if (other.updateActivity.getRecordId() != null) {
-        return false;
-      }
-    } else if (!updateActivity.getRecordId().equals(other.updateActivity.getRecordId())) {
+    if (updateActivity.getRecordId() != other.updateActivity.getRecordId()) {
       return false;
     }
     if (updateActivity.getTableName() == null) {

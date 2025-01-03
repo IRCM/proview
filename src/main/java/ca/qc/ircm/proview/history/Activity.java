@@ -5,7 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.user.User;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
@@ -30,14 +30,14 @@ import java.util.List;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Activity implements DataNullableId {
+public class Activity implements Data {
   /**
    * Database identifier of activity.
    */
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * User that made the action.
    */
@@ -53,7 +53,7 @@ public class Activity implements DataNullableId {
    * Database identifier of data.
    */
   @Column(nullable = false)
-  private Long recordId;
+  private long recordId;
   /**
    * Type of action.
    */
@@ -85,7 +85,7 @@ public class Activity implements DataNullableId {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
@@ -97,7 +97,7 @@ public class Activity implements DataNullableId {
     return tableName;
   }
 
-  public Long getRecordId() {
+  public long getRecordId() {
     return recordId;
   }
 
@@ -105,7 +105,7 @@ public class Activity implements DataNullableId {
     return actionType;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -117,7 +117,7 @@ public class Activity implements DataNullableId {
     this.tableName = tableName;
   }
 
-  public void setRecordId(Long recordId) {
+  public void setRecordId(long recordId) {
     this.recordId = recordId;
   }
 

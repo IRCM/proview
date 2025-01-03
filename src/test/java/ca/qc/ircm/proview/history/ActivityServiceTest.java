@@ -1,7 +1,7 @@
 package ca.qc.ircm.proview.history;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -424,13 +424,13 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     List<Activity> activities = activityService.all(submission);
 
     assertEquals(7, activities.size());
-    assertTrue(find(activities, 5543).isPresent());
-    assertTrue(find(activities, 5544).isPresent());
-    assertTrue(find(activities, 5550).isPresent());
-    assertTrue(find(activities, 5557).isPresent());
-    assertTrue(find(activities, 5558).isPresent());
-    assertTrue(find(activities, 5569).isPresent());
-    assertTrue(find(activities, 5573).isPresent());
+    assertTrue(findData(activities, 5543).isPresent());
+    assertTrue(findData(activities, 5544).isPresent());
+    assertTrue(findData(activities, 5550).isPresent());
+    assertTrue(findData(activities, 5557).isPresent());
+    assertTrue(findData(activities, 5558).isPresent());
+    assertTrue(findData(activities, 5569).isPresent());
+    assertTrue(findData(activities, 5573).isPresent());
   }
 
   @Test
@@ -440,13 +440,13 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     List<Activity> activities = activityService.all(submission);
 
     assertEquals(7, activities.size());
-    assertTrue(find(activities, 5634).isPresent());
-    assertTrue(find(activities, 5635).isPresent());
-    assertTrue(find(activities, 5636).isPresent());
-    assertTrue(find(activities, 5638).isPresent());
-    assertTrue(find(activities, 5639).isPresent());
-    assertTrue(find(activities, 5640).isPresent());
-    assertTrue(find(activities, 5641).isPresent());
+    assertTrue(findData(activities, 5634).isPresent());
+    assertTrue(findData(activities, 5635).isPresent());
+    assertTrue(findData(activities, 5636).isPresent());
+    assertTrue(findData(activities, 5638).isPresent());
+    assertTrue(findData(activities, 5639).isPresent());
+    assertTrue(findData(activities, 5640).isPresent());
+    assertTrue(findData(activities, 5641).isPresent());
   }
 
   @Test
@@ -578,8 +578,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     List<Activity> activities = activityService.allTreatmentActivities(plate);
 
     // Transfer.
-    assertTrue(find(activities, 5573L).isPresent());
-    Activity activity = find(activities, 5573L).get();
+    assertTrue(findData(activities, 5573L).isPresent());
+    Activity activity = findData(activities, 5573L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
@@ -595,8 +595,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(null, updateActivity.getOldValue());
     assertEquals("1", updateActivity.getNewValue());
     // Fractionation.
-    assertTrue(find(activities, 5569L).isPresent());
-    activity = find(activities, 5569L).get();
+    assertTrue(findData(activities, 5569L).isPresent());
+    activity = findData(activities, 5569L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 8L, activity.getRecordId());
@@ -646,8 +646,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     List<Activity> activities = activityService.allMsAnalysisActivities(plate);
 
-    assertTrue(find(activities, 5829L).isPresent());
-    Activity activity = find(activities, 5829L).get();
+    assertTrue(findData(activities, 5829L).isPresent());
+    Activity activity = findData(activities, 5829L).get();
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals((Long) 20L, activity.getRecordId());
