@@ -5,7 +5,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,7 +29,7 @@ import java.util.List;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class MsAnalysis implements DataNullableId, Serializable {
+public class MsAnalysis implements Data, Serializable {
   public static final String TABLE_NAME = "msanalysis";
   private static final long serialVersionUID = 7334138327920441104L;
 
@@ -39,7 +39,7 @@ public class MsAnalysis implements DataNullableId, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Mass detection instrument used in this MS analysis.
    */
@@ -77,7 +77,7 @@ public class MsAnalysis implements DataNullableId, Serializable {
   public MsAnalysis() {
   }
 
-  public MsAnalysis(Long id) {
+  public MsAnalysis(long id) {
     this.id = id;
   }
 
@@ -87,11 +87,11 @@ public class MsAnalysis implements DataNullableId, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

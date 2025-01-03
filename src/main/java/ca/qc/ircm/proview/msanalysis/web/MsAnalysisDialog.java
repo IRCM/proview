@@ -141,11 +141,11 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     acquisitions.setItems(msAnalysis.getAcquisitions());
   }
 
-  public Long getMsAnalysisId() {
+  public long getMsAnalysisId() {
     return msAnalysis.getId();
   }
 
-  public void setMsAnalysisId(Long id) {
+  public void setMsAnalysisId(long id) {
     this.msAnalysis = service.get(id).orElseThrow();
     localeChanged();
   }

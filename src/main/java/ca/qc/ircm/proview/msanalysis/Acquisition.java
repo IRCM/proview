@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
@@ -28,7 +28,7 @@ import java.io.Serializable;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Acquisition implements DataNullableId, Named, Serializable {
+public class Acquisition implements Data, Named, Serializable {
   public static final String TABLE_NAME = "acquisition";
   private static final long serialVersionUID = 4253647399151347110L;
 
@@ -38,7 +38,7 @@ public class Acquisition implements DataNullableId, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * MS Analysis.
    */
@@ -89,7 +89,7 @@ public class Acquisition implements DataNullableId, Named, Serializable {
   public Acquisition() {
   }
 
-  public Acquisition(Long id) {
+  public Acquisition(long id) {
     this.id = id;
   }
 
@@ -115,11 +115,11 @@ public class Acquisition implements DataNullableId, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
