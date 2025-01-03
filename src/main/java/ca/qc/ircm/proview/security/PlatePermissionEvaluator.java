@@ -70,7 +70,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
       return true;
     }
     if (plate.getSubmission() != null) {
-      if (plate.getId() == null) {
+      if (plate.getId() == 0) {
         return roleValidator.hasRole(USER);
       }
       Submission submission = plate.getSubmission();

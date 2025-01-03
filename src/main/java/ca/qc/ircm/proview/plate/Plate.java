@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Plate implements DataNullableId, Serializable, Named {
+public class Plate implements Data, Serializable, Named {
   public static final String TABLE_NAME = "plate";
   public static final int DEFAULT_COLUMN_COUNT = 12;
   public static final int DEFAULT_ROW_COUNT = 8;
@@ -50,7 +50,7 @@ public class Plate implements DataNullableId, Serializable, Named {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Name of this Plate.
    */
@@ -86,10 +86,10 @@ public class Plate implements DataNullableId, Serializable, Named {
   private List<Well> wells;
 
   public Plate() {
-    this(null);
+    this(0);
   }
 
-  public Plate(Long id) {
+  public Plate(long id) {
     this(id, null);
   }
 
@@ -101,7 +101,7 @@ public class Plate implements DataNullableId, Serializable, Named {
    * @param name
    *          name
    */
-  public Plate(Long id, String name) {
+  public Plate(long id, String name) {
     this.id = id;
     this.name = name;
     this.columnCount = 12;
@@ -285,11 +285,11 @@ public class Plate implements DataNullableId, Serializable, Named {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

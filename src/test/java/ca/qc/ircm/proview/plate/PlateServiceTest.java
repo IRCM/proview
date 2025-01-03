@@ -100,8 +100,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_NullId() throws Exception {
-    assertFalse(service.get((Long) null).isPresent());
+  public void get_0() {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test
