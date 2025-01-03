@@ -57,7 +57,7 @@
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>2.1</generate-property-names.version>
     <querydsl.version>5.0.0</querydsl.version>
-    <selenium.version>4.18.0</selenium.version>
+    <selenium.version>4.22.0</selenium.version>
     <greenmail.version>2.0.1</greenmail.version>
     <testbench.skip>false</testbench.skip>
     <testbench.maxAttempts>3</testbench.maxAttempts>
