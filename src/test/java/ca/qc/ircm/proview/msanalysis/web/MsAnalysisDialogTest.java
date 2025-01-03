@@ -282,9 +282,9 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setMsAnalysisId_Null() {
+  public void setMsAnalysisId_0() {
     assertThrows(NoSuchElementException.class, () -> {
-      dialog.setMsAnalysisId(null);
+      dialog.setMsAnalysisId(0);
     });
   }
 }

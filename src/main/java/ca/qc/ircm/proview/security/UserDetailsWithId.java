@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
  */
 public class UserDetailsWithId extends User implements Data {
   private static final long serialVersionUID = -5167464958438112402L;
-  private final Long id;
+  private final long id;
 
   /**
    * Construct the <code>AuthenticatedUser</code> with the details required by authentication.
@@ -90,7 +90,7 @@ public class UserDetailsWithId extends User implements Data {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 }

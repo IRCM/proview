@@ -168,7 +168,7 @@ public class SamplesStatusDialog extends Dialog
         binder.setBean(sample);
         binders.put(sample, binder);
       }
-      if (submission.getId() != null) {
+      if (submission.getId() != 0) {
         setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()));
       }
     }
@@ -191,11 +191,11 @@ public class SamplesStatusDialog extends Dialog
     fireEvent(new SavedEvent<>(this, true));
   }
 
-  public Long getSubmissionId() {
+  public long getSubmissionId() {
     return submission.getId();
   }
 
-  public void setSubmissionId(Long id) {
+  public void setSubmissionId(long id) {
     submission = service.get(id).orElseThrow();
     samples.setItems(submission.getSamples());
     localeChanged();

@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.submission;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = SubmissionFile.TABLE_NAME)
 @GeneratePropertyNames
-public class SubmissionFile implements Named, Serializable {
+public class SubmissionFile implements Data, Named, Serializable {
   public static final String TABLE_NAME = "submissionfiles";
   private static final long serialVersionUID = 2146676462335553712L;
   /**
@@ -27,7 +28,7 @@ public class SubmissionFile implements Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Filename as entered by user.
    */
@@ -68,11 +69,11 @@ public class SubmissionFile implements Named, Serializable {
     this.content = content != null ? content.clone() : null;
   }
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 }

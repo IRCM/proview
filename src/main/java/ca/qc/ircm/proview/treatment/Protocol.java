@@ -38,7 +38,7 @@ public class Protocol implements Data, Serializable, Named {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Name of the Protocol.
    */
@@ -55,11 +55,11 @@ public class Protocol implements Data, Serializable, Named {
   public Protocol() {
   }
 
-  public Protocol(Long id) {
+  public Protocol(long id) {
     this.id = id;
   }
 
-  public Protocol(Long id, String name) {
+  public Protocol(long id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -70,11 +70,11 @@ public class Protocol implements Data, Serializable, Named {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

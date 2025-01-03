@@ -29,11 +29,7 @@ public class WellService {
    * @return well
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Optional<Well> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Well> get(long id) {
     return wellRepository.findById(id);
   }
 }

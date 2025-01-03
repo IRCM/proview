@@ -38,7 +38,7 @@ public class Acquisition implements Data, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * MS Analysis.
    */
@@ -89,7 +89,7 @@ public class Acquisition implements Data, Named, Serializable {
   public Acquisition() {
   }
 
-  public Acquisition(Long id) {
+  public Acquisition(long id) {
     this.id = id;
   }
 
@@ -115,11 +115,11 @@ public class Acquisition implements Data, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

@@ -108,8 +108,7 @@ public class UsersViewTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
-    when(service.get(anyLong())).then(
-        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
+    when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     users = repository.findAll();
     when(service.all(any())).thenReturn(users);
@@ -537,7 +536,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     test(view.add).click();
 
     UserDialog dialog = $(UserDialog.class).first();
-    assertNull(dialog.getUserId());
+    assertEquals(0, dialog.getUserId());
   }
 
   @Test
@@ -620,7 +619,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   public void viewLaboratory_NoSelection() {
     view.viewLaboratory();
 
-    verify(laboratoryService, never()).get(any());
+    verify(laboratoryService, never()).get(anyLong());
     assertFalse($(LaboratoryDialog.class).exists());
     Notification error = $(Notification.class).first();
     assertTrue(error instanceof ErrorNotification);

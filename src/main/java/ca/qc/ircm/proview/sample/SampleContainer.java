@@ -42,7 +42,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Sample inside container.
    */
@@ -69,7 +69,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   public SampleContainer() {
   }
 
-  public SampleContainer(Long id) {
+  public SampleContainer(long id) {
     this.id = id;
   }
 
@@ -81,7 +81,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
   public abstract SampleContainerType getType();
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
@@ -89,7 +89,7 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     return getName();
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

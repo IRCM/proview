@@ -154,7 +154,7 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   }
 
   private void updateHeader() {
-    if (submission != null && submission.getId() != null) {
+    if (submission != null && submission.getId() != 0) {
       viewLayout().ifPresent(layout -> layout
           .setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment())));
     } else {
@@ -178,8 +178,8 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
     updateHeader();
   }
 
-  public Long getSubmissionId() {
-    return submission != null ? submission.getId() : null;
+  public long getSubmissionId() {
+    return submission != null ? submission.getId() : 0;
   }
 
   private void updateActivities() {

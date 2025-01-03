@@ -37,6 +37,7 @@ import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.test.utils.SearchUtils;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -300,8 +301,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_NullId() throws Throwable {
-    assertFalse(service.get((Long) null).isPresent());
+  public void get_Id0() throws Throwable {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test
@@ -312,10 +313,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(null);
 
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
-    Submission submission = find(submissions, 32).get();
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertFalse(SearchUtils.find(submissions, 34).isPresent());
+    Submission submission = SearchUtils.find(submissions, 32).get();
     assertEquals((Long) 32L, submission.getId());
     assertEquals("cap_experiment", submission.getExperiment());
     assertEquals("cap_goal", submission.getGoal());
@@ -325,7 +326,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0),
         sample.getSubmission().getSubmissionDate());
-    submission = find(submissions, 33).get();
+    submission = SearchUtils.find(submissions, 33).get();
     assertEquals((Long) 33L, submission.getId());
     sample = submission.getSamples().get(0);
     assertEquals((Long) 443L, sample.getId());
@@ -344,9 +345,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Submission> submissions = service.all(null);
 
     assertEquals(3, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(SearchUtils.find(submissions, 1).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
   }
 
   @Test
@@ -360,12 +361,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     verify(authenticatedUser).hasPermission(user.getLaboratory(), Permission.WRITE);
     assertEquals(18, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
-    assertTrue(find(submissions, 35).isPresent());
-    assertFalse(find(submissions, 36).isPresent());
+    assertTrue(SearchUtils.find(submissions, 1).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertFalse(SearchUtils.find(submissions, 34).isPresent());
+    assertTrue(SearchUtils.find(submissions, 35).isPresent());
+    assertFalse(SearchUtils.find(submissions, 36).isPresent());
   }
 
   @Test
@@ -378,12 +379,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Submission> submissions = service.all(null);
 
     assertEquals(20, submissions.size());
-    assertTrue(find(submissions, 1).isPresent());
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertTrue(find(submissions, 34).isPresent());
-    assertTrue(find(submissions, 35).isPresent());
-    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(SearchUtils.find(submissions, 1).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertTrue(SearchUtils.find(submissions, 34).isPresent());
+    assertTrue(SearchUtils.find(submissions, 35).isPresent());
+    assertTrue(SearchUtils.find(submissions, 36).isPresent());
   }
 
   @Test
@@ -397,9 +398,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Submission> submissions = service.all(filter);
 
     verify(filter).predicate();
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertFalse(SearchUtils.find(submissions, 34).isPresent());
   }
 
   @Test
@@ -412,9 +413,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(filter);
 
-    assertTrue(find(submissions, 32).isPresent());
-    assertFalse(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertFalse(SearchUtils.find(submissions, 33).isPresent());
+    assertFalse(SearchUtils.find(submissions, 34).isPresent());
   }
 
   @Test
@@ -430,9 +431,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Submission> submissions = service.all(filter);
 
     assertEquals(3, submissions.size());
-    assertTrue(find(submissions, 148).isPresent());
-    assertTrue(find(submissions, 149).isPresent());
-    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(SearchUtils.find(submissions, 148).isPresent());
+    assertTrue(SearchUtils.find(submissions, 149).isPresent());
+    assertTrue(SearchUtils.find(submissions, 150).isPresent());
   }
 
   @Test
@@ -449,9 +450,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<Submission> submissions = service.all(filter);
 
     assertEquals(3, submissions.size());
-    assertTrue(find(submissions, 149).isPresent());
-    assertTrue(find(submissions, 150).isPresent());
-    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(SearchUtils.find(submissions, 149).isPresent());
+    assertTrue(SearchUtils.find(submissions, 150).isPresent());
+    assertTrue(SearchUtils.find(submissions, 151).isPresent());
   }
 
   @Test
@@ -525,9 +526,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     List<Submission> submissions = service.all(null);
 
-    assertTrue(find(submissions, 32).isPresent());
-    assertTrue(find(submissions, 33).isPresent());
-    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(SearchUtils.find(submissions, 32).isPresent());
+    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertFalse(SearchUtils.find(submissions, 34).isPresent());
   }
 
   @Test

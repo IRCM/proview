@@ -28,11 +28,11 @@ public class Tube extends SampleContainer implements Data, Named, Serializable {
   public Tube() {
   }
 
-  public Tube(Long id) {
+  public Tube(long id) {
     super(id);
   }
 
-  public Tube(Long id, String name) {
+  public Tube(long id, String name) {
     super(id);
     this.name = name;
   }

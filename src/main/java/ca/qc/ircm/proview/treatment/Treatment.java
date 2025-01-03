@@ -57,7 +57,7 @@ public class Treatment implements Data, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Type of treatment.
    */
@@ -107,16 +107,16 @@ public class Treatment implements Data, Serializable {
   public Treatment() {
   }
 
-  public Treatment(Long id) {
+  public Treatment(long id) {
     this.id = id;
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

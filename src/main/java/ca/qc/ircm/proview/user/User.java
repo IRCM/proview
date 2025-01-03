@@ -43,7 +43,7 @@ public class User implements Data, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Email of User. This is also a unique id.
    */
@@ -130,7 +130,7 @@ public class User implements Data, Named, Serializable {
   public User() {
   }
 
-  public User(Long id) {
+  public User(long id) {
     this.id = id;
   }
 
@@ -138,7 +138,7 @@ public class User implements Data, Named, Serializable {
     this.email = email;
   }
 
-  public User(Long id, String email) {
+  public User(long id, String email) {
     this.id = id;
     this.email = email;
   }
@@ -166,11 +166,11 @@ public class User implements Data, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

@@ -27,11 +27,7 @@ public class SampleService {
    * @return sample
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
-  public Optional<Sample> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Sample> get(long id) {
     return repository.findById(id);
   }
 }

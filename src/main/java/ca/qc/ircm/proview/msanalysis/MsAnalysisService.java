@@ -39,11 +39,7 @@ public class MsAnalysisService {
    * @return MS analysis
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public Optional<MsAnalysis> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<MsAnalysis> get(long id) {
     return repository.findById(id);
   }
 

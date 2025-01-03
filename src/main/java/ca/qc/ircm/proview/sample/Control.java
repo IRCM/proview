@@ -28,11 +28,11 @@ public class Control extends Sample implements Named {
   public Control() {
   }
 
-  public Control(Long id) {
+  public Control(long id) {
     setId(id);
   }
 
-  public Control(Long id, String name) {
+  public Control(long id, String name) {
     setId(id);
     setName(name);
   }

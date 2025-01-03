@@ -87,11 +87,7 @@ public class SubmissionService {
    * @return submission
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
-  public Optional<Submission> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Submission> get(long id) {
     return repository.findById(id);
   }
 
@@ -319,7 +315,7 @@ public class SubmissionService {
   private void validateUpdateSubmission(Submission submission) {
     if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
       Submission old = repository.findById(submission.getId()).orElse(null);
-      if (!old.getUser().getId().equals(submission.getUser().getId())) {
+      if (old.getUser().getId() != submission.getUser().getId()) {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
 
@@ -342,7 +338,7 @@ public class SubmissionService {
 
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
-      if (sample.getId() == null) {
+      if (sample.getId() == 0) {
         sample.setStatus(SampleStatus.WAITING);
       }
       sampleRepository.save(sample);
@@ -353,10 +349,8 @@ public class SubmissionService {
 
   private void deleteOrphans(Submission submission) {
     Submission old = repository.findById(submission.getId()).get();
-    old.getSamples().stream()
-        .filter(sample -> !submission.getSamples().stream()
-            .filter(s2 -> sample.getId().equals(s2.getId())).findAny().isPresent())
-        .forEach(sample -> {
+    old.getSamples().stream().filter(sample -> !submission.getSamples().stream()
+        .filter(s2 -> sample.getId() == s2.getId()).findAny().isPresent()).forEach(sample -> {
           sampleRepository.delete(sample);
         });
   }

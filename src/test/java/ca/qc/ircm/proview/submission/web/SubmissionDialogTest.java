@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,8 +78,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
    */
   @BeforeEach
   public void beforeTest() {
-    when(service.get(any())).thenAnswer(
-        i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
+    when(service.get(anyLong())).thenAnswer(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
     view.submissions.setItems(repository.findAll());
@@ -210,7 +210,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @Test
   public void edit() {
     Submission submission = repository.findById(164L).get();
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.edit();
     SubmissionView submissionView = $(SubmissionView.class).first();
@@ -229,7 +229,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @Test
   public void print() {
     Submission submission = repository.findById(164L).get();
-    when(service.get(any())).thenReturn(Optional.of(submission));
+    when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.print();
     PrintSubmissionView printView = $(PrintSubmissionView.class).first();
@@ -266,7 +266,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setSubmissionId_Null() {
-    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(null));
+  public void setSubmissionId_0() {
+    assertThrows(NoSuchElementException.class, () -> dialog.setSubmissionId(0));
   }
 }

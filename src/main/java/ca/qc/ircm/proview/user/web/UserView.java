@@ -80,7 +80,7 @@ public class UserView extends VerticalLayout implements LocaleChangeObserver, Ha
   }
 
   private void updateHeader() {
-    if (form.getUser() != null && form.getUser().getId() != null) {
+    if (form.getUser() != null && form.getUser().getId() != 0) {
       viewLayout().ifPresent(layout -> layout
           .setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName())));
     } else {

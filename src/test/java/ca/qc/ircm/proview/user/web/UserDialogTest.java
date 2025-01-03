@@ -154,10 +154,10 @@ public class UserDialogTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setUserId_Null() {
+  public void setUserId_0() {
     dialog.form = mock(UserForm.class);
 
-    dialog.setUserId(null);
+    dialog.setUserId(0);
 
     verify(dialog.form).setUser(null);
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 0), dialog.getHeaderTitle());

@@ -161,7 +161,7 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
 
   private void updateHeader() {
     Submission submission = binder.getBean();
-    if (submission != null && submission.getId() != null) {
+    if (submission != null && submission.getId() != 0) {
       setHeaderTitle(submission.getExperiment());
     } else {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER));
@@ -194,16 +194,15 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
     close();
   }
 
-  Long getSubmissionId() {
-    return binder.getBean() != null ? binder.getBean().getId() : null;
+  long getSubmissionId() {
+    return binder.getBean() != null ? binder.getBean().getId() : 0;
   }
 
-  void setSubmissionId(Long id) {
+  void setSubmissionId(long id) {
     Submission submission = service.get(id).orElseThrow();
     binder.setBean(submission);
     printContent.setSubmission(submission);
-    edit.setEnabled(
-        submission.getId() == null || authenticatedUser.hasPermission(submission, WRITE));
+    edit.setEnabled(submission.getId() == 0 || authenticatedUser.hasPermission(submission, WRITE));
     updateHeader();
   }
 }

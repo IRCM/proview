@@ -53,7 +53,7 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
     this.column = 0;
   }
 
-  public Well(Long id) {
+  public Well(long id) {
     super(id);
   }
 

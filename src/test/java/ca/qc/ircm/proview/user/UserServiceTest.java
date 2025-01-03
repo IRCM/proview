@@ -115,11 +115,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_NullId() throws Throwable {
-    assertFalse(service.get((Long) null).isPresent());
-  }
-
-  @Test
   public void get_Email() throws Throwable {
     User user = service.get("benoit.coulombe@ircm.qc.ca").get();
 

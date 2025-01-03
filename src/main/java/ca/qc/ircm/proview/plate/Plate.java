@@ -50,7 +50,7 @@ public class Plate implements Data, Serializable, Named {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Name of this Plate.
    */
@@ -86,10 +86,10 @@ public class Plate implements Data, Serializable, Named {
   private List<Well> wells;
 
   public Plate() {
-    this(null);
+    this(0);
   }
 
-  public Plate(Long id) {
+  public Plate(long id) {
     this(id, null);
   }
 
@@ -101,7 +101,7 @@ public class Plate implements Data, Serializable, Named {
    * @param name
    *          name
    */
-  public Plate(Long id, String name) {
+  public Plate(long id, String name) {
     this.id = id;
     this.name = name;
     this.columnCount = 12;
@@ -188,8 +188,7 @@ public class Plate implements Data, Serializable, Named {
       return new ArrayList<>();
     }
     return wells.stream().filter(well -> well.getSample() != null)
-        .filter(well -> well.getSample().getId().equals(sample.getId()))
-        .collect(Collectors.toList());
+        .filter(well -> well.getSample().getId() == sample.getId()).collect(Collectors.toList());
   }
 
   /**
@@ -286,11 +285,11 @@ public class Plate implements Data, Serializable, Named {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

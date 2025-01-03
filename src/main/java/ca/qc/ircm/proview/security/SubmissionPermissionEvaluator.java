@@ -71,12 +71,12 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     if (roleValidator.hasRole(ADMIN)) {
       return true;
     }
-    if (submission.getId() == null) {
+    if (submission.getId() == 0) {
       return roleValidator.hasRole(USER);
     }
     User owner = submission.getUser();
     boolean authorized = false;
-    boolean ownerOrManager = currentUser.getId().equals(owner.getId()) || roleValidator
+    boolean ownerOrManager = currentUser.getId() == owner.getId() || roleValidator
         .hasAllRoles(MANAGER, UserAuthority.laboratoryMember(owner.getLaboratory()));
     authorized |= permission.equals(Permission.READ) && ownerOrManager;
     authorized |= permission.equals(Permission.WRITE) && !submissionAfterWaiting(submission)

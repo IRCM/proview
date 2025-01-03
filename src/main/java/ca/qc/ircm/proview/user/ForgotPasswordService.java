@@ -65,8 +65,8 @@ public class ForgotPasswordService {
    *          The confirm number of ForgotPassword.
    * @return ForgotPassword having this id.
    */
-  public Optional<ForgotPassword> get(final Long id, final String confirmNumber) {
-    if (id == null || confirmNumber == null) {
+  public Optional<ForgotPassword> get(final long id, final String confirmNumber) {
+    if (confirmNumber == null) {
       return Optional.empty();
     }
 

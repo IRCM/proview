@@ -32,7 +32,6 @@ import static ca.qc.ircm.proview.user.web.UserForm.id;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -292,8 +291,8 @@ public class UserFormTest extends SpringUIUnitTest {
     List<Laboratory> values = items(form.laboratory);
     assertEquals(laboratories.size(), values.size());
     for (Laboratory laboratory : laboratories) {
-      assertTrue(values.stream().filter(lab -> lab.getId().equals(laboratory.getId())).findAny()
-          .isPresent());
+      assertTrue(
+          values.stream().filter(lab -> lab.getId() == laboratory.getId()).findAny().isPresent());
       assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
     }
   }
@@ -897,7 +896,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertNull(user.getLaboratory().getId());
+    assertEquals(0, user.getLaboratory().getId());
     assertEquals(newLaboratoryName, user.getLaboratory().getName());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());

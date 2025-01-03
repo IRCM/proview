@@ -33,11 +33,7 @@ public class TubeService {
    * @return tube
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get().sample, 'read')")
-  public Optional<Tube> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<Tube> get(long id) {
     return repository.findById(id);
   }
 

@@ -79,8 +79,8 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    assertFalse(treatmentService.get(null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(treatmentService.get(0).isPresent());
   }
 
   @Test

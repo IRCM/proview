@@ -163,7 +163,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
         .orElse(getTranslation(MESSAGES_PREFIX + HEADER)));
   }
 
-  public Long getTreatmentId() {
+  public long getTreatmentId() {
     return treatment.getId();
   }
 
@@ -173,7 +173,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
    * @param id
    *          treatment id
    */
-  public void setTreatmentId(Long id) {
+  public void setTreatmentId(long id) {
     treatment = service.get(id).orElseThrow();
     updateHeaderTitle();
     if (treatment.getProtocol() != null) {

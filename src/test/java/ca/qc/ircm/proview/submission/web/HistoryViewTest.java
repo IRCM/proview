@@ -25,9 +25,9 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -121,8 +121,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     activities = repository.findAll();
     when(service.all(any())).thenReturn(activities);
-    when(submissionService.get(any())).thenAnswer(i -> Optional.ofNullable((Long) i.getArgument(0))
-        .map(id -> submissionRepository.findById(id)).orElse(Optional.empty()));
+    when(submissionService.get(anyLong()))
+        .thenAnswer(i -> submissionRepository.findById(i.getArgument(0)));
     view = navigate(HistoryView.class, 1L);
   }
 
@@ -375,7 +375,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     Submission submission = new Submission(1L);
     String experiment = "test submission";
     submission.setExperiment(experiment);
-    when(submissionService.get(any())).thenReturn(Optional.of(submission));
+    when(submissionService.get(anyLong())).thenReturn(Optional.of(submission));
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
     assertEquals(1L, view.getSubmissionId());
@@ -385,10 +385,10 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_EmptySubmission() {
-    when(submissionService.get(any())).thenReturn(Optional.empty());
+    when(submissionService.get(anyLong())).thenReturn(Optional.empty());
     view.setParameter(beforeEvent, 12L);
     verify(submissionService).get(12L);
-    assertNull(view.getSubmissionId());
+    assertEquals(0, view.getSubmissionId());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, ""),
         view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }

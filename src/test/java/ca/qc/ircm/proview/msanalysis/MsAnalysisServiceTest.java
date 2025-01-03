@@ -5,10 +5,10 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
@@ -51,8 +51,8 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Null() {
-    assertFalse(service.get((Long) null).isPresent());
+  public void get_0() {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test

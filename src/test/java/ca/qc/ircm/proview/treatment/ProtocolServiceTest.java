@@ -45,8 +45,8 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    assertFalse(service.get(null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test

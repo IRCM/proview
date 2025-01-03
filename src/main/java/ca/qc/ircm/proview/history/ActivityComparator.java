@@ -40,7 +40,7 @@ public class ActivityComparator implements Comparator<Activity>, Serializable {
     switch (this.compare) {
       case TIMESTAMP:
         compare = o1.getTimestamp().compareTo(o2.getTimestamp());
-        compare = compare == 0 ? o1.getId().compareTo(o2.getId()) : compare;
+        compare = compare == 0 ? Long.compare(o1.getId(), o2.getId()) : compare;
         return compare;
       default:
         throw new AssertionError("compare " + this.compare + " not covered in switch case");

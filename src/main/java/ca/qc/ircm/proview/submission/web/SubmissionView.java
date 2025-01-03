@@ -213,7 +213,7 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   private void updateHeader() {
     Submission submission = binder.getBean();
     viewLayout().ifPresent(layout -> layout.setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER,
-        submission.getId() != null ? 1 : 0, submission.getExperiment())));
+        submission.getId() != 0 ? 1 : 0, submission.getExperiment())));
   }
 
   @Override
@@ -283,7 +283,7 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
       Submission submission = binder.getBean();
       submission.setService(service());
       submission.setFiles(new ArrayList<>(filesDataProvider.getItems()));
-      if (submission.getId() == null) {
+      if (submission.getId() == 0) {
         logger.debug("save new submission {}", submission);
         submissionService.insert(submission);
       } else {

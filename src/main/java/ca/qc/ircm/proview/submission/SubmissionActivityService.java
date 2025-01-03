@@ -211,11 +211,10 @@ public class SubmissionActivityService {
         .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
     Set<Long> oldSampleIds =
-        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != null)
+        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != 0)
             .map(sample -> sample.getId()).collect(Collectors.toSet());
-    Set<Long> newSampleIds =
-        submission.getSamples().stream().filter(sample -> sample.getId() != null)
-            .map(sample -> sample.getId()).collect(Collectors.toSet());
+    Set<Long> newSampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != 0)
+        .map(sample -> sample.getId()).collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)

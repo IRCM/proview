@@ -51,7 +51,7 @@ public abstract class Sample implements Data, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Version number.
    */
@@ -86,11 +86,11 @@ public abstract class Sample implements Data, Named, Serializable {
   public Sample() {
   }
 
-  public Sample(Long id) {
+  public Sample(long id) {
     this.id = id;
   }
 
-  public Sample(Long id, String name) {
+  public Sample(long id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -108,11 +108,11 @@ public abstract class Sample implements Data, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

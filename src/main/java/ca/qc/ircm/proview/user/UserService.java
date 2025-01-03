@@ -50,11 +50,7 @@ public class UserService {
    * @return user
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
-  public Optional<User> get(Long id) {
-    if (id == null) {
-      return Optional.empty();
-    }
-
+  public Optional<User> get(long id) {
     return repository.findById(id);
   }
 
@@ -155,7 +151,7 @@ public class UserService {
    */
   @PreAuthorize("hasPermission(#user, 'write')")
   public void save(User user, String password) {
-    if (user.getId() == null) {
+    if (user.getId() == 0) {
       register(user, password);
     } else {
       update(user, password);
@@ -170,7 +166,7 @@ public class UserService {
   }
 
   private void register(User user, String password) {
-    if (user.getLaboratory().getId() == null && !user.isManager()) {
+    if (user.getLaboratory().getId() == 0 && !user.isManager()) {
       throw new IllegalArgumentException(
           "user must be a manager when a new laboratory is to be created");
     }
@@ -179,7 +175,7 @@ public class UserService {
     user.setRegisterTime(LocalDateTime.now());
     if (authenticatedUser.hasPermission(user.getLaboratory(), Permission.WRITE)) {
       Laboratory laboratory = user.getLaboratory();
-      if (laboratory.getId() == null) {
+      if (laboratory.getId() == 0) {
         laboratory.setDirector(user.getName());
       }
       laboratoryRepository.save(laboratory);
@@ -190,7 +186,7 @@ public class UserService {
   }
 
   private void update(User user, String newPassword) {
-    if (user.getLaboratory().getId() == null && !user.isManager()) {
+    if (user.getLaboratory().getId() == 0 && !user.isManager()) {
       throw new IllegalArgumentException(
           "user must be a manager when a new laboratory is to be created");
     }

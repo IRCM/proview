@@ -37,7 +37,7 @@ public class Activity implements Data {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * User that made the action.
    */
@@ -53,7 +53,7 @@ public class Activity implements Data {
    * Database identifier of data.
    */
   @Column(nullable = false)
-  private Long recordId;
+  private long recordId;
   /**
    * Type of action.
    */
@@ -85,7 +85,7 @@ public class Activity implements Data {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
@@ -97,7 +97,7 @@ public class Activity implements Data {
     return tableName;
   }
 
-  public Long getRecordId() {
+  public long getRecordId() {
     return recordId;
   }
 
@@ -105,7 +105,7 @@ public class Activity implements Data {
     return actionType;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -117,7 +117,7 @@ public class Activity implements Data {
     this.tableName = tableName;
   }
 
-  public void setRecordId(Long recordId) {
+  public void setRecordId(long recordId) {
     this.recordId = recordId;
   }
 

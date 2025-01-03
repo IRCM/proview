@@ -59,7 +59,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Version number.
    */
@@ -352,7 +352,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   public Submission() {
   }
 
-  public Submission(Long id) {
+  public Submission(long id) {
     this.id = id;
   }
 
@@ -367,11 +367,11 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
