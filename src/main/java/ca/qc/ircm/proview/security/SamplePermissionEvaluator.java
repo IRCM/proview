@@ -71,7 +71,7 @@ public class SamplePermissionEvaluator extends AbstractPermissionEvaluator {
       return true;
     }
     if (sample instanceof SubmissionSample) {
-      if (sample.getId() == null) {
+      if (sample.getId() == 0) {
         return roleValidator.hasRole(USER);
       }
       Submission submission = ((SubmissionSample) sample).getSubmission();

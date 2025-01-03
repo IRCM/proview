@@ -5,7 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.Column;
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public abstract class SampleContainer implements DataNullableId, Named, Serializable {
+public abstract class SampleContainer implements Data, Named, Serializable {
   public static final String TABLE_NAME = "samplecontainer";
   private static final long serialVersionUID = -2976707906426974263L;
 
@@ -42,7 +42,7 @@ public abstract class SampleContainer implements DataNullableId, Named, Serializ
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Sample inside container.
    */
@@ -69,7 +69,7 @@ public abstract class SampleContainer implements DataNullableId, Named, Serializ
   public SampleContainer() {
   }
 
-  public SampleContainer(Long id) {
+  public SampleContainer(long id) {
     this.id = id;
   }
 
@@ -81,7 +81,7 @@ public abstract class SampleContainer implements DataNullableId, Named, Serializ
   public abstract SampleContainerType getType();
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
@@ -89,7 +89,7 @@ public abstract class SampleContainer implements DataNullableId, Named, Serializ
     return getName();
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

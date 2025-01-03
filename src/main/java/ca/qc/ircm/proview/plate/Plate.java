@@ -188,8 +188,7 @@ public class Plate implements DataNullableId, Serializable, Named {
       return new ArrayList<>();
     }
     return wells.stream().filter(well -> well.getSample() != null)
-        .filter(well -> well.getSample().getId().equals(sample.getId()))
-        .collect(Collectors.toList());
+        .filter(well -> well.getSample().getId() == sample.getId()).collect(Collectors.toList());
   }
 
   /**

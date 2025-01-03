@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -25,7 +25,7 @@ import java.text.MessageFormat;
 @SuppressFBWarnings(
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
-public class Well extends SampleContainer implements DataNullableId, Named, Serializable {
+public class Well extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 212003765334493656L;
 
   /**
@@ -53,7 +53,7 @@ public class Well extends SampleContainer implements DataNullableId, Named, Seri
     this.column = 0;
   }
 
-  public Well(Long id) {
+  public Well(long id) {
     super(id);
   }
 

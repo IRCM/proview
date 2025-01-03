@@ -5,7 +5,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "category")
 @GeneratePropertyNames
-public abstract class Sample implements DataNullableId, Named, Serializable {
+public abstract class Sample implements Data, Named, Serializable {
   /**
    * Sample category.
    */
@@ -51,7 +51,7 @@ public abstract class Sample implements DataNullableId, Named, Serializable {
   @Id
   @Column(unique = true, nullable = false)
   @GeneratedValue(strategy = IDENTITY)
-  private Long id;
+  private long id;
   /**
    * Version number.
    */
@@ -86,11 +86,11 @@ public abstract class Sample implements DataNullableId, Named, Serializable {
   public Sample() {
   }
 
-  public Sample(Long id) {
+  public Sample(long id) {
     this.id = id;
   }
 
-  public Sample(Long id, String name) {
+  public Sample(long id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -108,11 +108,11 @@ public abstract class Sample implements DataNullableId, Named, Serializable {
   }
 
   @Override
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

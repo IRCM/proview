@@ -63,15 +63,15 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   public SubmissionSample() {
   }
 
-  public SubmissionSample(Long id) {
+  public SubmissionSample(long id) {
     super(id);
   }
 
   public SubmissionSample(String name) {
-    super(null, name);
+    super(0, name);
   }
 
-  public SubmissionSample(Long id, String name) {
+  public SubmissionSample(long id, String name) {
     super(id, name);
   }
 

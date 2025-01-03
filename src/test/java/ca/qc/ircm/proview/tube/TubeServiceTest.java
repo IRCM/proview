@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.tube;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -56,8 +56,8 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void get_Null() throws Throwable {
-    assertFalse(service.get((Long) null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test
@@ -108,10 +108,10 @@ public class TubeServiceTest {
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertEquals(3, tubes.size());
-    assertTrue(find(tubes, 1L).isPresent());
-    assertTrue(find(tubes, 6L).isPresent());
-    assertTrue(find(tubes, 7L).isPresent());
-    assertFalse(find(tubes, 5L).isPresent());
+    assertTrue(findData(tubes, 1L).isPresent());
+    assertTrue(findData(tubes, 6L).isPresent());
+    assertTrue(findData(tubes, 7L).isPresent());
+    assertFalse(findData(tubes, 5L).isPresent());
   }
 
   @Test

@@ -37,8 +37,8 @@ public class WellServiceTest {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void get_Null() throws Exception {
-    assertFalse(service.get(null).isPresent());
+  public void get_0() throws Exception {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test

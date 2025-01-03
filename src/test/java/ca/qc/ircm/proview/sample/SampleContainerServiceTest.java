@@ -45,8 +45,8 @@ public class SampleContainerServiceTest {
   }
 
   @Test
-  public void get_NullId() throws Throwable {
-    assertFalse(service.get((Long) null).isPresent());
+  public void get_0() throws Throwable {
+    assertFalse(service.get(0).isPresent());
   }
 
   @Test

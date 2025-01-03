@@ -1,6 +1,6 @@
 package ca.qc.ircm.proview.plate;
 
-import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
+import static ca.qc.ircm.proview.test.utils.SearchUtils.findData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -383,7 +383,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals(true, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
-    assertTrue(find(loggedWells, 128L).isPresent());
+    assertTrue(findData(loggedWells, 128L).isPresent());
   }
 
   @Test
@@ -408,7 +408,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(bannedWells.size(), loggedWells.size());
     for (Well banned : bannedWells) {
-      assertTrue(find(loggedWells, banned.getId()).isPresent());
+      assertTrue(findData(loggedWells, banned.getId()).isPresent());
     }
   }
 
@@ -457,7 +457,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
-    assertTrue(find(loggedWells, 211L).isPresent());
+    assertTrue(findData(loggedWells, 211L).isPresent());
   }
 
   @Test
@@ -482,9 +482,9 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(3, loggedWells.size());
-    assertTrue(find(loggedWells, 199L).isPresent());
-    assertTrue(find(loggedWells, 211L).isPresent());
-    assertTrue(find(loggedWells, 223L).isPresent());
+    assertTrue(findData(loggedWells, 199L).isPresent());
+    assertTrue(findData(loggedWells, 211L).isPresent());
+    assertTrue(findData(loggedWells, 223L).isPresent());
   }
 
   @Test

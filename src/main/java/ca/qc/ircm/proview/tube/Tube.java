@@ -1,7 +1,7 @@
 package ca.qc.ircm.proview.tube;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
-import ca.qc.ircm.proview.DataNullableId;
+import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @DiscriminatorValue("TUBE")
 @GeneratePropertyNames
-public class Tube extends SampleContainer implements DataNullableId, Named, Serializable {
+public class Tube extends SampleContainer implements Data, Named, Serializable {
   private static final long serialVersionUID = 2723772707033001099L;
 
   /**
@@ -28,11 +28,11 @@ public class Tube extends SampleContainer implements DataNullableId, Named, Seri
   public Tube() {
   }
 
-  public Tube(Long id) {
+  public Tube(long id) {
     super(id);
   }
 
-  public Tube(Long id, String name) {
+  public Tube(long id, String name) {
     super(id);
     this.name = name;
   }

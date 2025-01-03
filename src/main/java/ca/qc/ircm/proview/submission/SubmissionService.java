@@ -338,7 +338,7 @@ public class SubmissionService {
 
     submission.getSamples().forEach(sample -> {
       sample.setSubmission(submission);
-      if (sample.getId() == null) {
+      if (sample.getId() == 0) {
         sample.setStatus(SampleStatus.WAITING);
       }
       sampleRepository.save(sample);
@@ -349,10 +349,8 @@ public class SubmissionService {
 
   private void deleteOrphans(Submission submission) {
     Submission old = repository.findById(submission.getId()).get();
-    old.getSamples().stream()
-        .filter(sample -> !submission.getSamples().stream()
-            .filter(s2 -> sample.getId().equals(s2.getId())).findAny().isPresent())
-        .forEach(sample -> {
+    old.getSamples().stream().filter(sample -> !submission.getSamples().stream()
+        .filter(s2 -> sample.getId() == s2.getId()).findAny().isPresent()).forEach(sample -> {
           sampleRepository.delete(sample);
         });
   }
