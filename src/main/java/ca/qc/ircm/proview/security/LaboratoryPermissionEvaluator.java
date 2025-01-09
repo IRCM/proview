@@ -10,6 +10,7 @@ import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if ((authentication == null) || !(targetDomainObject instanceof Laboratory)
+    if (!(targetDomainObject instanceof Laboratory)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -46,8 +47,7 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
-    if ((authentication == null) || !(targetId instanceof Long)
-        || !targetType.equals(Laboratory.class.getName())
+    if (!(targetId instanceof Long) || !targetType.equals(Laboratory.class.getName())
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -60,7 +60,8 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
     return hasPermission(laboratory, currentUser, realPermission);
   }
 
-  private boolean hasPermission(Laboratory laboratory, User currentUser, Permission permission) {
+  private boolean hasPermission(Laboratory laboratory, @Nullable User currentUser,
+      Permission permission) {
     if (currentUser == null) {
       return false;
     }

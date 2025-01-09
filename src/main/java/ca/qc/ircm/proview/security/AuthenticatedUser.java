@@ -38,14 +38,13 @@ public class AuthenticatedUser {
     this.permissionEvaluator = permissionEvaluator;
   }
 
-  private Authentication getAuthentication() {
-    return SecurityContextHolder.getContext().getAuthentication();
+  private Optional<Authentication> getAuthentication() {
+    return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
   }
 
   private Optional<UserDetails> getUserDetails() {
-    return Optional.ofNullable(getAuthentication())
-        .filter(au -> au.getPrincipal() instanceof UserDetails)
-        .map(au -> (UserDetails) au.getPrincipal());
+    return getAuthentication().filter(au -> au.getPrincipal() instanceof UserDetails)
+        .map(au -> ((UserDetails) au.getPrincipal()));
   }
 
   /**
@@ -116,12 +115,15 @@ public class AuthenticatedUser {
    */
   public void reloadAuthorities() {
     if (hasRole(FORCE_CHANGE_PASSWORD)) {
-      Authentication oldAuthentication = getAuthentication();
-      logger.debug("reload authorities from user {}", oldAuthentication.getName());
-      UserDetails userDetails = userDetailsService.loadUserByUsername(oldAuthentication.getName());
-      UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-          userDetails, oldAuthentication.getCredentials(), userDetails.getAuthorities());
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      getAuthentication().ifPresent(oldAuthentication -> {
+        logger.debug("reload authorities from user {}", oldAuthentication.getName());
+        UserDetails userDetails =
+            userDetailsService.loadUserByUsername(oldAuthentication.getName());
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(userDetails, oldAuthentication.getCredentials(),
+                userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+      });
     }
   }
 
@@ -152,6 +154,7 @@ public class AuthenticatedUser {
    * @return true if authenticated user has permission on object, false otherwise
    */
   public boolean hasPermission(Object object, Permission permission) {
-    return permissionEvaluator.hasPermission(getAuthentication(), object, permission);
+    return getAuthentication().map(au -> permissionEvaluator.hasPermission(au, object, permission))
+        .orElse(false);
   }
 }
