@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UserView.SAVED;
 import static ca.qc.ircm.proview.user.web.UserView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -125,7 +126,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().name().setValue(name);
     view.userForm().password().setValue(password);
     view.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     view.userForm().laboratory().selectByText(laboratory.getName());
     view.userForm().address().setValue(addressLine);
     view.userForm().town().setValue(town);
@@ -140,9 +141,9 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, locale),
         notification.getText());
-    User user = repository.findByEmail(email).get();
+    User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
-    assertNotNull(user.getId());
+    assertNotEquals(0, user.getId());
     assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
@@ -156,6 +157,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -174,7 +176,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().name().setValue(name);
     view.userForm().password().setValue(password);
     view.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     view.userForm().laboratory().selectByText(laboratory.getName());
     view.userForm().address().setValue(addressLine);
     view.userForm().town().setValue(town);
@@ -189,9 +191,9 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, locale),
         notification.getText());
-    User user = repository.findByEmail(email).get();
+    User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
-    assertNotNull(user.getId());
+    assertNotEquals(0, user.getId());
     assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
@@ -206,6 +208,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());

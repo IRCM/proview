@@ -3,8 +3,9 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.security.AuthenticatedUser;
@@ -58,15 +59,15 @@ public class UserPreferenceServiceTest {
     }
   }
 
-  private UserPreference find(User user, String referer, String name) {
+  private Optional<UserPreference> find(User user, String referer, String name) {
     BooleanExpression predicate = userPreference.preference.referer.eq(referer)
         .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
-    return repository.findOne(predicate).orElse(null);
+    return repository.findOne(predicate);
   }
 
-  private Preference findPreference(String referer, String name) {
+  private Optional<Preference> findPreference(String referer, String name) {
     BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
-    return preferenceRepository.findOne(predicate).orElse(null);
+    return preferenceRepository.findOne(predicate);
   }
 
   @Test
@@ -89,16 +90,6 @@ public class UserPreferenceServiceTest {
   }
 
   @Test
-  public void get_NullReferer() {
-    assertEquals("default value", service.get(null, PREFERENCE_1).orElse("default value"));
-  }
-
-  @Test
-  public void get_NullName() {
-    assertEquals("default value", service.get(this, null).orElse("default value"));
-  }
-
-  @Test
   public void get_NoCurrentUser() {
     when(authenticatedUser.getUser()).thenReturn(Optional.empty());
 
@@ -114,27 +105,29 @@ public class UserPreferenceServiceTest {
   public void save_Insert_All() throws Throwable {
     String value = "test value 1";
     String name = "test new preference";
-    user = userRepository.findById(10L).get();
+    user = userRepository.findById(10L).orElseThrow();
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     service.save(this, name, value);
     repository.flush();
 
-    UserPreference userPreference = find(user, referer(), name);
-    assertEquals(value, getValue(userPreference));
+    Optional<UserPreference> optionalUserPreference = find(user, referer(), name);
+    assertTrue(optionalUserPreference.isPresent());
+    assertEquals(value, getValue(optionalUserPreference.orElseThrow()));
   }
 
   @Test
   public void save_Insert() throws Throwable {
     String value = "test value 1";
-    user = userRepository.findById(10L).get();
+    user = userRepository.findById(10L).orElseThrow();
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
     service.save(this, PREFERENCE_1, value);
     repository.flush();
 
-    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
-    assertEquals(value, getValue(userPreference));
+    Optional<UserPreference> optionalUserPreference = find(user, referer(), PREFERENCE_1);
+    assertTrue(optionalUserPreference.isPresent());
+    assertEquals(value, getValue(optionalUserPreference.orElseThrow()));
   }
 
   @Test
@@ -144,19 +137,9 @@ public class UserPreferenceServiceTest {
     service.save(this, PREFERENCE_1, newValue);
     repository.flush();
 
-    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
-    assertEquals(newValue, getValue(userPreference));
-  }
-
-  @Test
-  public void save_UpdateToNull() throws Throwable {
-    String newValue = null;
-
-    service.save(this, PREFERENCE_1, newValue);
-    repository.flush();
-
-    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
-    assertEquals(newValue, getValue(userPreference));
+    Optional<UserPreference> optionalUserPreference = find(user, referer(), PREFERENCE_1);
+    assertTrue(optionalUserPreference.isPresent());
+    assertEquals(newValue, getValue(optionalUserPreference.orElseThrow()));
   }
 
   @Test
@@ -164,10 +147,10 @@ public class UserPreferenceServiceTest {
     service.delete(this, PREFERENCE_1);
     repository.flush();
 
-    Preference preference = findPreference(referer(), PREFERENCE_1);
-    assertNotNull(preference);
-    UserPreference userPreference = find(user, referer(), PREFERENCE_1);
-    assertNull(userPreference);
+    Optional<Preference> optionalPreference = findPreference(referer(), PREFERENCE_1);
+    assertTrue(optionalPreference.isPresent());
+    Optional<UserPreference> optionalUserPreference = find(user, referer(), PREFERENCE_1);
+    assertFalse(optionalUserPreference.isPresent());
   }
 
   @Test
@@ -175,7 +158,7 @@ public class UserPreferenceServiceTest {
     service.deleteAll(this, PREFERENCE_1);
     preferenceRepository.flush();
 
-    Preference preference = findPreference(referer(), PREFERENCE_1);
-    assertNull(preference);
+    Optional<Preference> optionalPreference = findPreference(referer(), PREFERENCE_1);
+    assertFalse(optionalPreference.isPresent());
   }
 }

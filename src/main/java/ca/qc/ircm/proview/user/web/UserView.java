@@ -31,6 +31,7 @@ import jakarta.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 /**
  * User view.
@@ -80,7 +81,7 @@ public class UserView extends VerticalLayout implements LocaleChangeObserver, Ha
   }
 
   private void updateHeader() {
-    if (form.getUser() != null && form.getUser().getId() != 0) {
+    if (form.getUser().getId() != 0) {
       viewLayout().ifPresent(layout -> layout
           .setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName())));
     } else {
@@ -96,7 +97,7 @@ public class UserView extends VerticalLayout implements LocaleChangeObserver, Ha
   }
 
   @Override
-  public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
+  public void setParameter(BeforeEvent event, @OptionalParameter @Nullable Long parameter) {
     if (parameter != null) {
       form.setUser(service.get(parameter).orElse(null));
     }

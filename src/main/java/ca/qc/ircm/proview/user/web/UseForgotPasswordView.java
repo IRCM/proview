@@ -28,6 +28,7 @@ import com.vaadin.flow.router.WildcardParameter;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.PostConstruct;
 import java.util.Locale;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
     buttonsLayout.add(save);
     header.setId(HEADER);
     message.setId(MESSAGE);
+    form.setRequired(true);
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());
@@ -94,11 +96,6 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
   }
 
   private boolean validateParameter(String parameter, Locale locale) {
-    if (parameter == null) {
-      showNotification(getTranslation(MESSAGES_PREFIX + INVALID));
-      return false;
-    }
-
     String[] parameters = parameter.split(SEPARATOR, -1);
     boolean valid = true;
     if (parameters.length < 2) {
@@ -107,7 +104,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
       try {
         long id = Long.parseLong(parameters[0]);
         String confirmNumber = parameters[1];
-        if (!service.get(id, confirmNumber).isPresent()) {
+        if (service.get(id, confirmNumber).isEmpty()) {
           valid = false;
         }
       } catch (NumberFormatException e) {
@@ -127,7 +124,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
       String[] parameters = parameter.split(SEPARATOR, -1);
       long id = Long.parseLong(parameters[0]);
       String confirmNumber = parameters[1];
-      forgotPassword = service.get(id, confirmNumber).orElse(null);
+      forgotPassword = service.get(id, confirmNumber).orElseThrow();
     }
     save.setEnabled(valid);
     form.setEnabled(valid);
@@ -137,7 +134,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
     if (form.isValid()) {
       String password = form.getPassword();
       logger.debug("save new password for user {}", forgotPassword.getUser());
-      service.updatePassword(forgotPassword, password);
+      service.updatePassword(forgotPassword, Objects.requireNonNull(password));
       showNotification(getTranslation(MESSAGES_PREFIX + SAVED));
       UI.getCurrent().navigate(SigninView.class);
     }

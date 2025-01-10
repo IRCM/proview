@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -91,7 +92,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void get() throws Exception {
-    ForgotPassword forgotPassword = service.get(9L, "174407008").get();
+    ForgotPassword forgotPassword = service.get(9L, "174407008").orElseThrow();
 
     assertEquals((Long) 9L, forgotPassword.getId());
     assertEquals("174407008", forgotPassword.getConfirmNumber());
@@ -112,18 +113,13 @@ public class ForgotPasswordServiceTest {
   }
 
   @Test
-  public void get_NullConfirmNumber() throws Exception {
-    assertFalse(service.get(7L, null).isPresent());
-  }
-
-  @Test
   public void get_Used() throws Exception {
     assertFalse(service.get(10L, "460559412").isPresent());
   }
 
   @Test
   public void insert_Robot() throws Exception {
-    user = userRepository.findById(1L).orElse(null);
+    user = userRepository.findById(1L).orElseThrow();
 
     try {
       service.insert(user.getEmail(), forgotPasswordWebContext);
@@ -141,10 +137,10 @@ public class ForgotPasswordServiceTest {
     verify(forgotPasswordWebContext).getChangeForgottenPasswordUrl(forgotPasswordCaptor.capture(),
         any());
     ForgotPassword forgotPassword = forgotPasswordCaptor.getValue();
-    assertNotNull(forgotPassword.getId());
+    assertNotEquals(0, forgotPassword.getId());
     verify(emailService).htmlEmail();
     verify(emailService).send(email);
-    forgotPassword = repository.findById(forgotPassword.getId()).orElse(null);
+    forgotPassword = repository.findById(forgotPassword.getId()).orElseThrow();
     assertNotNull(forgotPassword.getConfirmNumber());
     assertTrue(
         LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
@@ -197,7 +193,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword() throws Exception {
-    ForgotPassword forgotPassword = repository.findById(9L).orElse(null);
+    ForgotPassword forgotPassword = repository.findById(9L).orElseThrow();
 
     service.updatePassword(forgotPassword, "abc");
 
@@ -212,7 +208,7 @@ public class ForgotPasswordServiceTest {
 
   @Test
   public void updatePassword_Expired() throws Exception {
-    ForgotPassword forgotPassword = repository.findById(7L).orElse(null);
+    ForgotPassword forgotPassword = repository.findById(7L).orElseThrow();
 
     try {
       service.updatePassword(forgotPassword, "abc");

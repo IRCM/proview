@@ -55,21 +55,21 @@ public class UserPreferenceService {
     }
   }
 
-  private UserPreference find(User user, String referer, String name) {
+  private Optional<UserPreference> find(User user, String referer, String name) {
     BooleanExpression predicate = userPreference.preference.referer.eq(referer)
         .and(userPreference.preference.name.eq(name)).and(userPreference.user.eq(user));
-    return repository.findOne(predicate).orElse(null);
+    return repository.findOne(predicate);
   }
 
-  private UserPreference find(User user, Preference preference) {
+  private Optional<UserPreference> find(User user, Preference preference) {
     BooleanExpression predicate =
         userPreference.user.eq(user).and(userPreference.preference.eq(preference));
-    return repository.findOne(predicate).orElse(null);
+    return repository.findOne(predicate);
   }
 
-  private Preference findPreference(String referer, String name) {
+  private Optional<Preference> findPreference(String referer, String name) {
     BooleanExpression predicate = preference.referer.eq(referer).and(preference.name.eq(name));
-    return preferenceRepository.findOne(predicate).orElse(null);
+    return preferenceRepository.findOne(predicate);
   }
 
   /**
@@ -85,24 +85,18 @@ public class UserPreferenceService {
    */
   @SuppressWarnings("unchecked")
   public <T> Optional<T> get(Object referer, String name) {
-    if (referer == null || name == null) {
-      return Optional.empty();
-    }
     User user = authenticatedUser.getUser().orElse(null);
     if (user == null) {
       return Optional.empty();
     }
 
-    UserPreference userPreference = find(user, toString(referer), name);
-    if (userPreference != null) {
+    return find(user, toString(referer), name).map(up -> {
       try {
-        return Optional.of((T) toObject(userPreference.getContent()));
+        return (T) toObject(up.getContent());
       } catch (ClassNotFoundException | IOException e) {
-        return Optional.empty();
+        return null;
       }
-    } else {
-      return Optional.empty();
-    }
+    });
   }
 
   /**
@@ -117,23 +111,21 @@ public class UserPreferenceService {
    */
   public void save(Object referer, String name, Serializable value) {
     final String refererName = referer.getClass().getName();
-    final User user = authenticatedUser.getUser().orElse(null);
-    Preference preference = findPreference(toString(referer), name);
-    if (preference == null) {
-      preference = new Preference();
-      preference.setReferer(refererName);
-      preference.setName(name);
-      preferenceRepository.save(preference);
-    }
-    UserPreference userPreference = find(user, preference);
-    if (userPreference != null) {
-      userPreference.setContent(toBytes(value));
-    } else {
-      userPreference = new UserPreference();
-      userPreference.setPreference(preference);
-      userPreference.setUser(user);
-      userPreference.setContent(toBytes(value));
-    }
+    final User user = authenticatedUser.getUser().orElseThrow();
+    Preference preference = findPreference(toString(referer), name).orElseGet(() -> {
+      Preference newPreference = new Preference();
+      newPreference.setReferer(refererName);
+      newPreference.setName(name);
+      preferenceRepository.save(newPreference);
+      return newPreference;
+    });
+    UserPreference userPreference = find(user, preference).orElseGet(() -> {
+      UserPreference newUserPreference = new UserPreference();
+      newUserPreference.setPreference(preference);
+      newUserPreference.setUser(user);
+      return newUserPreference;
+    });
+    userPreference.setContent(toBytes(value));
     repository.save(userPreference);
   }
 
@@ -146,7 +138,7 @@ public class UserPreferenceService {
    *          preference's name
    */
   public void delete(Object referer, String name) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
     repository.deleteByUserAndPreferenceRefererAndPreferenceName(user, toString(referer), name);
   }
 

@@ -8,12 +8,13 @@ import ca.qc.ircm.proview.security.Permission;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,18 +64,10 @@ public class UserService {
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
   public Optional<User> get(String email) {
-    if (email == null) {
-      return Optional.empty();
-    }
-
     return noSecurityGet(email);
   }
 
   private Optional<User> noSecurityGet(String email) {
-    if (email == null) {
-      return Optional.empty();
-    }
-
     return repository.findByEmail(email);
   }
 
@@ -86,10 +79,6 @@ public class UserService {
    * @return true if a user exists with this email
    */
   public boolean exists(String email) {
-    if (email == null) {
-      return false;
-    }
-
     return repository.findByEmail(email).isPresent();
   }
 
@@ -108,10 +97,6 @@ public class UserService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<User> all(UserFilter filter) {
-    if (filter == null) {
-      filter = new UserFilter();
-    }
-
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
     predicate = predicate.and(filter.predicate());
     return Lists.newArrayList(repository.findAll(predicate));
@@ -129,12 +114,6 @@ public class UserService {
    */
   @PreAuthorize("hasPermission(#laboratory, 'write')")
   public List<User> all(UserFilter filter, Laboratory laboratory) {
-    if (filter == null) {
-      filter = new UserFilter();
-    } else if (laboratory == null) {
-      return new ArrayList<>();
-    }
-
     BooleanExpression predicate = user.id.ne(ROBOT_ID);
     predicate = predicate.and(filter.predicate());
     predicate = predicate.and(user.laboratory.eq(laboratory));
@@ -150,9 +129,9 @@ public class UserService {
    *          user's new password, required if user does not exists
    */
   @PreAuthorize("hasPermission(#user, 'write')")
-  public void save(User user, String password) {
+  public void save(User user, @Nullable String password) {
     if (user.getId() == 0) {
-      register(user, password);
+      register(user, Objects.requireNonNull(password));
     } else {
       update(user, password);
     }
@@ -185,7 +164,7 @@ public class UserService {
     logger.info("User {} of laboratory {} added to database", user, user.getLaboratory());
   }
 
-  private void update(User user, String newPassword) {
+  private void update(User user, @Nullable String newPassword) {
     if (user.getLaboratory().getId() == 0 && !user.isManager()) {
       throw new IllegalArgumentException(
           "user must be a manager when a new laboratory is to be created");
@@ -216,7 +195,7 @@ public class UserService {
   private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
     repository.findAllByLaboratoryAndManagerTrue(laboratory).stream()
         .mapToLong(manager -> manager.getId()).min().ifPresent(id -> {
-          User manager = repository.findById(id).orElse(null);
+          User manager = repository.findById(id).orElseThrow();
           laboratory.setDirector(manager.getName());
         });
     ;

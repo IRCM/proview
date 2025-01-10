@@ -1,7 +1,7 @@
 package ca.qc.ircm.proview.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -73,27 +73,27 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   public void save_New() {
     Laboratory laboratory = new Laboratory();
     laboratory.setName("Test laboratory");
+    laboratory.setDirector("Test director");
 
     service.save(laboratory);
 
     repository.flush();
-    assertNotNull(laboratory.getId());
-    laboratory = repository.findById(laboratory.getId()).get();
+    assertNotEquals(0, laboratory.getId());
+    laboratory = repository.findById(laboratory.getId()).orElseThrow();
     assertEquals("Test laboratory", laboratory.getName());
-    assertEquals(null, laboratory.getDirector());
+    assertEquals("Test director", laboratory.getDirector());
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
   }
 
   @Test
   public void save_Update() {
-    Laboratory laboratory = repository.findById(1L).get();
+    Laboratory laboratory = repository.findById(1L).orElseThrow();
     laboratory.setName("Test laboratory");
 
     service.save(laboratory);
 
     repository.flush();
-    assertNotNull(laboratory.getId());
-    laboratory = repository.findById(laboratory.getId()).get();
+    laboratory = repository.findById(laboratory.getId()).orElseThrow();
     assertEquals("Test laboratory", laboratory.getName());
     assertEquals("Robot", laboratory.getDirector());
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));

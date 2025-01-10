@@ -190,9 +190,9 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void setParameter_Null() {
+  public void setParameter_Empty() {
     view.form = mock(PasswordsForm.class);
-    view.setParameter(beforeEvent, null);
+    view.setParameter(beforeEvent, "");
     verify(service, never()).get(anyLong(), any());
     Notification notification = $(Notification.class).last();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + INVALID), test(notification).getText());

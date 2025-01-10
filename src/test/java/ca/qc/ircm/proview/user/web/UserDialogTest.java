@@ -142,7 +142,7 @@ public class UserDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setUserId_UserBeforeLocaleChange() {
-    User user = repository.findById(2L).get();
+    User user = repository.findById(2L).orElseThrow();
     dialog.form = mock(UserForm.class);
     when(dialog.form.getUser()).thenReturn(user);
 
@@ -156,6 +156,7 @@ public class UserDialogTest extends SpringUIUnitTest {
   @Test
   public void setUserId_0() {
     dialog.form = mock(UserForm.class);
+    when(dialog.form.getUser()).thenReturn(new User());
 
     dialog.setUserId(0);
 

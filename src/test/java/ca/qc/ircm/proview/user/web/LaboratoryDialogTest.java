@@ -15,7 +15,7 @@ import static ca.qc.ircm.proview.user.web.LaboratoryDialog.SAVED;
 import static ca.qc.ircm.proview.user.web.LaboratoryDialog.id;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -148,12 +148,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setLaboratoryId_0() {
-    dialog.setLaboratoryId(0);
-    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 0), dialog.getHeaderTitle());
-    assertEquals("", dialog.name.getValue());
-    assertFalse(dialog.name.isReadOnly());
-    assertTrue(dialog.save.isVisible());
-    assertTrue(dialog.cancel.isVisible());
+    assertThrows(IllegalArgumentException.class, () -> dialog.setLaboratoryId(0));
   }
 
   @Test
@@ -175,27 +170,6 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
     assertFalse($(Notification.class).exists());
     assertTrue(dialog.isOpened());
     verify(savedListener, never()).onComponentEvent(any());
-  }
-
-  @Test
-  public void save_New() {
-    dialog.addSavedListener(savedListener);
-    dialog.setLaboratoryId(0);
-    String name = "My lab";
-    dialog.name.setValue(name);
-
-    test(dialog.save).click();
-
-    verify(service).save(laboratoryCaptor.capture());
-    Laboratory laboratory = laboratoryCaptor.getValue();
-    assertEquals(0, laboratory.getId());
-    assertEquals(name, laboratory.getName());
-    assertNull(laboratory.getDirector());
-    Notification notification = $(Notification.class).first();
-    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
-        test(notification).getText());
-    assertFalse(dialog.isOpened());
-    verify(savedListener).onComponentEvent(any());
   }
 
   @Test
