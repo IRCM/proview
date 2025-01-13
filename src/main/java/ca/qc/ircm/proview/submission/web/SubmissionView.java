@@ -76,6 +76,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.util.FileCopyUtils;
 
 /**
@@ -299,7 +300,7 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     return binder.getBean();
   }
 
-  private void setSubmission(Submission submission) {
+  private void setSubmission(@Nullable Submission submission) {
     if (submission == null) {
       submission = new Submission();
       submission.setService(Service.LC_MS_MS);
@@ -311,17 +312,14 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
       submission.setInjectionType(InjectionType.LC_MS);
       submission.setSource(MassDetectionInstrumentSource.ESI);
       submission.setIdentification(ProteinIdentification.REFSEQ);
-    }
-    if (submission.getSamples() == null) {
       submission.setSamples(new ArrayList<>());
+      submission.setFiles(new ArrayList<>());
+      submission.setSolvents(new ArrayList<>());
     }
-    if (submission.getSamples() == null || submission.getSamples().isEmpty()) {
+    if (submission.getSamples().isEmpty()) {
       SubmissionSample sample = new SubmissionSample();
       sample.setType(SampleType.SOLUTION);
       submission.getSamples().add(sample);
-    }
-    if (submission.getFiles() == null) {
-      submission.setFiles(new ArrayList<>());
     }
     binder.setBean(submission);
     filesDataProvider.getItems().clear();
@@ -343,7 +341,7 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   }
 
   @Override
-  public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
+  public void setParameter(BeforeEvent event, @OptionalParameter @Nullable Long parameter) {
     if (parameter != null) {
       setSubmission(submissionService.get(parameter).orElse(null));
     }

@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,6 +60,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +72,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
@@ -161,7 +164,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() throws Throwable {
-    Submission submission = service.get(1L).get();
+    Submission submission = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 1L, submission.getId());
@@ -218,19 +221,21 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 1L, file.getId());
     assertEquals("protocol.txt", file.getFilename());
     assertArrayEquals(
-        Files.readAllBytes(Paths.get(getClass().getResource("/submissionfile1.txt").toURI())),
+        Files.readAllBytes(Paths
+            .get(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI())),
         file.getContent());
     file = submission.getFiles().get(1);
     assertEquals((Long) 2L, file.getId());
     assertEquals("frag.jpg", file.getFilename());
     assertArrayEquals(
-        Files.readAllBytes(Paths.get(getClass().getResource("/gelimages1.png").toURI())),
+        Files.readAllBytes(
+            Paths.get(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI())),
         file.getContent());
   }
 
   @Test
   public void get_33() throws Throwable {
-    Submission submission = service.get(33L).get();
+    Submission submission = service.get(33L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 33L, submission.getId());
@@ -259,7 +264,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(null, submission.getWeightMarkerQuantity());
     assertEquals(null, submission.getProteinQuantity());
     assertEquals("C100H100O100", submission.getFormula());
+    assertNotNull(submission.getMonoisotopicMass());
     assertEquals(654.654, submission.getMonoisotopicMass(), 0.0001);
+    assertNotNull(submission.getAverageMass());
     assertEquals(654.654, submission.getAverageMass(), 0.0001);
     assertEquals("MeOH/TFA 0.1%", submission.getSolutionSolvent());
     assertNotNull(submission.getSolvents());
@@ -311,7 +318,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    List<Submission> submissions = service.all(null);
+    List<Submission> submissions = service.all(new SubmissionFilter());
 
     assertTrue(SearchUtils.find(submissions, 32).isPresent());
     assertTrue(SearchUtils.find(submissions, 33).isPresent());
@@ -342,7 +349,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    List<Submission> submissions = service.all(null);
+    List<Submission> submissions = service.all(new SubmissionFilter());
 
     assertEquals(3, submissions.size());
     assertTrue(SearchUtils.find(submissions, 1).isPresent());
@@ -357,7 +364,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
 
-    List<Submission> submissions = service.all(null);
+    List<Submission> submissions = service.all(new SubmissionFilter());
 
     verify(authenticatedUser).hasPermission(user.getLaboratory(), Permission.WRITE);
     assertEquals(18, submissions.size());
@@ -376,7 +383,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
-    List<Submission> submissions = service.all(null);
+    List<Submission> submissions = service.all(new SubmissionFilter());
 
     assertEquals(20, submissions.size());
     assertTrue(SearchUtils.find(submissions, 1).isPresent());
@@ -519,12 +526,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_NullFilter() throws Throwable {
+  public void all_EmptyFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    List<Submission> submissions = service.all(null);
+    List<Submission> submissions = service.all(new SubmissionFilter());
 
     assertTrue(SearchUtils.find(submissions, 32).isPresent());
     assertTrue(SearchUtils.find(submissions, 33).isPresent());
@@ -600,12 +607,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_NullFilter() throws Throwable {
+  public void count_EmptyFilter() throws Throwable {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    int count = service.count(null);
+    int count = service.count(new SubmissionFilter());
 
     assertEquals(3, count);
   }
@@ -625,8 +632,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submission = new Submission();
     submission.setService(service);
     submission.setSubmissionDate(LocalDateTime.now().minus(2, ChronoUnit.DAYS));
-    submission.setUser(userRepository.findById(3L).orElse(null));
-    submission.setLaboratory(laboratoryRepository.findById(2L).orElse(null));
+    submission.setUser(userRepository.findById(3L).orElseThrow());
+    submission.setLaboratory(laboratoryRepository.findById(2L).orElseThrow());
     SubmissionSample sample1 = new SubmissionSample("first sample");
     sample1.setQuantity("15 ug");
     sample1.setVolume("10 ul");
@@ -694,7 +701,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     return submission;
   }
 
-  private String formatMultiline(String comment) {
+  private String formatMultiline(@Nullable String comment) {
     return comment != null ? comment.replaceAll("\\r?\\n", "<br>") : "";
   }
 
@@ -739,18 +746,22 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"experiment\""));
     assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
+    assertNotNull(submission.getGoal());
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
+    assertNotNull(submission.getTaxonomy());
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
     assertTrue(content.contains(messageSource.getMessage(
         SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
+    assertNotNull(submission.getProtein());
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
     assertTrue(
         content.contains(String.valueOf(submission.getSamples().get(0).getMolecularWeight())));
     assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertNotNull(submission.getPostTranslationModification());
     assertTrue(content.contains(submission.getPostTranslationModification()));
     assertTrue(content.contains("class=\"sample-quantity\""));
     assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
@@ -772,6 +783,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
+    assertNotNull(submission.getDigestion());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
@@ -779,16 +791,20 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
+    assertNotNull(submission.getProteinContent());
     assertTrue(content.contains(messageSource
         .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
+    assertNotNull(submission.getInstrument());
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
+    assertNotNull(submission.getIdentification());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
+    assertNotNull(submission.getQuantification());
     assertTrue(content.contains(messageSource
         .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
@@ -802,19 +818,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
       assertTrue(content.contains("href=\"files-" + i + "\""));
     }
     assertFalse(content.contains("class=\"plate-information section"));
-  }
-
-  @Test
-  public void print_LcmsmsSolution_NoUser() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setUser(null);
-    repository.save(submission);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertFalse(content.contains("class=\"user-name\""));
-    assertFalse(content.contains("class=\"user-phone\""));
-    assertFalse(content.contains("class=\"user-email\""));
   }
 
   @Test
@@ -941,9 +944,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
+    assertNotNull(submission.getDigestion());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertTrue(content.contains("class=\"usedDigestion\""));
+    assertNotNull(submission.getUsedDigestion());
     assertTrue(content.contains(submission.getUsedDigestion()));
     assertFalse(content.contains("class=\"otherDigestion\""));
   }
@@ -957,10 +962,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
+    assertNotNull(submission.getDigestion());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains("class=\"otherDigestion\""));
+    assertNotNull(submission.getOtherDigestion());
     assertTrue(content.contains(submission.getOtherDigestion()));
   }
 
@@ -1011,6 +1018,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"identification\""));
     assertTrue(content.contains("class=\"identificationLink\""));
+    assertNotNull(submission.getIdentificationLink());
     assertTrue(content.contains(submission.getIdentificationLink()));
   }
 
@@ -1144,32 +1152,40 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"experiment\""));
     assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
+    assertNotNull(submission.getGoal());
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
+    assertNotNull(submission.getTaxonomy());
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
     assertTrue(content.contains(messageSource.getMessage(
         SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
+    assertNotNull(submission.getProtein());
     assertTrue(content.contains(submission.getProtein()));
     assertTrue(content.contains("class=\"sample-molecularWeight\""));
     assertTrue(
         content.contains(String.valueOf(submission.getSamples().get(0).getMolecularWeight())));
     assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertNotNull(submission.getPostTranslationModification());
     assertTrue(content.contains(submission.getPostTranslationModification()));
     assertFalse(content.contains("class=\"sample-quantity\""));
     assertFalse(content.contains("class=\"sample-volume\""));
     assertTrue(content.contains("class=\"separation\""));
+    assertNotNull(submission.getSeparation());
     assertTrue(content.contains(messageSource
         .getMessage(GEL_SEPARATION_PREFIX + submission.getSeparation().name(), null, locale)));
     assertTrue(content.contains("class=\"thickness\""));
+    assertNotNull(submission.getThickness());
     assertTrue(content.contains(messageSource
         .getMessage(GEL_THICKNESS_PREFIX + submission.getThickness().name(), null, locale)));
     assertTrue(content.contains("class=\"coloration\""));
+    assertNotNull(submission.getColoration());
     assertTrue(content.contains(messageSource
         .getMessage(GEL_COLORATION_PREFIX + submission.getColoration().name(), null, locale)));
     assertFalse(content.contains("class=\"otherColoration\""));
     assertTrue(content.contains("class=\"developmentTime\""));
+    assertNotNull(submission.getDevelopmentTime());
     assertTrue(content.contains(submission.getDevelopmentTime()));
     assertTrue(content.contains("class=\"decoloration\""));
     assertTrue(content.contains(
@@ -1177,6 +1193,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"weightMarkerQuantity\""));
     assertTrue(content.contains(String.valueOf(submission.getWeightMarkerQuantity())));
     assertTrue(content.contains("class=\"proteinQuantity\""));
+    assertNotNull(submission.getProteinQuantity());
     assertTrue(content.contains(submission.getProteinQuantity()));
     assertFalse(content.contains("class=\"solutionSolvent\""));
     assertFalse(content.contains("class=\"formula\""));
@@ -1186,6 +1203,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"lightSensitive\""));
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
+    assertNotNull(submission.getDigestion());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
@@ -1193,16 +1211,20 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
+    assertNotNull(submission.getProteinContent());
     assertTrue(content.contains(messageSource
         .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
+    assertNotNull(submission.getInstrument());
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertTrue(content.contains("class=\"identification\""));
+    assertNotNull(submission.getIdentification());
     assertTrue(content.contains(messageSource.getMessage(
         PROTEIN_IDENTIFICATION_PREFIX + submission.getIdentification().name(), null, locale)));
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
+    assertNotNull(submission.getQuantification());
     assertTrue(content.contains(messageSource
         .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
@@ -1269,6 +1291,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     assertTrue(content.contains("class=\"coloration\""));
     assertTrue(content.contains("class=\"otherColoration\""));
+    assertNotNull(submission.getOtherColoration());
     assertTrue(content.contains(submission.getOtherColoration()));
   }
 
@@ -1395,19 +1418,23 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"weightMarkerQuantity\""));
     assertFalse(content.contains("class=\"proteinQuantity\""));
     assertTrue(content.contains("class=\"solutionSolvent\""));
+    assertNotNull(submission.getSolutionSolvent());
     assertTrue(content.contains(submission.getSolutionSolvent()));
     assertTrue(content.contains("class=\"formula\""));
+    assertNotNull(submission.getFormula());
     assertTrue(content.contains(submission.getFormula()));
     assertTrue(content.contains("class=\"monoisotopicMass\""));
     assertTrue(content.contains(String.valueOf(submission.getMonoisotopicMass())));
     assertTrue(content.contains("class=\"averageMass\""));
     assertTrue(content.contains(String.valueOf(submission.getAverageMass())));
     assertTrue(content.contains("class=\"toxicity\""));
+    assertNotNull(submission.getToxicity());
     assertTrue(content.contains(submission.getToxicity()));
     assertTrue(content.contains("class=\"lightSensitive\""));
     assertTrue(content.contains(
         messageSource.getMessage("submission.print.submission.lightSensitive.true", null, locale)));
     assertTrue(content.contains("class=\"storageTemperature\""));
+    assertNotNull(submission.getStorageTemperature());
     assertTrue(content.contains(messageSource.getMessage(
         STORAGE_TEMPERATURE_PREFIX + submission.getStorageTemperature().name(), null, locale)));
     assertFalse(content.contains("class=\"digestion\""));
@@ -1534,7 +1561,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_SmallMolecule_NoSolvent() throws Exception {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
-    submission.setSolvents(null);
+    submission.setSolvents(new ArrayList<>());
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
@@ -1557,8 +1584,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     for (Solvent solvent : Solvent.values()) {
       assertEquals(
           submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
-          content.contains(solvent == Solvent.OTHER ? submission.getOtherSolvent()
-              : messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
+          content.contains(
+              solvent == Solvent.OTHER ? Objects.requireNonNull(submission.getOtherSolvent())
+                  : messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
           solvent.name());
     }
   }
@@ -1618,16 +1646,20 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains("class=\"experiment\""));
     assertTrue(content.contains(submission.getExperiment()));
     assertTrue(content.contains("class=\"goal\""));
+    assertNotNull(submission.getGoal());
     assertTrue(content.contains(submission.getGoal()));
     assertTrue(content.contains("class=\"taxonomy\""));
+    assertNotNull(submission.getTaxonomy());
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
     assertTrue(content.contains(messageSource.getMessage(
         SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
+    assertNotNull(submission.getProtein());
     assertTrue(content.contains(submission.getProtein()));
     assertFalse(content.contains("class=\"sample-molecularWeight\""));
     assertTrue(content.contains("class=\"postTranslationModification\""));
+    assertNotNull(submission.getPostTranslationModification());
     assertTrue(content.contains(submission.getPostTranslationModification()));
     assertTrue(content.contains("class=\"sample-quantity\""));
     assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
@@ -1652,13 +1684,16 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains("class=\"injectionType\""));
+    assertNotNull(submission.getInjectionType());
     assertTrue(content.contains(messageSource
         .getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null, locale)));
     assertTrue(content.contains("class=\"source\""));
+    assertNotNull(submission.getSource());
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + submission.getSource().name(), null, locale)));
     assertFalse(content.contains("class=\"proteinContent\""));
     assertTrue(content.contains("class=\"instrument\""));
+    assertNotNull(submission.getInstrument());
     assertTrue(content.contains(messageSource.getMessage(
         MASS_DETECTION_INSTRUMENT_PREFIX + submission.getInstrument().name(), null, locale)));
     assertFalse(content.contains("class=\"identification\""));
@@ -1723,8 +1758,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void print_Plate() throws Exception {
-    Submission submission = repository.findById(163L).get();
-    Plate plate = plateRepository.findBySubmission(submission).get();
+    Submission submission = repository.findById(163L).orElseThrow();
+    Plate plate = plateRepository.findBySubmission(submission).orElseThrow();
     plate.getWells().get(0).setBanned(true);
     plate.getWells().get(36).setBanned(true);
     Locale locale = Locale.getDefault();
@@ -1743,22 +1778,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     for (SubmissionSample sample : submission.getSamples()) {
       assertTrue(content.contains(sample.getName()));
     }
-  }
-
-  @Test
-  public void print_NullSubmission() throws Exception {
-    assertEquals("", service.print(null, Locale.getDefault()));
-  }
-
-  @Test
-  public void print_NoService() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.setService(null);
-    repository.save(submission);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertEquals("", content);
   }
 
   @Test
@@ -1792,13 +1811,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertEquals("", content);
-  }
-
-  @Test
-  public void print_NullLocale() throws Exception {
-    Submission submission = repository.findById(1L).orElse(null);
-
-    assertEquals("", service.print(submission, null));
   }
 
   @Test
@@ -1861,8 +1873,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
-    assertNotNull(submission.getId());
-    submission = repository.findById(submission.getId()).orElse(null);
+    assertNotEquals(0, submission.getId());
+    submission = repository.findById(submission.getId()).orElseThrow();
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
     assertEquals("human", submission.getTaxonomy());
@@ -1907,10 +1919,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
     files = submission.getFiles();
     assertEquals(2, files.size());
-    file = findFile(files, "my_file.docx").get();
+    file = findFile(files, "my_file.docx").orElseThrow();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
-    file = findFile(files, "my_gel_image.jpg").get();
+    file = findFile(files, "my_gel_image.jpg").orElseThrow();
     assertEquals("my_gel_image.jpg", file.getFilename());
     assertArrayEquals(imageContent, file.getContent());
 
@@ -1980,8 +1992,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
-    assertNotNull(submission.getId());
-    submission = repository.findById(submission.getId()).orElse(null);
+    assertNotEquals(0, submission.getId());
+    submission = repository.findById(submission.getId()).orElseThrow();
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2097,8 +2109,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
-    assertNotNull(submission.getId());
-    submission = repository.findById(submission.getId()).orElse(null);
+    assertNotEquals(0, submission.getId());
+    submission = repository.findById(submission.getId()).orElseThrow();
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2206,8 +2218,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(submissionActivityService).insert(submissionCaptor.capture());
     verify(activityService).insert(activity);
-    assertNotNull(submission.getId());
-    submission = repository.findById(submission.getId()).orElse(null);
+    assertNotEquals(0, submission.getId());
+    submission = repository.findById(submission.getId()).orElseThrow();
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
@@ -2245,10 +2257,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     files = submission.getFiles();
     assertEquals(2, files.size());
-    file = findFile(files, "my_file.docx").get();
+    file = findFile(files, "my_file.docx").orElseThrow();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
-    file = findFile(files, "structure.jpg").get();
+    file = findFile(files, "structure.jpg").orElseThrow();
     assertEquals("structure.jpg", file.getFilename());
     assertArrayEquals(imageContent, file.getContent());
 
@@ -2388,7 +2400,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2405,7 +2417,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     assertEquals((Long) 10L, submission.getUser().getId());
     assertEquals((Long) 2L, submission.getLaboratory().getId());
     assertEquals(Service.LC_MS_MS, submission.getService());
@@ -2447,7 +2459,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Sample() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sample -> {
       detach(sample);
@@ -2465,7 +2477,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(1, samples.size());
     SubmissionSample submissionSample = samples.get(0);
@@ -2503,7 +2515,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     samples.add(sample);
     samples.add(sample2);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2516,7 +2528,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq(null));
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     samples = submission.getSamples();
     assertEquals(2, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
@@ -2536,12 +2548,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_UpdateUser() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
     });
-    User user = userRepository.findById(4L).orElse(null);
+    User user = userRepository.findById(4L).orElseThrow();
     submission.setUser(user);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -2552,7 +2564,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Received() throws Exception {
-    Submission submission = repository.findById(149L).orElse(null);
+    Submission submission = repository.findById(149L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2565,7 +2577,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_AfterReceived() throws Exception {
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2578,7 +2590,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Email() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2609,7 +2621,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Admin() throws Exception {
-    Submission submission = repository.findById(1L).orElse(null);
+    Submission submission = repository.findById(1L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2648,7 +2660,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     gelImage.setContent(imageContent);
     files.add(gelImage);
     submission.setFiles(files);
-    User user = userRepository.findById(4L).orElse(null);
+    User user = userRepository.findById(4L).orElseThrow();
     submission.setUser(user);
     LocalDateTime newDate = LocalDateTime.now();
     submission.setSubmissionDate(newDate);
@@ -2661,7 +2673,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = repository.findById(1L).orElse(null);
+    submission = repository.findById(1L).orElseThrow();
     verify(activityService).insert(activity);
     assertEquals((Long) 1L, submission.getId());
     assertEquals(user.getId(), submission.getUser().getId());
@@ -2685,10 +2697,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(newDate, submission.getSubmissionDate());
     files = submission.getFiles();
     assertEquals(2, files.size());
-    file = findFile(files, "my_file.docx").get();
+    file = findFile(files, "my_file.docx").orElseThrow();
     assertEquals("my_file.docx", file.getFilename());
     assertArrayEquals(fileContent, file.getContent());
-    file = findFile(files, "my_gel_image.jpg").get();
+    file = findFile(files, "my_gel_image.jpg").orElseThrow();
     assertEquals("my_gel_image.jpg", file.getFilename());
     assertArrayEquals(imageContent, file.getContent());
 
@@ -2709,7 +2721,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setQuantity("2.0 μg");
     sample.setNumberProtein(10);
     sample.setMolecularWeight(120.0);
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
       detach(sa);
@@ -2724,12 +2736,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(WRITE));
     verify(submissionActivityService).update(submissionCaptor.capture(), eq("unit_test"));
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     List<SubmissionSample> samples = submission.getSamples();
     assertEquals(3, samples.size());
     assertTrue(find(samples, "unit_test_eluate_01").isPresent());
     SubmissionSample submissionSample = find(samples, "unit_test_eluate_01").get();
-    assertNotNull(submissionSample.getId());
+    assertNotEquals(0, submissionSample.getId());
     assertEquals("unit_test_eluate_01", submissionSample.getName());
     assertEquals(SampleType.SOLUTION, submissionSample.getType());
     assertEquals("10.0 μl", submissionSample.getVolume());
@@ -2742,13 +2754,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 147L, submissionLogged.getId());
     assertEquals((Long) 559L, submissionLogged.getSamples().get(0).getId());
     assertEquals((Long) 560L, submissionLogged.getSamples().get(1).getId());
-    assertNotNull(submissionLogged.getSamples().get(2).getId());
+    assertNotEquals(0, submissionLogged.getSamples().get(2).getId());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void hide() throws Exception {
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -2756,7 +2768,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     verify(submissionActivityService).update(submission, null);
     assertTrue(submission.isHidden());
   }
@@ -2764,7 +2776,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void hide_AccessDenied_Anonymous() throws Exception {
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -2776,7 +2788,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void hide_AccessDenied() throws Exception {
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
 
@@ -2789,7 +2801,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = UserRole.ADMIN)
   @SuppressWarnings("unchecked")
   public void show() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
@@ -2798,7 +2810,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     verify(activityService).insert(activity);
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     verify(submissionActivityService).update(submission, null);
     assertFalse(submission.isHidden());
   }
@@ -2807,7 +2819,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithAnonymousUser
   @SuppressWarnings("unchecked")
   public void show_AccessDenied_Anonymous() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());
@@ -2821,7 +2833,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   @SuppressWarnings("unchecked")
   public void show_AccessDenied() throws Exception {
-    Submission submission = repository.findById(36L).orElse(null);
+    Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
         Optional.empty());

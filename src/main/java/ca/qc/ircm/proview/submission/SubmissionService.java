@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.Service.SMALL_MOLECULE;
 import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -104,17 +106,15 @@ public class SubmissionService {
   public List<Submission> all(SubmissionFilter filter) {
     JPAQuery<Submission> query = queryFactory.select(submission);
     initializeAllQuery(query);
-    if (filter != null) {
-      query.where(filter.predicate());
-      if (filter.sortOrders != null) {
-        query.orderBy(filter.sortOrders.toArray(new OrderSpecifier[0]));
-      }
-      if (filter.offset != null) {
-        query.offset(filter.offset);
-      }
-      if (filter.limit != null) {
-        query.limit(filter.limit);
-      }
+    query.where(filter.predicate());
+    if (filter.sortOrders != null) {
+      query.orderBy(filter.sortOrders.toArray(new OrderSpecifier[0]));
+    }
+    if (filter.offset != null) {
+      query.offset(filter.offset);
+    }
+    if (filter.limit != null) {
+      query.limit(filter.limit);
     }
     return query.distinct().fetch();
   }
@@ -132,9 +132,7 @@ public class SubmissionService {
   public int count(SubmissionFilter filter) {
     JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
     initializeAllQuery(query);
-    if (filter != null) {
-      query.where(filter.predicate());
-    }
+    query.where(filter.predicate());
     return query.fetchFirst().intValue();
   }
 
@@ -163,9 +161,8 @@ public class SubmissionService {
    * @return printable version of submission in HTML
    */
   public String print(Submission submission, Locale locale) {
-    if (submission == null || submission.getService() == null || submission.getSamples() == null
-        || submission.getSamples().isEmpty() || submission.getSamples().get(0) == null
-        || submission.getSamples().get(0).getType() == null || locale == null) {
+    if (submission.getSamples().isEmpty() || submission.getSamples().get(0) == null
+        || submission.getSamples().get(0).getType() == null) {
       return "";
     }
 
@@ -174,13 +171,11 @@ public class SubmissionService {
     context.setVariable("submission", submission);
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     context.setVariable("submissionDate",
-        submission.getSubmissionDate() != null
-            ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
-            : null);
+        dateFormatter.format(submission.getSubmissionDate().toLocalDate()));
     context.setVariable("locale", locale);
     context.setVariable("user", submission.getUser());
     context.setVariable("laboratory", submission.getLaboratory());
-    if (submission.getSamples() != null && !submission.getSamples().isEmpty()) {
+    if (!submission.getSamples().isEmpty()) {
       SubmissionSample sample = submission.getSamples().get(0);
       context.setVariable("sample", sample);
     }
@@ -211,7 +206,7 @@ public class SubmissionService {
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.WAITING);
     });
-    if (submission.getExperiment() == null && !submission.getSamples().isEmpty()) {
+    if (submission.getService() == SMALL_MOLECULE && !submission.getSamples().isEmpty()) {
       submission.setExperiment(submission.getSamples().get(0).getName());
     }
 
@@ -282,12 +277,13 @@ public class SubmissionService {
    *           samples don't all have {@link SampleStatus#WAITING} status
    */
   @PreAuthorize("hasPermission(#submission, 'write')")
-  public void update(Submission submission, String explanation) throws IllegalArgumentException {
+  public void update(Submission submission, @Nullable String explanation)
+      throws IllegalArgumentException {
     validateUpdateSubmission(submission);
     if (!authenticatedUser.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
       Submission userSupplied = submission;
-      submission = repository.findById(submission.getId()).orElse(null);
+      submission = repository.findById(submission.getId()).orElseThrow();
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
         sample.setName(userSupplied.getSamples().get(i).getName());
@@ -314,7 +310,7 @@ public class SubmissionService {
 
   private void validateUpdateSubmission(Submission submission) {
     if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
-      Submission old = repository.findById(submission.getId()).orElse(null);
+      Submission old = repository.findById(submission.getId()).orElseThrow();
       if (old.getUser().getId() != submission.getUser().getId()) {
         throw new IllegalArgumentException("Cannot update submission's owner");
       }
@@ -348,7 +344,7 @@ public class SubmissionService {
   }
 
   private void deleteOrphans(Submission submission) {
-    Submission old = repository.findById(submission.getId()).get();
+    Submission old = repository.findById(submission.getId()).orElseThrow();
     old.getSamples().stream().filter(sample -> !submission.getSamples().stream()
         .filter(s2 -> sample.getId() == s2.getId()).findAny().isPresent()).forEach(sample -> {
           sampleRepository.delete(sample);
@@ -363,7 +359,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void hide(Submission submission) {
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     submission.setHidden(true);
     repository.save(submission);
 
@@ -381,7 +377,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void show(Submission submission) {
-    submission = repository.findById(submission.getId()).orElse(null);
+    submission = repository.findById(submission.getId()).orElseThrow();
     submission.setHidden(false);
     repository.save(submission);
 

@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +30,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +56,8 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
   @BeforeEach
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
+    when(service.get(anyLong())).thenReturn(repository.findById(164L));
+    when(service.print(any(), any())).thenReturn("");
     navigate(PrintSubmissionView.class, 164L);
     component = $(PrintSubmission.class).first();
   }
@@ -66,10 +71,10 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
   public void printContent() {
     String content = "<div id=\"test-div\">test content</div>";
     when(service.print(any(), any())).thenReturn(content);
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     component.setSubmission(submission);
 
-    verify(service).print(submission, locale);
+    verify(service, atLeast(2)).print(submission, locale);
     Html html = findChild(component, Html.class).orElse(null);
     assertNotNull(html);
     assertEquals(new Html(content).getElement().getOuterHTML(), html.getElement().getOuterHTML());
@@ -79,7 +84,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
   public void printContent_ReplaceHref() throws Throwable {
     String content = "<div><a href=\"files-0\">abc.txt</a><a href=\"files-1\">def.txt</a></div>";
     when(service.print(any(), any())).thenReturn(content);
-    Submission submission = repository.findById(1L).get();
+    Submission submission = repository.findById(1L).orElseThrow();
     component.setSubmission(submission);
 
     verify(service).print(submission, locale);
@@ -96,8 +101,8 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     assertTrue(optionalResource.get() instanceof StreamResource);
     StreamResource resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
-    byte[] file1Content =
-        Files.readAllBytes(Path.of(getClass().getResource("/submissionfile1.txt").toURI()));
+    byte[] file1Content = Files.readAllBytes(
+        Path.of(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI()));
     assertArrayEquals(file1Content, output.toByteArray());
     output.reset();
     assertTrue(matcher.find(matcher.end()));
@@ -107,8 +112,8 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     assertTrue(optionalResource.get() instanceof StreamResource);
     resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
-    byte[] file2Content =
-        Files.readAllBytes(Path.of(getClass().getResource("/gelimages1.png").toURI()));
+    byte[] file2Content = Files.readAllBytes(
+        Path.of(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI()));
     assertArrayEquals(file2Content, output.toByteArray());
   }
 
@@ -116,7 +121,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
   public void localeChange() {
     String content = "<div id=\"test-div\">test content</div>";
     when(service.print(any(), any())).thenReturn(content);
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     component.setSubmission(submission);
     Locale locale = FRENCH;
     String frenchcontent = "<div id=\"test-div\">test de contenu</div>";

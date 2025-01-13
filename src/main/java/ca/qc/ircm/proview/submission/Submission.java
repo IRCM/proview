@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 /**
  * Sample Submission of a User.
@@ -416,27 +417,30 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.experiment = experiment;
   }
 
+  @Nullable
   public String getGoal() {
     return goal;
   }
 
-  public void setGoal(String goal) {
+  public void setGoal(@Nullable String goal) {
     this.goal = goal;
   }
 
+  @Nullable
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public void setComment(@Nullable String comment) {
     this.comment = comment;
   }
 
+  @Nullable
   public MassDetectionInstrumentSource getSource() {
     return source;
   }
 
-  public void setSource(MassDetectionInstrumentSource source) {
+  public void setSource(@Nullable MassDetectionInstrumentSource source) {
     this.source = source;
   }
 
@@ -448,43 +452,48 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.highResolution = highResolution;
   }
 
+  @Nullable
   public ProteolyticDigestion getDigestion() {
     return digestion;
   }
 
-  public void setDigestion(ProteolyticDigestion digestion) {
+  public void setDigestion(@Nullable ProteolyticDigestion digestion) {
     this.digestion = digestion;
   }
 
+  @Nullable
   public String getUsedDigestion() {
     return usedDigestion;
   }
 
-  public void setUsedDigestion(String usedDigestion) {
+  public void setUsedDigestion(@Nullable String usedDigestion) {
     this.usedDigestion = usedDigestion;
   }
 
+  @Nullable
   public String getOtherDigestion() {
     return otherDigestion;
   }
 
-  public void setOtherDigestion(String otherDigestion) {
+  public void setOtherDigestion(@Nullable String otherDigestion) {
     this.otherDigestion = otherDigestion;
   }
 
+  @Nullable
   public ProteinIdentification getIdentification() {
     return identification;
   }
 
-  public void setIdentification(ProteinIdentification identification) {
+  public void setIdentification(@Nullable ProteinIdentification identification) {
     this.identification = identification;
   }
 
+  @Nullable
   public String getIdentificationLink() {
     return identificationLink;
   }
 
-  public void setIdentificationLink(String identificationLink) {
+  public void setIdentificationLink(@Nullable String identificationLink) {
     this.identificationLink = identificationLink;
   }
 
@@ -496,83 +505,93 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.service = service;
   }
 
+  @Nullable
   public MassDetectionInstrument getInstrument() {
     return instrument;
   }
 
-  public void setInstrument(MassDetectionInstrument instrument) {
+  public void setInstrument(@Nullable MassDetectionInstrument instrument) {
     this.instrument = instrument;
   }
 
+  @Nullable
   public ProteinContent getProteinContent() {
     return proteinContent;
   }
 
-  public void setProteinContent(ProteinContent proteinContent) {
+  public void setProteinContent(@Nullable ProteinContent proteinContent) {
     this.proteinContent = proteinContent;
   }
 
+  @Nullable
   public String getPostTranslationModification() {
     return postTranslationModification;
   }
 
-  public void setPostTranslationModification(String postTranslationModification) {
+  public void setPostTranslationModification(@Nullable String postTranslationModification) {
     this.postTranslationModification = postTranslationModification;
   }
 
+  @Nullable
   public String getProtein() {
     return protein;
   }
 
-  public void setProtein(String protein) {
+  public void setProtein(@Nullable String protein) {
     this.protein = protein;
   }
 
+  @Nullable
   public String getTaxonomy() {
     return taxonomy;
   }
 
-  public void setTaxonomy(String taxonomy) {
+  public void setTaxonomy(@Nullable String taxonomy) {
     this.taxonomy = taxonomy;
   }
 
+  @Nullable
   public String getProteinQuantity() {
     return proteinQuantity;
   }
 
-  public void setProteinQuantity(String proteinQuantity) {
+  public void setProteinQuantity(@Nullable String proteinQuantity) {
     this.proteinQuantity = proteinQuantity;
   }
 
+  @Nullable
   public GelSeparation getSeparation() {
     return separation;
   }
 
-  public void setSeparation(GelSeparation separation) {
+  public void setSeparation(@Nullable GelSeparation separation) {
     this.separation = separation;
   }
 
+  @Nullable
   public GelThickness getThickness() {
     return thickness;
   }
 
-  public void setThickness(GelThickness thickness) {
+  public void setThickness(@Nullable GelThickness thickness) {
     this.thickness = thickness;
   }
 
+  @Nullable
   public GelColoration getColoration() {
     return coloration;
   }
 
-  public void setColoration(GelColoration coloration) {
+  public void setColoration(@Nullable GelColoration coloration) {
     this.coloration = coloration;
   }
 
+  @Nullable
   public String getOtherColoration() {
     return otherColoration;
   }
 
-  public void setOtherColoration(String otherColoration) {
+  public void setOtherColoration(@Nullable String otherColoration) {
     this.otherColoration = otherColoration;
   }
 
@@ -584,27 +603,30 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.decoloration = decoloration;
   }
 
+  @Nullable
   public Double getWeightMarkerQuantity() {
     return weightMarkerQuantity;
   }
 
-  public void setWeightMarkerQuantity(Double weightMarkerQuantity) {
+  public void setWeightMarkerQuantity(@Nullable Double weightMarkerQuantity) {
     this.weightMarkerQuantity = weightMarkerQuantity;
   }
 
+  @Nullable
   public String getDevelopmentTime() {
     return developmentTime;
   }
 
-  public void setDevelopmentTime(String developmentTime) {
+  public void setDevelopmentTime(@Nullable String developmentTime) {
     this.developmentTime = developmentTime;
   }
 
+  @Nullable
   public String getFormula() {
     return formula;
   }
 
-  public void setFormula(String formula) {
+  public void setFormula(@Nullable String formula) {
     this.formula = formula;
   }
 
@@ -616,51 +638,57 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.lightSensitive = lightSensitive;
   }
 
+  @Nullable
   public String getOtherSolvent() {
     return otherSolvent;
   }
 
-  public void setOtherSolvent(String otherSolvent) {
+  public void setOtherSolvent(@Nullable String otherSolvent) {
     this.otherSolvent = otherSolvent;
   }
 
+  @Nullable
   public StorageTemperature getStorageTemperature() {
     return storageTemperature;
   }
 
-  public void setStorageTemperature(StorageTemperature storageTemperature) {
+  public void setStorageTemperature(@Nullable StorageTemperature storageTemperature) {
     this.storageTemperature = storageTemperature;
   }
 
+  @Nullable
   public String getToxicity() {
     return toxicity;
   }
 
-  public void setToxicity(String toxicity) {
+  public void setToxicity(@Nullable String toxicity) {
     this.toxicity = toxicity;
   }
 
+  @Nullable
   public Double getAverageMass() {
     return averageMass;
   }
 
-  public void setAverageMass(Double averageMass) {
+  public void setAverageMass(@Nullable Double averageMass) {
     this.averageMass = averageMass;
   }
 
+  @Nullable
   public Double getMonoisotopicMass() {
     return monoisotopicMass;
   }
 
-  public void setMonoisotopicMass(Double monoisotopicMass) {
+  public void setMonoisotopicMass(@Nullable Double monoisotopicMass) {
     this.monoisotopicMass = monoisotopicMass;
   }
 
+  @Nullable
   public String getSolutionSolvent() {
     return solutionSolvent;
   }
 
-  public void setSolutionSolvent(String solutionSolvent) {
+  public void setSolutionSolvent(@Nullable String solutionSolvent) {
     this.solutionSolvent = solutionSolvent;
   }
 
@@ -672,27 +700,30 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.solvents = solvents;
   }
 
+  @Nullable
   public Quantification getQuantification() {
     return quantification;
   }
 
-  public void setQuantification(Quantification quantification) {
+  public void setQuantification(@Nullable Quantification quantification) {
     this.quantification = quantification;
   }
 
+  @Nullable
   public String getQuantificationComment() {
     return quantificationComment;
   }
 
-  public void setQuantificationComment(String quantificationComment) {
+  public void setQuantificationComment(@Nullable String quantificationComment) {
     this.quantificationComment = quantificationComment;
   }
 
+  @Nullable
   public InjectionType getInjectionType() {
     return injectionType;
   }
 
-  public void setInjectionType(InjectionType injectionType) {
+  public void setInjectionType(@Nullable InjectionType injectionType) {
     this.injectionType = injectionType;
   }
 
@@ -712,35 +743,39 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.hidden = hidden;
   }
 
+  @Nullable
   public LocalDate getDigestionDate() {
     return digestionDate;
   }
 
-  public void setDigestionDate(LocalDate digestionDate) {
+  public void setDigestionDate(@Nullable LocalDate digestionDate) {
     this.digestionDate = digestionDate;
   }
 
+  @Nullable
   public LocalDate getAnalysisDate() {
     return analysisDate;
   }
 
-  public void setAnalysisDate(LocalDate analysisDate) {
+  public void setAnalysisDate(@Nullable LocalDate analysisDate) {
     this.analysisDate = analysisDate;
   }
 
+  @Nullable
   public LocalDate getDataAvailableDate() {
     return dataAvailableDate;
   }
 
-  public void setDataAvailableDate(LocalDate dataAvailableDate) {
+  public void setDataAvailableDate(@Nullable LocalDate dataAvailableDate) {
     this.dataAvailableDate = dataAvailableDate;
   }
 
+  @Nullable
   public LocalDate getSampleDeliveryDate() {
     return sampleDeliveryDate;
   }
 
-  public void setSampleDeliveryDate(LocalDate sampleDeliveryDate) {
+  public void setSampleDeliveryDate(@Nullable LocalDate sampleDeliveryDate) {
     this.sampleDeliveryDate = sampleDeliveryDate;
   }
 
@@ -752,19 +787,21 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
     this.version = version;
   }
 
+  @Nullable
   public String getContaminants() {
     return contaminants;
   }
 
-  public void setContaminants(String contaminants) {
+  public void setContaminants(@Nullable String contaminants) {
     this.contaminants = contaminants;
   }
 
+  @Nullable
   public String getStandards() {
     return standards;
   }
 
-  public void setStandards(String standards) {
+  public void setStandards(@Nullable String standards) {
     this.standards = standards;
   }
 }

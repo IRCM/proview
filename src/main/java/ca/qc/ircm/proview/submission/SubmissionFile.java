@@ -62,11 +62,11 @@ public class SubmissionFile implements Data, Named, Serializable {
   }
 
   public byte[] getContent() {
-    return content != null ? content.clone() : null;
+    return content.clone();
   }
 
   public void setContent(byte[] content) {
-    this.content = content != null ? content.clone() : null;
+    this.content = content.clone();
   }
 
   public long getId() {

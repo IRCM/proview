@@ -29,6 +29,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -516,7 +517,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void getSubmission_NoChanges() {
-    Submission database = repository.findById(33L).orElse(null);
+    Submission database = repository.findById(33L).orElseThrow();
     form.setSubmission(database);
 
     assertTrue(form.isValid());
@@ -551,7 +552,9 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertEquals(sampleType, submission.getSamples().get(0).getType());
     assertEquals(solvent, submission.getSolutionSolvent());
     assertEquals(formula, submission.getFormula());
+    assertNotNull(submission.getMonoisotopicMass());
     assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
+    assertNotNull(submission.getAverageMass());
     assertEquals(averageMass, submission.getAverageMass(), 0.0001);
     assertEquals(toxicity, submission.getToxicity());
     assertEquals(lightSensitive, submission.isLightSensitive());
@@ -597,7 +600,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void setSubmission_ReadOnly() {
-    Submission submission = repository.findById(33L).get();
+    Submission submission = repository.findById(33L).orElseThrow();
 
     form.setSubmission(submission);
 

@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.lang.Nullable;
 
 /**
  * Tests for {@link SubmissionFilter}.
@@ -1057,7 +1058,7 @@ public class SubmissionFilterTest {
     return submission;
   }
 
-  private Submission dataAvailableDate(LocalDate date) {
+  private Submission dataAvailableDate(@Nullable LocalDate date) {
     Submission submission = mock(Submission.class);
     when(submission.getDataAvailableDate()).thenReturn(date);
     return submission;

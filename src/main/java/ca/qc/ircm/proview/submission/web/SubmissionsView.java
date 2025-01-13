@@ -220,10 +220,7 @@ public class SubmissionsView extends VerticalLayout
         submission -> Objects.toString(submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
         .setComparator(NormalizedComparator.of(Submission::getExperiment)).setFlexGrow(3);
-    ValueProvider<Submission,
-        String> submissionUser = submission -> submission.getUser() != null
-            ? Objects.toString(submission.getUser().getName())
-            : "";
+    ValueProvider<Submission, String> submissionUser = submission -> submission.getUser().getName();
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
         .setComparator(NormalizedComparator.of(s -> s.getUser().getName())).setFlexGrow(3);
     user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN) && columnVisibility.apply(user));
@@ -248,9 +245,10 @@ public class SubmissionsView extends VerticalLayout
             .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
         INSTRUMENT).setKey(INSTRUMENT).setFlexGrow(2);
     instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
-    service = submissions.addColumn(submission -> submission.getService() != null
-        ? getTranslation(SERVICE_PREFIX + submission.getService().name())
-        : getTranslation(SERVICE_PREFIX + "NULL"), SERVICE).setKey(SERVICE).setFlexGrow(2);
+    service = submissions
+        .addColumn(submission -> getTranslation(SERVICE_PREFIX + submission.getService().name()),
+            SERVICE)
+        .setKey(SERVICE).setFlexGrow(2);
     service.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(service));
     samplesCount =
         submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)

@@ -79,6 +79,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @BeforeEach
   public void beforeTest() {
     when(service.get(anyLong())).thenAnswer(i -> repository.findById(i.getArgument(0)));
+    when(service.print(any(), any())).thenReturn("");
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
     view.submissions.setItems(repository.findAll());
@@ -118,7 +119,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         dialog.instrument.getLabel());
@@ -139,7 +140,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
     assertEquals(submission.getExperiment(), dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(SUBMISSION_PREFIX + INSTRUMENT),
         dialog.instrument.getLabel());
@@ -178,7 +179,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save() {
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
     setFields();
     dialog.addSavedListener(savedListener);
 
@@ -193,7 +194,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_NullInstrument() {
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
     setFields();
     dialog.instrument.setValue(MassDetectionInstrument.NULL);
     dialog.addSavedListener(savedListener);
@@ -209,7 +210,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void edit() {
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.edit();
@@ -228,7 +229,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
 
   @Test
   public void print() {
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.print();

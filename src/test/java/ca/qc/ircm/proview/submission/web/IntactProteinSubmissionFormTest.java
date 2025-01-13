@@ -745,7 +745,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void getSubmission_NoChanges() {
-    Submission database = repository.findById(34L).orElse(null);
+    Submission database = repository.findById(34L).orElseThrow();
     database.setInjectionType(InjectionType.DIRECT_INFUSION);
     database.setSource(MassDetectionInstrumentSource.ESI);
     form.setSubmission(database);
@@ -838,7 +838,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void setSubmission_ReadOnly() {
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
     submission.setProtein(protein);
     submission.getSamples().get(0).setMolecularWeight(molecularWeight);
     submission.setPostTranslationModification(postTranslationModification);
