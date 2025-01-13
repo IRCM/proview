@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,10 +71,10 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> updateStatus(final SubmissionSample sample) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     final SubmissionSample oldSample =
-        submissionSampleRepository.findById(sample.getId()).orElse(null);
+        submissionSampleRepository.findById(sample.getId()).orElseThrow();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     Submission oldSubmission = oldSample.getSubmission();
@@ -120,10 +121,10 @@ public class SampleActivityService {
    * @return activity about update of sample
    */
   @CheckReturnValue
-  public Optional<Activity> update(final Sample newSample, final String explanation) {
-    User user = authenticatedUser.getUser().orElse(null);
+  public Optional<Activity> update(final Sample newSample, @Nullable final String explanation) {
+    User user = authenticatedUser.getUser().orElseThrow();
 
-    final Sample oldSample = repository.findById(newSample.getId()).orElse(null);
+    final Sample oldSample = repository.findById(newSample.getId()).orElseThrow();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
 

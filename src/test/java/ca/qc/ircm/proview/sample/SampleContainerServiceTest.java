@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -35,7 +36,7 @@ public class SampleContainerServiceTest {
 
   @Test
   public void get_Id() throws Throwable {
-    SampleContainer container = service.get(1L).get();
+    SampleContainer container = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(container.getSample()), eq(READ));
     assertEquals((Long) 1L, container.getId());
@@ -53,17 +54,13 @@ public class SampleContainerServiceTest {
   public void last() throws Throwable {
     Sample sample = new SubmissionSample(1L);
 
-    SampleContainer container = service.last(sample).get();
+    SampleContainer container = service.last(sample).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertEquals((Long) 129L, container.getId());
+    assertNotNull(container.getSample());
     assertEquals((Long) 1L, container.getSample().getId());
     assertEquals(SampleContainerType.WELL, container.getType());
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0), container.getTimestamp());
-  }
-
-  @Test
-  public void last_Null() throws Throwable {
-    assertFalse(service.last(null).isPresent());
   }
 }

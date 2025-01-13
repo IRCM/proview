@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import org.springframework.lang.Nullable;
 
 /**
  * An object that contains a {@link Sample}.
@@ -93,11 +94,12 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     this.id = id;
   }
 
+  @Nullable
   public Sample getSample() {
     return sample;
   }
 
-  public void setSample(Sample sample) {
+  public void setSample(@Nullable Sample sample) {
     this.sample = sample;
   }
 

@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.springframework.lang.Nullable;
 
 /**
  * Sample.
@@ -61,13 +62,13 @@ public abstract class Sample implements Data, Named, Serializable {
   /**
    * Sample's name.
    */
-  @Column
+  @Column(nullable = false)
   @Size(min = 2, max = 150)
   private String name;
   /**
    * Type of sample.
    */
-  @Column
+  @Column(nullable = false)
   @Enumerated(STRING)
   private SampleType type;
   /**
@@ -79,7 +80,7 @@ public abstract class Sample implements Data, Named, Serializable {
   /**
    * Quantity of Sample (generally in ug or pmol).
    */
-  @Column(nullable = false)
+  @Column
   @Size(max = 100)
   private String quantity;
 
@@ -125,19 +126,21 @@ public abstract class Sample implements Data, Named, Serializable {
     this.name = name;
   }
 
+  @Nullable
   public String getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(String quantity) {
+  public void setQuantity(@Nullable String quantity) {
     this.quantity = quantity;
   }
 
+  @Nullable
   public String getVolume() {
     return volume;
   }
 
-  public void setVolume(String volume) {
+  public void setVolume(@Nullable String volume) {
     this.volume = volume;
   }
 

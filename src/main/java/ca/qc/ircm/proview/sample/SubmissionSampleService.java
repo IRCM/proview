@@ -66,9 +66,6 @@ public class SubmissionSampleService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
-    if (name == null) {
-      return false;
-    }
     User currentUser = authenticatedUser.getUser().orElse(null);
 
     BooleanExpression predicate =
@@ -86,7 +83,7 @@ public class SubmissionSampleService {
   public void updateStatus(Collection<? extends SubmissionSample> samples) {
     for (SubmissionSample sample : samples) {
       SampleStatus status = sample.getStatus();
-      sample = repository.findById(sample.getId()).orElse(null);
+      sample = repository.findById(sample.getId()).orElseThrow();
       sample.setStatus(status);
       // Log changes.
       Optional<Activity> activity = sampleActivityService.updateStatus(sample);

@@ -41,10 +41,6 @@ public class SampleContainerService {
    */
   @PreAuthorize("hasPermission(#sample, 'read')")
   public Optional<SampleContainer> last(Sample sample) {
-    if (sample == null) {
-      return Optional.empty();
-    }
-
     return repository.findFirstBySampleOrderByTimestampDesc(sample);
   }
 }

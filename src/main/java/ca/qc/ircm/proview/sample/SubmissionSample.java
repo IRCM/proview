@@ -17,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
+import org.springframework.lang.Nullable;
 
 /**
  * Sample submitted for MS analysis.
@@ -51,12 +52,12 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   /**
    * Used by Hibernate.
    */
-  @Column
+  @Column(nullable = false)
   private int listIndex;
   /**
    * Submission of this sample.
    */
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn
   private Submission submission;
 
@@ -77,11 +78,11 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   @Override
   public Laboratory getLaboratory() {
-    return getSubmission() != null ? getSubmission().getLaboratory() : null;
+    return getSubmission().getLaboratory();
   }
 
   public User getUser() {
-    return getSubmission() != null ? getSubmission().getUser() : null;
+    return getSubmission().getUser();
   }
 
   @Override
@@ -105,19 +106,21 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
     this.status = status;
   }
 
+  @Nullable
   public Integer getNumberProtein() {
     return numberProtein;
   }
 
-  public void setNumberProtein(Integer numberProtein) {
+  public void setNumberProtein(@Nullable Integer numberProtein) {
     this.numberProtein = numberProtein;
   }
 
+  @Nullable
   public Double getMolecularWeight() {
     return molecularWeight;
   }
 
-  public void setMolecularWeight(Double molecularWeight) {
+  public void setMolecularWeight(@Nullable Double molecularWeight) {
     this.molecularWeight = molecularWeight;
   }
 

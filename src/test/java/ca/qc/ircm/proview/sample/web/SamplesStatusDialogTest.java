@@ -135,7 +135,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + property(STATUS, ALL)),
@@ -158,7 +158,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + property(STATUS, ALL)),
@@ -188,7 +188,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void samples_ColumnsValueProvider() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     submission.setSamples(samples);
     dialog.setSubmissionId(163L);
     for (int i = 0; i < samples.size(); i++) {
@@ -228,7 +228,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void allStatus_Changed() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     assertTrue(submission.getSamples().stream()
         .filter(sa -> sa.getStatus() != SampleStatus.ANALYSED).findFirst().isPresent());
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
@@ -239,7 +239,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void allStatus_Clear() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
     dialog.allStatus.clear();
     for (SubmissionSample sample : submission.getSamples()) {
@@ -271,7 +271,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_EmptySamples() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     submission.setSamples(new ArrayList<>());
     dialog.setSubmissionId(163L);
     dialog.save.click();
@@ -280,7 +280,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_EmptyStatus_First() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     setFields();
     SubmissionSample sample = submission.getSamples().get(0);
     dialog.status(sample).setValue(null);
@@ -299,7 +299,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save_EmptyStatus_Second() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     setFields();
     SubmissionSample sample = submission.getSamples().get(1);
     dialog.status(sample).setValue(null);
@@ -318,7 +318,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void save() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     dialog.addSavedListener(savedListener);
     setFields();
     dialog.save.click();
@@ -343,7 +343,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setSubmissionId() {
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     String experiment = "test submission";
     submission.setExperiment(experiment);
     submission.setSamples(new ArrayList<>());

@@ -71,7 +71,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Gel() throws Throwable {
-    SubmissionSample sample = service.get(1L).get();
+    SubmissionSample sample = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
@@ -89,7 +89,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() throws Throwable {
-    SubmissionSample sample = service.get(442L).get();
+    SubmissionSample sample = service.get(442L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
     assertTrue(sample instanceof SubmissionSample);
@@ -153,16 +153,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_Null() throws Throwable {
-    User user = new User(3L);
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-
-    boolean exists = service.exists(null);
-
-    assertEquals(false, exists);
-  }
-
-  @Test
   @WithAnonymousUser
   public void exists_AccessDenied() throws Throwable {
     assertThrows(AccessDeniedException.class, () -> {
@@ -173,10 +163,10 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus() throws Throwable {
-    SubmissionSample sample1 = repository.findById(443L).orElse(null);
+    SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
-    SubmissionSample sample2 = repository.findById(445L).orElse(null);
+    SubmissionSample sample2 = repository.findById(445L).orElseThrow();
     detach(sample2);
     sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<>();
@@ -187,8 +177,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(samples);
 
     repository.flush();
-    SubmissionSample testSample1 = repository.findById(443L).orElse(null);
-    SubmissionSample testSample2 = repository.findById(445L).orElse(null);
+    SubmissionSample testSample1 = repository.findById(443L).orElseThrow();
+    SubmissionSample testSample2 = repository.findById(445L).orElseThrow();
     assertEquals(SampleStatus.DIGESTED, testSample1.getStatus());
     assertEquals(1, testSample1.getVersion());
     assertEquals(SampleStatus.RECEIVED, testSample2.getStatus());
@@ -204,7 +194,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Name() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     final String name = sample.getName();
     sample.setName("unit_test");
@@ -216,7 +206,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(samples);
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertEquals(SampleStatus.DIGESTED, sample.getStatus());
     assertEquals(name, sample.getName());
     assertEquals(1, sample.getVersion());
@@ -225,7 +215,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -233,7 +223,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertTrue(
         LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getSampleDeliveryDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getSampleDeliveryDate()));
@@ -242,7 +232,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findById(559L).orElse(null);
+    SubmissionSample sample = repository.findById(559L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -250,14 +240,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(559L).orElse(null);
+    sample = repository.findById(559L).orElseThrow();
     assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getSampleDeliveryDate());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -265,14 +255,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertNull(sample.getSubmission().getSampleDeliveryDate());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -280,7 +270,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getDigestionDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getDigestionDate()));
   }
@@ -288,7 +278,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findById(559L).orElse(null);
+    SubmissionSample sample = repository.findById(559L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -296,14 +286,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(559L).orElse(null);
+    sample = repository.findById(559L).orElseThrow();
     assertEquals(LocalDate.of(2014, 10, 8), sample.getSubmission().getDigestionDate());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -311,14 +301,14 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertNull(sample.getSubmission().getDigestionDate());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
-    SubmissionSample sample = repository.findById(443L).orElse(null);
+    SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -326,7 +316,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(443L).orElse(null);
+    sample = repository.findById(443L).orElseThrow();
     assertTrue(LocalDate.now().minusDays(2).isBefore(sample.getSubmission().getAnalysisDate()));
     assertTrue(LocalDate.now().plusDays(2).isAfter(sample.getSubmission().getAnalysisDate()));
   }
@@ -334,7 +324,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
-    SubmissionSample sample = repository.findById(621L).orElse(null);
+    SubmissionSample sample = repository.findById(621L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(optionalActivity);
@@ -342,17 +332,17 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     service.updateStatus(Arrays.asList(sample));
 
     repository.flush();
-    sample = repository.findById(621L).orElse(null);
+    sample = repository.findById(621L).orElseThrow();
     assertEquals(LocalDate.of(2014, 10, 17), sample.getSubmission().getAnalysisDate());
   }
 
   @Test
   @WithAnonymousUser
   public void updateStatus_AccessDenied_Anonymous() throws Throwable {
-    SubmissionSample sample1 = repository.findById(443L).orElse(null);
+    SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
-    SubmissionSample sample2 = repository.findById(445L).orElse(null);
+    SubmissionSample sample2 = repository.findById(445L).orElseThrow();
     detach(sample2);
     sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<>();
@@ -368,10 +358,10 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void updateStatus_AccessDenied() throws Throwable {
-    SubmissionSample sample1 = repository.findById(443L).orElse(null);
+    SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
-    SubmissionSample sample2 = repository.findById(445L).orElse(null);
+    SubmissionSample sample2 = repository.findById(445L).orElseThrow();
     detach(sample2);
     sample2.setStatus(SampleStatus.RECEIVED);
     Collection<SubmissionSample> samples = new LinkedList<>();
