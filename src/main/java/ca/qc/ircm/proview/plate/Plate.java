@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.springframework.lang.Nullable;
 
 /**
  * Treatment Plate.
@@ -325,11 +326,12 @@ public class Plate implements Data, Serializable, Named {
     this.rowCount = rowCount;
   }
 
+  @Nullable
   public Submission getSubmission() {
     return submission;
   }
 
-  public void setSubmission(Submission submission) {
+  public void setSubmission(@Nullable Submission submission) {
     this.submission = submission;
   }
 }

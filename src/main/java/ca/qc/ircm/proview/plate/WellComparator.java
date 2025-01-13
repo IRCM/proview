@@ -47,9 +47,6 @@ public class WellComparator implements Comparator<Well>, Serializable {
    *           if compare is null
    */
   public WellComparator(Compare compare) {
-    if (compare == null) {
-      throw new NullPointerException("compare cannot be null");
-    }
     this.compare = compare;
   }
 

@@ -40,9 +40,6 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
    *          user's locale
    */
   public PlateComparator(Compare compare, Locale locale) {
-    if (compare == null) {
-      throw new NullPointerException("compare cannot be null");
-    }
     this.compare = compare;
     namedComparator = new NamedComparator(locale);
   }

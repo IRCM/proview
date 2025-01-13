@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,9 +71,9 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Optional<Activity> update(final Plate plate) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
-    Plate oldPlate = repository.findById(plate.getId()).orElse(null);
+    Plate oldPlate = repository.findById(plate.getId()).orElseThrow();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     updateBuilders.add(updateActivity(plate).column("name").oldValue(oldPlate.getName())
@@ -134,14 +135,14 @@ public class PlateActivityService {
    * @return activity about wells being marked as banned
    */
   @CheckReturnValue
-  public Activity ban(final Collection<Well> wells, final String explanation) {
+  public Activity ban(final Collection<Well> wells, @Nullable final String explanation) {
     validateSamePlate(wells);
     final User user = authenticatedUser.getUser().orElse(null);
     final Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
-      Well oldWell = wellRepository.findById(well.getId()).orElse(null);
+      Well oldWell = wellRepository.findById(well.getId()).orElseThrow();
       updateBuilders.add(new BanSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 
@@ -173,7 +174,7 @@ public class PlateActivityService {
    * @return activity about wells being marked as reactivated
    */
   @CheckReturnValue
-  public Activity activate(final Collection<Well> wells, final String explanation) {
+  public Activity activate(final Collection<Well> wells, @Nullable final String explanation) {
     validateSamePlate(wells);
     final User user = authenticatedUser.getUser().orElse(null);
     Plate plate = wells.iterator().next().getPlate();
@@ -181,7 +182,7 @@ public class PlateActivityService {
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     for (Well well : wells) {
       assert well.getPlate().equals(plate);
-      Well oldWell = wellRepository.findById(well.getId()).orElse(null);
+      Well oldWell = wellRepository.findById(well.getId()).orElseThrow();
       updateBuilders.add(new ActivateSampleContainerUpdateActivityBuilder().oldContainer(oldWell));
     }
 

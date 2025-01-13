@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.plate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -24,10 +25,11 @@ public class WellServiceTest {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void get() throws Exception {
-    Well well = service.get(129L).orElse(null);
+    Well well = service.get(129L).orElseThrow();
 
     assertEquals((Long) 129L, well.getId());
     assertEquals((Long) 26L, well.getPlate().getId());
+    assertNotNull(well.getSample());
     assertEquals((Long) 1L, well.getSample().getId());
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34), well.getTimestamp());
     assertEquals(false, well.isBanned());
