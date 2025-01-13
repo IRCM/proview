@@ -8,7 +8,6 @@ import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import ca.qc.ircm.proview.submission.Submission;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +51,6 @@ public class MsAnalysisService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<MsAnalysis> all(Submission submissionParam) {
-    if (submissionParam == null) {
-      return new ArrayList<>();
-    }
-
     JPAQuery<MsAnalysis> query = queryFactory.select(msAnalysis).distinct();
     query.from(msAnalysis, acquisition, submission);
     query.where(msAnalysis.acquisitions.contains(acquisition));

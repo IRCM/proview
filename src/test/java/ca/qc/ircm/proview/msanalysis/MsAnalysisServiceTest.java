@@ -31,7 +31,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() {
-    MsAnalysis msAnalysis = service.get(1L).orElse(null);
+    MsAnalysis msAnalysis = service.get(1L).orElseThrow();
 
     assertNotNull(msAnalysis);
     assertEquals((Long) 1L, msAnalysis.getId());
@@ -73,12 +73,5 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertThrows(AccessDeniedException.class, () -> {
       service.all(submission);
     });
-  }
-
-  @Test
-  public void all_SubmissionNull() {
-    List<MsAnalysis> msAnalyses = service.all((Submission) null);
-
-    assertEquals(0, msAnalyses.size());
   }
 }

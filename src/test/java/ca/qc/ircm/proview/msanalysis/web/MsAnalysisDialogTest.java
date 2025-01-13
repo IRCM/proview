@@ -210,7 +210,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setMsAnalysisId() {
-    MsAnalysis msAnalysis = repository.findById(1L).get();
+    MsAnalysis msAnalysis = repository.findById(1L).orElseThrow();
 
     dialog.setMsAnalysisId(1L);
 
@@ -233,7 +233,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setMsAnalysisId_Deleted() {
-    MsAnalysis msAnalysis = repository.findById(12L).get();
+    MsAnalysis msAnalysis = repository.findById(12L).orElseThrow();
     msAnalysis.setDeleted(true);
     msAnalysis.setDeletionExplanation("Test deletion\nexplanation");
 
@@ -258,7 +258,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setMsAnalysisId_LocalChange() {
-    MsAnalysis msAnalysis = repository.findById(1L).get();
+    MsAnalysis msAnalysis = repository.findById(1L).orElseThrow();
     dialog.setMsAnalysisId(1L);
     verify(service).get(1L);
 
