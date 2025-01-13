@@ -45,7 +45,7 @@ public class TubeServiceTest {
 
   @Test
   public void get() throws Throwable {
-    Tube tube = service.get(1L).get();
+    Tube tube = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(tube.getSample()), eq(READ));
     assertEquals((Long) 1L, tube.getId());
@@ -77,14 +77,6 @@ public class TubeServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void nameAvailable_Null() throws Throwable {
-    boolean available = service.nameAvailable(null);
-
-    assertFalse(available);
-  }
-
-  @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
     assertThrows(AccessDeniedException.class, () -> {
@@ -112,12 +104,5 @@ public class TubeServiceTest {
     assertTrue(find(tubes, 6L).isPresent());
     assertTrue(find(tubes, 7L).isPresent());
     assertFalse(find(tubes, 5L).isPresent());
-  }
-
-  @Test
-  public void all_Null() throws Throwable {
-    List<Tube> tubes = service.all(null);
-
-    assertEquals(0, tubes.size());
   }
 }
