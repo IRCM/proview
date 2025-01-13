@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.springframework.lang.Nullable;
 
 /**
  * Treatment information that is specific to a sample.
@@ -65,36 +66,36 @@ public class TreatedSample implements Data, Serializable {
   /**
    * Volume of source transfered.
    */
-  @Column(nullable = false)
+  @Column
   @Min(0)
   private Double sourceVolume;
   /**
    * Solvent used for dilution.
    */
-  @Column(nullable = false)
+  @Column
   private String solvent;
   /**
    * Volume of solvent used.
    */
-  @Column(nullable = false)
+  @Column
   @Min(0)
   private Double solventVolume;
   /**
    * Name of standard added.
    */
-  @Column(nullable = false)
+  @Column
   @Size(max = 100)
   private String name;
   /**
    * Quantity of standard added.
    */
-  @Column(nullable = false)
+  @Column
   @Size(max = 100)
   private String quantity;
   /**
    * Fraction index number that is appended when showing LIMS number of treatedSample.
    */
-  @Column(nullable = false)
+  @Column
   private Integer position;
   /**
    * Fraction number. Used with {@link FractionationType#MUDPIT}.
@@ -119,15 +120,11 @@ public class TreatedSample implements Data, Serializable {
    * @return fration's name based on sample's name
    */
   public String getFractionName() {
-    if (getSample() != null && getSample().getName() != null) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(getSample().getName());
-      builder.append(".F");
-      builder.append(position);
-      return builder.toString();
-    } else {
-      return null;
-    }
+    StringBuilder builder = new StringBuilder();
+    builder.append(getSample().getName());
+    builder.append(".F");
+    builder.append(position);
+    return builder.toString();
   }
 
   @Override
@@ -143,11 +140,12 @@ public class TreatedSample implements Data, Serializable {
     this.sample = sample;
   }
 
+  @Nullable
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public void setComment(@Nullable String comment) {
     this.comment = comment;
   }
 
@@ -168,75 +166,84 @@ public class TreatedSample implements Data, Serializable {
     this.container = container;
   }
 
+  @Nullable
   public SampleContainer getDestinationContainer() {
     return destinationContainer;
   }
 
-  public void setDestinationContainer(SampleContainer destinationContainer) {
+  public void setDestinationContainer(@Nullable SampleContainer destinationContainer) {
     this.destinationContainer = destinationContainer;
   }
 
+  @Nullable
   public Double getSourceVolume() {
     return sourceVolume;
   }
 
-  public void setSourceVolume(Double sourceVolume) {
+  public void setSourceVolume(@Nullable Double sourceVolume) {
     this.sourceVolume = sourceVolume;
   }
 
+  @Nullable
   public String getSolvent() {
     return solvent;
   }
 
-  public void setSolvent(String solvent) {
+  public void setSolvent(@Nullable String solvent) {
     this.solvent = solvent;
   }
 
+  @Nullable
   public Double getSolventVolume() {
     return solventVolume;
   }
 
-  public void setSolventVolume(Double solventVolume) {
+  public void setSolventVolume(@Nullable Double solventVolume) {
     this.solventVolume = solventVolume;
   }
 
+  @Nullable
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(@Nullable String name) {
     this.name = name;
   }
 
+  @Nullable
   public String getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(String quantity) {
+  public void setQuantity(@Nullable String quantity) {
     this.quantity = quantity;
   }
 
+  @Nullable
   public Integer getPosition() {
     return position;
   }
 
-  public void setPosition(Integer position) {
+  public void setPosition(@Nullable Integer position) {
     this.position = position;
   }
 
+  @Nullable
   public Integer getNumber() {
     return number;
   }
 
-  public void setNumber(Integer number) {
+  public void setNumber(@Nullable Integer number) {
     this.number = number;
   }
 
+  @Nullable
   public String getPiInterval() {
     return piInterval;
   }
 
-  public void setPiInterval(String piInterval) {
+  public void setPiInterval(@Nullable String piInterval) {
     this.piInterval = piInterval;
   }
 

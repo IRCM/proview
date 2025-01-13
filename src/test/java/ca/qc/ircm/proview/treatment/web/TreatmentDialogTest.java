@@ -242,7 +242,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Solubilisation() {
-    Treatment treatment = repository.findById(1L).get();
+    Treatment treatment = repository.findById(1L).orElseThrow();
 
     dialog.setTreatmentId(1L);
 
@@ -266,7 +266,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_FractionationMudPit() {
-    Treatment treatment = repository.findById(2L).get();
+    Treatment treatment = repository.findById(2L).orElseThrow();
 
     dialog.setTreatmentId(2L);
 
@@ -275,6 +275,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
+    assertNotNull(treatment.getFractionationType());
     assertEquals(
         dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
             dialog.getTranslation(
@@ -295,7 +296,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_FractionationPi() {
-    Treatment treatment = repository.findById(2L).get();
+    Treatment treatment = repository.findById(2L).orElseThrow();
     treatment.setFractionationType(FractionationType.PI);
 
     dialog.setTreatmentId(2L);
@@ -305,6 +306,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.deleted.isVisible());
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
+    assertNotNull(treatment.getFractionationType());
     assertEquals(
         dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
             dialog.getTranslation(
@@ -325,7 +327,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Transfer() {
-    Treatment treatment = repository.findById(3L).get();
+    Treatment treatment = repository.findById(3L).orElseThrow();
 
     dialog.setTreatmentId(3L);
 
@@ -349,7 +351,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Dilution() {
-    Treatment treatment = repository.findById(4L).get();
+    Treatment treatment = repository.findById(4L).orElseThrow();
 
     dialog.setTreatmentId(4L);
 
@@ -373,7 +375,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_StandardAddition() {
-    Treatment treatment = repository.findById(5L).get();
+    Treatment treatment = repository.findById(5L).orElseThrow();
 
     dialog.setTreatmentId(5L);
 
@@ -397,7 +399,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Digestion() {
-    Treatment treatment = repository.findById(6L).get();
+    Treatment treatment = repository.findById(6L).orElseThrow();
 
     dialog.setTreatmentId(6L);
 
@@ -405,6 +407,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
         dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
+    assertNotNull(treatment.getProtocol());
     assertEquals(
         dialog.getTranslation(MESSAGES_PREFIX + PROTOCOL, treatment.getProtocol().getName()),
         dialog.protocol.getText());
@@ -424,7 +427,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Enrichment() {
-    Treatment treatment = repository.findById(7L).get();
+    Treatment treatment = repository.findById(7L).orElseThrow();
 
     dialog.setTreatmentId(7L);
 
@@ -432,6 +435,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
         dialog.getHeaderTitle());
     assertFalse(dialog.deleted.isVisible());
     assertTrue(dialog.protocol.isVisible());
+    assertNotNull(treatment.getProtocol());
     assertEquals(
         dialog.getTranslation(MESSAGES_PREFIX + PROTOCOL, treatment.getProtocol().getName()),
         dialog.protocol.getText());
@@ -451,7 +455,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_Deleted() {
-    Treatment treatment = repository.findById(323L).get();
+    Treatment treatment = repository.findById(323L).orElseThrow();
 
     dialog.setTreatmentId(323L);
 

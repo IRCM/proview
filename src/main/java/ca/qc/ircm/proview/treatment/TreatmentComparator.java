@@ -24,9 +24,6 @@ public class TreatmentComparator implements Comparator<Treatment>, Serializable 
    *          how to compare treatments
    */
   public TreatmentComparator(TreatmentCompareType compare) {
-    if (compare == null) {
-      throw new NullPointerException("compare cannot be null");
-    }
     this.compare = compare;
   }
 
