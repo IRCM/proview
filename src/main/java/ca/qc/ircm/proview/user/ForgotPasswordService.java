@@ -96,7 +96,7 @@ public class ForgotPasswordService {
     forgotPassword.setRequestMoment(LocalDateTime.now());
 
     // Generate random confirm number.
-    forgotPassword.setConfirmNumber(RandomStringUtils.randomAlphanumeric(40));
+    forgotPassword.setConfirmNumber(RandomStringUtils.secure().nextAlphanumeric(40));
 
     User user = userRepository.findByEmail(email).orElse(null);
     if (user == null) {

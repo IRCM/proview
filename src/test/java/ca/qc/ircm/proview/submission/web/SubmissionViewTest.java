@@ -145,7 +145,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     files = IntStream.range(0, 3).mapToObj(i -> {
       SubmissionFile file = new SubmissionFile();
-      file.setFilename(RandomStringUtils.randomAlphanumeric(10));
+      file.setFilename(RandomStringUtils.insecure().nextAlphanumeric(10));
       byte[] content = new byte[1024];
       random.nextBytes(content);
       file.setContent(content);
