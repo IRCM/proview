@@ -87,11 +87,10 @@ public class Plate implements Data, Serializable, Named {
   private List<Well> wells;
 
   public Plate() {
-    this(0);
   }
 
   public Plate(long id) {
-    this(id, null);
+    this.id = id;
   }
 
   /**
@@ -105,8 +104,6 @@ public class Plate implements Data, Serializable, Named {
   public Plate(long id, String name) {
     this.id = id;
     this.name = name;
-    this.columnCount = 12;
-    this.rowCount = 8;
   }
 
   /**
@@ -185,9 +182,6 @@ public class Plate implements Data, Serializable, Named {
    * @return wells containing sample
    */
   public List<Well> wellsContainingSample(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
     return wells.stream().filter(well -> well.getSample() != null)
         .filter(well -> well.getSample().getId() == sample.getId()).collect(Collectors.toList());
   }

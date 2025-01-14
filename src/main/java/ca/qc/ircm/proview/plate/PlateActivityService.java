@@ -50,7 +50,7 @@ public class PlateActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Plate plate) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -58,7 +58,7 @@ public class PlateActivityService {
     activity.setUser(user);
     activity.setTableName("plate");
     activity.setExplanation(null);
-    activity.setUpdates(null);
+    activity.setUpdates(new ArrayList<>());
     return activity;
   }
 
@@ -137,7 +137,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity ban(final Collection<Well> wells, @Nullable final String explanation) {
     validateSamePlate(wells);
-    final User user = authenticatedUser.getUser().orElse(null);
+    final User user = authenticatedUser.getUser().orElseThrow();
     final Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
@@ -176,7 +176,7 @@ public class PlateActivityService {
   @CheckReturnValue
   public Activity activate(final Collection<Well> wells, @Nullable final String explanation) {
     validateSamePlate(wells);
-    final User user = authenticatedUser.getUser().orElse(null);
+    final User user = authenticatedUser.getUser().orElseThrow();
     Plate plate = wells.iterator().next().getPlate();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
