@@ -4,6 +4,7 @@ import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
+import org.springframework.lang.Nullable;
 
 /**
  * Ignores conversion to model error, but only if component is disabled.
@@ -17,7 +18,7 @@ public class IgnoreConversionIfDisabledConverter<P, M> implements Converter<P, M
     this(delegate, null);
   }
 
-  public IgnoreConversionIfDisabledConverter(Converter<P, M> delegate, M errorValue) {
+  public IgnoreConversionIfDisabledConverter(Converter<P, M> delegate, @Nullable M errorValue) {
     this.delegate = delegate;
     this.errorValue = errorValue;
   }
