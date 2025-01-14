@@ -26,8 +26,7 @@ public class UseForgotPasswordViewElement extends VerticalLayoutElement {
   }
 
   public PasswordsFormElement passwordsForm() {
-    return $(PasswordsFormElement.class).attributeContains("class", PasswordsForm.CLASS_NAME)
-        .first();
+    return $(PasswordsFormElement.class).withAttribute("class", PasswordsForm.CLASS_NAME).first();
   }
 
   public ButtonElement save() {

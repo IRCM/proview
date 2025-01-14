@@ -14,6 +14,6 @@ import java.util.List;
 @Attribute(name = "id", value = GuidelinesView.ID)
 public class GuidelinesViewElement extends VerticalLayoutElement {
   public List<CategoryComponentElement> categories() {
-    return $(CategoryComponentElement.class).attributeContains("class", CATEGORY).all();
+    return $(CategoryComponentElement.class).withAttribute("class", CATEGORY).all();
   }
 }

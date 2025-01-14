@@ -48,8 +48,7 @@ public class UserFormElement extends FormLayoutElement {
   }
 
   private PasswordsFormElement passwords() {
-    return $(PasswordsFormElement.class).attributeContains("class", PasswordsForm.CLASS_NAME)
-        .first();
+    return $(PasswordsFormElement.class).withAttribute("class", PasswordsForm.CLASS_NAME).first();
   }
 
   public PasswordFieldElement password() {

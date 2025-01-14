@@ -15,10 +15,10 @@ import com.vaadin.testbench.elementsbase.Element;
 @Attribute(name = "class", value = PasswordsForm.CLASS_NAME)
 public class PasswordsFormElement extends FormLayoutElement {
   public PasswordFieldElement password() {
-    return $(PasswordFieldElement.class).attributeContains("class", PASSWORD).first();
+    return $(PasswordFieldElement.class).withAttribute("class", PASSWORD).first();
   }
 
   public PasswordFieldElement passwordConfirm() {
-    return $(PasswordFieldElement.class).attributeContains("class", PASSWORD_CONFIRM).first();
+    return $(PasswordFieldElement.class).withAttribute("class", PASSWORD_CONFIRM).first();
   }
 }

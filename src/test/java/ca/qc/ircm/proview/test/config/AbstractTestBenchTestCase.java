@@ -13,13 +13,11 @@ import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.sidenav.testbench.SideNavElement;
 import com.vaadin.flow.component.sidenav.testbench.SideNavItemElement;
 import com.vaadin.testbench.TestBenchTestCase;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,12 +111,5 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     } catch (Throwable e) {
       return Optional.empty();
     }
-  }
-
-  protected void uploadFile(WebElement uploader, Path file) {
-    logger.debug("Uploading file {} to uploader {} with class {}", file,
-        uploader.getAttribute("id"), uploader.getAttribute("class"));
-    logger.error("Not updated for Vaadin 10+");
-    throw new UnsupportedOperationException("Not updated for Vaadin 10+");
   }
 }
