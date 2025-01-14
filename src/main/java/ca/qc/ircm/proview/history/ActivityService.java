@@ -82,10 +82,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Optional<Object> record(Activity activity) {
-    if (activity == null || activity.getTableName() == null) {
-      return Optional.empty();
-    }
-
     return record(activity.getTableName(), activity.getRecordId());
   }
 
@@ -195,10 +191,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> all(Submission submission) {
-    if (submission == null) {
-      return new ArrayList<>();
-    }
-
     final List<Activity> activities = new ArrayList<>();
     final List<SubmissionSample> samples = submission.getSamples();
     final List<Long> sampleIds =
@@ -247,10 +239,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allInsertActivities(Plate plate) {
-    if (plate == null) {
-      return new ArrayList<>();
-    }
-
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
@@ -270,10 +258,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allUpdateWellActivities(Plate plate) {
-    if (plate == null) {
-      return new ArrayList<>();
-    }
-
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.join(activity.updates, updateActivity).fetch();
@@ -295,10 +279,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allTreatmentActivities(Plate plate) {
-    if (plate == null) {
-      return new ArrayList<>();
-    }
-
     final List<Activity> activities = new ArrayList<>();
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
@@ -325,10 +305,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allMsAnalysisActivities(Plate plate) {
-    if (plate == null) {
-      return new ArrayList<>();
-    }
-
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
@@ -355,27 +331,21 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Optional<String> description(Activity activity, Locale locale) {
-    if (activity == null || locale == null) {
-      return Optional.empty();
-    }
-
     StringBuilder builder = new StringBuilder();
     Object record = record(activity.getTableName(), activity.getRecordId()).orElse(null);
     String name = record instanceof Named ? ((Named) record).getName() : "";
     builder.append(messageSource.getMessage(MESSAGES_PREFIX + "activity", new Object[] {
         activity.getActionType().ordinal(), activity.getTableName(), name, activity.getRecordId() },
         locale));
-    if (activity.getUpdates() != null) {
-      for (UpdateActivity update : activity.getUpdates()) {
-        Object updateRecord = record(update.getTableName(), update.getRecordId()).orElse(null);
-        String updateName = updateRecord instanceof Named ? ((Named) updateRecord).getName() : "";
-        builder.append("\n");
-        builder.append(messageSource.getMessage(MESSAGES_PREFIX + "update",
-            new Object[] { update.getActionType().ordinal(), update.getTableName(), updateName,
-                update.getRecordId(), update.getColumn(), update.getOldValue(),
-                update.getNewValue() },
-            locale));
-      }
+    for (UpdateActivity update : activity.getUpdates()) {
+      Object updateRecord = record(update.getTableName(), update.getRecordId()).orElse(null);
+      String updateName = updateRecord instanceof Named ? ((Named) updateRecord).getName() : "";
+      builder.append("\n");
+      builder.append(messageSource.getMessage(MESSAGES_PREFIX + "update",
+          new Object[] { update.getActionType().ordinal(), update.getTableName(), updateName,
+              update.getRecordId(), update.getColumn(), update.getOldValue(),
+              update.getNewValue() },
+          locale));
     }
     return Optional.of(builder.toString());
   }

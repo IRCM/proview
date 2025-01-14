@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.tube.Tube;
+import java.util.Objects;
 
 /**
  * {@link UpdateActivityBuilder} for addition of sample to a sample container.
@@ -24,7 +25,7 @@ public class AddSampleToSampleContainerUpdateActivityBuilder extends UpdateActiv
   public AddSampleToSampleContainerUpdateActivityBuilder
       newContainer(SampleContainer newContainer) {
     recordId(newContainer.getId());
-    newValue(newContainer.getSample().getId());
+    newValue(Objects.requireNonNull(newContainer.getSample()).getId());
     if (newContainer instanceof Tube) {
       actionType(ActionType.INSERT);
       column(null);

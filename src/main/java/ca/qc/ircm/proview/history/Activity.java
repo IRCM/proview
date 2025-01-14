@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 /**
  * History of an action in database.
@@ -41,7 +42,7 @@ public class Activity implements Data {
   /**
    * User that made the action.
    */
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(updatable = false)
   private User user;
   /**
@@ -68,7 +69,7 @@ public class Activity implements Data {
   /**
    * Explanation of changes.
    */
-  @Column(nullable = false)
+  @Column
   private String explanation;
   /**
    * Updates done in this action, if any. This will most likely be null or empty if
@@ -133,11 +134,12 @@ public class Activity implements Data {
     this.updates = updates;
   }
 
+  @Nullable
   public String getExplanation() {
     return explanation;
   }
 
-  public void setExplanation(String explanation) {
+  public void setExplanation(@Nullable String explanation) {
     this.explanation = explanation;
   }
 

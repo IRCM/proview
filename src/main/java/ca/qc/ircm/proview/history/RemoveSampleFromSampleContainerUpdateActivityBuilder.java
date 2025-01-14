@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.tube.Tube;
+import java.util.Objects;
 
 /**
  * Activity of removing a sample from container.
@@ -24,7 +25,7 @@ public class RemoveSampleFromSampleContainerUpdateActivityBuilder extends Update
   public RemoveSampleFromSampleContainerUpdateActivityBuilder
       oldContainer(SampleContainer oldContainer) {
     recordId(oldContainer.getId());
-    oldValue(oldContainer.getSample().getId());
+    oldValue(Objects.requireNonNull(oldContainer.getSample()).getId());
     if (oldContainer instanceof Tube) {
       actionType(ActionType.DELETE);
       column(null);

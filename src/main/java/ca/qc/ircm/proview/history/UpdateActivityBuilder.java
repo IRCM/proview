@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview.history;
 
+import org.springframework.lang.Nullable;
+
 /**
  * Builder for an update activity - change to a database column for some data.
  */
@@ -70,17 +72,17 @@ public class UpdateActivityBuilder {
     return this;
   }
 
-  public UpdateActivityBuilder column(String column) {
+  public UpdateActivityBuilder column(@Nullable String column) {
     this.column = column;
     return this;
   }
 
-  public UpdateActivityBuilder oldValue(Object oldValue) {
+  public UpdateActivityBuilder oldValue(@Nullable Object oldValue) {
     this.oldValue = oldValue;
     return this;
   }
 
-  public UpdateActivityBuilder newValue(Object newValue) {
+  public UpdateActivityBuilder newValue(@Nullable Object newValue) {
     this.newValue = newValue;
     return this;
   }

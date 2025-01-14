@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.history;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.springframework.lang.Nullable;
 
 /**
  * Utilities for database log.
@@ -48,7 +49,7 @@ public class DatabaseLogUtil {
    *          second object
    * @return true if 2 objects are equal, false otherwise
    */
-  public static boolean equals(Object first, Object second) {
+  public static boolean equals(@Nullable Object first, @Nullable Object second) {
     boolean same = false;
     same |= first == null && second == null;
     if (first != null && second != null) {

@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import org.springframework.lang.Nullable;
 
 /**
  * History of an action on an object in database. This may be the update of an object's simple
@@ -104,27 +105,30 @@ public class UpdateActivity implements Data {
     this.actionType = actionType;
   }
 
+  @Nullable
   public String getColumn() {
     return column;
   }
 
-  public void setColumn(String column) {
+  public void setColumn(@Nullable String column) {
     this.column = column;
   }
 
+  @Nullable
   public String getOldValue() {
     return oldValue;
   }
 
-  public void setOldValue(String oldValue) {
+  public void setOldValue(@Nullable String oldValue) {
     this.oldValue = oldValue;
   }
 
+  @Nullable
   public String getNewValue() {
     return newValue;
   }
 
-  public void setNewValue(String newValue) {
+  public void setNewValue(@Nullable String newValue) {
     this.newValue = newValue;
   }
 }
