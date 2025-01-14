@@ -101,8 +101,4 @@ public class PrintSubmissionView extends VerticalLayout
       secondHeader.setText(getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()));
     }
   }
-
-  Long getSubmissionId() {
-    return submission != null ? submission.getId() : null;
-  }
 }

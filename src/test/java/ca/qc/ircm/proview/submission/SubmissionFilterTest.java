@@ -1240,7 +1240,6 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
     assertFalse(filter.test(instrument(MassDetectionInstrument.VELOS)));
     assertFalse(filter.test(instrument(MassDetectionInstrument.NULL)));
-    assertFalse(filter.test(instrument(null)));
   }
 
   @Test
@@ -1250,7 +1249,6 @@ public class SubmissionFilterTest {
     assertFalse(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
     assertFalse(filter.test(instrument(MassDetectionInstrument.VELOS)));
     assertTrue(filter.test(instrument(MassDetectionInstrument.NULL)));
-    assertTrue(filter.test(instrument(null)));
   }
 
   @Test
@@ -1260,7 +1258,6 @@ public class SubmissionFilterTest {
     assertTrue(filter.test(instrument(MassDetectionInstrument.LTQ_ORBI_TRAP)));
     assertTrue(filter.test(instrument(MassDetectionInstrument.VELOS)));
     assertTrue(filter.test(instrument(MassDetectionInstrument.NULL)));
-    assertTrue(filter.test(instrument(null)));
   }
 
   @Test

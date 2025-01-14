@@ -54,7 +54,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Submission submission) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -62,7 +62,7 @@ public class SubmissionActivityService {
     activity.setUser(user);
     activity.setTableName(Submission.TABLE_NAME);
     activity.setExplanation(null);
-    activity.setUpdates(null);
+    activity.setUpdates(new ArrayList<>());
     return activity;
   }
 
@@ -78,7 +78,7 @@ public class SubmissionActivityService {
   @CheckReturnValue
   public Optional<Activity> update(final Submission submission,
       @Nullable final String explanation) {
-    final User user = authenticatedUser.getUser().orElse(null);
+    final User user = authenticatedUser.getUser().orElseThrow();
 
     final Submission oldSubmission = repository.findById(submission.getId()).orElseThrow();
 

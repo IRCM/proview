@@ -158,7 +158,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   private byte[] getResourceContent(String resource) throws IOException, URISyntaxException {
-    Path path = Paths.get(getClass().getResource(resource).toURI());
+    Path path = Paths.get(Objects.requireNonNull(getClass().getResource(resource)).toURI());
     return Files.readAllBytes(path);
   }
 
@@ -708,6 +708,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_LcmsmsSolution() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
+    Sample firstSample = submission.getSamples().get(0);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
@@ -752,8 +753,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNotNull(submission.getTaxonomy());
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(messageSource.getMessage(
-        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + firstSample.getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertNotNull(submission.getProtein());
     assertTrue(content.contains(submission.getProtein()));
@@ -764,9 +765,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNotNull(submission.getPostTranslationModification());
     assertTrue(content.contains(submission.getPostTranslationModification()));
     assertTrue(content.contains("class=\"sample-quantity\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
+    assertNotNull(firstSample.getQuantity());
+    assertTrue(content.contains(firstSample.getQuantity()));
     assertTrue(content.contains("class=\"sample-volume\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getVolume()));
+    assertNotNull(firstSample.getVolume());
+    assertTrue(content.contains(firstSample.getVolume()));
     assertFalse(content.contains("class=\"separation\""));
     assertFalse(content.contains("class=\"thickness\""));
     assertFalse(content.contains("class=\"coloration\""));
@@ -1608,6 +1611,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   public void print_IntactProtein() throws Exception {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
+    Sample firstSample = submission.getSamples().get(0);
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
@@ -1652,8 +1656,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNotNull(submission.getTaxonomy());
     assertTrue(content.contains(submission.getTaxonomy()));
     assertTrue(content.contains("class=\"sample-type\""));
-    assertTrue(content.contains(messageSource.getMessage(
-        SAMPLE_TYPE_PREFIX + submission.getSamples().get(0).getType().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(SAMPLE_TYPE_PREFIX + firstSample.getType().name(), null, locale)));
     assertTrue(content.contains("class=\"protein\""));
     assertNotNull(submission.getProtein());
     assertTrue(content.contains(submission.getProtein()));
@@ -1662,9 +1666,11 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertNotNull(submission.getPostTranslationModification());
     assertTrue(content.contains(submission.getPostTranslationModification()));
     assertTrue(content.contains("class=\"sample-quantity\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getQuantity()));
+    assertNotNull(firstSample.getQuantity());
+    assertTrue(content.contains(firstSample.getQuantity()));
     assertTrue(content.contains("class=\"sample-volume\""));
-    assertTrue(content.contains(submission.getSamples().get(0).getVolume()));
+    assertNotNull(firstSample.getVolume());
+    assertTrue(content.contains(firstSample.getVolume()));
     assertFalse(content.contains("class=\"separation\""));
     assertFalse(content.contains("class=\"thickness\""));
     assertFalse(content.contains("class=\"coloration\""));
@@ -1795,17 +1801,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void print_FirstSampleNull() throws Exception {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().set(0, null);
-    repository.save(submission);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertEquals("", content);
-  }
-
-  @Test
-  public void print_NoSampleType() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.getSamples().forEach(sample -> sample.setType(null));
     repository.save(submission);
     Locale locale = Locale.getDefault();
 
@@ -2177,7 +2172,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.insert(any(Submission.class))).thenReturn(activity);
     Submission submission = new Submission();
     submission.setService(Service.SMALL_MOLECULE);
-    submission.setExperiment(null);
+    submission.setExperiment("");
     submission.setGoal(null);
     submission.setInstrument(MassDetectionInstrument.LTQ_ORBI_TRAP);
     submission.setSource(MassDetectionInstrumentSource.ESI);

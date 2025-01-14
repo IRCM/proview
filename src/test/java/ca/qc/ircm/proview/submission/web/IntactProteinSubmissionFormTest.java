@@ -34,6 +34,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findValidationStatus
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -842,6 +843,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     submission.setProtein(protein);
     submission.getSamples().get(0).setMolecularWeight(molecularWeight);
     submission.setPostTranslationModification(postTranslationModification);
+    SubmissionSample firstSample = submission.getSamples().get(0);
 
     form.setSubmission(submission);
 
@@ -853,13 +855,14 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertTrue(form.taxonomy.isReadOnly());
     assertEquals(submission.getProtein(), form.protein.getValue());
     assertTrue(form.protein.isReadOnly());
-    assertEquals(submission.getSamples().get(0).getMolecularWeight(),
+    assertNotNull(firstSample.getMolecularWeight());
+    assertEquals(firstSample.getMolecularWeight(),
         Double.parseDouble(form.molecularWeight.getValue()), 0.00001);
     assertTrue(form.molecularWeight.isReadOnly());
     assertEquals(submission.getPostTranslationModification(),
         form.postTranslationModification.getValue());
     assertTrue(form.postTranslationModification.isReadOnly());
-    assertEquals(submission.getSamples().get(0).getType(), form.sampleType.getValue());
+    assertEquals(firstSample.getType(), form.sampleType.getValue());
     assertTrue(form.sampleType.isReadOnly());
     assertEquals(submission.getSamples().size(), Integer.parseInt(form.samplesCount.getValue()));
     assertTrue(form.samplesCount.isReadOnly());
@@ -867,9 +870,9 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
         submission.getSamples().stream().map(Sample::getName).collect(Collectors.joining(", ")),
         form.samplesNames.getValue());
     assertTrue(form.samplesNames.isReadOnly());
-    assertEquals(submission.getSamples().get(0).getQuantity(), form.quantity.getValue());
+    assertEquals(firstSample.getQuantity(), form.quantity.getValue());
     assertTrue(form.quantity.isReadOnly());
-    assertEquals(submission.getSamples().get(0).getVolume(), form.volume.getValue());
+    assertEquals(firstSample.getVolume(), form.volume.getValue());
     assertTrue(form.volume.isReadOnly());
     assertEquals(submission.getInjectionType(), form.injection.getValue());
     assertTrue(form.injection.isReadOnly());

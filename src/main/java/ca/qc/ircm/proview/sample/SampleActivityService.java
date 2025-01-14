@@ -50,7 +50,7 @@ public class SampleActivityService {
    */
   @CheckReturnValue
   public Activity insertControl(final Control control) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -58,7 +58,7 @@ public class SampleActivityService {
     activity.setUser(user);
     activity.setTableName("sample");
     activity.setExplanation(null);
-    activity.setUpdates(null);
+    activity.setUpdates(new ArrayList<>());
     return activity;
   }
 
