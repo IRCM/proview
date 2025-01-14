@@ -49,9 +49,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 /**
  * Tests for {@link ViewLayout}.
@@ -62,7 +62,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ViewLayout view;
-  @SpyBean
+  @MockitoSpyBean
   private SwitchUserService switchUserService;
   @Mock
   private AfterNavigationListener navigationListener;

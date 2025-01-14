@@ -63,8 +63,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 /**
  * Tests for {@link UserForm}.
@@ -89,7 +89,7 @@ public class UserFormTest extends SpringUIUnitTest {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private EntityManager entityManager;
-  @SpyBean
+  @MockitoSpyBean
   private UserPermissionEvaluator userPermissionEvaluator;
   private Locale locale = ENGLISH;
   private List<Laboratory> laboratories;
