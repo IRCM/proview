@@ -6,6 +6,7 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.binder.ValueContext;
+import org.springframework.lang.Nullable;
 
 /**
  * Validates that value is not empty, but only if component is enabled.
@@ -19,8 +20,8 @@ public class RequiredIfEnabledValidator<T> implements Validator<T> {
   }
 
   @Override
-  public ValidationResult apply(T value, ValueContext context) {
-    Component component = context.getComponent().get();
+  public ValidationResult apply(@Nullable T value, ValueContext context) {
+    Component component = context.getComponent().orElseThrow();
     @SuppressWarnings("unchecked")
     HasValue<?, T> componentWithValue = (HasValue<?, T>) component;
     if (((HasEnabled) component).isEnabled()) {

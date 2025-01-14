@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,12 +90,14 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   @Test
   @Download
   public void download() throws Throwable {
+    open();
     Files.createDirectories(downloadHome);
     Guideline guideline =
         guidelinesConfiguration.categories(currentLocale()).get(0).getGuidelines().get(0);
     Path downloaded = downloadHome.resolve(guideline.getPath().getFileName().toString());
     Files.deleteIfExists(downloaded);
-    Path source = Paths.get(getClass().getResource("/structure1.png").toURI());
+    Path source =
+        Paths.get(Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
     Files.createDirectories(guideline.getPath().getParent());
     Files.copy(source, guideline.getPath(), StandardCopyOption.REPLACE_EXISTING);
 

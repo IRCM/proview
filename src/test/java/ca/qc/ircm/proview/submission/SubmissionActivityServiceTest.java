@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +84,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() {
-    Submission newSubmission = repository.findById(1L).orElse(null);
+    Submission newSubmission = repository.findById(1L).orElseThrow();
     detach(newSubmission);
     final User oldUser = new User(3L);
     final Laboratory oldLaboratory = new Laboratory(2L);
@@ -143,7 +144,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(newSubmission.getId(), activity.getRecordId());
@@ -477,8 +478,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     sampleDeliveryDateActivity.setRecordId(newSubmission.getId());
     sampleDeliveryDateActivity.setColumn(qname(qsubmission.sampleDeliveryDate));
     sampleDeliveryDateActivity.setOldValue("2010-12-09");
-    sampleDeliveryDateActivity
-        .setNewValue(dateFormatter.format(newSubmission.getSampleDeliveryDate()));
+    sampleDeliveryDateActivity.setNewValue(
+        dateFormatter.format(Objects.requireNonNull(newSubmission.getSampleDeliveryDate())));
     expectedUpdateActivities.add(sampleDeliveryDateActivity);
     UpdateActivity digestionDateActivity = new UpdateActivity();
     digestionDateActivity.setActionType(ActionType.UPDATE);
@@ -486,7 +487,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     digestionDateActivity.setRecordId(newSubmission.getId());
     digestionDateActivity.setColumn(qname(qsubmission.digestionDate));
     digestionDateActivity.setOldValue("2010-12-11");
-    digestionDateActivity.setNewValue(dateFormatter.format(newSubmission.getDigestionDate()));
+    digestionDateActivity.setNewValue(
+        dateFormatter.format(Objects.requireNonNull(newSubmission.getDigestionDate())));
     expectedUpdateActivities.add(digestionDateActivity);
     UpdateActivity analysisDateActivity = new UpdateActivity();
     analysisDateActivity.setActionType(ActionType.UPDATE);
@@ -494,7 +496,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     analysisDateActivity.setRecordId(newSubmission.getId());
     analysisDateActivity.setColumn(qname(qsubmission.analysisDate));
     analysisDateActivity.setOldValue("2010-12-13");
-    analysisDateActivity.setNewValue(dateFormatter.format(newSubmission.getAnalysisDate()));
+    analysisDateActivity
+        .setNewValue(dateFormatter.format(Objects.requireNonNull(newSubmission.getAnalysisDate())));
     expectedUpdateActivities.add(analysisDateActivity);
     UpdateActivity dataAvailableDateActivity = new UpdateActivity();
     dataAvailableDateActivity.setActionType(ActionType.UPDATE);
@@ -502,8 +505,8 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     dataAvailableDateActivity.setRecordId(newSubmission.getId());
     dataAvailableDateActivity.setColumn(qname(qsubmission.dataAvailableDate));
     dataAvailableDateActivity.setOldValue("2010-12-15");
-    dataAvailableDateActivity
-        .setNewValue(dateFormatter.format(newSubmission.getDataAvailableDate()));
+    dataAvailableDateActivity.setNewValue(
+        dateFormatter.format(Objects.requireNonNull(newSubmission.getDataAvailableDate())));
     expectedUpdateActivities.add(dataAvailableDateActivity);
     UpdateActivity hiddenActivity = new UpdateActivity();
     hiddenActivity.setActionType(ActionType.UPDATE);
@@ -527,7 +530,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_ChangeSamples() {
-    Submission submission = repository.findById(147L).orElse(null);
+    Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     submission.getSamples().remove(1);
     submission.getSamples().add(new SubmissionSample(640L, "new_sample"));
@@ -547,7 +550,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
     verify(sampleActivityService).update(eq(submission.getSamples().get(0)), any());
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
@@ -570,7 +573,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_AddSolvent() throws Throwable {
-    Submission submission = repository.findById(33L).orElse(null);
+    Submission submission = repository.findById(33L).orElseThrow();
     Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
     submission.setOtherSolvent("ch3oh");
@@ -579,7 +582,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
@@ -607,7 +610,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_RemoveSolvent() throws Throwable {
-    Submission submission = repository.findById(33L).orElse(null);
+    Submission submission = repository.findById(33L).orElseThrow();
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);
     detach(submission);
@@ -615,7 +618,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
@@ -635,7 +638,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChange() {
-    Submission submission = repository.findById(1L).orElse(null);
+    Submission submission = repository.findById(1L).orElseThrow();
     detach(submission);
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");

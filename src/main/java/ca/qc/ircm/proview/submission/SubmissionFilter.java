@@ -14,6 +14,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
+import org.springframework.lang.Nullable;
 
 /**
  * Filters submissions.
@@ -86,6 +87,7 @@ public class SubmissionFilter implements Predicate<Submission> {
    *
    * @return QueryDSL predicate matching filter
    */
+  @Nullable
   public com.querydsl.core.types.Predicate predicate() {
     BooleanBuilder predicate = new BooleanBuilder();
     if (experimentContains != null) {

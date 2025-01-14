@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.security;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -63,7 +64,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_Read_Anonymous() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertFalse(
@@ -75,7 +76,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_Read_Anonymous_Submission() throws Throwable {
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertFalse(
@@ -87,7 +88,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void hasPermission_Read() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertFalse(
@@ -101,13 +102,14 @@ public class PlatePermissionEvaluatorTest {
   public void hasPermission_Read_SubmissionTrue() throws Throwable {
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(true);
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
@@ -117,13 +119,14 @@ public class PlatePermissionEvaluatorTest {
   public void hasPermission_Read_SubmissionFalse() throws Throwable {
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(false);
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertFalse(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertFalse(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
@@ -131,7 +134,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void hasPermission_Read_Admin() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertTrue(
@@ -211,7 +214,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_Write_Anonymous() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertFalse(
@@ -223,7 +226,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithAnonymousUser
   public void hasPermission_Write_Anonymous_Submission() throws Throwable {
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertFalse(
@@ -235,7 +238,7 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void hasPermission_Write() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertFalse(
@@ -249,13 +252,14 @@ public class PlatePermissionEvaluatorTest {
   public void hasPermission_Write_SubmissionTrue() throws Throwable {
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(true);
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }
@@ -265,13 +269,14 @@ public class PlatePermissionEvaluatorTest {
   public void hasPermission_Write_SubmissionFalse() throws Throwable {
     when(submissionPermissionEvaluator.hasPermission(any(Submission.class), any(), any()))
         .thenReturn(false);
-    Plate plate = plateRepository.findById(123L).orElse(null);
+    Plate plate = plateRepository.findById(123L).orElseThrow();
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertFalse(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }
@@ -279,52 +284,13 @@ public class PlatePermissionEvaluatorTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void hasPermission_Write_Admin() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
+    Plate plate = plateRepository.findById(26L).orElseThrow();
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, BASE_WRITE));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
-  }
-
-  @Test
-  public void hasPermission_NullAuthentication() throws Throwable {
-    Plate plate = plateRepository.findById(26L).orElse(null);
-    assertFalse(permissionEvaluator.hasPermission(null, plate, READ));
-    assertFalse(permissionEvaluator.hasPermission(null, plate, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(null, plate, BASE_READ));
-    assertFalse(permissionEvaluator.hasPermission(null, plate, BASE_WRITE));
-    assertFalse(permissionEvaluator.hasPermission(null, plate.getId(), PLATE_CLASS, READ));
-    assertFalse(permissionEvaluator.hasPermission(null, plate.getId(), PLATE_CLASS, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(null, plate.getId(), PLATE_CLASS, BASE_READ));
-    assertFalse(permissionEvaluator.hasPermission(null, plate.getId(), PLATE_CLASS, BASE_WRITE));
-  }
-
-  @Test
-  @WithAnonymousUser
-  public void hasPermission_Null_Anonymous() throws Throwable {
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, BASE_READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, BASE_WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, BASE_WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, BASE_READ));
-  }
-
-  @Test
-  @WithUserDetails("proview@ircm.qc.ca")
-  public void hasPermission_Null() throws Throwable {
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, BASE_READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, BASE_WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, WRITE));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, BASE_READ));
-    assertFalse(permissionEvaluator.hasPermission(authentication(), null, PLATE_CLASS, BASE_WRITE));
   }
 
   @Test

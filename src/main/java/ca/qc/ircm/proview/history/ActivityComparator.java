@@ -28,9 +28,6 @@ public class ActivityComparator implements Comparator<Activity>, Serializable {
    *          how to compare activities
    */
   public ActivityComparator(Compare compare) {
-    if (compare == null) {
-      throw new NullPointerException("compare cannot be null");
-    }
     this.compare = compare;
   }
 

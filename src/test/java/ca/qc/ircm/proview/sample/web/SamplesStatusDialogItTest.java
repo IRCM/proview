@@ -57,9 +57,9 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
         .getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.DIGESTED.name(), null, locale));
     dialog.save().click();
     assertFalse(dialog.isOpen());
-    assertEquals(SampleStatus.ANALYSED, repository.findById(640L).get().getStatus());
-    assertEquals(SampleStatus.DIGESTED, repository.findById(641L).get().getStatus());
-    assertEquals(SampleStatus.WAITING, repository.findById(642L).get().getStatus());
+    assertEquals(SampleStatus.ANALYSED, repository.findById(640L).orElseThrow().getStatus());
+    assertEquals(SampleStatus.DIGESTED, repository.findById(641L).orElseThrow().getStatus());
+    assertEquals(SampleStatus.WAITING, repository.findById(642L).orElseThrow().getStatus());
   }
 
   @Test

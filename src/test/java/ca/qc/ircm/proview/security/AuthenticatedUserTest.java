@@ -93,7 +93,7 @@ public class AuthenticatedUserTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void getUser_UsernameMissmatchId() throws Throwable {
-    User user = repository.findById(1L).get();
+    User user = repository.findById(1L).orElseThrow();
     user.setEmail("other_email@ircm.qc.ca");
     repository.save(user);
     user = authenticatedUser.getUser().orElse(null);

@@ -23,29 +23,6 @@ public class GuidelinesConfigurationTest {
   }
 
   @Test
-  public void categories_Null() {
-    List<Category> categories = guidelinesConfiguration.categories(null);
-    assertEquals(2, categories.size());
-    Category category = categories.get(0);
-    assertEquals("Guidelines", category.getName());
-    List<Guideline> guidelines = category.getGuidelines();
-    assertEquals(1, guidelines.size());
-    Guideline guideline = guidelines.get(0);
-    assertEquals("Gel-free sample preparation", guideline.getName());
-    assertEquals(path("Guidelines_Gel-free_sample_preparation.doc"), guideline.getPath());
-    category = categories.get(1);
-    assertEquals("Protocols", category.getName());
-    guidelines = category.getGuidelines();
-    assertEquals(2, guidelines.size());
-    guideline = guidelines.get(0);
-    assertEquals("Gel staining protocols", guideline.getName());
-    assertEquals(path("Gel staining protocols.doc"), guideline.getPath());
-    guideline = guidelines.get(1);
-    assertEquals("Immunoprecipitation Magnetic Dynabeads protocol", guideline.getName());
-    assertEquals(path("Immunoprecipitation Magnetic Dynabeads protocol.docx"), guideline.getPath());
-  }
-
-  @Test
   public void categories_English() {
     List<Category> categories = guidelinesConfiguration.categories(Locale.ENGLISH);
     assertEquals(2, categories.size());

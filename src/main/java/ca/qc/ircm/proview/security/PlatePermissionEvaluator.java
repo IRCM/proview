@@ -10,6 +10,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if ((authentication == null) || !(targetDomainObject instanceof Plate)
+    if (!(targetDomainObject instanceof Plate)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -48,8 +49,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
-    if ((authentication == null) || !(targetId instanceof Long)
-        || !targetType.equals(Plate.class.getName())
+    if (!(targetId instanceof Long) || !targetType.equals(Plate.class.getName())
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -62,7 +62,7 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
     return hasPermission(plate, currentUser, realPermission);
   }
 
-  private boolean hasPermission(Plate plate, User currentUser, Permission permission) {
+  private boolean hasPermission(Plate plate, @Nullable User currentUser, Permission permission) {
     if (currentUser == null) {
       return false;
     }

@@ -52,6 +52,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.lang.Nullable;
 
 /**
  * User form.
@@ -228,10 +229,9 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   }
 
   private Validator<Laboratory> laboratoryRequiredValidator(String errorMessage) {
-    return (value,
-        context) -> !createNewLaboratory.getValue() && (value == null || value.getName() == null)
-            ? ValidationResult.error(errorMessage)
-            : ValidationResult.ok();
+    return (value, context) -> !createNewLaboratory.getValue() && value == null
+        ? ValidationResult.error(errorMessage)
+        : ValidationResult.ok();
   }
 
   private void updateReadOnly() {
@@ -290,6 +290,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     return valid;
   }
 
+  @Nullable
   public String getPassword() {
     return passwords.getPassword();
   }
@@ -306,12 +307,11 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     return user;
   }
 
-  void setUser(User user) {
+  void setUser(@Nullable User user) {
     if (user == null) {
       user = new User();
-    }
-    if (user.getLaboratory() == null) {
       user.setLaboratory(new Laboratory());
+      user.setPhoneNumbers(new ArrayList<>());
     }
     if (!laboratoriesDataProvider.getItems().isEmpty()) {
       final Laboratory laboratory = user.getLaboratory();
@@ -324,7 +324,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     if (user.getAddress() == null) {
       user.setAddress(defaultAddressConfiguration.getAddress());
     }
-    if (user.getPhoneNumbers() == null || user.getPhoneNumbers().isEmpty()) {
+    if (user.getPhoneNumbers().isEmpty()) {
       user.setPhoneNumbers(new ArrayList<>());
       PhoneNumber phoneNumber = new PhoneNumber();
       phoneNumber.setType(PhoneNumberType.WORK);

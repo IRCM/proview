@@ -37,7 +37,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 /**
- * User dialog.
+ * Laboratory dialog.
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -93,7 +93,6 @@ public class LaboratoryDialog extends Dialog
     cancel.setId(id(CANCEL));
     cancel.setIcon(VaadinIcon.CLOSE.create());
     cancel.addClickListener(e -> cancel());
-    setLaboratoryId(0);
   }
 
   @Override
@@ -136,7 +135,10 @@ public class LaboratoryDialog extends Dialog
   }
 
   public void setLaboratoryId(long id) {
-    Laboratory laboratory = id != 0 ? service.get(id).orElseThrow() : new Laboratory();
+    if (id == 0) {
+      throw new IllegalArgumentException("id parameter cannot be 0");
+    }
+    Laboratory laboratory = service.get(id).orElseThrow();
     binder.setBean(laboratory);
     updateHeader();
   }

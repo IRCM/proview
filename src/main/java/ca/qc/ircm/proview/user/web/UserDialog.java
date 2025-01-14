@@ -84,7 +84,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   }
 
   private void updateHeader() {
-    if (form.getUser() != null && form.getUser().getId() != 0) {
+    if (form.getUser().getId() != 0) {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 1, form.getUser().getName()));
     } else {
       setHeaderTitle(getTranslation(MESSAGES_PREFIX + HEADER, 0));

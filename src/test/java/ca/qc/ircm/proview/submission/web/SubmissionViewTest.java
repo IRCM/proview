@@ -632,7 +632,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateLcmsms() {
-    Submission database = repository.findById(1L).get();
+    Submission database = repository.findById(1L).orElseThrow();
     entityManager.detach(database);
     when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
@@ -740,7 +740,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateSmallMolecule() {
-    Submission database = repository.findById(1L).get();
+    Submission database = repository.findById(1L).orElseThrow();
     entityManager.detach(database);
     when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
@@ -834,7 +834,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void save_UpdateIntactProtein() {
-    Submission database = repository.findById(1L).get();
+    Submission database = repository.findById(1L).orElseThrow();
     entityManager.detach(database);
     when(service.get(anyLong())).thenReturn(Optional.of(database));
     final List<SubmissionFile> oldFiles = database.getFiles();
@@ -889,7 +889,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter() {
     String comment = "my test comment";
-    Submission submission = repository.findById(163L).get();
+    Submission submission = repository.findById(163L).orElseThrow();
     submission.setComment(comment);
     submission.setSubmissionDate(LocalDateTime.now().minusMinutes(1));
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
@@ -917,7 +917,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_ReadOnly() {
-    Submission submission = repository.findById(35L).get();
+    Submission submission = repository.findById(35L).orElseThrow();
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
 
     view.setParameter(beforeEvent, 35L);

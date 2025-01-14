@@ -122,6 +122,7 @@ public class UserViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter_Null() {
     view.form = mock(UserForm.class);
+    when(view.form.getUser()).thenReturn(new User());
 
     view.setParameter(beforeEvent, null);
 

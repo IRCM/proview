@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.treatment;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,7 +33,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void get_Solubilisation() throws Throwable {
-    Treatment treatment = treatmentService.get(1L).get();
+    Treatment treatment = treatmentService.get(1L).orElseThrow();
 
     assertEquals((Long) 1L, treatment.getId());
     assertEquals(TreatmentType.SOLUBILISATION, treatment.getType());
@@ -50,12 +51,13 @@ public class TreatmentServiceTest {
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
     assertEquals(null, treatedSample.getComment());
     assertEquals("Methanol", treatedSample.getSolvent());
+    assertNotNull(treatedSample.getSolventVolume());
     assertEquals(20.0, treatedSample.getSolventVolume(), 0.01);
   }
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Treatment treatment = treatmentService.get(2L).get();
+    Treatment treatment = treatmentService.get(2L).orElseThrow();
 
     assertEquals((Long) 2L, treatment.getId());
     assertEquals(TreatmentType.FRACTIONATION, treatment.getType());
@@ -70,6 +72,7 @@ public class TreatmentServiceTest {
     assertEquals((Long) 2L, treatedSample.getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
+    assertNotNull(treatedSample.getDestinationContainer());
     assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 6L, treatedSample.getDestinationContainer().getId());
     assertEquals(null, treatedSample.getComment());
@@ -101,7 +104,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_147() {
-    Submission submission = submissionRepository.findById(147L).orElse(null);
+    Submission submission = submissionRepository.findById(147L).orElseThrow();
 
     List<Treatment> treatments = treatmentService.all(submission);
 
@@ -112,7 +115,7 @@ public class TreatmentServiceTest {
 
   @Test
   public void all_149() {
-    Submission submission = submissionRepository.findById(149L).orElse(null);
+    Submission submission = submissionRepository.findById(149L).orElseThrow();
 
     List<Treatment> treatments = treatmentService.all(submission);
 
@@ -126,16 +129,9 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  public void all_Null() {
-    List<Treatment> treatments = treatmentService.all(null);
-
-    assertTrue(treatments.isEmpty());
-  }
-
-  @Test
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() throws Throwable {
-    Submission submission = submissionRepository.findById(149L).orElse(null);
+    Submission submission = submissionRepository.findById(149L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
       treatmentService.all(submission);
@@ -145,7 +141,7 @@ public class TreatmentServiceTest {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_AccessDenied() throws Throwable {
-    Submission submission = submissionRepository.findById(149L).orElse(null);
+    Submission submission = submissionRepository.findById(149L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
       treatmentService.all(submission);

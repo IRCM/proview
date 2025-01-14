@@ -89,7 +89,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
     dialog.clickSave();
     assertFalse(dialog.isOpen());
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     assertEquals(instrument, submission.getInstrument());
     assertEquals(dataAvailableDate, submission.getDataAvailableDate());
   }

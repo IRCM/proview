@@ -135,6 +135,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @BeforeEach
   public void beforeTest() {
     when(service.get(anyLong())).thenAnswer(i -> repository.findById(i.getArgument(0)));
+    when(service.print(any(), any())).thenReturn("");
     when(userPreferenceService.get(any(), eq(SAMPLES))).thenReturn(Optional.of(false));
     when(userPreferenceService.get(any(), eq(STATUS))).thenReturn(Optional.of(true));
     UI.getCurrent().setLocale(locale);
@@ -467,9 +468,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
       assertEquals(submission.getDataAvailableDate() != null
           ? dateFormatter.format(submission.getDataAvailableDate())
           : "", test(view.submissions).getCellText(i, indexOfColumn(DATA_AVAILABLE_DATE)));
-      assertEquals(submission.getSubmissionDate() != null
-          ? dateFormatter.format(submission.getSubmissionDate())
-          : "", test(view.submissions).getCellText(i, indexOfColumn(SUBMISSION_DATE)));
+      assertEquals(dateFormatter.format(submission.getSubmissionDate()),
+          test(view.submissions).getCellText(i, indexOfColumn(SUBMISSION_DATE)));
       assertEquals(
           view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
               .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),

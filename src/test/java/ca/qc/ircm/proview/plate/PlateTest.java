@@ -137,34 +137,17 @@ public class PlateTest {
   }
 
   @Test
-  public void wellsContainingSample_NullSample() throws Exception {
-    Plate plate = new Plate();
-    plate.initWells();
-    Sample sample1 = new SubmissionSample(564L);
-    Sample sample2 = new SubmissionSample(565L);
-    plate.well(0, 0).setSample(sample1);
-    plate.well(0, 1).setSample(sample1);
-    plate.well(1, 1).setSample(sample1);
-    plate.well(1, 0).setSample(sample2);
-    plate.well(2, 1).setSample(sample2);
-
-    List<Well> wells = plate.wellsContainingSample(null);
-
-    assertTrue(wells.isEmpty());
-  }
-
-  @Test
   public void getEmptyWellCount() {
     Plate plate = new Plate();
     plate.initWells();
 
     assertEquals(plate.getRowCount() * plate.getColumnCount(), plate.getEmptyWellCount());
     for (int i = 0; i < plate.getRowCount(); i++) {
-      find(plate.getWells(), i, 3).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 3).orElseThrow().setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1), plate.getEmptyWellCount());
     for (int i = 0; i < 5; i++) {
-      find(plate.getWells(), i, 0).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 0).orElseThrow().setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount() * (plate.getColumnCount() - 1) - 5, plate.getEmptyWellCount());
   }
@@ -176,11 +159,11 @@ public class PlateTest {
 
     assertEquals(0, plate.getSampleCount());
     for (int i = 0; i < plate.getRowCount(); i++) {
-      find(plate.getWells(), i, 3).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 3).orElseThrow().setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount(), plate.getSampleCount());
     for (int i = 0; i < 5; i++) {
-      find(plate.getWells(), i, 0).orElse(null).setSample(new SubmissionSample());
+      find(plate.getWells(), i, 0).orElseThrow().setSample(new SubmissionSample());
     }
     assertEquals(plate.getRowCount() + 5, plate.getSampleCount());
   }

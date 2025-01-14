@@ -28,19 +28,19 @@ class UserPreference {
   /**
    * User.
    */
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn
   private User user;
   /**
    * Preference.
    */
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn
   private Preference preference;
   /**
    * Preference's value.
    */
-  @Column
+  @Column(nullable = false)
   private byte[] content;
 
   public Long getId() {

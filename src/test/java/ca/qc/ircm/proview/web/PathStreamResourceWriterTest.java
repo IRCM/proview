@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -27,7 +28,7 @@ public class PathStreamResourceWriterTest {
    */
   @BeforeEach
   public void beforeTest() throws Throwable {
-    path = Paths.get(getClass().getResource("/structure1.png").toURI());
+    path = Paths.get(Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
     writer = new PathStreamResourceWriter(path.toFile());
   }
 

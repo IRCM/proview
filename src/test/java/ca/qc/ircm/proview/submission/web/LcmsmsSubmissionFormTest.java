@@ -1467,7 +1467,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void getSubmission_NoChanges() {
-    Submission database = repository.findById(34L).orElse(null);
+    Submission database = repository.findById(34L).orElseThrow();
     form.setSubmission(database);
 
     assertTrue(form.isValid());
@@ -1616,7 +1616,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
 
   @Test
   public void setSubmission_ReadOnly() {
-    Submission submission = repository.findById(32L).get();
+    Submission submission = repository.findById(32L).orElseThrow();
 
     form.setSubmission(submission);
 

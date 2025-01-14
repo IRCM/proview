@@ -22,6 +22,7 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 /**
  * Treatment done on some samples.
@@ -73,13 +74,13 @@ public class Treatment implements Data, Serializable {
   /**
    * How samples where split.
    */
-  @Column(nullable = false)
+  @Column
   @Enumerated(STRING)
   private FractionationType fractionationType;
   /**
    * User who made the treatment.
    */
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn
   private User user;
   /**
@@ -136,11 +137,12 @@ public class Treatment implements Data, Serializable {
     this.deleted = deleted;
   }
 
+  @Nullable
   public String getDeletionExplanation() {
     return deletionExplanation;
   }
 
-  public void setDeletionExplanation(String deletionExplanation) {
+  public void setDeletionExplanation(@Nullable String deletionExplanation) {
     this.deletionExplanation = deletionExplanation;
   }
 
@@ -168,19 +170,21 @@ public class Treatment implements Data, Serializable {
     this.insertTime = insertTime;
   }
 
+  @Nullable
   public Protocol getProtocol() {
     return protocol;
   }
 
-  public void setProtocol(Protocol protocol) {
+  public void setProtocol(@Nullable Protocol protocol) {
     this.protocol = protocol;
   }
 
+  @Nullable
   public FractionationType getFractionationType() {
     return fractionationType;
   }
 
-  public void setFractionationType(FractionationType fractionationType) {
+  public void setFractionationType(@Nullable FractionationType fractionationType) {
     this.fractionationType = fractionationType;
   }
 }

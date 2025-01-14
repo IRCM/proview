@@ -25,6 +25,7 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -59,6 +60,7 @@ import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -140,7 +142,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    Submission submission = submissionRepository.findById(1L).get();
+    Submission submission = submissionRepository.findById(1L).orElseThrow();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
         view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
     HeaderRow header = view.activities.getHeaderRows().get(0);
@@ -168,7 +170,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void localeChange() {
-    Submission submission = submissionRepository.findById(1L).get();
+    Submission submission = submissionRepository.findById(1L).orElseThrow();
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
@@ -386,19 +388,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter_EmptySubmission() {
     when(submissionService.get(anyLong())).thenReturn(Optional.empty());
-    view.setParameter(beforeEvent, 12L);
+    assertThrows(NotFoundException.class, () -> view.setParameter(beforeEvent, 12L));
     verify(submissionService).get(12L);
-    assertEquals(0, view.getSubmissionId());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, ""),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
-  }
-
-  @Test
-  public void setParameter_Null() {
-    view.setParameter(beforeEvent, null);
-    Submission submission = submissionRepository.findById(1L).get();
-    assertEquals(1L, view.getSubmissionId());
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, submission.getExperiment()),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
   }
 }

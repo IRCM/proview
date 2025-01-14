@@ -26,7 +26,7 @@ public class GuidelinesConfiguration {
    * @return guideline categories for locale
    */
   public List<Category> categories(Locale locale) {
-    if (locale != null && categories.containsKey(locale.getLanguage())) {
+    if (categories.containsKey(locale.getLanguage())) {
       return new ArrayList<>(categories.get(locale.getLanguage()));
     }
     return new ArrayList<>(categories.get(DEFAULT_GUIDELINES));

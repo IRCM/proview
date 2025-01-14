@@ -69,7 +69,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, currentLocale()),
         notification.getText());
-    Laboratory laboratory = repository.findById(1L).get();
+    Laboratory laboratory = repository.findById(1L).orElseThrow();
     assertEquals(name, laboratory.getName());
     assertEquals("Robot", laboratory.getDirector());
   }
@@ -86,7 +86,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     dialog.cancel().click();
 
     assertFalse(optional(() -> $(NotificationElement.class).first()).isPresent());
-    Laboratory laboratory = repository.findById(1L).get();
+    Laboratory laboratory = repository.findById(1L).orElseThrow();
     assertEquals("Admin", laboratory.getName());
     assertEquals("Robot", laboratory.getDirector());
   }

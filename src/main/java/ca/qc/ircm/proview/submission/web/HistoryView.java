@@ -39,6 +39,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -171,10 +172,9 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
 
   @Override
   public void setParameter(BeforeEvent event, Long parameter) {
-    if (parameter != null) {
-      submission = submissionService.get(parameter).orElse(null);
-      updateActivities();
-    }
+    submission = submissionService.get(parameter)
+        .orElseThrow(() -> new NotFoundException(parameter + " is not a valid submission"));
+    updateActivities();
     updateHeader();
   }
 

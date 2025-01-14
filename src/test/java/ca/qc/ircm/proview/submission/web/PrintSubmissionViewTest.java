@@ -12,8 +12,9 @@ import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.SUBMISSIONS_
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -29,6 +30,7 @@ import ca.qc.ircm.proview.web.ViewLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
@@ -61,6 +63,7 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     when(service.get(anyLong())).thenReturn(repository.findById(164L));
+    when(service.print(any(), any())).thenReturn("");
     view = navigate(PrintSubmissionView.class, 164L);
   }
 
@@ -108,7 +111,7 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter() {
-    Submission submission = repository.findById(33L).get();
+    Submission submission = repository.findById(33L).orElseThrow();
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
 
     view.setParameter(mock(BeforeEvent.class), 33L);
@@ -123,11 +126,8 @@ public class PrintSubmissionViewTest extends SpringUIUnitTest {
   public void setParameter_EmptySubmission() {
     when(service.get(anyLong())).thenReturn(Optional.empty());
 
-    view.setParameter(mock(BeforeEvent.class), 35L);
+    assertThrows(NotFoundException.class, () -> view.setParameter(mock(BeforeEvent.class), 35L));
 
     verify(service).get(35L);
-    assertEquals(view.getTranslation(SERVICE_PREFIX + Service.LC_MS_MS.name()),
-        view.secondHeader.getText());
-    assertNull(view.printContent.getSubmission());
   }
 }

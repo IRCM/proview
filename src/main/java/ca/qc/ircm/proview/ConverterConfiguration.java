@@ -2,6 +2,7 @@ package ca.qc.ircm.proview;
 
 import ca.qc.ircm.proview.files.StringToPathConverter;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,6 @@ public class ConverterConfiguration {
     ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
     bean.setConverters(getConverters());
     bean.afterPropertiesSet();
-    return bean.getObject();
+    return Objects.requireNonNull(bean.getObject());
   }
 }

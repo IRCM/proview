@@ -5,6 +5,7 @@ import static ca.qc.ircm.proview.user.QUser.user;
 import ca.qc.ircm.proview.text.Strings;
 import com.querydsl.core.BooleanBuilder;
 import java.util.function.Predicate;
+import org.springframework.lang.Nullable;
 
 /**
  * Parameters to search users.
@@ -45,6 +46,7 @@ public class UserFilter implements Predicate<User> {
    *
    * @return QueryDSL predicate matching filter
    */
+  @Nullable
   public com.querydsl.core.types.Predicate predicate() {
     BooleanBuilder predicate = new BooleanBuilder();
     if (emailContains != null) {

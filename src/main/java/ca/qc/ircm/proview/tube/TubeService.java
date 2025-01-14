@@ -3,7 +3,6 @@ package ca.qc.ircm.proview.tube;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.sample.Sample;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +45,6 @@ public class TubeService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public boolean nameAvailable(String name) {
-    if (name == null) {
-      return false;
-    }
-
     return repository.countByName(name) == 0;
   }
 
@@ -62,10 +57,6 @@ public class TubeService {
    */
   @PreAuthorize("hasPermission(#sample, 'read')")
   public List<Tube> all(Sample sample) {
-    if (sample == null) {
-      return new ArrayList<>();
-    }
-
     return repository.findBySample(sample);
   }
 }

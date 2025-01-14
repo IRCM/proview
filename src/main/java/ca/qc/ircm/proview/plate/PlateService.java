@@ -77,10 +77,6 @@ public class PlateService {
    */
   @PreAuthorize("hasPermission(#submission, 'read')")
   public Optional<Plate> get(Submission submission) {
-    if (submission == null) {
-      return Optional.empty();
-    }
-
     return repository.findBySubmission(submission);
   }
 
@@ -93,10 +89,7 @@ public class PlateService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean nameAvailable(String name) {
-    if (name == null) {
-      return false;
-    }
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     if (authenticatedUser.hasRole(UserRole.ADMIN)) {
       return repository.countByName(name) == 0;
@@ -119,10 +112,6 @@ public class PlateService {
    * @return printable version of plate in HTML
    */
   public String print(Plate plate, Locale locale) {
-    if (plate == null || locale == null) {
-      return "";
-    }
-
     Context context = new Context();
     context.setLocale(locale);
     context.setVariable("plate", plate);
@@ -144,10 +133,6 @@ public class PlateService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Optional<LocalDateTime> lastTreatmentOrAnalysisDate(Plate plate) {
-    if (plate == null) {
-      return Optional.empty();
-    }
-
     LocalDateTime treatmentInstant = queryFactory.select(treatment.insertTime.max()).from(treatment)
         .where(treatment.treatedSamples.any().container.in(plate.getWells())
             .or(treatment.treatedSamples.any().destinationContainer.in(plate.getWells())))
@@ -155,12 +140,19 @@ public class PlateService {
     LocalDateTime analysisInstant = queryFactory.select(msAnalysis.insertTime.max())
         .from(msAnalysis).where(msAnalysis.acquisitions.any().container.in(plate.getWells()))
         .where(msAnalysis.deleted.eq(false)).fetchFirst();
-    return max(treatmentInstant, analysisInstant);
+    if (treatmentInstant != null && analysisInstant != null) {
+      return max(treatmentInstant, analysisInstant);
+    } else if (treatmentInstant != null) {
+      return Optional.of(treatmentInstant);
+    } else if (analysisInstant != null) {
+      return Optional.of(analysisInstant);
+    } else {
+      return Optional.empty();
+    }
   }
 
   private Optional<LocalDateTime> max(LocalDateTime... instants) {
-    return Arrays.asList(instants).stream().filter(instant -> instant != null)
-        .sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
+    return Arrays.asList(instants).stream().sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
   }
 
   /**

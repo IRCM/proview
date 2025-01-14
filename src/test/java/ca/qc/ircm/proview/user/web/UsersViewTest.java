@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -48,6 +49,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ErrorNotification;
@@ -74,6 +76,8 @@ import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -100,6 +104,8 @@ public class UsersViewTest extends SpringUIUnitTest {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private AuthenticatedUser authenticatedUser;
+  @Captor
+  private ArgumentCaptor<UserFilter> userFilterCaptor;
   private Locale locale = ENGLISH;
   private List<User> users;
 
@@ -241,7 +247,12 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void users_Manager() {
-    verify(service).all(null, authenticatedUser.getUser().get().getLaboratory());
+    verify(service).all(userFilterCaptor.capture(),
+        eq(authenticatedUser.getUser().orElseThrow().getLaboratory()));
+    assertNull(userFilterCaptor.getValue().emailContains);
+    assertNull(userFilterCaptor.getValue().nameContains);
+    assertNull(userFilterCaptor.getValue().active);
+    assertNull(userFilterCaptor.getValue().laboratoryNameContains);
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -258,7 +269,11 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_Admin() {
-    verify(service).all(null);
+    verify(service).all(userFilterCaptor.capture());
+    assertNull(userFilterCaptor.getValue().emailContains);
+    assertNull(userFilterCaptor.getValue().nameContains);
+    assertNull(userFilterCaptor.getValue().active);
+    assertNull(userFilterCaptor.getValue().laboratoryNameContains);
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -291,11 +306,9 @@ public class UsersViewTest extends SpringUIUnitTest {
     when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
     for (int i = 0; i < users.size(); i++) {
       User user = users.get(i);
-      assertEquals(user.getEmail() != null ? user.getEmail() : "",
-          test(view.users).getCellText(i, indexOfColumn(EMAIL)));
-      assertEquals(user.getName() != null ? user.getName() : "",
-          test(view.users).getCellText(i, indexOfColumn(NAME)));
-      assertEquals(user.getLaboratory().getName() != null ? user.getLaboratory().getName() : "",
+      assertEquals(user.getEmail(), test(view.users).getCellText(i, indexOfColumn(EMAIL)));
+      assertEquals(user.getName(), test(view.users).getCellText(i, indexOfColumn(NAME)));
+      assertEquals(user.getLaboratory().getName(),
           test(view.users).getCellText(i, indexOfColumn(LABORATORY)));
       Renderer<User> activeRawRenderer = view.users.getColumnByKey(ACTIVE).getRenderer();
       assertTrue(activeRawRenderer instanceof LitRenderer<User>);
@@ -542,7 +555,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void edit_Enabled() {
     assertFalse(view.edit.isEnabled());
-    view.users.select(repository.findById(10L).get());
+    view.users.select(repository.findById(10L).orElseThrow());
     assertTrue(view.edit.isEnabled());
     view.users.deselectAll();
     assertFalse(view.edit.isEnabled());
@@ -562,7 +575,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void edit() {
-    User user = repository.findById(10L).get();
+    User user = repository.findById(10L).orElseThrow();
     view.users.select(user);
 
     test(view.edit).click();
@@ -574,7 +587,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void switchUser_Enabled() {
     assertFalse(view.switchUser.isEnabled());
-    view.users.select(repository.findById(10L).get());
+    view.users.select(repository.findById(10L).orElseThrow());
     assertTrue(view.switchUser.isEnabled());
     view.users.deselectAll();
     assertFalse(view.switchUser.isEnabled());
@@ -594,7 +607,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void switchUser() {
-    User user = repository.findById(10L).get();
+    User user = repository.findById(10L).orElseThrow();
     view.users.select(user);
 
     test(view.switchUser).click();
@@ -609,7 +622,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void viewLaboratory_Enabled() {
     assertFalse(view.viewLaboratory.isEnabled());
-    view.users.select(repository.findById(10L).get());
+    view.users.select(repository.findById(10L).orElseThrow());
     assertTrue(view.viewLaboratory.isEnabled());
     view.users.deselectAll();
     assertFalse(view.viewLaboratory.isEnabled());
@@ -631,7 +644,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   public void viewLaboratory() {
     when(laboratoryService.get(any(Long.class)))
         .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
-    User user = repository.findById(10L).get();
+    User user = repository.findById(10L).orElseThrow();
     view.users.select(user);
 
     test(view.viewLaboratory).click();
@@ -645,7 +658,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void toggleActive_Inactive() {
     view.users.setItems(mock(DataProvider.class));
-    User user = repository.findById(3L).get();
+    User user = repository.findById(3L).orElseThrow();
     view.toggleActive(user);
 
     verify(service).save(user, null);
@@ -656,7 +669,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   public void toggleActive() {
     view.users.setItems(mock(DataProvider.class));
-    User user = repository.findById(11L).get();
+    User user = repository.findById(11L).orElseThrow();
     view.toggleActive(user);
 
     verify(service).save(user, null);

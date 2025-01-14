@@ -102,7 +102,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     assertTrue(submission.isHidden());
   }
 
@@ -119,7 +119,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
         .equals(ButtonVariant.LUMO_SUCCESS.getVariantName()));
 
-    Submission submission = repository.findById(164L).get();
+    Submission submission = repository.findById(164L).orElseThrow();
     assertFalse(submission.isHidden());
   }
 

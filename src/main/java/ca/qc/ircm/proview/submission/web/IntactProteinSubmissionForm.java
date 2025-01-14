@@ -243,7 +243,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
 
   public void setSubmission(Submission submission) {
     Objects.requireNonNull(submission);
-    if (submission.getSamples() == null || submission.getSamples().isEmpty()) {
+    if (submission.getSamples().isEmpty()) {
       throw new IllegalArgumentException("submission must contain at least one sample");
     }
     binder.setBean(submission);

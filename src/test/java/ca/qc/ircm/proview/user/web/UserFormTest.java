@@ -266,7 +266,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(form.laboratory.isRequiredIndicatorVisible());
     List<Laboratory> values = items(form.laboratory);
     assertEquals(1, values.size());
-    Laboratory laboratory = authenticatedUser.getUser().get().getLaboratory();
+    Laboratory laboratory = authenticatedUser.getUser().orElseThrow().getLaboratory();
     assertEquals(laboratory.getId(), values.get(0).getId());
     assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
   }
@@ -278,7 +278,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(form.laboratory.isRequiredIndicatorVisible());
     List<Laboratory> values = items(form.laboratory);
     assertEquals(1, values.size());
-    Laboratory laboratory = authenticatedUser.getUser().get().getLaboratory();
+    Laboratory laboratory = authenticatedUser.getUser().orElseThrow().getLaboratory();
     assertEquals(laboratory.getId(), values.get(0).getId());
     assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
   }
@@ -410,14 +410,14 @@ public class UserFormTest extends SpringUIUnitTest {
 
   @Test
   public void getUser() {
-    User user = new User();
-    form.setUser(user);
-    assertEquals(user, form.getUser());
+    assertEquals(10, form.getUser().getId());
   }
 
   @Test
   public void setUser_NewUser() {
     User user = new User();
+    user.setLaboratory(new Laboratory());
+    user.setPhoneNumbers(new ArrayList<>());
 
     form.setUser(user);
 
@@ -431,7 +431,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.manager.isReadOnly());
     assertTrue(form.passwords.isVisible());
     assertTrue(form.passwords.isRequired());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
     Address address = defaultAddressConfiguration.getAddress();
@@ -457,6 +457,8 @@ public class UserFormTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void setUser_NewUserAdmin() {
     User user = new User();
+    user.setLaboratory(new Laboratory());
+    user.setPhoneNumbers(new ArrayList<>());
 
     form.setUser(user);
 
@@ -494,7 +496,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void setUser_User() {
-    User user = userRepository.findById(10L).get();
+    User user = userRepository.findById(10L).orElseThrow();
     when(userPermissionEvaluator.hasPermission(any(), eq(user), eq(WRITE))).thenReturn(false);
 
     form.setUser(user);
@@ -511,6 +513,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
+    assertNotNull(address);
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertTrue(form.addressLine.isReadOnly());
     assertEquals(address.getTown(), form.town.getValue());
@@ -533,7 +536,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void setUser_UserCanWrite() {
-    User user = userRepository.findById(3L).get();
+    User user = userRepository.findById(3L).orElseThrow();
 
     form.setUser(user);
 
@@ -550,6 +553,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
+    assertNotNull(address);
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
     assertEquals(address.getTown(), form.town.getValue());
@@ -572,7 +576,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void setUser_UserAdmin() {
-    User user = userRepository.findById(3L).get();
+    User user = userRepository.findById(3L).orElseThrow();
 
     form.setUser(user);
 
@@ -589,6 +593,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertFalse(form.laboratory.isReadOnly());
     Address address = user.getAddress();
+    assertNotNull(address);
     assertEquals(address.getLine(), form.addressLine.getValue());
     assertFalse(form.addressLine.isReadOnly());
     assertEquals(address.getTown(), form.town.getValue());
@@ -618,7 +623,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.manager.getValue());
     assertTrue(form.passwords.isVisible());
     assertTrue(form.passwords.isRequired());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         form.laboratory.getValue().getId());
     Address address = defaultAddressConfiguration.getAddress();
     assertEquals(address.getLine(), form.addressLine.getValue());
@@ -842,8 +847,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -869,7 +875,8 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getId(), user.getLaboratory().getId());
+    assertEquals(authenticatedUser.getUser().orElseThrow().getId(), user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -898,6 +905,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertNotNull(user.getLaboratory());
     assertEquals(0, user.getLaboratory().getId());
     assertEquals(newLaboratoryName, user.getLaboratory().getName());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -921,8 +929,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -936,7 +945,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateUserLaboratory() {
-    User user = userRepository.findById(26L).get();
+    User user = userRepository.findById(26L).orElseThrow();
     form.setUser(user);
     fillForm();
 
@@ -948,8 +957,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -975,8 +985,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1002,8 +1013,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(user.isAdmin());
     assertFalse(user.isManager());
     assertNotNull(user.getLaboratory());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1017,7 +1029,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdmin() {
-    User user = userRepository.findById(1L).get();
+    User user = userRepository.findById(1L).orElseThrow();
     entityManager.detach(user);
     form.setUser(user);
     fillForm();
@@ -1030,6 +1042,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(user.isAdmin());
     assertTrue(user.isManager());
     assertEquals((Long) 1L, user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1043,7 +1056,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdminNoPassword() {
-    User user = userRepository.findById(1L).get();
+    User user = userRepository.findById(1L).orElseThrow();
     entityManager.detach(user);
     form.setUser(user);
     fillForm();
@@ -1058,6 +1071,7 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(user.isAdmin());
     assertTrue(user.isManager());
     assertEquals((Long) 1L, user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -1071,7 +1085,7 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void isValid_UpdateAdmin_RemoveAdminAddManager() {
-    User user = userRepository.findById(1L).get();
+    User user = userRepository.findById(1L).orElseThrow();
     entityManager.detach(user);
     form.setUser(user);
     fillForm();
@@ -1085,8 +1099,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(name, user.getName());
     assertFalse(user.isAdmin());
     assertTrue(user.isManager());
-    assertEquals(authenticatedUser.getUser().get().getLaboratory().getId(),
+    assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         user.getLaboratory().getId());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());

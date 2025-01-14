@@ -70,7 +70,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void updateStatus() {
-    SubmissionSample sample = submissionSampleRepository.findById(584L).orElse(null);
+    SubmissionSample sample = submissionSampleRepository.findById(584L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
     Submission submission = sample.getSubmission();
@@ -86,7 +86,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
     final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(sample.getId(), activity.getRecordId());
@@ -130,7 +130,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_SubmissionSample() {
-    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElseThrow();
     detach(submissionSample);
     submissionSample.setName("new_solution_tag_0001");
     submissionSample.setType(SampleType.DRY);
@@ -143,7 +143,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
         sampleActivityService.update(submissionSample, "unit_test");
 
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(submissionSample.getId(), activity.getRecordId());
@@ -203,7 +203,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_Submission_SampleDeliveryAndDigestionDateAndAnalysisDate() {
-    SubmissionSample sample = submissionSampleRepository.findById(584L).orElse(null);
+    SubmissionSample sample = submissionSampleRepository.findById(584L).orElseThrow();
     Submission submission = sample.getSubmission();
     detach(sample);
     detach(submission);
@@ -218,7 +218,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
     Optional<Activity> optionalActivity = sampleActivityService.update(sample, null);
 
     assertEquals(true, optionalActivity.isPresent());
-    Activity activity = optionalActivity.get();
+    Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Sample.TABLE_NAME, activity.getTableName());
     assertEquals(sample.getId(), activity.getRecordId());
@@ -239,7 +239,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChange() {
-    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElse(null);
+    SubmissionSample submissionSample = submissionSampleRepository.findById(442L).orElseThrow();
     detach(submissionSample);
 
     Optional<Activity> optionalActivity =

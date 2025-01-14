@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public class SubmissionActivityService {
    */
   @CheckReturnValue
   public Activity insert(final Submission submission) {
-    User user = authenticatedUser.getUser().orElse(null);
+    User user = authenticatedUser.getUser().orElseThrow();
 
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -61,7 +62,7 @@ public class SubmissionActivityService {
     activity.setUser(user);
     activity.setTableName(Submission.TABLE_NAME);
     activity.setExplanation(null);
-    activity.setUpdates(null);
+    activity.setUpdates(new ArrayList<>());
     return activity;
   }
 
@@ -75,10 +76,11 @@ public class SubmissionActivityService {
    * @return activity about update of samples submission
    */
   @CheckReturnValue
-  public Optional<Activity> update(final Submission submission, final String explanation) {
-    final User user = authenticatedUser.getUser().orElse(null);
+  public Optional<Activity> update(final Submission submission,
+      @Nullable final String explanation) {
+    final User user = authenticatedUser.getUser().orElseThrow();
 
-    final Submission oldSubmission = repository.findById(submission.getId()).orElse(null);
+    final Submission oldSubmission = repository.findById(submission.getId()).orElseThrow();
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
@@ -239,10 +241,10 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solvent").oldValue(oldSolvents)
         .newValue(newSolvents));
     // Files.
-    List<String> oldFiles = oldSubmission.getFiles() != null ? oldSubmission.getFiles().stream()
-        .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
-    List<String> newFiles = submission.getFiles() != null ? submission.getFiles().stream()
-        .map(file -> file.getFilename()).collect(Collectors.toList()) : new ArrayList<>();
+    List<String> oldFiles = oldSubmission.getFiles().stream().map(file -> file.getFilename())
+        .collect(Collectors.toList());
+    List<String> newFiles =
+        submission.getFiles().stream().map(file -> file.getFilename()).collect(Collectors.toList());
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
         .oldValue(oldFiles).newValue(newFiles));
 

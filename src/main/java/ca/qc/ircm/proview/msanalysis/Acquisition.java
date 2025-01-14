@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.springframework.lang.Nullable;
 
 /**
  * Acquisition of a Sample in a MS analysis.
@@ -60,25 +61,25 @@ public class Acquisition implements Data, Named, Serializable {
   /**
    * Number of acquisition on the sample.
    */
-  @Column
-  private Integer numberOfAcquisition;
+  @Column(nullable = false)
+  private int numberOfAcquisition;
   /**
    * Name of Sample list being analysed.
    */
-  @Column
+  @Column(nullable = false)
   @Size(max = 255)
   private String sampleListName;
   /**
    * File containing acquisition information.
    */
-  @Column
+  @Column(nullable = false)
   @Size(max = 255)
   private String acquisitionFile;
   /**
    * Acquisition index number that is appended when showing LIMS.
    */
-  @Column
-  private Integer position;
+  @Column(nullable = false)
+  private int position;
   /**
    * Any comment on this acquisition.
    */
@@ -95,15 +96,11 @@ public class Acquisition implements Data, Named, Serializable {
 
   @Override
   public String getName() {
-    if (getSample() != null && getSample().getName() != null) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(getSample().getName());
-      builder.append(".A");
-      builder.append(position);
-      return builder.toString();
-    } else {
-      return null;
-    }
+    StringBuilder builder = new StringBuilder();
+    builder.append(getSample().getName());
+    builder.append(".A");
+    builder.append(position);
+    return builder.toString();
   }
 
   @Override
@@ -123,11 +120,11 @@ public class Acquisition implements Data, Named, Serializable {
     this.id = id;
   }
 
-  public Integer getNumberOfAcquisition() {
+  public int getNumberOfAcquisition() {
     return numberOfAcquisition;
   }
 
-  public void setNumberOfAcquisition(Integer numberOfAcquisition) {
+  public void setNumberOfAcquisition(int numberOfAcquisition) {
     this.numberOfAcquisition = numberOfAcquisition;
   }
 
@@ -155,19 +152,20 @@ public class Acquisition implements Data, Named, Serializable {
     this.acquisitionFile = acquisitionFile;
   }
 
-  public Integer getPosition() {
+  public int getPosition() {
     return position;
   }
 
-  public void setPosition(Integer position) {
+  public void setPosition(int position) {
     this.position = position;
   }
 
+  @Nullable
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public void setComment(@Nullable String comment) {
     this.comment = comment;
   }
 

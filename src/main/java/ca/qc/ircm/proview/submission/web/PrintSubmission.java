@@ -58,7 +58,7 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
     removeAll();
     if (submission != null) {
       String html = service.print(submission, getLocale());
-      if (html != null && !html.isEmpty()) {
+      if (!html.isEmpty()) {
         for (int i = 0; i < submission.getFiles().size(); i++) {
           SubmissionFile file = submission.getFiles().get(i);
           StreamRegistration streamRegistration =

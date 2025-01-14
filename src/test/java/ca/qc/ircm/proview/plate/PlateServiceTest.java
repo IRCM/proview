@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.plate;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,7 +79,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get() throws Exception {
-    Plate plate = service.get(26L).orElse(null);
+    Plate plate = service.get(26L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(plate), eq(READ));
     assertEquals((Long) 26L, plate.getId());
@@ -108,17 +109,13 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   public void get_Submission() throws Exception {
     Submission submission = new Submission(163L);
 
-    Plate plate = service.get(submission).orElse(null);
+    Plate plate = service.get(submission).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(submission), eq(READ));
     assertEquals((Long) 123L, plate.getId());
     assertEquals("Andrew-20171108", plate.getName());
+    assertNotNull(plate.getSubmission());
     assertEquals((Long) 163L, plate.getSubmission().getId());
-  }
-
-  @Test
-  public void get_NullSubmission() throws Exception {
-    assertFalse(service.get((Submission) null).isPresent());
   }
 
   @Test
@@ -177,28 +174,6 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void nameAvailable_ProteomicNull() throws Exception {
-    User user = new User(1L);
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
-
-    boolean available = service.nameAvailable(null);
-
-    assertEquals(false, available);
-  }
-
-  @Test
-  public void nameAvailable_SubmissionNull() throws Exception {
-    User user = new User(3L);
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(false);
-
-    boolean available = service.nameAvailable(null);
-
-    assertEquals(false, available);
-  }
-
-  @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
     assertThrows(AccessDeniedException.class, () -> {
@@ -249,30 +224,24 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = UserRole.ADMIN)
   public void lastTreatmentOrAnalysisDate() {
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34),
-        service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null)).orElse(null));
+        service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow()).orElseThrow());
     assertEquals(LocalDateTime.of(2014, 10, 15, 15, 53, 34),
-        service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElse(null)).orElse(null));
+        service.lastTreatmentOrAnalysisDate(repository.findById(115L).orElseThrow()).orElseThrow());
     assertEquals(LocalDateTime.of(2014, 10, 17, 11, 54, 22),
-        service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElse(null)).orElse(null));
+        service.lastTreatmentOrAnalysisDate(repository.findById(118L).orElseThrow()).orElseThrow());
     assertEquals(LocalDateTime.of(2014, 10, 22, 9, 57, 18),
-        service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElse(null)).orElse(null));
+        service.lastTreatmentOrAnalysisDate(repository.findById(121L).orElseThrow()).orElseThrow());
     assertFalse(
-        service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElse(null)).isPresent());
+        service.lastTreatmentOrAnalysisDate(repository.findById(122L).orElseThrow()).isPresent());
     assertFalse(
-        service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElse(null)).isPresent());
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void lastTreatmentOrAnalysisDate_Null() {
-    assertFalse(service.lastTreatmentOrAnalysisDate(null).isPresent());
+        service.lastTreatmentOrAnalysisDate(repository.findById(123L).orElseThrow()).isPresent());
   }
 
   @Test
   @WithAnonymousUser
   public void lastTreatmentOrAnalysisDate_AccessDenied_Anonymous() throws Throwable {
     assertThrows(AccessDeniedException.class, () -> {
-      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow());
     });
   }
 
@@ -280,7 +249,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void lastTreatmentOrAnalysisDate_AccessDenied() throws Throwable {
     assertThrows(AccessDeniedException.class, () -> {
-      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElse(null));
+      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow());
     });
   }
 
@@ -296,8 +265,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).insert(plate);
     verify(activityService).insert(activity);
-    assertNotNull(plate.getId());
-    plate = service.get(plate.getId()).get();
+    assertNotEquals(0, plate.getId());
+    plate = service.get(plate.getId()).orElseThrow();
     assertEquals("test_plate_4896415", plate.getName());
   }
 
@@ -328,7 +297,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void update() throws Exception {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -337,15 +306,15 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).update(plate);
     verify(activityService).insert(activity);
-    assertNotNull(plate.getId());
-    plate = service.get(plate.getId()).get();
+    assertNotEquals(0, plate.getId());
+    plate = service.get(plate.getId()).orElseThrow();
     assertEquals("test_plate_4896415", plate.getName());
   }
 
   @Test
   @WithAnonymousUser
   public void update_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -357,7 +326,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void update_AccessDenied() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
 
@@ -369,7 +338,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void ban_OneWell() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation location = new WellLocation(0, 0);
     when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
@@ -379,7 +348,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findById(128L).orElse(null);
+    Well well = wellRepository.findById(128L).orElseThrow();
     assertEquals(true, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
@@ -389,7 +358,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void ban_MultipleWells() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
@@ -400,9 +369,9 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    List<Well> bannedWells = service.get(plate.getId()).get().wells(from, to);
+    List<Well> bannedWells = service.get(plate.getId()).orElseThrow().wells(from, to);
     for (Well bannedWell : bannedWells) {
-      Well well = wellRepository.findById(bannedWell.getId()).orElse(null);
+      Well well = wellRepository.findById(bannedWell.getId()).orElseThrow();
       assertEquals(true, well.isBanned());
     }
     Collection<Well> loggedWells = wellsCaptor.getValue();
@@ -415,7 +384,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void ban_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
@@ -429,7 +398,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void ban_AccessDenied() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation from = new WellLocation(3, 3);
     WellLocation to = new WellLocation(5, 4);
@@ -443,7 +412,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void activate_OneWell() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
@@ -453,7 +422,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findById(211L).orElse(null);
+    Well well = wellRepository.findById(211L).orElseThrow();
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
@@ -463,7 +432,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   public void activate_MultipleWells() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation from = new WellLocation(5, 11);
     WellLocation to = new WellLocation(7, 11);
@@ -474,11 +443,11 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
-    Well well = wellRepository.findById(199L).orElse(null);
+    Well well = wellRepository.findById(199L).orElseThrow();
     assertEquals(false, well.isBanned());
-    well = wellRepository.findById(211L).orElse(null);
+    well = wellRepository.findById(211L).orElseThrow();
     assertEquals(false, well.isBanned());
-    well = wellRepository.findById(223L).orElse(null);
+    well = wellRepository.findById(223L).orElseThrow();
     assertEquals(false, well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(3, loggedWells.size());
@@ -490,7 +459,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void activate_AccessDenied_Anonymous() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
@@ -503,7 +472,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void activate_AccessDenied() throws Throwable {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);

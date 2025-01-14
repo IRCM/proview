@@ -28,7 +28,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_DigestionProtocol() throws Throwable {
-    Protocol protocol = service.get(1L).get();
+    Protocol protocol = service.get(1L).orElseThrow();
 
     assertEquals((Long) 1L, protocol.getId());
     assertEquals("digestion_protocol_1", protocol.getName());
@@ -37,7 +37,7 @@ public class ProtocolServiceTest {
 
   @Test
   public void get_EnrichmentProtocol() throws Throwable {
-    Protocol protocol = service.get(2L).get();
+    Protocol protocol = service.get(2L).orElseThrow();
 
     assertEquals((Long) 2L, protocol.getId());
     assertEquals("enrichment_protocol_1", protocol.getName());

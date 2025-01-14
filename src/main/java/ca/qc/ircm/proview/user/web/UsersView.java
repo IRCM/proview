@@ -21,6 +21,7 @@ import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
+import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.MainView;
@@ -57,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 /**
  * Users view.
@@ -218,8 +220,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   private void loadUsers() {
-    List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(null)
-        : service.all(null, authenticatedUser.getUser().get().getLaboratory());
+    List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(new UserFilter())
+        : service.all(new UserFilter(), authenticatedUser.getUser().orElseThrow().getLaboratory());
     this.users.setItems(users);
     this.users.getListDataView().setFilter(filter);
   }
@@ -268,7 +270,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     users.getDataProvider().refreshAll();
   }
 
-  void filterActive(Boolean value) {
+  void filterActive(@Nullable Boolean value) {
     filter.active = value;
     users.getDataProvider().refreshAll();
   }
@@ -306,7 +308,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
 
   void viewLaboratory(Laboratory laboratory) {
     LaboratoryDialog laboratoryDialog = laboratoryDialogFactory.getObject();
-    laboratoryDialog.setLaboratoryId(laboratory != null ? laboratory.getId() : null);
+    laboratoryDialog.setLaboratoryId(laboratory.getId());
     laboratoryDialog.open();
     laboratoryDialog.addSavedListener(e -> loadUsers());
   }

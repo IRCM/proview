@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import org.springframework.lang.Nullable;
 
 /**
  * User of this program.
@@ -91,7 +92,7 @@ public class User implements Data, Named, Serializable {
   /**
    * Number of sign attempts since last successful sign.
    */
-  @Column
+  @Column(nullable = false)
   private int signAttempts;
   /**
    * Last sign attempts (success or fail).
@@ -101,7 +102,7 @@ public class User implements Data, Named, Serializable {
   /**
    * Register time.
    */
-  @Column
+  @Column(nullable = false)
   private LocalDateTime registerTime;
   /**
    * User's prefered locale.
@@ -190,27 +191,30 @@ public class User implements Data, Named, Serializable {
     this.laboratory = laboratory;
   }
 
+  @Nullable
   public String getHashedPassword() {
     return hashedPassword;
   }
 
-  public void setHashedPassword(String hashedPassword) {
+  public void setHashedPassword(@Nullable String hashedPassword) {
     this.hashedPassword = hashedPassword;
   }
 
+  @Nullable
   public String getSalt() {
     return salt;
   }
 
-  public void setSalt(String salt) {
+  public void setSalt(@Nullable String salt) {
     this.salt = salt;
   }
 
+  @Nullable
   public Integer getPasswordVersion() {
     return passwordVersion;
   }
 
-  public void setPasswordVersion(Integer passwordVersion) {
+  public void setPasswordVersion(@Nullable Integer passwordVersion) {
     this.passwordVersion = passwordVersion;
   }
 
@@ -222,11 +226,12 @@ public class User implements Data, Named, Serializable {
     this.phoneNumbers = phoneNumbers;
   }
 
+  @Nullable
   public Address getAddress() {
     return address;
   }
 
-  public void setAddress(Address address) {
+  public void setAddress(@Nullable Address address) {
     this.address = address;
   }
 
@@ -238,11 +243,12 @@ public class User implements Data, Named, Serializable {
     this.admin = admin;
   }
 
+  @Nullable
   public Locale getLocale() {
     return locale;
   }
 
-  public void setLocale(Locale locale) {
+  public void setLocale(@Nullable Locale locale) {
     this.locale = locale;
   }
 
@@ -254,11 +260,12 @@ public class User implements Data, Named, Serializable {
     this.signAttempts = signAttempts;
   }
 
+  @Nullable
   public LocalDateTime getLastSignAttempt() {
     return lastSignAttempt;
   }
 
-  public void setLastSignAttempt(LocalDateTime lastSignAttempt) {
+  public void setLastSignAttempt(@Nullable LocalDateTime lastSignAttempt) {
     this.lastSignAttempt = lastSignAttempt;
   }
 

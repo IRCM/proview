@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -103,7 +104,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
     dialog.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
@@ -116,9 +117,9 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email).get();
+    User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
-    assertNotNull(user.getId());
+    assertNotEquals(0, user.getId());
     assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
@@ -133,6 +134,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -157,7 +159,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
     dialog.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
@@ -188,7 +190,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
     dialog.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);
@@ -201,9 +203,9 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().extension().setValue(extension);
     dialog.save().click();
     waitUntil(driver -> !dialog.isOpen());
-    User user = repository.findByEmail(email).get();
+    User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
-    assertNotNull(user.getId());
+    assertNotEquals(0, user.getId());
     assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
@@ -219,6 +221,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());
@@ -241,7 +244,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
     dialog.userForm().passwordConfirm().setValue(password);
-    Laboratory laboratory = laboratoryRepository.findById(2L).get();
+    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
     dialog.userForm().town().setValue(town);

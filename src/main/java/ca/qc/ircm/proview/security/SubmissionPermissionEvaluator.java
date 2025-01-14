@@ -14,6 +14,7 @@ import ca.qc.ircm.proview.user.UserRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if ((authentication == null) || !(targetDomainObject instanceof Submission)
+    if (!(targetDomainObject instanceof Submission)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -50,8 +51,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
-    if ((authentication == null) || !(targetId instanceof Long)
-        || !targetType.equals(Submission.class.getName())
+    if (!(targetId instanceof Long) || !targetType.equals(Submission.class.getName())
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
@@ -64,7 +64,7 @@ public class SubmissionPermissionEvaluator extends AbstractPermissionEvaluator {
     return hasPermission(submission, currentUser, realPermission);
   }
 
-  boolean hasPermission(Submission submission, User currentUser, Permission permission) {
+  boolean hasPermission(Submission submission, @Nullable User currentUser, Permission permission) {
     if (currentUser == null) {
       return false;
     }

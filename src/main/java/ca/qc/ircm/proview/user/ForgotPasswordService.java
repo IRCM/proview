@@ -3,11 +3,13 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.mail.EmailService;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -66,10 +68,6 @@ public class ForgotPasswordService {
    * @return ForgotPassword having this id.
    */
   public Optional<ForgotPassword> get(final long id, final String confirmNumber) {
-    if (confirmNumber == null) {
-      return Optional.empty();
-    }
-
     ForgotPassword forgotPassword = repository.findById(id).orElse(null);
     if (forgotPassword != null && confirmNumber.equals(forgotPassword.getConfirmNumber())
         && !forgotPassword.isUsed()
@@ -89,6 +87,9 @@ public class ForgotPasswordService {
    *          web context used to send email to user
    */
   public void insert(String email, ForgotPasswordWebContext webContext) {
+    Objects.requireNonNull(email, "email parameter cannot be null");
+    Objects.requireNonNull(webContext, "webContext parameter cannot be null");
+
     ForgotPassword forgotPassword = new ForgotPassword();
 
     // Set time.
@@ -108,7 +109,8 @@ public class ForgotPasswordService {
     forgotPassword.setUser(user);
     repository.saveAndFlush(forgotPassword);
     try {
-      this.sendMail(email, forgotPassword, user.getLocale(), webContext);
+      this.sendMail(email, forgotPassword,
+          Objects.requireNonNullElse(user.getLocale(), Constants.DEFAULT_LOCALE), webContext);
     } catch (Throwable e) {
       logger.error("Could not send email to user " + email + " that forgot his password", e);
     }
@@ -151,6 +153,8 @@ public class ForgotPasswordService {
    *           if forgotPassword has expired
    */
   public synchronized void updatePassword(ForgotPassword forgotPassword, String newPassword) {
+    Objects.requireNonNull(forgotPassword, "forgotPassword parameter cannot be null");
+    Objects.requireNonNull(newPassword, "newPassword parameter cannot be null");
     if (LocalDateTime.now().isAfter(forgotPassword.getRequestMoment().plus(VALID_PERIOD))) {
       throw new IllegalArgumentException("ForgotPassword instance has expired.");
     }
@@ -161,7 +165,7 @@ public class ForgotPasswordService {
     // Encrypt password.
     String hashedPassword = passwordEncoder.encode(newPassword);
     // Update password.
-    user = userRepository.findById(user.getId()).orElse(null);
+    user = userRepository.findById(user.getId()).orElseThrow();
     user.setHashedPassword(hashedPassword);
     user.setSalt(null);
     user.setPasswordVersion(null);

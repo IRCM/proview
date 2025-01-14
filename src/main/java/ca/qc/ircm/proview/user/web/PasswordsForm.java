@@ -14,6 +14,7 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import org.springframework.lang.Nullable;
 
 /**
  * Passwords form.
@@ -66,6 +67,7 @@ public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
         : ValidationResult.ok();
   }
 
+  @Nullable
   public String getPassword() {
     return passwordBinder.getBean().getPassword();
   }

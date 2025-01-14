@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.lang.Nullable;
 
 /**
  * Converts an object to a string value to save in database.
@@ -25,7 +26,7 @@ public class DatabaseConverter {
    *          object to convert to string
    * @return string value to save in database
    */
-  public Optional<String> convert(Object value) {
+  public Optional<String> convert(@Nullable Object value) {
     if (value == null) {
       return Optional.empty();
     }

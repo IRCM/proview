@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 /**
  * MS analysis.
@@ -49,7 +50,7 @@ public class MsAnalysis implements Data, Serializable {
   /**
    * Selected Source for mass detection instrument.
    */
-  @Column
+  @Column(nullable = false)
   @Enumerated(STRING)
   private MassDetectionInstrumentSource source;
   /**
@@ -119,11 +120,12 @@ public class MsAnalysis implements Data, Serializable {
     this.insertTime = insertTime;
   }
 
+  @Nullable
   public String getDeletionExplanation() {
     return deletionExplanation;
   }
 
-  public void setDeletionExplanation(String deletionExplanation) {
+  public void setDeletionExplanation(@Nullable String deletionExplanation) {
     this.deletionExplanation = deletionExplanation;
   }
 

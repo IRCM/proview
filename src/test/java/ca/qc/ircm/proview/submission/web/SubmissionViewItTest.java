@@ -9,6 +9,7 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
@@ -40,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -138,8 +140,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
 
   @BeforeEach
   public void beforeTest() throws Throwable {
-    file1 = Paths.get(getClass().getResource("/gelimages1.png").toURI());
-    file2 = Paths.get(getClass().getResource("/structure1.png").toURI());
+    file1 = Paths.get(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI());
+    file2 = Paths.get(Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
   }
 
   private void open() {
@@ -293,13 +295,13 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
         currentLocale()), notification.getText());
-    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
+    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
     assertEquals(taxonomy, submission.getTaxonomy());
     assertEquals(protein, submission.getProtein());
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
-    assertTrue(submission.getSamples() != null);
+    assertNotNull(submission.getSamples());
     assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
       assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
@@ -350,13 +352,13 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
         currentLocale()), notification.getText());
-    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
+    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
     assertEquals(taxonomy, submission.getTaxonomy());
     assertEquals(protein, submission.getProtein());
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
-    assertTrue(submission.getSamples() != null);
+    assertNotNull(submission.getSamples());
     assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
       assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
@@ -413,11 +415,14 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { sampleName1 },
         currentLocale()), notification.getText());
-    Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1)).get();
+    Submission submission =
+        repository.findOne(qsubmission.experiment.eq(sampleName1)).orElseThrow();
     assertEquals(sampleName1, submission.getExperiment());
     assertEquals(solvent, submission.getSolutionSolvent());
     assertEquals(formula, submission.getFormula());
+    assertNotNull(submission.getMonoisotopicMass());
     assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
+    assertNotNull(submission.getAverageMass());
     assertEquals(averageMass, submission.getAverageMass(), 0.0001);
     assertEquals(toxicity, submission.getToxicity());
     assertEquals(lightSensitive, submission.isLightSensitive());
@@ -428,7 +433,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
       assertTrue(submission.getSolvents().contains(solvent));
     }
     assertEquals(otherSolvent, submission.getOtherSolvent());
-    assertTrue(submission.getSamples() != null);
+    assertNotNull(submission.getSamples());
     assertEquals(1, submission.getSamples().size());
     assertEquals(sampleType, submission.getSamples().get(0).getType());
     assertEquals(sampleName1, submission.getSamples().get(0).getName());
@@ -454,13 +459,13 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
         currentLocale()), notification.getText());
-    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).get();
+    Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());
     assertEquals(goal, submission.getGoal());
     assertEquals(taxonomy, submission.getTaxonomy());
     assertEquals(protein, submission.getProtein());
     assertEquals(postTranslationModification, submission.getPostTranslationModification());
-    assertTrue(submission.getSamples() != null);
+    assertNotNull(submission.getSamples());
     assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
       assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
@@ -488,7 +493,8 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     Files.createDirectories(downloadHome);
     Path downloaded = downloadHome.resolve("protocol.txt");
     Files.deleteIfExists(downloaded);
-    Path source = Paths.get(getClass().getResource("/submissionfile1.txt").toURI());
+    Path source =
+        Paths.get(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI());
     openView(VIEW_NAME, "1");
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     AnchorElement filename = view.files().filename(0);

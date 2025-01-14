@@ -66,7 +66,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
     plate.setName("unit_test");
     plate.setColumnCount(13);
@@ -130,7 +130,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void update_NoChanges() {
-    Plate plate = repository.findById(26L).orElse(null);
+    Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
