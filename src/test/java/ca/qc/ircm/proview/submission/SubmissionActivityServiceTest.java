@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SubmissionActivityService}.
@@ -50,9 +50,9 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   private SubmissionActivityService submissionActivityService;
   @Autowired
   private SubmissionRepository repository;
-  @MockBean
+  @MockitoBean
   private SampleActivityService sampleActivityService;
-  @MockBean
+  @MockitoBean
   private AuthenticatedUser authenticatedUser;
   private User user;
 

@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link PrintSubmission}.
@@ -47,7 +47,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionTest extends SpringUIUnitTest {
   private PrintSubmission component;
-  @MockBean
+  @MockitoBean
   private SubmissionService service;
   @Autowired
   private SubmissionRepository repository;

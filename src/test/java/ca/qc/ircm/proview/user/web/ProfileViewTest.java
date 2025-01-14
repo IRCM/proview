@@ -33,8 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link ProfileView}.
@@ -45,7 +45,7 @@ public class ProfileViewTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(ProfileView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ProfileView view;
-  @MockBean
+  @MockitoBean
   private UserService service;
   @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;

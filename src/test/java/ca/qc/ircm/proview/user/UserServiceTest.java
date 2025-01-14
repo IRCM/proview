@@ -30,12 +30,12 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link UserService}.
@@ -53,11 +53,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
   private UserRepository repository;
   @Autowired
   private LaboratoryRepository laboratoryRepository;
-  @MockBean
+  @MockitoBean
   private PasswordEncoder passwordEncoder;
-  @MockBean
+  @MockitoBean
   private AuthenticatedUser authenticatedUser;
-  @MockBean
+  @MockitoBean
   private PermissionEvaluator permissionEvaluator;
   private String hashedPassword;
 

@@ -99,8 +99,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SubmissionsView}.
@@ -118,9 +118,9 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionsView view;
-  @MockBean
+  @MockitoBean
   private SubmissionService service;
-  @MockBean
+  @MockitoBean
   private UserPreferenceService userPreferenceService;
   @Autowired
   private SubmissionRepository repository;

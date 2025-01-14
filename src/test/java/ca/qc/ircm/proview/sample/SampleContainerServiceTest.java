@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SampleContainerService}.
@@ -26,7 +26,7 @@ public class SampleContainerServiceTest {
   private static final String READ = "read";
   @Autowired
   private SampleContainerService service;
-  @MockBean
+  @MockitoBean
   private PermissionEvaluator permissionEvaluator;
 
   @BeforeEach

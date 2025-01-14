@@ -38,8 +38,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link UserDialog}.
@@ -50,7 +50,7 @@ public class UserDialogTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private UserDialog dialog;
-  @MockBean
+  @MockitoBean
   private UserService service;
   @Mock
   private User user;

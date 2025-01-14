@@ -94,8 +94,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link LcmsmsSubmissionForm}.
@@ -122,7 +122,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private LcmsmsSubmissionForm form;
-  @MockBean
+  @MockitoBean
   private SubmissionSampleService sampleService;
   @Autowired
   private AuthenticatedUser authenticatedUser;

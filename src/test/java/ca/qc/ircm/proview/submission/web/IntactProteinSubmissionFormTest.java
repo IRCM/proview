@@ -65,8 +65,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link IntactProteinSubmissionForm}.
@@ -87,7 +87,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private IntactProteinSubmissionForm form;
-  @MockBean
+  @MockitoBean
   private SubmissionSampleService sampleService;
   @Autowired
   private AuthenticatedUser authenticatedUser;

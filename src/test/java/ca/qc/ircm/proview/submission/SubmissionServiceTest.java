@@ -70,7 +70,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -78,6 +77,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SubmissionService}.
@@ -119,15 +119,15 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private PlateRepository plateRepository;
   @Autowired
   private MessageSource messageSource;
-  @MockBean
+  @MockitoBean
   private SubmissionActivityService submissionActivityService;
-  @MockBean
+  @MockitoBean
   private ActivityService activityService;
-  @MockBean
+  @MockitoBean
   private EmailService emailService;
-  @MockBean
+  @MockitoBean
   private AuthenticatedUser authenticatedUser;
-  @MockBean
+  @MockitoBean
   private PermissionEvaluator permissionEvaluator;
   @Mock
   private Activity activity;

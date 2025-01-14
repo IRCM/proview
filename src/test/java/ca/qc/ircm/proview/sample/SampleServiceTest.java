@@ -12,9 +12,9 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SampleService}.
@@ -25,7 +25,7 @@ public class SampleServiceTest {
   private static final String READ = "read";
   @Autowired
   private SampleService service;
-  @MockBean
+  @MockitoBean
   private PermissionEvaluator permissionEvaluator;
 
   @BeforeEach

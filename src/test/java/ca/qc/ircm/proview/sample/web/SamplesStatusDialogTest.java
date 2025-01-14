@@ -67,8 +67,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SamplesStatusDialog}.
@@ -82,9 +82,9 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private SamplesStatusDialog dialog;
-  @MockBean
+  @MockitoBean
   private SubmissionService service;
-  @MockBean
+  @MockitoBean
   private SubmissionSampleService sampleService;
   @Mock
   private ComponentEventListener<SavedEvent<SamplesStatusDialog>> savedListener;

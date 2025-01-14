@@ -102,8 +102,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SubmissionView}.
@@ -116,7 +116,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionView view;
-  @MockBean
+  @MockitoBean
   private SubmissionService service;
   @Autowired
   private AuthenticatedUser authenticatedUser;

@@ -55,8 +55,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link TreatmentDialog}.
@@ -70,7 +70,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private TreatmentDialog dialog;
-  @MockBean
+  @MockitoBean
   private TreatmentService service;
   @Autowired
   private TreatmentRepository repository;

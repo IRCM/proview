@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link PlateActivityService}.
@@ -35,7 +35,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
   private PlateActivityService plateActivityService;
   @Autowired
   private PlateRepository repository;
-  @MockBean
+  @MockitoBean
   private AuthenticatedUser authenticatedUser;
   private User user;
 

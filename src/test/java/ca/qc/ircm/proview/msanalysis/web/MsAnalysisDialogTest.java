@@ -51,8 +51,8 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link MsAnalysisDialog}.
@@ -68,7 +68,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
   private MsAnalysisDialog dialog;
-  @MockBean
+  @MockitoBean
   private MsAnalysisService service;
   @Autowired
   private MsAnalysisRepository repository;

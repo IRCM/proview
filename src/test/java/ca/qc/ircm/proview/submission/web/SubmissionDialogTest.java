@@ -48,8 +48,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link SubmissionDialog}.
@@ -63,7 +63,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
       messagePrefix(MassDetectionInstrument.class);
   private SubmissionDialog dialog;
-  @MockBean
+  @MockitoBean
   private SubmissionService service;
   @Autowired
   private SubmissionRepository repository;

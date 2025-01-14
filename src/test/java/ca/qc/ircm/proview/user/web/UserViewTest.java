@@ -39,8 +39,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link UserView}.
@@ -51,9 +51,9 @@ public class UserViewTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private UserView view;
-  @MockBean
+  @MockitoBean
   private UserService service;
-  @MockBean
+  @MockitoBean
   private LaboratoryService laboratoryService;
   @Mock
   private BeforeEvent beforeEvent;

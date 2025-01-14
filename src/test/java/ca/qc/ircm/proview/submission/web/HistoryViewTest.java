@@ -40,6 +40,8 @@ import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityRepository;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.msanalysis.MsAnalysis;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
+import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.SubmissionSample;
@@ -48,6 +50,8 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Treatment;
+import ca.qc.ircm.proview.treatment.TreatmentRepository;
+import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -75,9 +79,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link HistoryView}.
@@ -90,22 +94,24 @@ public class HistoryViewTest extends SpringUIUnitTest {
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   private HistoryView view;
-  @MockBean
+  @MockitoBean
   private ActivityService service;
-  @MockBean
+  @MockitoBean
   private SubmissionService submissionService;
+  @MockitoBean
+  private MsAnalysisService msAnalysisService;
+  @MockitoBean
+  private TreatmentService treatmentService;
   @Mock
   private BeforeEvent beforeEvent;
-  @MockBean
-  private SubmissionDialog dialog;
-  @MockBean
-  private MsAnalysisDialog msAnalysisDialog;
-  @MockBean
-  private TreatmentDialog treatmentDialog;
   @Autowired
   private ActivityRepository repository;
   @Autowired
   private SubmissionRepository submissionRepository;
+  @Autowired
+  private MsAnalysisRepository msAnalysisRepository;
+  @Autowired
+  private TreatmentRepository treatmentRepository;
   @Autowired
   private MessageSource messageSource;
   @Captor
@@ -265,14 +271,17 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void view() {
-    Submission submission = mock(Submission.class);
+    Submission submission = submissionRepository.findById(32L).orElseThrow();
     Activity activity = items(view.activities).get(0);
     when(service.record(activity)).thenReturn(Optional.of(submission));
+    when(submissionService.get(anyLong())).thenReturn(Optional.of(submission));
+    when(submissionService.print(any(), any())).thenReturn("");
     test(view.activities).select(0);
     test(view.view).click();
 
-    verify(dialog).setSubmissionId(submission.getId());
-    verify(dialog).open();
+    verify(submissionService).get(32L);
+    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    assertEquals(32L, dialog.getSubmissionId());
   }
 
   @Test
@@ -287,48 +296,57 @@ public class HistoryViewTest extends SpringUIUnitTest {
 
   @Test
   public void view_Submission() {
-    Submission submission = mock(Submission.class);
+    Submission submission = submissionRepository.findById(32L).orElseThrow();
     Activity activity = items(view.activities).get(0);
     when(service.record(activity)).thenReturn(Optional.of(submission));
+    when(submissionService.get(anyLong())).thenReturn(Optional.of(submission));
+    when(submissionService.print(any(), any())).thenReturn("");
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmissionId(submission.getId());
-    verify(dialog).open();
+    verify(submissionService).get(32L);
+    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    assertEquals(32L, dialog.getSubmissionId());
   }
 
   @Test
   public void view_SubmissionSample() {
-    Submission submission = mock(Submission.class);
-    SubmissionSample sample = mock(SubmissionSample.class);
-    when(sample.getSubmission()).thenReturn(submission);
+    Submission submission = submissionRepository.findById(32L).orElseThrow();
+    SubmissionSample sample = submission.getSamples().get(0);
     Activity activity = items(view.activities).get(0);
     when(service.record(activity)).thenReturn(Optional.of(sample));
+    when(submissionService.get(anyLong())).thenReturn(Optional.of(submission));
+    when(submissionService.print(any(), any())).thenReturn("");
     test(view.activities).doubleClickRow(0);
 
-    verify(dialog).setSubmissionId(submission.getId());
-    verify(dialog).open();
+    verify(submissionService).get(32L);
+    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    assertEquals(32L, dialog.getSubmissionId());
   }
 
   @Test
   public void view_MsAnalysis() {
-    MsAnalysis msAnalysis = mock(MsAnalysis.class);
+    MsAnalysis msAnalysis = msAnalysisRepository.findById(12L).orElseThrow();
     Activity activity = items(view.activities).get(0);
     when(service.record(activity)).thenReturn(Optional.of(msAnalysis));
+    when(msAnalysisService.get(anyLong())).thenReturn(Optional.of(msAnalysis));
     test(view.activities).doubleClickRow(0);
 
-    verify(msAnalysisDialog).setMsAnalysisId(msAnalysis.getId());
-    verify(msAnalysisDialog).open();
+    verify(msAnalysisService).get(12L);
+    MsAnalysisDialog dialog = $(MsAnalysisDialog.class).first();
+    assertEquals(12L, dialog.getMsAnalysisId());
   }
 
   @Test
   public void view_Treatment() {
-    Treatment treatment = mock(Treatment.class);
+    Treatment treatment = treatmentRepository.findById(6L).orElseThrow();
     Activity activity = items(view.activities).get(0);
     when(service.record(activity)).thenReturn(Optional.of(treatment));
+    when(treatmentService.get(anyLong())).thenReturn(Optional.of(treatment));
     test(view.activities).doubleClickRow(0);
 
-    verify(treatmentDialog).setTreatmentId(treatment.getId());
-    verify(treatmentDialog).open();
+    verify(treatmentService).get(6L);
+    TreatmentDialog dialog = $(TreatmentDialog.class).first();
+    assertEquals(6L, dialog.getTreatmentId());
   }
 
   @Test
