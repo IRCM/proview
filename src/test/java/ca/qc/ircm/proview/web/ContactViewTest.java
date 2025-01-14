@@ -56,20 +56,23 @@ public class ContactViewTest extends SpringUIUnitTest {
     assertEquals(styleName(PROTEOMIC, HEADER), view.proteomicHeader.getId().orElse(""));
     assertEquals(styleName(PROTEOMIC, NAME), view.proteomicNameAnchor.getId().orElse(""));
     validateIcon(VaadinIcon.ENVELOPE.create(),
-        findChild(view.proteomicNameAnchor, Icon.class).get());
+        findChild(view.proteomicNameAnchor, Icon.class).orElseThrow());
     assertEquals(styleName(PROTEOMIC, ADDRESS), view.proteomicAddressAnchor.getId().orElse(""));
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        findChild(view.proteomicAddressAnchor, Icon.class).get());
+        findChild(view.proteomicAddressAnchor, Icon.class).orElseThrow());
     assertEquals(styleName(PROTEOMIC, PHONE), view.proteomicPhoneAnchor.getId().orElse(""));
-    validateIcon(VaadinIcon.PHONE.create(), findChild(view.proteomicPhoneAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.PHONE.create(),
+        findChild(view.proteomicPhoneAnchor, Icon.class).orElseThrow());
     assertEquals(styleName(WEBSITE, HEADER), view.websiteHeader.getId().orElse(""));
     assertEquals(styleName(WEBSITE, NAME), view.websiteNameAnchor.getId().orElse(""));
-    validateIcon(VaadinIcon.ENVELOPE.create(), findChild(view.websiteNameAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.ENVELOPE.create(),
+        findChild(view.websiteNameAnchor, Icon.class).orElseThrow());
     assertEquals(styleName(WEBSITE, ADDRESS), view.websiteAddressAnchor.getId().orElse(""));
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        findChild(view.websiteAddressAnchor, Icon.class).get());
+        findChild(view.websiteAddressAnchor, Icon.class).orElseThrow());
     assertEquals(styleName(WEBSITE, PHONE), view.websitePhoneAnchor.getId().orElse(""));
-    validateIcon(VaadinIcon.PHONE.create(), findChild(view.websitePhoneAnchor, Icon.class).get());
+    validateIcon(VaadinIcon.PHONE.create(),
+        findChild(view.websitePhoneAnchor, Icon.class).orElseThrow());
   }
 
   @Test

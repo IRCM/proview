@@ -224,7 +224,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void sideNav_SelectExitSwitchUser() {
-    switchUserService.switchUser(userRepository.findById(10L).get(),
+    switchUserService.switchUser(userRepository.findById(10L).orElseThrow(),
         VaadinServletRequest.getCurrent());
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
@@ -299,7 +299,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     view = $(ViewLayout.class).first();
 
     assertFalse(view.selectedSideNavItem().isPresent());
-    Submission submission = submissionRepository.findById(35L).get();
+    Submission submission = submissionRepository.findById(35L).orElseThrow();
     assertEquals(view.getTranslation(messagePrefix(SubmissionView.class) + SubmissionView.HEADER, 1,
         submission.getExperiment()), view.header.getText());
   }
@@ -311,7 +311,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     view = $(ViewLayout.class).first();
 
     assertFalse(view.selectedSideNavItem().isPresent());
-    Submission submission = submissionRepository.findById(35L).get();
+    Submission submission = submissionRepository.findById(35L).orElseThrow();
     assertEquals(view.getTranslation(messagePrefix(HistoryView.class) + HistoryView.HEADER,
         submission.getExperiment()), view.header.getText());
   }

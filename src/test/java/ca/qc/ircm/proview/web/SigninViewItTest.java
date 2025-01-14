@@ -8,6 +8,7 @@ import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
@@ -69,6 +70,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getSubmitButton().click();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
+    assertNotNull(getDriver().getCurrentUrl());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
 
@@ -81,6 +83,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getSubmitButton().click();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
         view.getErrorMessage());
+    assertNotNull(getDriver().getCurrentUrl());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
 
@@ -97,6 +100,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
         messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
             new Object[] { configuration.lockDuration().getSeconds() / 60 }, currentLocale()),
         view.getErrorMessage());
+    assertNotNull(getDriver().getCurrentUrl());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
   }
 

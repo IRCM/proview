@@ -25,7 +25,7 @@ public class IgnoreConversionIfDisabledConverter<P, M> implements Converter<P, M
   @Override
   public Result<M> convertToModel(P value, ValueContext context) {
     Result<M> result = delegate.convertToModel(value, context);
-    HasEnabled component = (HasEnabled) context.getComponent().get();
+    HasEnabled component = (HasEnabled) context.getComponent().orElseThrow();
     if (component.isEnabled() || !result.isError()) {
       return result;
     } else {
