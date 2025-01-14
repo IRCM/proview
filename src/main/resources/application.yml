@@ -39,9 +39,16 @@ server:
     session:
       persistent: false
   forward-headers-strategy: native
+
 vaadin:
   productionMode: false
   closeIdleSessions: true
+  license:
+    assume: false
+    paths:
+      - '${user.home}/.vaadin/offlineKey'
+      - '${user.home}/.vaadin/proKey'
+      - '${user.home}/.vaadin/userKey'
 
 security:
   lockAttemps: 5
