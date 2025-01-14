@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.user;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
+import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.mail.EmailService;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -108,7 +109,8 @@ public class ForgotPasswordService {
     forgotPassword.setUser(user);
     repository.saveAndFlush(forgotPassword);
     try {
-      this.sendMail(email, forgotPassword, user.getLocale(), webContext);
+      this.sendMail(email, forgotPassword,
+          Objects.requireNonNullElse(user.getLocale(), Constants.DEFAULT_LOCALE), webContext);
     } catch (Throwable e) {
       logger.error("Could not send email to user " + email + " that forgot his password", e);
     }
@@ -163,7 +165,7 @@ public class ForgotPasswordService {
     // Encrypt password.
     String hashedPassword = passwordEncoder.encode(newPassword);
     // Update password.
-    user = userRepository.findById(user.getId()).orElse(null);
+    user = userRepository.findById(user.getId()).orElseThrow();
     user.setHashedPassword(hashedPassword);
     user.setSalt(null);
     user.setPasswordVersion(null);

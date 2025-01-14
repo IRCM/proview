@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.security;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -108,6 +109,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertTrue(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
@@ -124,6 +126,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, READ));
     assertFalse(
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, BASE_READ));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_READ));
   }
@@ -256,6 +259,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }
@@ -272,6 +276,7 @@ public class PlatePermissionEvaluatorTest {
         permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate.getId(), PLATE_CLASS,
         BASE_WRITE));
+    assertNotNull(plate.getSubmission());
     verify(submissionPermissionEvaluator, times(4)).hasPermission(eq(plate.getSubmission()), any(),
         eq(BASE_WRITE));
   }

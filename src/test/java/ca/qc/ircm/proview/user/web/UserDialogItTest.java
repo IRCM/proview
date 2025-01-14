@@ -221,6 +221,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
     assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
     assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertNotNull(user.getAddress());
     assertEquals(addressLine, user.getAddress().getLine());
     assertEquals(town, user.getAddress().getTown());
     assertEquals(state, user.getAddress().getState());

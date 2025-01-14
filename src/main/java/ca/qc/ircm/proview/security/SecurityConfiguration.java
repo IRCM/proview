@@ -30,7 +30,6 @@ public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int 
     this.lockDuration = lockDuration;
     this.disableSignAttemps = disableSignAttemps;
     this.rememberMeKey = rememberMeKey;
-    passwords = passwords != null ? passwords : new ArrayList<>();
     boolean valid = validatePasswordConfiguration(passwords);
     if (!valid) {
       throw new IllegalStateException("Password configuration is invalid");
