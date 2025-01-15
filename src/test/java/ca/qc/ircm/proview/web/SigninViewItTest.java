@@ -68,7 +68,8 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
-    waitUntil(driver -> driver != null && driver.getCurrentUrl().endsWith("?" + FAIL));
+    waitUntil(driver -> driver != null && driver.getCurrentUrl() != null
+        && driver.getCurrentUrl().endsWith("?" + FAIL));
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());
