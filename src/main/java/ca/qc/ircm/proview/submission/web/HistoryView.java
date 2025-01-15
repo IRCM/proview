@@ -185,8 +185,7 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   private void updateActivities() {
     if (submission != null) {
       List<Activity> activities = service.all(submission);
-      Collections.sort(activities,
-          new ActivityComparator(ActivityComparator.Compare.TIMESTAMP).reversed());
+      Collections.sort(activities, new ActivityComparator().reversed());
       this.activities.setItems(activities);
     }
   }

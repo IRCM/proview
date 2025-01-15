@@ -292,7 +292,7 @@ public class ActivityService {
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
 
-    Collections.sort(activities, new ActivityComparator(ActivityComparator.Compare.TIMESTAMP));
+    Collections.sort(activities, new ActivityComparator());
     return activities;
   }
 
