@@ -13,7 +13,7 @@ public enum MudPitFraction {
   /**
    * Number of fractions for this enum.
    */
-  private int number;
+  private final int number;
 
   public int getNumber() {
     return number;

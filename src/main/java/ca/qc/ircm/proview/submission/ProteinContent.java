@@ -14,11 +14,11 @@ public enum ProteinContent {
   /**
    * Start of interval.
    */
-  private int start;
+  private final int start;
   /**
    * End of interval.
    */
-  private int end;
+  private final int end;
 
   public int getStart() {
     return start;

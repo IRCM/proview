@@ -13,7 +13,7 @@ public enum StorageTemperature {
   /**
    * Real temperature of this enum.
    */
-  private int temperature;
+  private final int temperature;
 
   public int getTemperature() {
     return temperature;
