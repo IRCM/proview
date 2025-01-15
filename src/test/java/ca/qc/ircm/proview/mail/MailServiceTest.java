@@ -39,16 +39,16 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
- * Tests for {@link EmailService}.
+ * Tests for {@link MailService}.
  */
 @ContextConfiguration(initializers = SmtpPortRandomizer.class)
 @NonTransactionalTestAnnotations
-public class EmailServiceTest {
+public class MailServiceTest {
   @RegisterExtension
   static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
-  private static final Logger logger = LoggerFactory.getLogger(EmailServiceTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(MailServiceTest.class);
   @Autowired
-  private EmailService emailService;
+  private MailService mailService;
   @Autowired
   private JavaMailSender mailSender;
   @Autowired
@@ -101,7 +101,7 @@ public class EmailServiceTest {
   @Timeout(10)
   public void textEmail() throws Throwable {
     String content = "text message";
-    MimeMessageHelper email = emailService.textEmail();
+    MimeMessageHelper email = mailService.textEmail();
     email.setText(content);
 
     MimeMessage message = email.getMimeMessage();
@@ -117,7 +117,7 @@ public class EmailServiceTest {
   public void htmlEmail() throws Throwable {
     String textContent = "text message";
     String htmlContent = "<html><body>html message</body></html>";
-    MimeMessageHelper email = emailService.htmlEmail();
+    MimeMessageHelper email = mailService.htmlEmail();
     email.setText(textContent, htmlContent);
 
     MimeMessage message = email.getMimeMessage();
@@ -134,7 +134,7 @@ public class EmailServiceTest {
   @Timeout(10)
   public void htmlEmail_TextOnly() throws Throwable {
     String textContent = "text message";
-    MimeMessageHelper email = emailService.htmlEmail();
+    MimeMessageHelper email = mailService.htmlEmail();
     email.setText(textContent);
 
     MimeMessage message = email.getMimeMessage();
@@ -159,7 +159,7 @@ public class EmailServiceTest {
     email.setSubject(subject);
     email.setText(content);
 
-    emailService.send(email);
+    mailService.send(email);
 
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
@@ -192,7 +192,7 @@ public class EmailServiceTest {
     email.setSubject(subject);
     email.setText(textContent, htmlContent);
 
-    emailService.send(email);
+    mailService.send(email);
 
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
@@ -219,17 +219,17 @@ public class EmailServiceTest {
     String subject = "test subject";
     String textContent = "text message";
     String htmlContent = "<html><body>html message</body></html>";
-    MimeMessageHelper email = emailService.htmlEmail();
+    MimeMessageHelper email = mailService.htmlEmail();
     email.addTo(receiver);
     email.setSubject(subject);
     email.setText(textContent, htmlContent);
-    emailService.send(email);
-    email = emailService.htmlEmail();
+    mailService.send(email);
+    email = mailService.htmlEmail();
     email.addTo(receiver);
     email.setSubject(subject);
     email.setText(textContent, htmlContent);
 
-    emailService.send(email);
+    mailService.send(email);
 
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(2, messages.length);
@@ -262,7 +262,7 @@ public class EmailServiceTest {
     email.setText(content);
     greenMail.stop();
 
-    emailService.send(email);
+    mailService.send(email);
   }
 
   @Test
@@ -278,7 +278,7 @@ public class EmailServiceTest {
     email.setText(textContent, htmlContent);
     greenMail.stop();
 
-    emailService.send(email);
+    mailService.send(email);
   }
 
   @Test
@@ -292,7 +292,7 @@ public class EmailServiceTest {
     User user = new User(1L, "christian.poitras@ircm.qc.ca");
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    emailService.sendError(error);
+    mailService.sendError(error);
 
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
@@ -324,7 +324,7 @@ public class EmailServiceTest {
       error.printStackTrace(printWriter);
     }
 
-    emailService.sendError(error);
+    mailService.sendError(error);
 
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);

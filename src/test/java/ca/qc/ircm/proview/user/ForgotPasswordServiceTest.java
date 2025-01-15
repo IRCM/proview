@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
-import ca.qc.ircm.proview.mail.EmailService;
+import ca.qc.ircm.proview.mail.MailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -54,7 +54,7 @@ public class ForgotPasswordServiceTest {
   @MockitoBean
   private ApplicationConfiguration applicationConfiguration;
   @MockitoBean
-  private EmailService emailService;
+  private MailService mailService;
   @MockitoBean
   private PasswordEncoder passwordEncoder;
   @Mock
@@ -84,7 +84,7 @@ public class ForgotPasswordServiceTest {
     });
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
-    when(emailService.htmlEmail()).thenReturn(email);
+    when(mailService.htmlEmail()).thenReturn(email);
     when(forgotPasswordWebContext.getChangeForgottenPasswordUrl(any(), any()))
         .thenReturn(forgotPasswordUrl);
     confirmNumber = "70987756";
@@ -138,8 +138,8 @@ public class ForgotPasswordServiceTest {
         any());
     ForgotPassword forgotPassword = forgotPasswordCaptor.getValue();
     assertNotEquals(0, forgotPassword.getId());
-    verify(emailService).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService).htmlEmail();
+    verify(mailService).send(email);
     forgotPassword = repository.findById(forgotPassword.getId()).orElseThrow();
     assertNotNull(forgotPassword.getConfirmNumber());
     assertTrue(
@@ -165,8 +165,8 @@ public class ForgotPasswordServiceTest {
     service.insert(user.getEmail(), forgotPasswordWebContext);
 
     repository.flush();
-    verify(emailService).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService).htmlEmail();
+    verify(mailService).send(email);
     verify(email).addTo(user.getEmail());
     verify(email).setSubject(messageSource.getMessage(MESSAGES_PREFIX + "subject", null, locale));
     verify(email).setText(stringCaptor.capture(), stringCaptor.capture());

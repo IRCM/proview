@@ -10,7 +10,7 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.mail.EmailService;
+import ca.qc.ircm.proview.mail.MailService;
 import ca.qc.ircm.proview.plate.PlateRepository;
 import ca.qc.ircm.proview.sample.SampleRepository;
 import ca.qc.ircm.proview.sample.SampleStatus;
@@ -59,14 +59,14 @@ public class SubmissionService {
   private final SubmissionActivityService submissionActivityService;
   private final ActivityService activityService;
   private final TemplateEngine emailTemplateEngine;
-  private final EmailService emailService;
+  private final MailService mailService;
   private final AuthenticatedUser authenticatedUser;
   private final MessageSource messageSource;
 
   public SubmissionService(SubmissionRepository repository, SampleRepository sampleRepository,
       PlateRepository plateRepository, UserRepository userRepository, JPAQueryFactory queryFactory,
       SubmissionActivityService submissionActivityService, ActivityService activityService,
-      TemplateEngine emailTemplateEngine, EmailService emailService,
+      TemplateEngine emailTemplateEngine, MailService mailService,
       AuthenticatedUser authenticatedUser, MessageSource messageSource) {
     this.repository = repository;
     this.sampleRepository = sampleRepository;
@@ -76,7 +76,7 @@ public class SubmissionService {
     this.submissionActivityService = submissionActivityService;
     this.activityService = activityService;
     this.emailTemplateEngine = emailTemplateEngine;
-    this.emailService = emailService;
+    this.mailService = mailService;
     this.authenticatedUser = authenticatedUser;
     this.messageSource = messageSource;
   }
@@ -251,7 +251,7 @@ public class SubmissionService {
     context.setVariable("samples", submission.getSamples());
 
     final List<User> proteomicUsers = adminUsers();
-    MimeMessageHelper email = emailService.htmlEmail();
+    MimeMessageHelper email = mailService.htmlEmail();
     email.setSubject(
         messageSource.getMessage(MESSAGE_PREFIX + "subject." + type.name(), null, Locale.ENGLISH));
     String htmlTemplateLocation = "submission/email.html";
@@ -262,7 +262,7 @@ public class SubmissionService {
     for (User proteomicUser : proteomicUsers) {
       email.addTo(proteomicUser.getEmail());
     }
-    emailService.send(email);
+    mailService.send(email);
   }
 
   /**

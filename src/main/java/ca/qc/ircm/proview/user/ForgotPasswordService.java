@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 
 import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.mail.EmailService;
+import ca.qc.ircm.proview.mail.MailService;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -40,20 +40,20 @@ public class ForgotPasswordService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final TemplateEngine emailTemplateEngine;
-  private final EmailService emailService;
+  private final MailService mailService;
   private final ApplicationConfiguration applicationConfiguration;
   private final MessageSource messageSource;
 
   @Autowired
   protected ForgotPasswordService(ForgotPasswordRepository repository,
       UserRepository userRepository, PasswordEncoder passwordEncoder,
-      TemplateEngine emailTemplateEngine, EmailService emailService,
+      TemplateEngine emailTemplateEngine, MailService mailService,
       ApplicationConfiguration applicationConfiguration, MessageSource messageSource) {
     this.repository = repository;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.emailTemplateEngine = emailTemplateEngine;
-    this.emailService = emailService;
+    this.mailService = mailService;
     this.applicationConfiguration = applicationConfiguration;
     this.messageSource = messageSource;
   }
@@ -125,7 +125,7 @@ public class ForgotPasswordService {
         .getUrl(webContext.getChangeForgottenPasswordUrl(forgotPassword, locale));
 
     // Prepare email content.
-    MimeMessageHelper email = emailService.htmlEmail();
+    MimeMessageHelper email = mailService.htmlEmail();
     String subject = messageSource.getMessage(MESSAGES_PREFIX + "subject", null, locale);
     email.setSubject(subject);
     email.addTo(emailAddress);
@@ -137,7 +137,7 @@ public class ForgotPasswordService {
     String textEmail = emailTemplateEngine.process(textTemplateLocation, context);
     email.setText(textEmail, htmlEmail);
 
-    emailService.send(email);
+    mailService.send(email);
   }
 
   /**

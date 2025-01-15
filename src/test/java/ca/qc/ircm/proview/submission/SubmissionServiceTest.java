@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
-import ca.qc.ircm.proview.mail.EmailService;
+import ca.qc.ircm.proview.mail.MailService;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -124,7 +124,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @MockitoBean
   private ActivityService activityService;
   @MockitoBean
-  private EmailService emailService;
+  private MailService mailService;
   @MockitoBean
   private AuthenticatedUser authenticatedUser;
   @MockitoBean
@@ -148,7 +148,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void beforeTest() throws Throwable {
     user = userRepository.findById(4L).orElse(null);
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    when(emailService.htmlEmail()).thenReturn(email);
+    when(mailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     optionalActivity = Optional.of(activity);
   }
@@ -1926,8 +1926,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService).send(email);
   }
 
   @Test
@@ -2040,8 +2040,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService).send(email);
   }
 
   @Test
@@ -2157,8 +2157,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(submission, submissionLogged);
 
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService).send(email);
   }
 
   @Test
@@ -2263,8 +2263,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     Submission submissionLogged = submissionCaptor.getValue();
     assertEquals(submission, submissionLogged);
 
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService).send(email);
   }
 
   @Test
@@ -2316,8 +2316,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     verify(submissionActivityService).insert(any(Submission.class));
     verify(activityService).insert(activity);
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService, atLeastOnce()).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService, atLeastOnce()).send(email);
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
     verify(email).addTo("jackson.smith@ircm.qc.ca");
@@ -2598,8 +2598,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     repository.flush();
     // Validate email that is sent to proteomic users.
-    verify(emailService, atLeastOnce()).htmlEmail();
-    verify(emailService, atLeastOnce()).send(email);
+    verify(mailService, atLeastOnce()).htmlEmail();
+    verify(mailService, atLeastOnce()).send(email);
     verify(email).addTo("christian.poitras@ircm.qc.ca");
     verify(email).addTo("liam.li@ircm.qc.ca");
     verify(email).addTo("jackson.smith@ircm.qc.ca");
