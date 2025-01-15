@@ -66,14 +66,12 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   private Activity activity;
   @Captor
   private ArgumentCaptor<Collection<Well>> wellsCaptor;
-  private Optional<Activity> optionalActivity;
 
   /**
    * Before test.
    */
   @BeforeEach
   public void beforeTest() {
-    optionalActivity = Optional.of(activity);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
@@ -299,7 +297,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   public void update() throws Exception {
     Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
-    when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
+    when(plateActivityService.update(any(Plate.class))).thenReturn(Optional.of(activity));
 
     service.update(plate);
 
@@ -316,7 +314,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   public void update_AccessDenied_Anonymous() throws Throwable {
     Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
-    when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
+    when(plateActivityService.update(any(Plate.class))).thenReturn(Optional.of(activity));
 
     assertThrows(AccessDeniedException.class, () -> {
       service.update(plate);
@@ -328,7 +326,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   public void update_AccessDenied() throws Throwable {
     Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
-    when(plateActivityService.update(any(Plate.class))).thenReturn(optionalActivity);
+    when(plateActivityService.update(any(Plate.class))).thenReturn(Optional.of(activity));
 
     assertThrows(AccessDeniedException.class, () -> {
       service.update(plate);

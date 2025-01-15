@@ -139,7 +139,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private ArgumentCaptor<String> stringCaptor;
   private User user;
   private final Random random = new Random();
-  private Optional<Activity> optionalActivity;
 
   /**
    * Before test.
@@ -150,7 +149,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(mailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
-    optionalActivity = Optional.of(activity);
   }
 
   private Optional<SubmissionFile> findFile(List<SubmissionFile> files, String filename) {
@@ -2404,7 +2402,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setGoal("goal");
     LocalDateTime newDate = LocalDateTime.now();
     submission.setSubmissionDate(newDate);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.update(submission, null);
 
@@ -2464,7 +2462,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.getSamples().get(0).setName("unit_test_01");
     submission.getSamples().get(0).setVolume("20.0 μl");
     submission.getSamples().get(0).setQuantity("2.0 μg");
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.update(submission, null);
 
@@ -2509,7 +2507,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     List<SubmissionSample> samples = new LinkedList<>();
     samples.add(sample);
     samples.add(sample2);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2550,7 +2548,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     User user = userRepository.findById(4L).orElseThrow();
     submission.setUser(user);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     assertThrows(IllegalArgumentException.class, () -> {
       service.update(submission, null);
@@ -2592,7 +2590,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     submission.setExperiment("experiment");
     submission.setGoal("goal");
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.update(submission, null);
 
@@ -2660,7 +2658,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     LocalDateTime newDate = LocalDateTime.now();
     submission.setSubmissionDate(newDate);
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.update(submission, "unit_test");
 
@@ -2723,7 +2721,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     });
     submission.getSamples().add(sample);
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.update(submission, "unit_test");
 
@@ -2757,7 +2755,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void hide() throws Exception {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     service.hide(submission);
 
@@ -2773,7 +2771,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void hide_AccessDenied_Anonymous() throws Exception {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     assertThrows(AccessDeniedException.class, () -> {
       service.hide(submission);
@@ -2785,7 +2783,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void hide_AccessDenied() throws Exception {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity);
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
     assertThrows(AccessDeniedException.class, () -> {
       service.hide(submission);
@@ -2798,7 +2796,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void show() throws Exception {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
         Optional.empty());
 
     service.show(submission);
@@ -2816,7 +2814,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void show_AccessDenied_Anonymous() throws Exception {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
         Optional.empty());
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -2830,7 +2828,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void show_AccessDenied() throws Exception {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    when(submissionActivityService.update(any(), any())).thenReturn(optionalActivity,
+    when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
         Optional.empty());
 
     assertThrows(AccessDeniedException.class, () -> {
