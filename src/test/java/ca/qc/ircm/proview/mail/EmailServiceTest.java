@@ -12,8 +12,7 @@ import ca.qc.ircm.proview.test.config.SmtpPortRandomizer;
 import ca.qc.ircm.proview.user.User;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.GreenMailUtil;
-import com.icegreen.greenmail.util.ServerSetup;
-import jakarta.annotation.PostConstruct;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import jakarta.mail.Message.RecipientType;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
@@ -29,11 +28,14 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
@@ -42,6 +44,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ContextConfiguration(initializers = SmtpPortRandomizer.class)
 @NonTransactionalTestAnnotations
 public class EmailServiceTest {
+  @RegisterExtension
+  static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
+  private static final Logger logger = LoggerFactory.getLogger(EmailServiceTest.class);
   @Autowired
   private EmailService emailService;
   @Autowired
@@ -50,14 +55,11 @@ public class EmailServiceTest {
   private MailConfiguration mailConfiguration;
   @MockitoBean
   private AuthenticatedUser authenticatedUser;
-  @Value("${spring.mail.port}")
-  private int smtpPort;
-  @RegisterExtension
-  public GreenMailExtension greenMail;
 
-  @PostConstruct
-  public void initGreenMail() {
-    greenMail = new GreenMailExtension(new ServerSetup(smtpPort, null, ServerSetup.PROTOCOL_SMTP));
+  @DynamicPropertySource
+  public static void springMailProperties(DynamicPropertyRegistry registry) {
+    logger.info("Setting spring.mail.port to {}", ServerSetupTest.SMTP.getPort());
+    registry.add("spring.mail.port", () -> String.valueOf(ServerSetupTest.SMTP.getPort()));
   }
 
   private Optional<String> plainContent(MimePart part) throws MessagingException, IOException {

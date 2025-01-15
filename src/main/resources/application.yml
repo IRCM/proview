@@ -120,7 +120,6 @@ spring:
     hibernate:
       ddl-auto: none
   mail:
-    port: 30025
     host: localhost
 
 security:
