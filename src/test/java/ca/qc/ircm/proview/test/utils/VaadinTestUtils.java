@@ -384,7 +384,7 @@ public class VaadinTestUtils {
       return (String) method.invoke(renderer, value);
     } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
         | InvocationTargetException | NoSuchFieldException | SecurityException e) {
-      logger.warn("Exception caught whe formatting value {} with renderer {}", item, renderer, e);
+      logger.warn("Cannot get formatted value for renderer {} and item {}", renderer, item, e);
       return null;
     }
   }
