@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.security;
 
 import ca.qc.ircm.proview.Data;
 import java.util.Collection;
+import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -80,13 +81,20 @@ public class UserDetailsWithId extends User implements Data {
   }
 
   @Override
-  public boolean equals(Object rhs) {
-    return super.equals(rhs);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    UserDetailsWithId that = (UserDetailsWithId) o;
+    return id == that.id;
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode();
+    return Objects.hash(id);
   }
 
   @Override
