@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -98,7 +97,7 @@ public class UserPreferenceServiceTest {
 
   @Test
   public void get_NullDefaultValue() {
-    assertNull(service.get(this, "missing reference").orElse(null));
+    assertFalse(service.get(this, "missing reference").isPresent());
   }
 
   @Test

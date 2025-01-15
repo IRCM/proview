@@ -2,7 +2,6 @@ package ca.qc.ircm.proview.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -77,16 +76,14 @@ public class AuthenticatedUserTest {
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void getUser() throws Throwable {
-    User user = authenticatedUser.getUser().orElse(null);
-    assertNotNull(user);
+    User user = authenticatedUser.getUser().orElseThrow();
     assertEquals((Long) 1L, user.getId());
   }
 
   @Test
   @WithMockUser("proview@ircm.qc.ca")
   public void getUser_NoId() throws Throwable {
-    User user = authenticatedUser.getUser().orElse(null);
-    assertNotNull(user);
+    User user = authenticatedUser.getUser().orElseThrow();
     assertEquals((Long) 1L, user.getId());
   }
 
@@ -96,8 +93,7 @@ public class AuthenticatedUserTest {
     User user = repository.findById(1L).orElseThrow();
     user.setEmail("other_email@ircm.qc.ca");
     repository.save(user);
-    user = authenticatedUser.getUser().orElse(null);
-    assertNotNull(user);
+    user = authenticatedUser.getUser().orElseThrow();
     assertEquals((Long) 1L, user.getId());
   }
 

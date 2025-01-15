@@ -162,7 +162,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.sideNav).clickItem(view.submissions.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.submissions, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
     assertTrue($(SubmissionsView.class).exists());
     assertNoExecuteJs();
@@ -175,7 +175,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.sideNav).clickItem(view.profile.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.profile, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.profile, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
     assertTrue($(ProfileView.class).exists());
     assertNoExecuteJs();
@@ -189,7 +189,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.sideNav).clickItem(view.users.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.users, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.users, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
     assertTrue($(UsersView.class).exists());
     assertNoExecuteJs();
@@ -202,7 +202,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.sideNav).clickItem(view.contact.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.contact, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.contact, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
     assertTrue($(ContactView.class).exists());
     assertNoExecuteJs();
@@ -215,7 +215,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.sideNav).clickItem(view.guidelines.getLabel());
 
     verify(navigationListener).afterNavigation(any());
-    assertEquals(view.guidelines, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.guidelines, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
     assertTrue($(GuidelinesView.class).exists());
     assertNoExecuteJs();
@@ -257,7 +257,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.changeLanguage).click();
 
     assertEquals(FRENCH, UI.getCurrent().getLocale());
-    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.submissions, view.selectedSideNavItem().orElseThrow());
   }
 
   @Test
@@ -266,8 +266,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
 
     test(view.changeLanguage).click();
 
+    assertEquals(view.submissions, view.selectedSideNavItem().orElseThrow());
     assertEquals(ENGLISH, UI.getCurrent().getLocale());
-    assertEquals(view.submissions, view.selectedSideNavItem().orElse(null));
   }
 
   @Test
@@ -279,7 +279,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     test(view.changeLanguage).click();
 
     assertEquals(FRENCH, UI.getCurrent().getLocale());
-    assertEquals(view.users, view.selectedSideNavItem().orElse(null));
+    assertEquals(view.users, view.selectedSideNavItem().orElseThrow());
   }
 
   @Test

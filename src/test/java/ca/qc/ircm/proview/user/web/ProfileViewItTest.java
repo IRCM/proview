@@ -112,8 +112,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, null, locale),
         notification.getText());
-    User user = repository.findById(10L).orElse(null);
-    assertNotNull(user);
+    User user = repository.findById(10L).orElseThrow();
     entityManager.refresh(user);
     assertEquals(email, user.getEmail());
     assertEquals(name, user.getName());

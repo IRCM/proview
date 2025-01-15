@@ -5,7 +5,6 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -65,7 +64,7 @@ public class CategoryComponentTest extends SpringUIUnitTest {
     for (int i = 0; i < category.getGuidelines().size(); i++) {
       Anchor anchor = anchors.get(i);
       validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).orElseThrow());
-      assertNotNull(findChild(anchor, Span.class).orElse(null));
+      assertTrue(findChild(anchor, Span.class).isPresent());
     }
   }
 

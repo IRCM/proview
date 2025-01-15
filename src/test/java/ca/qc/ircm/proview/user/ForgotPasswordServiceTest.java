@@ -75,7 +75,7 @@ public class ForgotPasswordServiceTest {
    */
   @BeforeEach
   public void beforeTest() throws Throwable {
-    user = userRepository.findById(10L).orElse(null);
+    user = userRepository.findById(10L).orElseThrow();
     when(applicationConfiguration.getUrl(any(String.class))).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {

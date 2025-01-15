@@ -65,7 +65,7 @@ public class SubmissionSampleService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
-    User currentUser = authenticatedUser.getUser().orElse(null);
+    User currentUser = authenticatedUser.getUser().orElseThrow();
 
     BooleanExpression predicate =
         submissionSample.name.eq(name).and(submissionSample.submission.user.eq(currentUser));

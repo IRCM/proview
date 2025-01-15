@@ -151,7 +151,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
       file.setContent(content);
       return file;
     }).collect(Collectors.toList());
-    submission = repository.findById(1L).orElse(null);
+    submission = repository.findById(1L).orElseThrow();
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     view = navigate(SubmissionView.class);
   }
@@ -343,7 +343,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
@@ -364,7 +364,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertEquals(view.getTranslation(SERVICE_PREFIX + LC_MS_MS.name()), view.lcmsms.getLabel());
     assertEquals(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()),
         view.smallMolecule.getLabel());
@@ -898,7 +898,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
     verify(service).get(163L);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, submission.getExperiment()),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -924,7 +924,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
     verify(service).get(35L);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, submission.getExperiment()),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertTrue(view.comment.isReadOnly());
     assertFalse(view.upload.isVisible());
     assertFalse(view.files.getColumnByKey(REMOVE).isVisible());
@@ -949,7 +949,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
     verify(service).get(2L);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());
@@ -980,7 +980,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
     verify(service, never()).get(anyLong());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0, ""),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertFalse(view.comment.isReadOnly());
     assertTrue(view.upload.isVisible());
     assertTrue(view.files.getColumnByKey(REMOVE).isVisible());

@@ -6,7 +6,6 @@ import static ca.qc.ircm.proview.submission.web.PrintSubmission.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -75,8 +74,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     component.setSubmission(submission);
 
     verify(service, atLeast(2)).print(submission, locale);
-    Html html = findChild(component, Html.class).orElse(null);
-    assertNotNull(html);
+    Html html = findChild(component, Html.class).orElseThrow();
     assertEquals(new Html(content).getElement().getOuterHTML(), html.getElement().getOuterHTML());
   }
 
@@ -88,8 +86,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     component.setSubmission(submission);
 
     verify(service).print(submission, locale);
-    Html html = findChild(component, Html.class).orElse(null);
-    assertNotNull(html);
+    Html html = findChild(component, Html.class).orElseThrow();
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     Pattern pattern = Pattern.compile("<a href=\"([^>]*)\">");
     Matcher matcher = pattern.matcher(html.getElement().getOuterHTML());
@@ -129,8 +126,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
 
     verify(service).print(submission, locale);
-    Html html = findChild(component, Html.class).orElse(null);
-    assertNotNull(html);
+    Html html = findChild(component, Html.class).orElseThrow();
     assertEquals(new Html(frenchcontent).getElement().getOuterHTML(),
         html.getElement().getOuterHTML());
   }

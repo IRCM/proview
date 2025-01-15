@@ -145,7 +145,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
    */
   @BeforeEach
   public void beforeTest() throws Throwable {
-    user = userRepository.findById(4L).orElse(null);
+    user = userRepository.findById(4L).orElseThrow();
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(mailService.htmlEmail()).thenReturn(email);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
@@ -2532,7 +2532,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("2.0 μg", submissionSample.getQuantity());
     assertEquals((Integer) 10, submissionSample.getNumberProtein());
     assertEquals((Double) 120.0, submissionSample.getMolecularWeight());
-    assertNull(sampleRepository.findById(447L).orElse(null));
+    assertFalse(sampleRepository.findById(447L).isPresent());
 
     // Validate log.
     Submission submissionLogged = submissionCaptor.getValue();

@@ -55,7 +55,7 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
 
   @Test
   public void ids() {
-    assertEquals(ID, view.getId().orElse(null));
+    assertEquals(ID, view.getId().orElseThrow());
   }
 
   @Test

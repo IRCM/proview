@@ -80,7 +80,7 @@ public class UserViewTest extends SpringUIUnitTest {
   @Test
   public void labels() {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
     validateIcon(VaadinIcon.CHECK.create(), view.save.getIcon());
   }
@@ -91,7 +91,7 @@ public class UserViewTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     view.localeChange(mock(LocaleChangeEvent.class));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + SAVE), view.save.getText());
   }
 
@@ -116,7 +116,7 @@ public class UserViewTest extends SpringUIUnitTest {
     verify(view.form).setUser(user);
     verify(service).get(12L);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 1, name),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
   }
 
   @Test
@@ -129,7 +129,7 @@ public class UserViewTest extends SpringUIUnitTest {
     verify(view.form, never()).setUser(any());
     verify(service, never()).get(any(Long.class));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HEADER, 0),
-        view.viewLayout().map(ViewLayout::getHeaderText).orElse(null));
+        view.viewLayout().map(ViewLayout::getHeaderText).orElseThrow());
   }
 
   @Test
