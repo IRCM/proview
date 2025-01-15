@@ -11,7 +11,7 @@ public class TreatmentComparator implements Comparator<Treatment>, Serializable 
    * Types of comparison that can be made.
    */
   public enum TreatmentCompareType {
-    TIMESTAMP;
+    TIMESTAMP
   }
 
   private static final long serialVersionUID = -7443140194033594333L;

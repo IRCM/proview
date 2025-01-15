@@ -15,5 +15,5 @@ public enum ActionType {
   /**
    * Data was just deleted.
    */
-  DELETE;
+  DELETE
 }

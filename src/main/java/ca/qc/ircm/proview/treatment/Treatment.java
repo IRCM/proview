@@ -46,7 +46,7 @@ public class Treatment implements Data, Serializable {
      * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
      * something went wrong.
      */
-    FAILED;
+    FAILED
   }
 
   public static final String TABLE_NAME = "treatment";

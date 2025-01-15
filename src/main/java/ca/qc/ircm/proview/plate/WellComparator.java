@@ -26,7 +26,7 @@ public class WellComparator implements Comparator<Well>, Serializable {
      * Sort wells to allow auto assignment of samples to well. Well are sorted by column first then
      * by row.
      */
-    SAMPLE_ASSIGN;
+    SAMPLE_ASSIGN
   }
 
   /**

@@ -34,7 +34,7 @@ public class TubeComparator implements Comparator<Tube>, Serializable {
      * Comparison will return a negative integer when digestion time stamp is later.
      * </p>
      */
-    TIME_STAMP;
+    TIME_STAMP
   }
 
   /**

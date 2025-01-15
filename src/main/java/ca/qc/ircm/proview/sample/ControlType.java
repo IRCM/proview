@@ -11,5 +11,5 @@ public enum ControlType {
   /**
    * Positive control.
    */
-  POSITIVE_CONTROL;
+  POSITIVE_CONTROL
 }

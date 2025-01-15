@@ -16,7 +16,7 @@ public class ActivityComparator implements Comparator<Activity>, Serializable {
     /**
      * Compare history timestamp.
      */
-    TIMESTAMP;
+    TIMESTAMP
   }
 
   private final Compare compare;

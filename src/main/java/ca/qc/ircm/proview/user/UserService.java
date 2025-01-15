@@ -198,6 +198,5 @@ public class UserService {
           User manager = repository.findById(id).orElseThrow();
           laboratory.setDirector(manager.getName());
         });
-    ;
   }
 }

@@ -28,7 +28,7 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
     /**
      * Plate with low timestamp will be first.
      */
-    TIME_STAMP;
+    TIME_STAMP
   }
 
   /**
