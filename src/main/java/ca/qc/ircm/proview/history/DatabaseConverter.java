@@ -1,7 +1,7 @@
 package ca.qc.ircm.proview.history;
 
 import ca.qc.ircm.proview.history.DatabaseLogUtil.DatabaseBoolean;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -72,13 +72,8 @@ public class DatabaseConverter {
    * @return input reduced to the number to bytes specified
    */
   private String reduceLength(String input, int byteCount) {
-    try {
-      while (input.getBytes("UTF-8").length > byteCount) {
-        input = input.substring(0, input.length() - 1);
-      }
-    } catch (UnsupportedEncodingException e) {
-      throw new AssertionError(
-          "UTF-8 is a required charset, but is unkown to this version of Java");
+    while (input.getBytes(StandardCharsets.UTF_8).length > byteCount) {
+      input = input.substring(0, input.length() - 1);
     }
     return input;
   }
