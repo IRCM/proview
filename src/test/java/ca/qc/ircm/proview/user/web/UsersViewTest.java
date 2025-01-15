@@ -60,7 +60,7 @@ import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -78,6 +78,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -104,6 +105,8 @@ public class UsersViewTest extends SpringUIUnitTest {
   private LaboratoryRepository laboratoryRepository;
   @Autowired
   private AuthenticatedUser authenticatedUser;
+  @Mock
+  private ListDataProvider<User> dataProvider;
   @Captor
   private ArgumentCaptor<UserFilter> userFilterCaptor;
   private Locale locale = ENGLISH;
@@ -429,7 +432,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterEmail() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.emailFilter.setValue("test");
 
     assertEquals("test", view.filter().emailContains);
@@ -447,7 +450,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterEmail_Empty() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.emailFilter.setValue("test");
     view.emailFilter.setValue("");
 
@@ -463,7 +466,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterName() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.nameFilter.setValue("test");
 
     assertEquals("test", view.filter().nameContains);
@@ -472,7 +475,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterName_Empty() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.nameFilter.setValue("test");
     view.nameFilter.setValue("");
 
@@ -488,7 +491,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterLaboratory() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.laboratoryFilter.setValue("test");
 
     assertEquals("test", view.filter().laboratoryNameContains);
@@ -497,7 +500,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterLaboratory_Empty() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.laboratoryFilter.setValue("test");
     view.laboratoryFilter.setValue("");
 
@@ -518,7 +521,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterActive_False() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.activeFilter.setValue(Optional.of(false));
 
     assertFalse(view.filter().active);
@@ -527,7 +530,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterActive_True() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.activeFilter.setValue(Optional.of(true));
 
     assertTrue(view.filter().active);
@@ -536,7 +539,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterActive_Empty() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     view.activeFilter.setValue(Optional.of(true));
     view.activeFilter.setValue(Optional.empty());
 
@@ -657,7 +660,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void toggleActive_Inactive() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     User user = repository.findById(3L).orElseThrow();
     view.toggleActive(user);
 
@@ -668,7 +671,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void toggleActive() {
-    view.users.setItems(mock(DataProvider.class));
+    view.users.setItems(dataProvider);
     User user = repository.findById(11L).orElseThrow();
     view.toggleActive(user);
 

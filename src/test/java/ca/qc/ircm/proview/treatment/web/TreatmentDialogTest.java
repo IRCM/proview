@@ -89,6 +89,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     treatedSamples = treatedSampleRepository.findAll();
     HistoryView view = navigate(HistoryView.class, 147L);
+    @SuppressWarnings("unchecked")
     Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(3);
     dialog = $(TreatmentDialog.class).first();

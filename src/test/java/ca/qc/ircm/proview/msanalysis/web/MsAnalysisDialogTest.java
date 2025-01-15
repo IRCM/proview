@@ -85,6 +85,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     HistoryView view = navigate(HistoryView.class, 32L);
+    @SuppressWarnings("unchecked")
     Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(1);
     dialog = $(MsAnalysisDialog.class).id(ID);

@@ -45,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,6 +75,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
@@ -98,6 +98,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -124,6 +125,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   private UserPreferenceService userPreferenceService;
   @Autowired
   private SubmissionRepository repository;
+  @Mock
+  private ListDataProvider<Submission> dataProvider;
   @Captor
   private ArgumentCaptor<SubmissionFilter> filterCaptor;
   private Locale locale = ENGLISH;
@@ -932,7 +935,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterExperiment() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.experimentFilter.setValue("test");
 
     assertEquals("test", view.filter().experimentContains);
@@ -947,7 +950,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterUser() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.userFilter.setValue("test");
 
     assertEquals("test", view.filter().userContains);
@@ -962,7 +965,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterDirector() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.directorFilter.setValue("test");
 
     assertEquals("test", view.filter().directorContains);
@@ -971,7 +974,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterDataAvailableDate() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
     view.dataAvailableDateFilter.setValue(range);
 
@@ -981,7 +984,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterDate() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     Range<LocalDate> range = Range.closed(LocalDate.now().minusDays(1), LocalDate.now());
     view.dateFilter.setValue(range);
 
@@ -1004,7 +1007,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterInstrument() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.instrumentFilter.setValue(MassDetectionInstrument.VELOS);
 
     assertEquals(MassDetectionInstrument.VELOS, view.filter().instrument);
@@ -1025,7 +1028,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterService() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.serviceFilter.setValue(Service.INTACT_PROTEIN);
 
     assertEquals(Service.INTACT_PROTEIN, view.filter().service);
@@ -1040,7 +1043,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterSamples() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.samplesFilter.setValue("test");
 
     assertEquals("test", view.filter().anySampleNameContains);
@@ -1061,7 +1064,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterStatus() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.statusFilter.setValue(SampleStatus.ANALYSED);
 
     assertEquals(SampleStatus.ANALYSED, view.filter().anySampleStatus);
@@ -1082,7 +1085,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void filterHidden() {
-    view.submissions.setItems(mock(DataProvider.class));
+    view.submissions.setItems(dataProvider);
     view.hiddenFilter.setValue(true);
 
     assertEquals(true, view.filter().hidden);

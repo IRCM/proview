@@ -56,11 +56,13 @@ public class DateRangeFieldTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     navigate(SubmissionsView.class);
+    @SuppressWarnings("unchecked")
     Grid<Submission> submissions = $(Grid.class).first();
     HeaderRow filtersRow = submissions.getHeaderRows().get(1);
     dateRange = test(
         filtersRow.getCell(submissions.getColumnByKey(SubmissionProperties.DATA_AVAILABLE_DATE))
-            .getComponent()).find(DateRangeField.class).first();
+            .getComponent())
+        .find(DateRangeField.class).first();
   }
 
   @Test

@@ -152,7 +152,7 @@ public class SubmissionsView extends VerticalLayout
   protected Button hideColumns = new Button();
   protected ColumnToggleContextMenu hideColumnsContextMenu;
   private Map<String, ComparableExpressionBase<?>> columnProperties = new HashMap<>();
-  private List<Grid.Column> hidableColumns = new ArrayList<>();
+  private List<Grid.Column<Submission>> hidableColumns = new ArrayList<>();
   private transient ObjectFactory<SubmissionDialog> dialogFactory;
   private transient ObjectFactory<SamplesStatusDialog> statusDialogFactory;
   private transient SubmissionFilter filter = new SubmissionFilter();

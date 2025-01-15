@@ -106,6 +106,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
         i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
+    @SuppressWarnings("unchecked")
     Grid<Submission> submissions = test(view).find(Grid.class).id(SubmissionsView.SUBMISSIONS);
     submissions.setItems(repository.findAll());
     test(submissions).clickRow(18, new MetaKeys().shift());
@@ -194,6 +195,7 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     for (int i = 0; i < samples.size(); i++) {
       SubmissionSample sample = samples.get(i);
       assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
+      @SuppressWarnings("unchecked")
       ComboBox<SampleStatus> statusBox =
           test(test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
       assertEquals(sample.getStatus(), statusBox.getValue(), i + ", " + sample);
