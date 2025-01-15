@@ -363,10 +363,7 @@ public class SubmissionService {
     submission.setHidden(true);
     repository.save(submission);
 
-    Optional<Activity> activity = submissionActivityService.update(submission, null);
-    if (activity.isPresent()) {
-      activityService.insert(activity.get());
-    }
+    submissionActivityService.update(submission, null).ifPresent(activityService::insert);
   }
 
   /**
@@ -381,9 +378,6 @@ public class SubmissionService {
     submission.setHidden(false);
     repository.save(submission);
 
-    Optional<Activity> activity = submissionActivityService.update(submission, null);
-    if (activity.isPresent()) {
-      activityService.insert(activity.get());
-    }
+    submissionActivityService.update(submission, null).ifPresent(activityService::insert);
   }
 }

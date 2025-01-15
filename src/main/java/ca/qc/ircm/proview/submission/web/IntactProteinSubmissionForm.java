@@ -274,11 +274,10 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
       Set<String> duplicates = new HashSet<>();
       Optional<String> duplicate =
           values.stream().filter(name -> !duplicates.add(name)).findFirst();
-      if (duplicate.isPresent()) {
-        return ValidationResult
-            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, duplicate.get()));
-      }
-      return ValidationResult.ok();
+      return duplicate
+          .map(du -> ValidationResult
+              .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, du)))
+          .orElse(ValidationResult.ok());
     };
   }
 
@@ -288,11 +287,9 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
           binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
-      if (exists.isPresent()) {
-        return ValidationResult
-            .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, exists.get()));
-      }
-      return ValidationResult.ok();
+      return exists.map(
+          ex -> ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, ex)))
+          .orElse(ValidationResult.ok());
     };
   }
 

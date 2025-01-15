@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
-import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
@@ -86,10 +85,7 @@ public class SubmissionSampleService {
       sample = repository.findById(sample.getId()).orElseThrow();
       sample.setStatus(status);
       // Log changes.
-      Optional<Activity> activity = sampleActivityService.updateStatus(sample);
-      if (activity.isPresent()) {
-        activityService.insert(activity.get());
-      }
+      sampleActivityService.updateStatus(sample).ifPresent(activityService::insert);
 
       if (SampleStatus.RECEIVED.equals(sample.getStatus())
           && sample.getSubmission().getSampleDeliveryDate() == null) {
