@@ -25,7 +25,7 @@ public class Protocol implements Data, Serializable, Named {
   /**
    * Protocol types.
    */
-  public static enum Type {
+  public enum Type {
     DIGESTION, ENRICHMENT;
   }
 

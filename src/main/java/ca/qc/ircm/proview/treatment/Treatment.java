@@ -37,7 +37,7 @@ public class Treatment implements Data, Serializable {
   /**
    * Type of errors that forces Digestion to be deleted.
    */
-  public static enum DeletionType {
+  public enum DeletionType {
     /**
      * Digestion information was not entered correctly.
      */

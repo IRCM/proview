@@ -32,7 +32,7 @@ public abstract class Sample implements Data, Named, Serializable {
   /**
    * Sample category.
    */
-  public static enum Category {
+  public enum Category {
     /**
      * Submission of sample to analyse.
      */

@@ -12,7 +12,7 @@ public class ActivityComparator implements Comparator<Activity>, Serializable {
   /**
    * How to compare history objects.
    */
-  public static enum Compare {
+  public enum Compare {
     /**
      * Compare history timestamp.
      */

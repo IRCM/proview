@@ -11,7 +11,7 @@ public class DatabaseLogUtil {
   /**
    * A boolean values as it is represented in the database.
    */
-  public static enum DatabaseBoolean {
+  public enum DatabaseBoolean {
     FALSE("0"), TRUE("1");
 
     public final String databaseValue;

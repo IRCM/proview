@@ -13,7 +13,7 @@ public class WellComparator implements Comparator<Well>, Serializable {
   /**
    * Comparison types.
    */
-  public static enum Compare {
+  public enum Compare {
     /**
      * Compare by location on plate.
      */

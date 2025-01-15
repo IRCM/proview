@@ -10,7 +10,7 @@ public class TreatmentComparator implements Comparator<Treatment>, Serializable 
   /**
    * Types of comparison that can be made.
    */
-  public static enum TreatmentCompareType {
+  public enum TreatmentCompareType {
     TIMESTAMP;
   }
 
