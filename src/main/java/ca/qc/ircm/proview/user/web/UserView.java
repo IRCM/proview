@@ -13,6 +13,7 @@ import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,6 +29,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,5 +115,10 @@ public class UserView extends VerticalLayout implements LocaleChangeObserver, Ha
       showNotification(getTranslation(MESSAGES_PREFIX + SAVED, user.getName()));
       UI.getCurrent().navigate(UsersView.class);
     }
+  }
+
+  @Override
+  public Optional<Component> getParent() {
+    return super.getParent();
   }
 }

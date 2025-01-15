@@ -73,6 +73,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -345,5 +346,10 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     if (parameter != null) {
       setSubmission(submissionService.get(parameter).orElse(null));
     }
+  }
+
+  @Override
+  public Optional<Component> getParent() {
+    return super.getParent();
   }
 }

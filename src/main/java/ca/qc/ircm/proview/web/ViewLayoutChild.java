@@ -20,5 +20,12 @@ public interface ViewLayoutChild {
     return Optional.ofNullable((ViewLayout) parent);
   }
 
+  /**
+   * Gets the parent component of this component. <br>
+   * A component can only have one parent.
+   *
+   * @return an optional parent component, or an empty optional if the component is not attached to
+   *         a parent
+   */
   Optional<Component> getParent();
 }

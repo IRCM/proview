@@ -28,6 +28,7 @@ import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
@@ -223,5 +224,10 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
           getTranslation(MESSAGES_PREFIX + VIEW_ERROR, record.getClass().getSimpleName()));
     }
     logger.trace("view activity {}", activity);
+  }
+
+  @Override
+  public Optional<Component> getParent() {
+    return super.getParent();
   }
 }
