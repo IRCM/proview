@@ -612,9 +612,9 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertTrue(form.solvent.isReadOnly());
     assertEquals("C100H100O100", form.formula.getValue());
     assertTrue(form.formula.isReadOnly());
-    assertEquals(String.valueOf("654.654"), form.monoisotopicMass.getValue());
+    assertEquals("654.654", form.monoisotopicMass.getValue());
     assertTrue(form.monoisotopicMass.isReadOnly());
-    assertEquals(String.valueOf("654.654"), form.averageMass.getValue());
+    assertEquals("654.654", form.averageMass.getValue());
     assertTrue(form.averageMass.isReadOnly());
     assertEquals("", form.toxicity.getValue());
     assertTrue(form.toxicity.isReadOnly());
