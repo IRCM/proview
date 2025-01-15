@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.test.utils;
 
 import ca.qc.ircm.proview.history.UpdateActivity;
+import java.util.Objects;
 
 /**
  * Envelops {@link UpdateActivity} into a comparable object to allow different {@link UpdateActivity
@@ -39,45 +40,15 @@ public class ComparableUpdateActivity {
     if (obj == null) {
       return false;
     }
-    if (!(obj instanceof ComparableUpdateActivity)) {
+    if (!(obj instanceof ComparableUpdateActivity other)) {
       return false;
     }
-    ComparableUpdateActivity other = (ComparableUpdateActivity) obj;
-    if (updateActivity.getActionType() != other.updateActivity.getActionType()) {
-      return false;
-    }
-    if (updateActivity.getColumn() == null) {
-      if (other.updateActivity.getColumn() != null) {
-        return false;
-      }
-    } else if (!updateActivity.getColumn().equals(other.updateActivity.getColumn())) {
-      return false;
-    }
-    if (updateActivity.getNewValue() == null) {
-      if (other.updateActivity.getNewValue() != null) {
-        return false;
-      }
-    } else if (!updateActivity.getNewValue().equals(other.updateActivity.getNewValue())) {
-      return false;
-    }
-    if (updateActivity.getOldValue() == null) {
-      if (other.updateActivity.getOldValue() != null) {
-        return false;
-      }
-    } else if (!updateActivity.getOldValue().equals(other.updateActivity.getOldValue())) {
-      return false;
-    }
-    if (updateActivity.getRecordId() != other.updateActivity.getRecordId()) {
-      return false;
-    }
-    if (updateActivity.getTableName() == null) {
-      if (other.updateActivity.getTableName() != null) {
-        return false;
-      }
-    } else if (!updateActivity.getTableName().equals(other.updateActivity.getTableName())) {
-      return false;
-    }
-    return true;
+    return Objects.equals(updateActivity.getActionType(), other.updateActivity.getActionType())
+        && Objects.equals(updateActivity.getTableName(), other.updateActivity.getTableName())
+        && Objects.equals(updateActivity.getRecordId(), other.updateActivity.getRecordId())
+        && Objects.equals(updateActivity.getColumn(), other.updateActivity.getColumn())
+        && Objects.equals(updateActivity.getNewValue(), other.updateActivity.getNewValue())
+        && Objects.equals(updateActivity.getOldValue(), other.updateActivity.getOldValue());
   }
 
   @Override

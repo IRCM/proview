@@ -27,10 +27,7 @@ public class RobotPermission implements Permission, Serializable {
     if (obj == this) {
       return true;
     }
-    if (obj instanceof RobotPermission) {
-      return true;
-    }
-    return false;
+    return obj instanceof RobotPermission;
   }
 
   @Override

@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * For forgotten password information.
@@ -78,21 +79,8 @@ public class ForgotPassword implements Data, Serializable {
       return false;
     }
     ForgotPassword other = (ForgotPassword) obj;
-    if (confirmNumber == null) {
-      if (other.confirmNumber != null) {
-        return false;
-      }
-    } else if (!confirmNumber.equals(other.confirmNumber)) {
-      return false;
-    }
-    if (requestMoment == null) {
-      if (other.requestMoment != null) {
-        return false;
-      }
-    } else if (!requestMoment.equals(other.requestMoment)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(confirmNumber, other.confirmNumber)
+        && Objects.equals(requestMoment, other.requestMoment);
   }
 
   @Override
