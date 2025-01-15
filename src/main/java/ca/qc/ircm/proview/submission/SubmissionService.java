@@ -137,7 +137,7 @@ public class SubmissionService {
   }
 
   private void initializeAllQuery(JPAQuery<?> query) {
-    final User currentUser = authenticatedUser.getUser().get();
+    final User currentUser = authenticatedUser.getUser().orElseThrow();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
     query.from(submission);
@@ -196,7 +196,7 @@ public class SubmissionService {
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
-    User user = authenticatedUser.getUser().get();
+    User user = authenticatedUser.getUser().orElseThrow();
     Laboratory laboratory = user.getLaboratory();
 
     submission.setLaboratory(laboratory);

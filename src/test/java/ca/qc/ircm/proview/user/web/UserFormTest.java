@@ -122,7 +122,7 @@ public class UserFormTest extends SpringUIUnitTest {
     form.email.setValue(email);
     form.name.setValue(name);
     if (!items(form.laboratory).isEmpty()) {
-      form.laboratory.setValue(authenticatedUser.getUser().get().getLaboratory());
+      form.laboratory.setValue(authenticatedUser.getUser().orElseThrow().getLaboratory());
     }
     form.newLaboratoryName.setValue(newLaboratoryName);
     form.addressLine.setValue(addressLine);

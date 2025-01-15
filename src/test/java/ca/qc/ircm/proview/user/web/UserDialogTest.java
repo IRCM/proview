@@ -84,7 +84,7 @@ public class UserDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    User user = repository.findById(dialog.getUserId()).get();
+    User user = repository.findById(dialog.getUserId()).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
@@ -97,7 +97,7 @@ public class UserDialogTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    User user = repository.findById(dialog.getUserId()).get();
+    User user = repository.findById(dialog.getUserId()).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, user.getName()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(CONSTANTS_PREFIX + SAVE), dialog.save.getText());
@@ -129,7 +129,7 @@ public class UserDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setUserId_User() {
-    User user = repository.findById(2L).get();
+    User user = repository.findById(2L).orElseThrow();
     dialog.form = mock(UserForm.class);
     when(dialog.form.getUser()).thenReturn(user);
 

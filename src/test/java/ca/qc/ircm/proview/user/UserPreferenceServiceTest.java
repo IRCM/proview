@@ -44,7 +44,7 @@ public class UserPreferenceServiceTest {
    */
   @BeforeEach
   public void beforeTest() {
-    user = userRepository.findById(2L).get();
+    user = userRepository.findById(2L).orElseThrow();
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
   }
 

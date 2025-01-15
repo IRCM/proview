@@ -95,7 +95,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
   @Test
   public void labels() {
-    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
+    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(LABORATORY_PREFIX + NAME), dialog.name.getLabel());
@@ -107,7 +107,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   public void localeChange() {
     Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
-    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).get();
+    Laboratory laboratory = repository.findById(dialog.getLaboratoryId()).orElseThrow();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
         dialog.getHeaderTitle());
     assertEquals(dialog.getTranslation(LABORATORY_PREFIX + NAME), dialog.name.getLabel());
@@ -136,7 +136,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setLaboratoryId() {
-    Laboratory laboratory = repository.findById(2L).get();
+    Laboratory laboratory = repository.findById(2L).orElseThrow();
     dialog.setLaboratoryId(2L);
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + HEADER, 1, laboratory.getName()),
         dialog.getHeaderTitle());

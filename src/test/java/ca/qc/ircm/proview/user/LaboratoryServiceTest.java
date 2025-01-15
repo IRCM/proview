@@ -45,7 +45,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
 
   @Test
   public void get_Id() throws Throwable {
-    Laboratory laboratory = service.get(2L).get();
+    Laboratory laboratory = service.get(2L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(READ));
     assertEquals((Long) 2L, laboratory.getId());

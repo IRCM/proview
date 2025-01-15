@@ -70,9 +70,9 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
       for (int j = 0; j < category.getGuidelines().size(); j++) {
         Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        Span text = findChild(anchor, Span.class).get();
+        Span text = findChild(anchor, Span.class).orElseThrow();
         assertEquals(guideline.getName(), text.getText());
-        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
+        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).orElseThrow());
       }
     }
   }
@@ -91,9 +91,9 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
       for (int j = 0; j < category.getGuidelines().size(); j++) {
         Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        Span text = findChild(anchor, Span.class).get();
+        Span text = findChild(anchor, Span.class).orElseThrow();
         assertEquals(guideline.getName(), text.getText());
-        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
+        validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).orElseThrow());
       }
     }
   }

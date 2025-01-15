@@ -64,7 +64,7 @@ public class CategoryComponentTest extends SpringUIUnitTest {
     List<Anchor> anchors = findChildren(component, Anchor.class);
     for (int i = 0; i < category.getGuidelines().size(); i++) {
       Anchor anchor = anchors.get(i);
-      validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).get());
+      validateIcon(VaadinIcon.DOWNLOAD.create(), findChild(anchor, Icon.class).orElseThrow());
       assertNotNull(findChild(anchor, Span.class).orElse(null));
     }
   }
@@ -76,7 +76,7 @@ public class CategoryComponentTest extends SpringUIUnitTest {
     for (int i = 0; i < category.getGuidelines().size(); i++) {
       Guideline guideline = category.getGuidelines().get(i);
       Anchor anchor = anchors.get(i);
-      Span text = findChild(anchor, Span.class).get();
+      Span text = findChild(anchor, Span.class).orElseThrow();
       assertEquals(guideline.getName(), text.getText());
     }
   }

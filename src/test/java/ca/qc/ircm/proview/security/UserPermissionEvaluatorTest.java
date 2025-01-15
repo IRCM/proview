@@ -132,7 +132,7 @@ public class UserPermissionEvaluatorTest {
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void hasPermission_WriteNew_Manager_OwnLab() throws Throwable {
     User user = new User("new.user@ircm.qc.ca");
-    user.setLaboratory(laboratoryRepository.findById(2L).get());
+    user.setLaboratory(laboratoryRepository.findById(2L).orElseThrow());
     assertTrue(permissionEvaluator.hasPermission(authentication(), user, WRITE));
     assertTrue(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
   }
@@ -141,7 +141,7 @@ public class UserPermissionEvaluatorTest {
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void hasPermission_WriteNew_Manager_NotOwnLab() throws Throwable {
     User user = new User("new.user@ircm.qc.ca");
-    user.setLaboratory(laboratoryRepository.findById(4L).get());
+    user.setLaboratory(laboratoryRepository.findById(4L).orElseThrow());
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_WRITE));
   }
