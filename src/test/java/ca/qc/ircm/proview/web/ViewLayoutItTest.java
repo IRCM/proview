@@ -98,6 +98,7 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
     usersView.users().select(1);
     usersView.switchUser().click();
+    $(SubmissionsViewElement.class).waitForFirst();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     assertTrue(optional(() -> view.applicationName()).isPresent());
     assertTrue(optional(() -> view.header()).isPresent());

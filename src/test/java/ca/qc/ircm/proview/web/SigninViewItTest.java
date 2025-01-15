@@ -68,6 +68,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
+    waitUntil(driver -> driver != null && driver.getCurrentUrl().endsWith("?" + FAIL));
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());
@@ -95,6 +96,11 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
       view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
       view.getPasswordField().setValue("notright");
       view.getSubmitButton().click();
+      try {
+        Thread.sleep(1000); // Wait for page to load.
+      } catch (InterruptedException e) {
+        throw new IllegalStateException("Sleep was interrupted", e);
+      }
     }
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
