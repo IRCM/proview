@@ -10,5 +10,5 @@ public interface LaboratoryData {
    *
    * @return Laboratory of data.
    */
-  public Laboratory getLaboratory();
+  Laboratory getLaboratory();
 }

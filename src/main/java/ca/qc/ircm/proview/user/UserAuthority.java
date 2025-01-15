@@ -7,9 +7,9 @@ public interface UserAuthority {
   /**
    * Forces user to change his password.
    */
-  public static final String FORCE_CHANGE_PASSWORD = "CHANGE_PASSWORD";
+  String FORCE_CHANGE_PASSWORD = "CHANGE_PASSWORD";
 
-  public static String laboratoryMember(Laboratory laboratory) {
+  static String laboratoryMember(Laboratory laboratory) {
     return Laboratory.class.getSimpleName() + "_" + laboratory.getId();
   }
 }

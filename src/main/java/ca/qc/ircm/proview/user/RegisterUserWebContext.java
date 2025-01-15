@@ -14,5 +14,5 @@ public interface RegisterUserWebContext {
    *          adapt URL to specified locale
    * @return URL that leads to validate user function
    */
-  public String getValidateUserUrl(Locale locale);
+  String getValidateUserUrl(Locale locale);
 }

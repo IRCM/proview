@@ -16,7 +16,7 @@ public interface Named {
    *
    * @return name.
    */
-  public String getName();
+  String getName();
 
   /**
    * Increments last number in name.

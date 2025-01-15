@@ -14,5 +14,5 @@ public interface HomeWebContext {
    *          adapt URL to specified locale
    * @return URL that leads to home page
    */
-  public String getHomeUrl(Locale locale);
+  String getHomeUrl(Locale locale);
 }
