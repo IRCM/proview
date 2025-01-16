@@ -279,10 +279,14 @@ public class SubmissionService {
   @PreAuthorize("hasPermission(#submission, 'write')")
   public void update(Submission submission, @Nullable String explanation)
       throws IllegalArgumentException {
+    final Submission userSupplied = submission;
+    submission.getSamples().stream().filter(sample -> sample.getId() == 0).forEach(sample -> {
+      sample.setSubmission(userSupplied);
+      sample.setStatus(SampleStatus.WAITING);
+    });
     validateUpdateSubmission(submission);
     if (!authenticatedUser.hasRole(UserRole.ADMIN)
         && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
-      Submission userSupplied = submission;
       submission = repository.findById(submission.getId()).orElseThrow();
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
@@ -324,8 +328,7 @@ public class SubmissionService {
 
   private boolean anyStatusGreaterOrEquals(Submission submission, SampleStatus status) {
     return submission.getSamples().stream()
-        .filter(sample -> sample.getStatus() != null && status.compareTo(sample.getStatus()) <= 0)
-        .findAny().isPresent();
+        .filter(sample -> status.compareTo(sample.getStatus()) <= 0).findAny().isPresent();
   }
 
   private void doUpdate(Submission submission) throws IllegalArgumentException {
