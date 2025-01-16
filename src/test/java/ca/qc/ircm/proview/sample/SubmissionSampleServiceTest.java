@@ -72,17 +72,15 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     SubmissionSample sample = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
-    assertTrue(sample instanceof SubmissionSample);
-    SubmissionSample gelSample = sample;
-    assertEquals((Long) 1L, gelSample.getId());
-    assertEquals("FAM119A_band_01", gelSample.getName());
-    assertEquals(SampleType.GEL, gelSample.getType());
-    assertEquals(Sample.Category.SUBMISSION, gelSample.getCategory());
-    assertEquals(SampleStatus.ANALYSED, gelSample.getStatus());
-    assertEquals(null, gelSample.getNumberProtein());
-    assertEquals(null, gelSample.getMolecularWeight());
-    assertEquals((Long) 1L, gelSample.getSubmission().getId());
-    assertEquals(0, gelSample.getVersion());
+    assertEquals((Long) 1L, sample.getId());
+    assertEquals("FAM119A_band_01", sample.getName());
+    assertEquals(SampleType.GEL, sample.getType());
+    assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
+    assertEquals((Long) 1L, sample.getSubmission().getId());
+    assertEquals(0, sample.getVersion());
   }
 
   @Test
@@ -90,19 +88,17 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     SubmissionSample sample = service.get(442L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
-    assertTrue(sample instanceof SubmissionSample);
-    SubmissionSample eluateSample = sample;
-    assertEquals((Long) 442L, eluateSample.getId());
-    assertEquals("CAP_20111013_01", eluateSample.getName());
-    assertEquals(SampleType.SOLUTION, eluateSample.getType());
-    assertEquals(Sample.Category.SUBMISSION, eluateSample.getCategory());
-    assertEquals(SampleStatus.ANALYSED, eluateSample.getStatus());
-    assertEquals((Long) 32L, eluateSample.getSubmission().getId());
-    assertEquals("1.5 μg", eluateSample.getQuantity());
-    assertEquals("50 μl", eluateSample.getVolume());
-    assertEquals(null, eluateSample.getNumberProtein());
-    assertEquals(null, eluateSample.getMolecularWeight());
-    assertEquals(0, eluateSample.getVersion());
+    assertEquals((Long) 442L, sample.getId());
+    assertEquals("CAP_20111013_01", sample.getName());
+    assertEquals(SampleType.SOLUTION, sample.getType());
+    assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
+    assertEquals(SampleStatus.ANALYSED, sample.getStatus());
+    assertEquals((Long) 32L, sample.getSubmission().getId());
+    assertEquals("1.5 μg", sample.getQuantity());
+    assertEquals("50 μl", sample.getVolume());
+    assertEquals(null, sample.getNumberProtein());
+    assertEquals(null, sample.getMolecularWeight());
+    assertEquals(0, sample.getVersion());
   }
 
   @Test

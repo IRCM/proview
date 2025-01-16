@@ -41,9 +41,7 @@ public class TreatmentServiceTest {
     assertEquals(LocalDateTime.of(2011, 10, 13, 11, 45, 0), treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
-    assertEquals(true, treatment instanceof Treatment);
-    Treatment solubilisation = treatment;
-    List<TreatedSample> treatedSamples = solubilisation.getTreatedSamples();
+    List<TreatedSample> treatedSamples = treatment.getTreatedSamples();
     assertEquals(1, treatedSamples.size());
     TreatedSample treatedSample = treatedSamples.get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
@@ -65,10 +63,8 @@ public class TreatmentServiceTest {
     assertEquals(LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0), treatment.getInsertTime());
     assertEquals(false, treatment.isDeleted());
     assertEquals(null, treatment.getDeletionExplanation());
-    assertEquals(true, treatment instanceof Treatment);
-    Treatment fractionation = treatment;
-    assertEquals(FractionationType.MUDPIT, fractionation.getFractionationType());
-    TreatedSample treatedSample = fractionation.getTreatedSamples().get(0);
+    assertEquals(FractionationType.MUDPIT, treatment.getFractionationType());
+    TreatedSample treatedSample = treatment.getTreatedSamples().get(0);
     assertEquals((Long) 2L, treatedSample.getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
