@@ -2,8 +2,8 @@ package ca.qc.ircm.proview.plate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.history.ActionType;
@@ -188,12 +188,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     well.setPlate(plate2);
     bans.add(well);
 
-    try {
-      plateActivityService.ban(bans, "unit_test");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // Ignore.
-    }
+    assertThrows(IllegalArgumentException.class, () -> plateActivityService.ban(bans, "unit_test"));
   }
 
   @Test
@@ -252,11 +247,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     well.setBanned(true);
     wells.add(well);
 
-    try {
-      plateActivityService.activate(wells, "unit_test");
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException e) {
-      // Ignore.
-    }
+    assertThrows(IllegalArgumentException.class,
+        () -> plateActivityService.activate(wells, "unit_test"));
   }
 }
