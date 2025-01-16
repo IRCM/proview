@@ -525,7 +525,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-987-5501", phoneNumber.getNumber());
     assertEquals("3218", phoneNumber.getExtension());
-    phoneNumber = user.getPhoneNumbers().get(1);
     phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.FAX).orElseThrow();
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
@@ -590,7 +589,6 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-987-5501", phoneNumber.getNumber());
     assertEquals("3218", phoneNumber.getExtension());
-    phoneNumber = user.getPhoneNumbers().get(1);
     phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.FAX).orElseThrow();
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
