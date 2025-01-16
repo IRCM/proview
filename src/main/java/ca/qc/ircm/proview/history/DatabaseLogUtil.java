@@ -50,18 +50,18 @@ public class DatabaseLogUtil {
    * @return true if 2 objects are equal, false otherwise
    */
   public static boolean equals(@Nullable Object first, @Nullable Object second) {
-    boolean same = false;
-    same |= first == null && second == null;
-    if (first != null && second != null) {
-      if (first.getClass().isArray() && second.getClass().isArray()) {
-        same |= Arrays.equals((Object[]) first, (Object[]) second);
-      } else if (first instanceof Collection && second instanceof Collection) {
-        same |= Arrays.equals(((Collection<?>) first).toArray(new Object[0]),
-            ((Collection<?>) second).toArray(new Object[0]));
-      } else {
-        same |= first.equals(second);
-      }
+    if (first == null && second == null) {
+      return true;
+    } else if (first == null || second == null) {
+      return false;
     }
-    return same;
+    if (first.getClass().isArray() && second.getClass().isArray()) {
+      return Arrays.equals((Object[]) first, (Object[]) second);
+    } else if (first instanceof Collection && second instanceof Collection) {
+      return Arrays.equals(((Collection<?>) first).toArray(new Object[0]),
+          ((Collection<?>) second).toArray(new Object[0]));
+    } else {
+      return first.equals(second);
+    }
   }
 }
