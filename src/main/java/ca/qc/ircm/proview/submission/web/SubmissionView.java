@@ -260,17 +260,17 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   }
 
   boolean valid() {
-    boolean valid = true;
+    boolean valid;
     Service service = service();
     switch (service) {
       case LC_MS_MS:
-        valid = lcmsmsSubmissionForm.isValid() && valid;
+        valid = lcmsmsSubmissionForm.isValid();
         break;
       case SMALL_MOLECULE:
-        valid = smallMoleculeSubmissionForm.isValid() && valid;
+        valid = smallMoleculeSubmissionForm.isValid();
         break;
       case INTACT_PROTEIN:
-        valid = intactProteinSubmissionForm.isValid() && valid;
+        valid = intactProteinSubmissionForm.isValid();
         break;
       default:
         valid = false;

@@ -317,8 +317,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   }
 
   public boolean isValid() {
-    boolean valid = true;
-    valid = validateSubmission().isOk() && valid;
+    boolean valid = validateSubmission().isOk();
     valid = validateFirstSample().isOk() && valid;
     valid = validateSamples().isOk() && valid;
     if (valid) {

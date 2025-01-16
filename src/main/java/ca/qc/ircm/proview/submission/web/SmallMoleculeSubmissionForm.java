@@ -239,9 +239,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   }
 
   boolean isValid() {
-    boolean valid = true;
-    logger.debug("solvents: {}", binder.getBean().getSolvents());
-    valid = validateSubmission().isOk() && valid;
+    boolean valid = validateSubmission().isOk();
     valid = validateFirstSample().isOk() && valid;
     return valid;
   }

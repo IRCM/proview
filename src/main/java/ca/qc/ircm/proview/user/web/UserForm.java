@@ -279,8 +279,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   }
 
   boolean isValid() {
-    boolean valid = true;
-    valid = validateUser().isOk() && valid;
+    boolean valid = validateUser().isOk();
     valid = passwords.isValid() && valid;
     if (createNewLaboratory.getValue()) {
       valid = validateLaboratory().isOk() && valid;
