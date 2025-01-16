@@ -224,7 +224,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     Map<Activity, String> descriptions = IntStream.range(0, activities.size()).boxed()
         .collect(Collectors.toMap(in -> activities.get(in), in -> "description " + in));
     when(service.description(any(), any()))
-        .thenAnswer(i -> Optional.of(descriptions.get(i.getArgument(0))));
+        .thenAnswer(i -> Optional.of(descriptions.get(i.<Activity>getArgument(0))));
     view.setParameter(mock(BeforeEvent.class), 1L);
     for (int i = 0; i < activities.size(); i++) {
       Activity activity = activities.get(i);
