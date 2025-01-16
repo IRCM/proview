@@ -161,8 +161,7 @@ public class SubmissionService {
    * @return printable version of submission in HTML
    */
   public String print(Submission submission, Locale locale) {
-    if (submission.getSamples().isEmpty() || submission.getSamples().get(0) == null
-        || submission.getSamples().get(0).getType() == null) {
+    if (submission.getSamples().isEmpty()) {
       return "";
     }
 

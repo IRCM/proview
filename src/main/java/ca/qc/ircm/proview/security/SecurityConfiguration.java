@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.shiro.crypto.UnknownAlgorithmException;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -47,10 +48,7 @@ public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int 
       int version = passwordVersion.version();
       String algorithm = passwordVersion.algorithm();
       int iterations = passwordVersion.iterations();
-      if (algorithm == null) {
-        logger.error("Algorithm undefined for password {}", i);
-        valid = false;
-      }
+      Objects.requireNonNull(algorithm, "Algorithm undefined for password " + i);
       if (valid) {
         if (version <= 0) {
           logger.error("Version {} is invalid for password {}", version, i);

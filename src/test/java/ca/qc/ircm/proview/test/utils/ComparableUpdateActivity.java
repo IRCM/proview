@@ -18,8 +18,7 @@ public class ComparableUpdateActivity {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((updateActivity.getActionType() == null) ? 0
-        : updateActivity.getActionType().hashCode());
+    result = prime * result + updateActivity.getActionType().hashCode();
     result = prime * result
         + ((updateActivity.getColumn() == null) ? 0 : updateActivity.getColumn().hashCode());
     result = prime * result
@@ -27,8 +26,7 @@ public class ComparableUpdateActivity {
     result = prime * result
         + ((updateActivity.getOldValue() == null) ? 0 : updateActivity.getOldValue().hashCode());
     result = prime * result + Long.hashCode(updateActivity.getRecordId());
-    result = prime * result
-        + ((updateActivity.getTableName() == null) ? 0 : updateActivity.getTableName().hashCode());
+    result = prime * result + updateActivity.getTableName().hashCode();
     return result;
   }
 

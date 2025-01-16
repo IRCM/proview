@@ -1796,17 +1796,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_FirstSampleNull() throws Exception {
-    Submission submission = submissionForPrint(Service.LC_MS_MS);
-    submission.getSamples().set(0, null);
-    repository.save(submission);
-    Locale locale = Locale.getDefault();
-
-    String content = service.print(submission, locale);
-    assertEquals("", content);
-  }
-
-  @Test
   public void insert_GelSubmission() throws Exception {
     // Create new submission.
     SubmissionSample sample = new SubmissionSample();
