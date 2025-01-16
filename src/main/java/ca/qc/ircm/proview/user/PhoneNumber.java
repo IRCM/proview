@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import org.springframework.lang.Nullable;
 
 /**
  * Phone number.
@@ -85,11 +86,12 @@ public class PhoneNumber implements Serializable {
     this.number = number;
   }
 
+  @Nullable
   public String getExtension() {
     return extension;
   }
 
-  public void setExtension(String extension) {
+  public void setExtension(@Nullable String extension) {
     this.extension = extension;
   }
 }
