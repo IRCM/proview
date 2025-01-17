@@ -58,15 +58,10 @@ public class TubeComparator implements Comparator<Tube>, Serializable {
 
   @Override
   public int compare(Tube o1, Tube o2) {
-    switch (compare) {
-      case NAME: {
-        return namedComparator.compare(o1, o2);
-      }
-      case TIME_STAMP: {
-        return o2.getTimestamp().compareTo(o1.getTimestamp());
-      }
-      default:
-        return 0;
-    }
+    return switch (compare) {
+      case NAME -> namedComparator.compare(o1, o2);
+      case TIME_STAMP -> o2.getTimestamp().compareTo(o1.getTimestamp());
+      default -> 0;
+    };
   }
 }

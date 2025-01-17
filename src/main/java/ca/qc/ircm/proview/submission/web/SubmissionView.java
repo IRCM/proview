@@ -169,8 +169,8 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     files.setId(FILES);
     files.setHeight("15em");
     files.setWidth("45em");
-    filename = files.addColumn(new ComponentRenderer<>(this::filenameAnchor))
-        .setKey(FILENAME).setSortProperty(FILENAME)
+    filename = files.addColumn(new ComponentRenderer<>(this::filenameAnchor)).setKey(FILENAME)
+        .setSortProperty(FILENAME)
         .setComparator(NormalizedComparator.of(SubmissionFile::getFilename)).setFlexGrow(3);
     remove = files.addColumn(new ComponentRenderer<>(this::removeButton)).setKey(REMOVE);
     save.setId(SAVE);
@@ -262,20 +262,12 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   boolean valid() {
     boolean valid;
     Service service = service();
-    switch (service) {
-      case LC_MS_MS:
-        valid = lcmsmsSubmissionForm.isValid();
-        break;
-      case SMALL_MOLECULE:
-        valid = smallMoleculeSubmissionForm.isValid();
-        break;
-      case INTACT_PROTEIN:
-        valid = intactProteinSubmissionForm.isValid();
-        break;
-      default:
-        valid = false;
-        break;
-    }
+    valid = switch (service) {
+      case LC_MS_MS -> lcmsmsSubmissionForm.isValid();
+      case SMALL_MOLECULE -> smallMoleculeSubmissionForm.isValid();
+      case INTACT_PROTEIN -> intactProteinSubmissionForm.isValid();
+      default -> false;
+    };
     valid = binder.isValid() && valid;
     return valid;
   }

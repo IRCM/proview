@@ -35,14 +35,11 @@ public abstract class AbstractPermissionEvaluator implements PermissionEvaluator
     if (permission instanceof Permission) {
       return (Permission) permission;
     }
-    switch (permission.toString().toUpperCase()) {
-      case "READ":
-        return READ;
-      case "WRITE":
-        return WRITE;
-      default:
-        throw new IllegalArgumentException(
-            "Permission " + permission + " does not exists in " + Permission.class.getSimpleName());
-    }
+    return switch (permission.toString().toUpperCase()) {
+      case "READ" -> READ;
+      case "WRITE" -> WRITE;
+      default -> throw new IllegalArgumentException(
+          "Permission " + permission + " does not exists in " + Permission.class.getSimpleName());
+    };
   }
 }
