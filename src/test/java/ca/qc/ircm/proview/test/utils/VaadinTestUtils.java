@@ -211,13 +211,14 @@ public class VaadinTestUtils {
   /**
    * Returns all registered functions of this renderer.
    *
+   * @param <SOURCE>
+   *          renderer source type
    * @param renderer
    *          renderer
    * @return all registered functions of this renderer
-   * @param <SOURCE>
    */
   public static <SOURCE> Map<String, SerializableBiConsumer<SOURCE, JsonArray>>
-      functions(LitRenderer renderer) {
+      functions(LitRenderer<SOURCE> renderer) {
     try {
       Field field = LitRenderer.class.getDeclaredField("clientCallables");
       field.setAccessible(true);
