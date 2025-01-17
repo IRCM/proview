@@ -652,15 +652,15 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
         descriptionLines[0]);
     for (int i = 0; i < activity.getUpdates().size(); i++) {
       UpdateActivity update = activity.getUpdates().get(i);
-      String name = null;
-      if (update.getTableName().equals(Submission.TABLE_NAME)) {
-        name = submissionRepository.findById(update.getRecordId()).map(Submission::getExperiment)
-            .orElseThrow();
-      } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
-        name = sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
-      } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
-        name = plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
-      }
+      String name = switch (update.getTableName()) {
+        case Submission.TABLE_NAME -> submissionRepository.findById(update.getRecordId())
+            .map(Submission::getExperiment).orElseThrow();
+        case Sample.TABLE_NAME ->
+          sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
+        case Plate.TABLE_NAME ->
+          plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
+        default -> null;
+      };
       assertEquals(messageSource.getMessage(MESSAGES_PREFIX + "update",
           new Object[] { update.getActionType().ordinal(), update.getTableName(), name,
               update.getRecordId(), update.getColumn(), update.getOldValue(),
