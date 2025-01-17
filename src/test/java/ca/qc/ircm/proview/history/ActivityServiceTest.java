@@ -552,7 +552,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
     assertEquals(null, activity.getExplanation());
-    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 07, 34, 0), activity.getTimestamp());
+    assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 4L, activity.getUser().getId());
     UpdateActivity updateActivity = activity.getUpdates().get(0);
