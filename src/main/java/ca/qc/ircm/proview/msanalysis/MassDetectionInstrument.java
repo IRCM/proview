@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,10 +17,10 @@ public enum MassDetectionInstrument {
     choices.add(VELOS);
     choices.add(Q_EXACTIVE);
     choices.add(ORBITRAP_FUSION);
-    PLATFORM_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
+    PLATFORM_CHOICES = List.copyOf(choices);
     choices.add(0, NULL);
-    USER_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
-    FILTER_CHOICES = Collections.unmodifiableList(new ArrayList<>(choices));
+    USER_CHOICES = List.copyOf(choices);
+    FILTER_CHOICES = List.copyOf(choices);
   }
 
   public final boolean available;
