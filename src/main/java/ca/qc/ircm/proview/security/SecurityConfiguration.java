@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.security;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int 
     if (!valid) {
       throw new IllegalStateException("Password configuration is invalid");
     }
-    passwords.sort((pv1, pv2) -> pv1.version() - pv2.version());
+    passwords.sort(Comparator.comparingInt(PasswordVersion::version));
     Collections.reverse(passwords);
     this.passwords = passwords;
   }

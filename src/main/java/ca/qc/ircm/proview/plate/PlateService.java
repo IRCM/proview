@@ -17,6 +17,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +153,7 @@ public class PlateService {
   }
 
   private Optional<LocalDateTime> max(LocalDateTime... instants) {
-    return Arrays.asList(instants).stream().sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
+    return Arrays.stream(instants).max(Comparator.naturalOrder());
   }
 
   /**
