@@ -605,14 +605,13 @@ public class SubmissionsView extends VerticalLayout
       setOpenOnClick(true);
     }
 
-    protected MenuItem addColumnToggleItem(String label, Grid.Column<Submission> column) {
+    protected void addColumnToggleItem(String label, Grid.Column<Submission> column) {
       MenuItem menuItem = this.addItem(label, e -> {
         column.setVisible(e.getSource().isChecked());
         toggleHideColumn(column);
       });
       menuItem.setCheckable(true);
       menuItem.setChecked(column.isVisible());
-      return menuItem;
     }
   }
 }
