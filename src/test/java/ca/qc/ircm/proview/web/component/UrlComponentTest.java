@@ -22,6 +22,6 @@ public class UrlComponentTest extends SpringUIUnitTest {
     assertEquals("/" + ContactView.VIEW_NAME, url);
   }
 
-  private class UrlComponentForTest implements UrlComponent {
+  private static class UrlComponentForTest implements UrlComponent {
   }
 }
