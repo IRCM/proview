@@ -45,7 +45,6 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -186,7 +185,7 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   private void updateActivities() {
     if (submission != null) {
       List<Activity> activities = service.all(submission);
-      Collections.sort(activities, new ActivityComparator().reversed());
+      activities.sort(new ActivityComparator().reversed());
       this.activities.setItems(activities);
     }
   }

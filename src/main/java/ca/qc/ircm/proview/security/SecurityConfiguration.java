@@ -35,7 +35,7 @@ public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int 
     if (!valid) {
       throw new IllegalStateException("Password configuration is invalid");
     }
-    Collections.sort(passwords, (pv1, pv2) -> pv1.version() - pv2.version());
+    passwords.sort((pv1, pv2) -> pv1.version() - pv2.version());
     Collections.reverse(passwords);
     this.passwords = passwords;
   }

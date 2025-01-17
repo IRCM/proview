@@ -43,7 +43,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -292,7 +291,7 @@ public class ActivityService {
     query.where(well.plate.eq(plate));
     activities.addAll(query.distinct().fetch());
 
-    Collections.sort(activities, new ActivityComparator());
+    activities.sort(new ActivityComparator());
     return activities;
   }
 
