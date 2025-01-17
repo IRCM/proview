@@ -24,7 +24,7 @@ public class WellServiceTest {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void get() throws Exception {
+  public void get() {
     Well well = service.get(129L).orElseThrow();
 
     assertEquals((Long) 129L, well.getId());
@@ -39,13 +39,13 @@ public class WellServiceTest {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void get_0() throws Exception {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
   @WithAnonymousUser
-  public void get_AccessDenied_Anonymous() throws Exception {
+  public void get_AccessDenied_Anonymous() {
     assertThrows(AccessDeniedException.class, () -> {
       service.get(129L);
     });
@@ -53,7 +53,7 @@ public class WellServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void get_AccessDenied() throws Exception {
+  public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.get(129L);
     });

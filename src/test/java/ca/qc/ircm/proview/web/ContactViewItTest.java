@@ -34,14 +34,14 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -53,7 +53,7 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     ContactViewElement view = $(ContactViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.proteomicHeader()).isPresent());

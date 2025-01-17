@@ -32,7 +32,7 @@ public class TreatmentServiceTest {
   private SubmissionRepository submissionRepository;
 
   @Test
-  public void get_Solubilisation() throws Throwable {
+  public void get_Solubilisation() {
     Treatment treatment = treatmentService.get(1L).orElseThrow();
 
     assertEquals((Long) 1L, treatment.getId());
@@ -54,7 +54,7 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  public void get_EnrichmentProtocol() throws Throwable {
+  public void get_EnrichmentProtocol() {
     Treatment treatment = treatmentService.get(2L).orElseThrow();
 
     assertEquals((Long) 2L, treatment.getId());
@@ -78,13 +78,13 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(treatmentService.get(0).isPresent());
   }
 
   @Test
   @WithAnonymousUser
-  public void get_AccessDenied_Anonymous() throws Throwable {
+  public void get_AccessDenied_Anonymous() {
     assertThrows(AccessDeniedException.class, () -> {
       treatmentService.get(1L);
     });
@@ -92,7 +92,7 @@ public class TreatmentServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void get_AccessDenied() throws Throwable {
+  public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       treatmentService.get(1L);
     });
@@ -126,7 +126,7 @@ public class TreatmentServiceTest {
 
   @Test
   @WithAnonymousUser
-  public void all_AccessDenied_Anonymous() throws Throwable {
+  public void all_AccessDenied_Anonymous() {
     Submission submission = submissionRepository.findById(149L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -136,7 +136,7 @@ public class TreatmentServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void all_AccessDenied() throws Throwable {
+  public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(149L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {

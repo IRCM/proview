@@ -53,14 +53,14 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -72,7 +72,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
@@ -83,7 +83,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void fieldsExistence_Admin() throws Throwable {
+  public void fieldsExistence_Admin() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissions()).isPresent());
@@ -94,7 +94,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void hide() throws Throwable {
+  public void hide() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -108,7 +108,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void show() throws Throwable {
+  public void show() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     view.submissions().visible(0).click();
@@ -124,7 +124,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void view() throws Throwable {
+  public void view() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -138,7 +138,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void statusDialog() throws Throwable {
+  public void statusDialog() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -152,7 +152,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void history_Grid() throws Throwable {
+  public void history_Grid() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -163,7 +163,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void add() throws Throwable {
+  public void add() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -174,7 +174,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void editStatus() throws Throwable {
+  public void editStatus() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
@@ -189,7 +189,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void history() throws Throwable {
+  public void history() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 

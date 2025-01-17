@@ -28,7 +28,7 @@ public class UsersViewContextPathItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void switchUser() throws Throwable {
+  public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(4);

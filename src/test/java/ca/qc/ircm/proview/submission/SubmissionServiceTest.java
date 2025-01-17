@@ -306,12 +306,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Id0() throws Throwable {
+  public void get_Id0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
-  public void all() throws Throwable {
+  public void all() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -342,7 +342,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_User() throws Throwable {
+  public void all_User() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -356,7 +356,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Manager() throws Throwable {
+  public void all_Manager() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -375,7 +375,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Admin() throws Throwable {
+  public void all_Admin() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -393,7 +393,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Filter() throws Throwable {
+  public void all_Filter() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -409,7 +409,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_FilterExperiment() throws Throwable {
+  public void all_FilterExperiment() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -424,7 +424,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_FilterOffset() throws Throwable {
+  public void all_FilterOffset() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -442,7 +442,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_FilterOffsetJoin() throws Throwable {
+  public void all_FilterOffsetJoin() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -461,7 +461,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_SortExperiment() throws Throwable {
+  public void all_SortExperiment() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -477,7 +477,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @Disabled
-  public void all_SortSampleName() throws Throwable {
+  public void all_SortSampleName() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -493,7 +493,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @Disabled
-  public void all_SortSampleStatus() throws Throwable {
+  public void all_SortSampleStatus() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -509,7 +509,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @Disabled
-  public void all_SortResults() throws Throwable {
+  public void all_SortResults() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -524,7 +524,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_EmptyFilter() throws Throwable {
+  public void all_EmptyFilter() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -548,7 +548,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_Filter() throws Throwable {
+  public void count_Filter() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -562,7 +562,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_FilterExperiment() throws Throwable {
+  public void count_FilterExperiment() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -575,7 +575,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_FilterOffset() throws Throwable {
+  public void count_FilterOffset() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -589,7 +589,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_FilterOffsetJoin() throws Throwable {
+  public void count_FilterOffsetJoin() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -605,7 +605,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void count_EmptyFilter() throws Throwable {
+  public void count_EmptyFilter() {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
@@ -704,7 +704,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution() throws Exception {
+  public void print_LcmsmsSolution() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Sample firstSample = submission.getSamples().get(0);
     repository.save(submission);
@@ -822,7 +822,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoPhone() throws Exception {
+  public void print_LcmsmsSolution_NoPhone() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     repository.save(submission);
     Locale locale = Locale.getDefault();
@@ -833,7 +833,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoGoal() throws Exception {
+  public void print_LcmsmsSolution_NoGoal() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     Locale locale = Locale.getDefault();
     submission.setGoal(null);
@@ -844,7 +844,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoProteinName() throws Exception {
+  public void print_LcmsmsSolution_NoProteinName() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProtein(null);
     repository.save(submission);
@@ -856,7 +856,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoMolecularWeight() throws Exception {
+  public void print_LcmsmsSolution_NoMolecularWeight() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setMolecularWeight(null));
     repository.save(submission);
@@ -868,7 +868,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoPostTranslationModification() throws Exception {
+  public void print_LcmsmsSolution_NoPostTranslationModification() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setPostTranslationModification(null);
     repository.save(submission);
@@ -880,7 +880,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoSampleQuantity() throws Exception {
+  public void print_LcmsmsSolution_NoSampleQuantity() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setQuantity(null));
     repository.save(submission);
@@ -891,7 +891,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoSampleVolume() throws Exception {
+  public void print_LcmsmsSolution_NoSampleVolume() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setVolume(null));
     repository.save(submission);
@@ -902,7 +902,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsDry() throws Exception {
+  public void print_LcmsmsDry() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.DRY));
     repository.save(submission);
@@ -913,7 +913,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsBeads() throws Exception {
+  public void print_LcmsmsBeads() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.BIOID_BEADS));
     repository.save(submission);
@@ -924,7 +924,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoDigestion() throws Exception {
+  public void print_LcmsmsSolution_NoDigestion() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setDigestion(null);
     repository.save(submission);
@@ -937,7 +937,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_Digested() throws Exception {
+  public void print_LcmsmsSolution_Digested() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setDigestion(ProteolyticDigestion.DIGESTED);
     repository.save(submission);
@@ -955,7 +955,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_OtherDigestion() throws Exception {
+  public void print_LcmsmsSolution_OtherDigestion() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setDigestion(ProteolyticDigestion.OTHER);
     repository.save(submission);
@@ -973,7 +973,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoProteinContent() throws Exception {
+  public void print_LcmsmsSolution_NoProteinContent() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setProteinContent(null);
     repository.save(submission);
@@ -984,7 +984,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoMassDetectionInstrument() throws Exception {
+  public void print_LcmsmsSolution_NoMassDetectionInstrument() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setInstrument(null);
     repository.save(submission);
@@ -998,7 +998,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoProteinIdentification() throws Exception {
+  public void print_LcmsmsSolution_NoProteinIdentification() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setIdentification(null);
     repository.save(submission);
@@ -1010,7 +1010,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_OtherProteinIdentificationLink() throws Exception {
+  public void print_LcmsmsSolution_OtherProteinIdentificationLink() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setIdentification(ProteinIdentification.OTHER);
     repository.save(submission);
@@ -1024,7 +1024,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoProteinIdentificationLink() throws Exception {
+  public void print_LcmsmsSolution_NoProteinIdentificationLink() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setIdentification(ProteinIdentification.OTHER);
     submission.setIdentificationLink(null);
@@ -1038,7 +1038,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_NoQuantification() throws Exception {
+  public void print_LcmsmsSolution_NoQuantification() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(null);
     repository.save(submission);
@@ -1050,7 +1050,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_SilacQuantification() throws Exception {
+  public void print_LcmsmsSolution_SilacQuantification() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.SILAC);
     repository.save(submission);
@@ -1065,7 +1065,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_SilacQuantificationNoComment() throws Exception {
+  public void print_LcmsmsSolution_SilacQuantificationNoComment() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.SILAC);
     submission.setQuantificationComment(null);
@@ -1081,7 +1081,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_TmtQuantification() throws Exception {
+  public void print_LcmsmsSolution_TmtQuantification() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.TMT);
     repository.save(submission);
@@ -1096,7 +1096,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsSolution_TmtQuantificationNoComment() throws Exception {
+  public void print_LcmsmsSolution_TmtQuantificationNoComment() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setQuantification(Quantification.TMT);
     submission.setQuantificationComment(null);
@@ -1112,7 +1112,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel() throws Exception {
+  public void print_LcmsmsGel() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     repository.save(submission);
@@ -1242,7 +1242,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoSeparation() throws Exception {
+  public void print_LcmsmsGel_NoSeparation() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setSeparation(null);
@@ -1255,7 +1255,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoThickness() throws Exception {
+  public void print_LcmsmsGel_NoThickness() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setThickness(null);
@@ -1268,7 +1268,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoColoration() throws Exception {
+  public void print_LcmsmsGel_NoColoration() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(null);
@@ -1281,7 +1281,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_OtherColoration() throws Exception {
+  public void print_LcmsmsGel_OtherColoration() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(GelColoration.OTHER);
@@ -1297,7 +1297,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoOtherColoration() throws Exception {
+  public void print_LcmsmsGel_NoOtherColoration() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setColoration(GelColoration.OTHER);
@@ -1313,7 +1313,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoDevelopmentTime() throws Exception {
+  public void print_LcmsmsGel_NoDevelopmentTime() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setDevelopmentTime(null);
@@ -1326,7 +1326,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoWeightMarkerQuantity() throws Exception {
+  public void print_LcmsmsGel_NoWeightMarkerQuantity() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setWeightMarkerQuantity(null);
@@ -1339,7 +1339,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_LcmsmsGel_NoProteinQuantity() throws Exception {
+  public void print_LcmsmsGel_NoProteinQuantity() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().forEach(sample -> sample.setType(SampleType.GEL));
     submission.setProteinQuantity(null);
@@ -1352,7 +1352,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_Lcmsms_NoFiles() throws Exception {
+  public void print_Lcmsms_NoFiles() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.setFiles(new ArrayList<>());
     repository.save(submission);
@@ -1363,7 +1363,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule() throws Exception {
+  public void print_SmallMolecule() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     repository.save(submission);
     Locale locale = Locale.getDefault();
@@ -1470,7 +1470,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoSolutionSolvent() throws Exception {
+  public void print_SmallMolecule_NoSolutionSolvent() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setSolutionSolvent(null);
     repository.save(submission);
@@ -1481,7 +1481,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoFormula() throws Exception {
+  public void print_SmallMolecule_NoFormula() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setFormula(null);
     repository.save(submission);
@@ -1492,7 +1492,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoMonoisotopicMass() throws Exception {
+  public void print_SmallMolecule_NoMonoisotopicMass() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setMonoisotopicMass(null);
     repository.save(submission);
@@ -1503,7 +1503,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoAverageMass() throws Exception {
+  public void print_SmallMolecule_NoAverageMass() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setAverageMass(null);
     repository.save(submission);
@@ -1514,7 +1514,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoToxicity() throws Exception {
+  public void print_SmallMolecule_NoToxicity() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setToxicity(null);
     repository.save(submission);
@@ -1525,7 +1525,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NotLightSensitive() throws Exception {
+  public void print_SmallMolecule_NotLightSensitive() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setLightSensitive(false);
     repository.save(submission);
@@ -1536,7 +1536,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoStorageTemperature() throws Exception {
+  public void print_SmallMolecule_NoStorageTemperature() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setStorageTemperature(null);
     repository.save(submission);
@@ -1547,7 +1547,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NotHighResolution() throws Exception {
+  public void print_SmallMolecule_NotHighResolution() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setHighResolution(false);
     repository.save(submission);
@@ -1560,7 +1560,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoSolvent() throws Exception {
+  public void print_SmallMolecule_NoSolvent() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setSolvents(new ArrayList<>());
     repository.save(submission);
@@ -1571,7 +1571,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_OtherSolvent() throws Exception {
+  public void print_SmallMolecule_OtherSolvent() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     Solvent ssolvent = Solvent.OTHER;
     submission.getSolvents().add(ssolvent);
@@ -1593,7 +1593,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_SmallMolecule_NoFiles() throws Exception {
+  public void print_SmallMolecule_NoFiles() {
     Submission submission = submissionForPrint(Service.SMALL_MOLECULE);
     submission.setFiles(new ArrayList<>());
     repository.save(submission);
@@ -1607,7 +1607,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_IntactProtein() throws Exception {
+  public void print_IntactProtein() {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     Sample firstSample = submission.getSamples().get(0);
     repository.save(submission);
@@ -1722,7 +1722,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_IntactProtein_NoInjectionType() throws Exception {
+  public void print_IntactProtein_NoInjectionType() {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     submission.setInjectionType(null);
     repository.save(submission);
@@ -1734,7 +1734,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_IntactProtein_NoSource() throws Exception {
+  public void print_IntactProtein_NoSource() {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     submission.setSource(null);
     repository.save(submission);
@@ -1746,7 +1746,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_IntactProtein_NoFiles() throws Exception {
+  public void print_IntactProtein_NoFiles() {
     Submission submission = submissionForPrint(Service.INTACT_PROTEIN);
     submission.setFiles(new ArrayList<>());
     repository.save(submission);
@@ -1761,7 +1761,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_Plate() throws Exception {
+  public void print_Plate() {
     Submission submission = repository.findById(163L).orElseThrow();
     Plate plate = plateRepository.findBySubmission(submission).orElseThrow();
     plate.getWells().get(0).setBanned(true);
@@ -1785,7 +1785,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void print_NoSample() throws Exception {
+  public void print_NoSample() {
     Submission submission = submissionForPrint(Service.LC_MS_MS);
     submission.getSamples().clear();
     repository.save(submission);
@@ -2381,7 +2381,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update() throws Exception {
+  public void update() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2440,7 +2440,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_Sample() throws Exception {
+  public void update_Sample() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sample -> {
@@ -2478,7 +2478,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_NewSamples() throws Exception {
+  public void update_NewSamples() {
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
     sample.setType(SampleType.SOLUTION);
@@ -2529,7 +2529,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_UpdateUser() throws Exception {
+  public void update_UpdateUser() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2545,7 +2545,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_Received() throws Exception {
+  public void update_Received() {
     Submission submission = repository.findById(149L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2558,7 +2558,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_AfterReceived() throws Exception {
+  public void update_AfterReceived() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2602,7 +2602,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_Admin() throws Exception {
+  public void update_Admin() {
     Submission submission = repository.findById(1L).orElseThrow();
     detach(submission);
     submission.getSamples().forEach(sa -> {
@@ -2695,7 +2695,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_NewSample_Admin() throws Exception {
+  public void update_NewSample_Admin() {
     SubmissionSample sample = new SubmissionSample();
     sample.setName("unit_test_eluate_01");
     sample.setType(SampleType.SOLUTION);
@@ -2741,7 +2741,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void hide() throws Exception {
+  public void hide() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -2757,7 +2757,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void hide_AccessDenied_Anonymous() throws Exception {
+  public void hide_AccessDenied_Anonymous() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -2769,7 +2769,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void hide_AccessDenied() throws Exception {
+  public void hide_AccessDenied() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -2782,7 +2782,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
   @SuppressWarnings("unchecked")
-  public void show() throws Exception {
+  public void show() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
@@ -2800,7 +2800,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   @SuppressWarnings("unchecked")
-  public void show_AccessDenied_Anonymous() throws Exception {
+  public void show_AccessDenied_Anonymous() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
@@ -2814,7 +2814,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   @SuppressWarnings("unchecked")
-  public void show_AccessDenied() throws Exception {
+  public void show_AccessDenied() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),

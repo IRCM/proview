@@ -25,7 +25,7 @@ public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).waitForFirst();
     assertTrue(optional(() -> dialog.header()).isPresent());

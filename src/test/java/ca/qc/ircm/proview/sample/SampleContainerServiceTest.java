@@ -35,7 +35,7 @@ public class SampleContainerServiceTest {
   }
 
   @Test
-  public void get_Id() throws Throwable {
+  public void get_Id() {
     SampleContainer container = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(container.getSample()), eq(READ));
@@ -46,12 +46,12 @@ public class SampleContainerServiceTest {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
-  public void last() throws Throwable {
+  public void last() {
     Sample sample = new SubmissionSample(1L);
 
     SampleContainer container = service.last(sample).orElseThrow();

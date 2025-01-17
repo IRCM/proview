@@ -73,7 +73,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private Locale locale = Locale.ENGLISH;
 
   @Test
-  public void record_Digestion() throws Exception {
+  public void record_Digestion() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -84,7 +84,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Dilution() throws Exception {
+  public void record_Dilution() {
     Activity activity = repository.findById(5680L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -95,7 +95,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Enrichment() throws Exception {
+  public void record_Enrichment() {
     Activity activity = repository.findById(5719L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -106,7 +106,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Fractionation() throws Exception {
+  public void record_Fractionation() {
     Activity activity = repository.findById(5659L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -117,7 +117,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Acquisition() throws Exception {
+  public void record_Acquisition() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Acquisition.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -130,7 +130,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_MsAnalysis() throws Exception {
+  public void record_MsAnalysis() {
     Activity activity = repository.findById(5828L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -141,7 +141,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Plate() throws Exception {
+  public void record_Plate() {
     Activity activity = repository.findById(5559L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -152,7 +152,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Well() throws Exception {
+  public void record_Well() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(128L);
@@ -165,7 +165,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Control() throws Exception {
+  public void record_Control() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Sample.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(444L);
@@ -178,7 +178,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Sample() throws Exception {
+  public void record_Sample() {
     Activity activity = repository.findById(5635L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -189,7 +189,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_SampleContainer() throws Exception {
+  public void record_SampleContainer() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -202,7 +202,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_SubmissionSample() throws Exception {
+  public void record_SubmissionSample() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Sample.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -215,7 +215,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Solubilisation() throws Exception {
+  public void record_Solubilisation() {
     Activity activity = repository.findById(5763L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -226,7 +226,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_StandardAddition() throws Exception {
+  public void record_StandardAddition() {
     Activity activity = repository.findById(5796L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -237,7 +237,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Submission() throws Exception {
+  public void record_Submission() {
     Activity activity = repository.findById(5543L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -248,7 +248,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_SubmissionFile() throws Exception {
+  public void record_SubmissionFile() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(SubmissionFile.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -261,7 +261,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Protocol() throws Exception {
+  public void record_Protocol() {
     Activity activity = repository.findById(5545L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -272,7 +272,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_TreatedSample() throws Exception {
+  public void record_TreatedSample() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(TreatedSample.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -285,7 +285,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Treatment() throws Exception {
+  public void record_Treatment() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Treatment.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -298,7 +298,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Transfer() throws Exception {
+  public void record_Transfer() {
     Activity activity = repository.findById(5657L).orElseThrow();
 
     Optional<Object> object = activityService.record(activity);
@@ -309,7 +309,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Tube() throws Exception {
+  public void record_Tube() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(SampleContainer.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -322,7 +322,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_ForgotPassword() throws Exception {
+  public void record_ForgotPassword() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(ForgotPassword.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(7L);
@@ -335,7 +335,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Address() throws Exception {
+  public void record_Address() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Address.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -348,7 +348,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_Laboratory() throws Exception {
+  public void record_Laboratory() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(Laboratory.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(2L);
@@ -361,7 +361,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_PhoneNumber() throws Exception {
+  public void record_PhoneNumber() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(PhoneNumber.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -374,7 +374,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void record_User() throws Exception {
+  public void record_User() {
     Activity activity = mock(Activity.class);
     when(activity.getTableName()).thenReturn(User.TABLE_NAME);
     when(activity.getRecordId()).thenReturn(1L);
@@ -388,7 +388,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void record_AccessDenied_Anonymous() throws Exception {
+  public void record_AccessDenied_Anonymous() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -398,7 +398,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void record_AccessDenied() throws Exception {
+  public void record_AccessDenied() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -407,7 +407,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Submission() throws Exception {
+  public void all_Submission() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
     List<Activity> activities = activityService.all(submission);
@@ -423,7 +423,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Submission_147() throws Exception {
+  public void all_Submission_147() {
     Submission submission = submissionRepository.findById(147L).orElseThrow();
 
     List<Activity> activities = activityService.all(submission);
@@ -440,7 +440,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void all_AccessDenied_Anonymous() throws Exception {
+  public void all_AccessDenied_Anonymous() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -450,7 +450,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void all_AccessDenied() throws Exception {
+  public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -459,7 +459,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void allInsertActivities_Plate() throws Exception {
+  public void allInsertActivities_Plate() {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allInsertActivities(plate);
@@ -477,7 +477,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void allInsertActivities_AccessDenied_Anonymous() throws Exception {
+  public void allInsertActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -487,7 +487,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void allInsertActivities_AccessDenied() throws Exception {
+  public void allInsertActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -496,7 +496,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void allUpdateWellActivities() throws Exception {
+  public void allUpdateWellActivities() {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allUpdateWellActivities(plate);
@@ -521,7 +521,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void allUpdateWellActivities_AccessDenied_Anonymous() throws Exception {
+  public void allUpdateWellActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -531,7 +531,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void allUpdateWellActivities_AccessDenied() throws Exception {
+  public void allUpdateWellActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -540,7 +540,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void allTreatmentActivities_Plate() throws Exception {
+  public void allTreatmentActivities_Plate() {
     Plate plate = new Plate(26L);
 
     List<Activity> activities = activityService.allTreatmentActivities(plate);
@@ -583,7 +583,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void allTreatmentActivities_AccessDenied_Anonymous() throws Exception {
+  public void allTreatmentActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -593,7 +593,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void allTreatmentActivities_AccessDenied() throws Exception {
+  public void allTreatmentActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -602,7 +602,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void allMsAnalysisActivities_Plate() throws Exception {
+  public void allMsAnalysisActivities_Plate() {
     Plate plate = new Plate(115L);
 
     List<Activity> activities = activityService.allMsAnalysisActivities(plate);
@@ -627,7 +627,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void allMsAnalysisActivities_AccessDenied_Anonymous() throws Exception {
+  public void allMsAnalysisActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(115L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -637,7 +637,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void allMsAnalysisActivities_AccessDenied() throws Exception {
+  public void allMsAnalysisActivities_AccessDenied() {
     Plate plate = new Plate(115L);
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -696,7 +696,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void description_AccessDenied_Anonymous() throws Exception {
+  public void description_AccessDenied_Anonymous() {
     Activity activity = repository.findById(5543L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -706,7 +706,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void description_AccessDenied() throws Exception {
+  public void description_AccessDenied() {
     Activity activity = repository.findById(5543L).orElseThrow();
 
     assertThrows(AccessDeniedException.class, () -> {
@@ -715,7 +715,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void insertLogWithoutUpdates() throws Exception {
+  public void insertLogWithoutUpdates() {
     User user = new User(4L);
     Activity activity = new Activity();
     activity.setActionType(ActionType.INSERT);
@@ -749,7 +749,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void insertLogWithUpdates() throws Exception {
+  public void insertLogWithUpdates() {
     final User user = new User(4L);
     final List<UpdateActivity> updateActivities = new LinkedList<>();
     UpdateActivity updateActivity = new UpdateActivity();

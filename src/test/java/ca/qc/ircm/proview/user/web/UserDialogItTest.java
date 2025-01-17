@@ -62,7 +62,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
@@ -90,7 +90,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void update() throws Throwable {
+  public void update() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
@@ -145,7 +145,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void update_Cancel() throws Throwable {
+  public void update_Cancel() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
@@ -177,7 +177,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void add() throws Throwable {
+  public void add() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();
@@ -231,7 +231,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void add_Cancel() throws Throwable {
+  public void add_Cancel() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     final int rows = view.users().getRowCount();

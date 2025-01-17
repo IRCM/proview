@@ -15,7 +15,7 @@ public class DefaultAddressConfigurationTest {
   private DefaultAddressConfiguration defaultAddressConfiguration;
 
   @Test
-  public void defaultProperties() throws Throwable {
+  public void defaultProperties() {
     assertEquals("110 avenue des Pins Ouest", defaultAddressConfiguration.getLine());
     assertEquals("Montreal", defaultAddressConfiguration.getTown());
     assertEquals("Quebec", defaultAddressConfiguration.getState());

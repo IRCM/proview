@@ -54,12 +54,12 @@ public class SubmissionFilterTest {
    * Before test.
    */
   @BeforeEach
-  public void beforeTest() throws Throwable {
+  public void beforeTest() {
     filter = new SubmissionFilter();
   }
 
   @Test
-  public void predicate_ExperimentContains() throws Exception {
+  public void predicate_ExperimentContains() {
     filter.experimentContains = "test";
 
     Predicate predicate = filter.predicate();
@@ -68,7 +68,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_UserContains() throws Exception {
+  public void predicate_UserContains() {
     filter.userContains = "test";
 
     Predicate predicate = filter.predicate();
@@ -78,7 +78,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DirectorContains() throws Exception {
+  public void predicate_DirectorContains() {
     filter.directorContains = "test";
 
     Predicate predicate = filter.predicate();
@@ -87,7 +87,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_Service() throws Exception {
+  public void predicate_Service() {
     filter.service = Service.LC_MS_MS;
 
     Predicate predicate = filter.predicate();
@@ -96,7 +96,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_AnySampleNameContains() throws Exception {
+  public void predicate_AnySampleNameContains() {
     filter.anySampleNameContains = "test";
 
     Predicate predicate = filter.predicate();
@@ -105,7 +105,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_AnySampleStatus() throws Exception {
+  public void predicate_AnySampleStatus() {
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
     Predicate predicate = filter.predicate();
@@ -114,7 +114,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_Instrument() throws Exception {
+  public void predicate_Instrument() {
     filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
 
     Predicate predicate = filter.predicate();
@@ -123,7 +123,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_InstrumentForceNull() throws Exception {
+  public void predicate_InstrumentForceNull() {
     filter.instrument = MassDetectionInstrument.NULL;
 
     Predicate predicate = filter.predicate();
@@ -132,7 +132,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_OpenRange() throws Exception {
+  public void predicate_DateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.open(start, end);
@@ -144,7 +144,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_ClosedRange() throws Exception {
+  public void predicate_DateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closed(start, end);
@@ -156,7 +156,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_OpenClosedRange() throws Exception {
+  public void predicate_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.openClosed(start, end);
@@ -168,7 +168,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_ClosedOpenRange() throws Exception {
+  public void predicate_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closedOpen(start, end);
@@ -180,7 +180,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_AtLeast() throws Exception {
+  public void predicate_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.atLeast(start);
 
@@ -190,7 +190,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_GreaterThan() throws Exception {
+  public void predicate_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.greaterThan(start);
 
@@ -200,7 +200,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_AtMost() throws Exception {
+  public void predicate_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.atMost(end);
 
@@ -210,7 +210,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DateRange_LessThan() throws Exception {
+  public void predicate_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.lessThan(end);
 
@@ -220,7 +220,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_OpenRange() throws Exception {
+  public void predicate_DataAvailableDateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.open(start, end);
@@ -232,7 +232,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_ClosedRange() throws Exception {
+  public void predicate_DataAvailableDateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closed(start, end);
@@ -244,7 +244,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_OpenClosedRange() throws Exception {
+  public void predicate_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.openClosed(start, end);
@@ -256,7 +256,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+  public void predicate_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closedOpen(start, end);
@@ -268,7 +268,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_AtLeast() throws Exception {
+  public void predicate_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.atLeast(start);
 
@@ -278,7 +278,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_GreaterThan() throws Exception {
+  public void predicate_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.greaterThan(start);
 
@@ -288,7 +288,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_AtMost() throws Exception {
+  public void predicate_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.atMost(end);
 
@@ -298,7 +298,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_DataAvailableDateRange_LessThan() throws Exception {
+  public void predicate_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.lessThan(end);
 
@@ -308,7 +308,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_Hidden_True() throws Exception {
+  public void predicate_Hidden_True() {
     filter.hidden = true;
 
     Predicate predicate = filter.predicate();
@@ -317,7 +317,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_Hidden_False() throws Exception {
+  public void predicate_Hidden_False() {
     filter.hidden = false;
 
     Predicate predicate = filter.predicate();
@@ -326,7 +326,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void predicate_AnySampleNameContainsAndAnySampleStatus() throws Exception {
+  public void predicate_AnySampleNameContainsAndAnySampleStatus() {
     filter.anySampleNameContains = "test";
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
@@ -337,7 +337,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_ExperimentContains() throws Exception {
+  public void addConditions_ExperimentContains() {
     filter.experimentContains = "test";
 
     filter.addConditions(query);
@@ -346,7 +346,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_UserContains() throws Exception {
+  public void addConditions_UserContains() {
     filter.userContains = "test";
 
     filter.addConditions(query);
@@ -356,7 +356,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DirectorContains() throws Exception {
+  public void addConditions_DirectorContains() {
     filter.directorContains = "test";
 
     filter.addConditions(query);
@@ -365,7 +365,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Service() throws Exception {
+  public void addConditions_Service() {
     filter.service = Service.LC_MS_MS;
 
     filter.addConditions(query);
@@ -374,7 +374,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_AnySampleNameContains() throws Exception {
+  public void addConditions_AnySampleNameContains() {
     filter.anySampleNameContains = "test";
 
     filter.addConditions(query);
@@ -383,7 +383,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_AnySampleStatus() throws Exception {
+  public void addConditions_AnySampleStatus() {
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
     filter.addConditions(query);
@@ -392,7 +392,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Instrument() throws Exception {
+  public void addConditions_Instrument() {
     filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
 
     filter.addConditions(query);
@@ -401,7 +401,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_InstrumentForceNull() throws Exception {
+  public void addConditions_InstrumentForceNull() {
     filter.instrument = MassDetectionInstrument.NULL;
 
     filter.addConditions(query);
@@ -410,7 +410,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_OpenRange() throws Exception {
+  public void addConditions_DateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.open(start, end);
@@ -422,7 +422,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_ClosedRange() throws Exception {
+  public void addConditions_DateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closed(start, end);
@@ -434,7 +434,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_OpenClosedRange() throws Exception {
+  public void addConditions_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.openClosed(start, end);
@@ -446,7 +446,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_ClosedOpenRange() throws Exception {
+  public void addConditions_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closedOpen(start, end);
@@ -458,7 +458,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_AtLeast() throws Exception {
+  public void addConditions_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.atLeast(start);
 
@@ -468,7 +468,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_GreaterThan() throws Exception {
+  public void addConditions_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.greaterThan(start);
 
@@ -478,7 +478,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_AtMost() throws Exception {
+  public void addConditions_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.atMost(end);
 
@@ -488,7 +488,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DateRange_LessThan() throws Exception {
+  public void addConditions_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.lessThan(end);
 
@@ -498,7 +498,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_OpenRange() throws Exception {
+  public void addConditions_DataAvailableDateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.open(start, end);
@@ -510,7 +510,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_ClosedRange() throws Exception {
+  public void addConditions_DataAvailableDateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closed(start, end);
@@ -522,7 +522,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_OpenClosedRange() throws Exception {
+  public void addConditions_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.openClosed(start, end);
@@ -534,7 +534,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+  public void addConditions_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closedOpen(start, end);
@@ -546,7 +546,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_AtLeast() throws Exception {
+  public void addConditions_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.atLeast(start);
 
@@ -556,7 +556,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_GreaterThan() throws Exception {
+  public void addConditions_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.greaterThan(start);
 
@@ -566,7 +566,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_AtMost() throws Exception {
+  public void addConditions_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.atMost(end);
 
@@ -576,7 +576,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_DataAvailableDateRange_LessThan() throws Exception {
+  public void addConditions_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.lessThan(end);
 
@@ -586,7 +586,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Hidden_True() throws Exception {
+  public void addConditions_Hidden_True() {
     filter.hidden = true;
 
     filter.addConditions(query);
@@ -595,7 +595,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Hidden_False() throws Exception {
+  public void addConditions_Hidden_False() {
     filter.hidden = false;
 
     filter.addConditions(query);
@@ -604,7 +604,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_AnySampleNameContainsAndAnySampleStatus() throws Exception {
+  public void addConditions_AnySampleNameContainsAndAnySampleStatus() {
     filter.anySampleNameContains = "test";
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
@@ -615,7 +615,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Sort_UserAsc() throws Exception {
+  public void addConditions_Sort_UserAsc() {
     filter.sortOrders = Arrays.asList(submission.user.name.asc());
 
     filter.addConditions(query);
@@ -624,7 +624,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Sort_UserDesc() throws Exception {
+  public void addConditions_Sort_UserDesc() {
     filter.sortOrders = Arrays.asList(submission.user.name.desc());
 
     filter.addConditions(query);
@@ -633,7 +633,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Sort_UserAscAndExperimentDesc() throws Exception {
+  public void addConditions_Sort_UserAscAndExperimentDesc() {
     filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experiment.desc());
 
     filter.addConditions(query);
@@ -642,7 +642,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Offset() throws Exception {
+  public void addConditions_Offset() {
     filter.offset = 10;
 
     filter.addConditions(query);
@@ -651,7 +651,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_Limit() throws Exception {
+  public void addConditions_Limit() {
     filter.limit = 10;
 
     filter.addConditions(query);
@@ -660,7 +660,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addConditions_OffsetAndlimit() throws Exception {
+  public void addConditions_OffsetAndlimit() {
     filter.offset = 10;
     filter.limit = 20;
 
@@ -671,7 +671,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_ExperimentContains() throws Exception {
+  public void addCountConditions_ExperimentContains() {
     filter.experimentContains = "test";
 
     filter.addCountConditions(query);
@@ -680,7 +680,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_UserContains() throws Exception {
+  public void addCountConditions_UserContains() {
     filter.userContains = "test";
 
     filter.addCountConditions(query);
@@ -690,7 +690,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DirectorContains() throws Exception {
+  public void addCountConditions_DirectorContains() {
     filter.directorContains = "test";
 
     filter.addCountConditions(query);
@@ -699,7 +699,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Service() throws Exception {
+  public void addCountConditions_Service() {
     filter.service = Service.LC_MS_MS;
 
     filter.addConditions(query);
@@ -708,7 +708,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_AnySampleNameContains() throws Exception {
+  public void addCountConditions_AnySampleNameContains() {
     filter.anySampleNameContains = "test";
 
     filter.addCountConditions(query);
@@ -717,7 +717,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_AnySampleStatus() throws Exception {
+  public void addCountConditions_AnySampleStatus() {
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
     filter.addCountConditions(query);
@@ -726,7 +726,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Instrument() throws Exception {
+  public void addCountConditions_Instrument() {
     filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
 
     filter.addCountConditions(query);
@@ -735,7 +735,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_InstrumentForceNull() throws Exception {
+  public void addCountConditions_InstrumentForceNull() {
     filter.instrument = MassDetectionInstrument.NULL;
 
     filter.addCountConditions(query);
@@ -744,7 +744,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_OpenRange() throws Exception {
+  public void addCountConditions_DateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.open(start, end);
@@ -756,7 +756,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_ClosedRange() throws Exception {
+  public void addCountConditions_DateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closed(start, end);
@@ -768,7 +768,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_OpenClosedRange() throws Exception {
+  public void addCountConditions_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.openClosed(start, end);
@@ -780,7 +780,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_ClosedOpenRange() throws Exception {
+  public void addCountConditions_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.closedOpen(start, end);
@@ -792,7 +792,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_AtLeast() throws Exception {
+  public void addCountConditions_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.atLeast(start);
 
@@ -802,7 +802,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_GreaterThan() throws Exception {
+  public void addCountConditions_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dateRange = Range.greaterThan(start);
 
@@ -812,7 +812,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_AtMost() throws Exception {
+  public void addCountConditions_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.atMost(end);
 
@@ -822,7 +822,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DateRange_LessThan() throws Exception {
+  public void addCountConditions_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dateRange = Range.lessThan(end);
 
@@ -832,7 +832,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_OpenRange() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_OpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.open(start, end);
@@ -844,7 +844,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_ClosedRange() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_ClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closed(start, end);
@@ -856,7 +856,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_OpenClosedRange() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.openClosed(start, end);
@@ -868,7 +868,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_ClosedOpenRange() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.closedOpen(start, end);
@@ -880,7 +880,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_AtLeast() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.atLeast(start);
 
@@ -890,7 +890,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_GreaterThan() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
     filter.dataAvailableDateRange = Range.greaterThan(start);
 
@@ -900,7 +900,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_AtMost() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.atMost(end);
 
@@ -910,7 +910,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_DataAvailableDateRange_LessThan() throws Exception {
+  public void addCountConditions_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
     filter.dataAvailableDateRange = Range.lessThan(end);
 
@@ -920,7 +920,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_AnySampleNameContainsAndAnySampleStatus() throws Exception {
+  public void addCountConditions_AnySampleNameContainsAndAnySampleStatus() {
     filter.anySampleNameContains = "test";
     filter.anySampleStatus = SampleStatus.RECEIVED;
 
@@ -931,7 +931,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Sort_UserAsc() throws Exception {
+  public void addCountConditions_Sort_UserAsc() {
     filter.sortOrders = Arrays.asList(submission.user.name.asc());
 
     filter.addCountConditions(query);
@@ -940,7 +940,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Sort_UserDesc() throws Exception {
+  public void addCountConditions_Sort_UserDesc() {
     filter.sortOrders = Arrays.asList(submission.user.name.desc());
 
     filter.addCountConditions(query);
@@ -949,7 +949,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Sort_UserAscAndExperimentDesc() throws Exception {
+  public void addCountConditions_Sort_UserAscAndExperimentDesc() {
     filter.sortOrders = Arrays.asList(submission.user.name.asc(), submission.experiment.desc());
 
     filter.addCountConditions(query);
@@ -958,7 +958,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Offset() throws Exception {
+  public void addCountConditions_Offset() {
     filter.offset = 10;
 
     filter.addCountConditions(query);
@@ -967,7 +967,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_Limit() throws Exception {
+  public void addCountConditions_Limit() {
     filter.limit = 10;
 
     filter.addCountConditions(query);
@@ -976,7 +976,7 @@ public class SubmissionFilterTest {
   }
 
   @Test
-  public void addCountConditions_OffsetAndlimit() throws Exception {
+  public void addCountConditions_OffsetAndlimit() {
     filter.offset = 10;
     filter.limit = 20;
 

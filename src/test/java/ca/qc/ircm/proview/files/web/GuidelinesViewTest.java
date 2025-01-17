@@ -99,7 +99,7 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void hrefs() throws Throwable {
+  public void hrefs() {
     List<Category> categories = guidelinesConfiguration.categories(locale);
     List<CategoryComponent> categoryComponents = findChildren(view, CategoryComponent.class);
     for (int i = 0; i < categories.size(); i++) {

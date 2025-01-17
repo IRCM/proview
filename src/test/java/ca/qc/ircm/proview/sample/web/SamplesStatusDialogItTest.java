@@ -38,7 +38,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     SamplesStatusDialogElement dialog = open();
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.samples()).isPresent());
@@ -48,7 +48,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void save() throws Throwable {
+  public void save() {
     SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
     dialog.samples().status(0).selectByText(messageSource
@@ -63,7 +63,7 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void cancel() throws Throwable {
+  public void cancel() {
     SamplesStatusDialogElement dialog = open();
     dialog.cancel().click();
     assertFalse(dialog.isOpen());

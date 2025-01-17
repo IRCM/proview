@@ -54,14 +54,14 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -73,7 +73,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
 
     GuidelinesViewElement view = $(GuidelinesViewElement.class).waitForFirst();

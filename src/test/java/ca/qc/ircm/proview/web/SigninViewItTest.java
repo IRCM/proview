@@ -40,7 +40,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -52,7 +52,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.getUsernameField()).isPresent());
@@ -62,7 +62,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void sign_Fail() throws Throwable {
+  public void sign_Fail() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
@@ -77,7 +77,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void sign_Disabled() throws Throwable {
+  public void sign_Disabled() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
@@ -90,7 +90,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void sign_Locked() throws Throwable {
+  public void sign_Locked() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     for (int i = 0; i < 6; i++) {
@@ -112,7 +112,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void sign() throws Throwable {
+  public void sign() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
@@ -122,7 +122,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void forgotPassword() throws Throwable {
+  public void forgotPassword() {
     open();
     SigninViewElement view = $(SigninViewElement.class).waitForFirst();
     view.getForgotPasswordButton().click();
@@ -131,7 +131,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void already_User() throws Throwable {
+  public void already_User() {
     open();
     $(SubmissionsViewElement.class).waitForFirst();
   }

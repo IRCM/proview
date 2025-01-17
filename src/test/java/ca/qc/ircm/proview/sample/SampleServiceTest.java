@@ -34,7 +34,7 @@ public class SampleServiceTest {
   }
 
   @Test
-  public void get_SubmissionSample_Gel() throws Throwable {
+  public void get_SubmissionSample_Gel() {
     Sample sample = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
@@ -49,7 +49,7 @@ public class SampleServiceTest {
   }
 
   @Test
-  public void get_SubmissionSample() throws Throwable {
+  public void get_SubmissionSample() {
     Sample sample = service.get(442L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
@@ -66,7 +66,7 @@ public class SampleServiceTest {
   }
 
   @Test
-  public void get_Control() throws Throwable {
+  public void get_Control() {
     Sample sample = service.get(444L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
@@ -82,7 +82,7 @@ public class SampleServiceTest {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 }

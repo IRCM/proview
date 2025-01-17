@@ -572,7 +572,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_AddSolvent() throws Throwable {
+  public void update_AddSolvent() {
     Submission submission = repository.findById(33L).orElseThrow();
     Solvent solvent = Solvent.OTHER;
     submission.getSolvents().add(solvent);
@@ -609,7 +609,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void update_RemoveSolvent() throws Throwable {
+  public void update_RemoveSolvent() {
     Submission submission = repository.findById(33L).orElseThrow();
     Solvent solvent = Solvent.METHANOL;
     submission.getSolvents().remove(solvent);

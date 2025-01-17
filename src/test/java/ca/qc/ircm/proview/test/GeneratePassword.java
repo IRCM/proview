@@ -18,7 +18,7 @@ public class GeneratePassword {
    * @param args
    *          not used
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (ConfigurableApplicationContext context = SpringApplication.run(Main.class, args)) {
       PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
       final String password = "password";

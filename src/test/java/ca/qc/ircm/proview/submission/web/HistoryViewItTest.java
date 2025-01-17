@@ -42,7 +42,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
@@ -50,7 +50,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void security_User() throws Throwable {
+  public void security_User() {
     open();
 
     $(AccessDeniedViewElement.class).waitForFirst();
@@ -58,14 +58,14 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void security_Manager() throws Throwable {
+  public void security_Manager() {
     open();
 
     $(AccessDeniedViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -77,14 +77,14 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.activities()).isPresent());
   }
 
   @Test
-  public void dialog() throws Throwable {
+  public void dialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().select(6);
@@ -95,7 +95,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void msAnalysisDialog() throws Throwable {
+  public void msAnalysisDialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().select(5);
@@ -107,7 +107,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void treatmentDialog() throws Throwable {
+  public void treatmentDialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     view.activities().select(0);

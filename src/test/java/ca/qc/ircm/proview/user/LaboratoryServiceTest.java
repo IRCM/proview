@@ -39,12 +39,12 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   private PermissionEvaluator permissionEvaluator;
 
   @BeforeEach
-  public void beforeTest() throws Throwable {
+  public void beforeTest() {
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
   }
 
   @Test
-  public void get_Id() throws Throwable {
+  public void get_Id() {
     Laboratory laboratory = service.get(2L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(READ));
@@ -55,7 +55,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void all() throws Throwable {
+  public void all() {
     List<Laboratory> laboratories = service.all();
 
     assertEquals(4, laboratories.size());
@@ -63,7 +63,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
-  public void all_AccessDenied() throws Throwable {
+  public void all_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.all();
     });

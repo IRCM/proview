@@ -56,7 +56,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence_User() throws Throwable {
+  public void fieldsExistence_User() {
     SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.printSubmission()).isPresent());
@@ -69,7 +69,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void fieldsExistence_Admin() throws Throwable {
+  public void fieldsExistence_Admin() {
     SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(() -> dialog.header()).isPresent());
     assertTrue(optional(() -> dialog.printSubmission()).isPresent());
@@ -82,7 +82,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void update() throws Throwable {
+  public void update() {
     SubmissionDialogElement dialog = openDialog(0);
 
     setFields(dialog);
@@ -95,7 +95,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void print() throws Throwable {
+  public void print() {
     SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickPrint();
@@ -105,7 +105,7 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void edit() throws Throwable {
+  public void edit() {
     SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickEdit();

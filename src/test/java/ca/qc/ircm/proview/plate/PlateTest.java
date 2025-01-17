@@ -117,7 +117,7 @@ public class PlateTest {
   }
 
   @Test
-  public void wellsContainingSample() throws Exception {
+  public void wellsContainingSample() {
     Plate plate = new Plate();
     plate.initWells();
     Sample sample1 = new SubmissionSample(564L);

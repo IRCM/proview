@@ -148,7 +148,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     openView(VIEW_NAME);
   }
 
-  private void setFields(SubmissionViewElement view) throws Throwable {
+  private void setFields(SubmissionViewElement view) {
     view.comment().setValue(comment);
     view.upload().upload(file1.toFile());
     view.upload().upload(file2.toFile());
@@ -244,14 +244,14 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -263,7 +263,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.service()).isPresent());

@@ -43,7 +43,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
@@ -51,7 +51,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void security_User() throws Throwable {
+  public void security_User() {
     open();
 
     $(AccessDeniedViewElement.class).waitForFirst();
@@ -59,21 +59,21 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void security_Manager() throws Throwable {
+  public void security_Manager() {
     open();
 
     $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
-  public void security_Admin() throws Throwable {
+  public void security_Admin() {
     open();
 
     $(UsersViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -85,7 +85,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.users()).isPresent());
@@ -97,7 +97,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void edit() throws Throwable {
+  public void edit() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
@@ -108,7 +108,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void add() throws Throwable {
+  public void add() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
 
@@ -118,7 +118,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void switchUser() throws Throwable {
+  public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(4);
@@ -133,7 +133,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @Disabled("Admins are allowed to switch to another admin right now")
-  public void switchUser_Fail() throws Throwable {
+  public void switchUser_Fail() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
@@ -144,7 +144,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void view_Laboratory() throws Throwable {
+  public void view_Laboratory() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);

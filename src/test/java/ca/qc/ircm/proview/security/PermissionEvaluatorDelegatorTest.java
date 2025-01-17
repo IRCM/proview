@@ -76,7 +76,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Laboratory_False() throws Throwable {
+  public void hasPermission_Laboratory_False() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), laboratory, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), laboratory, BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), laboratory, WRITE));
@@ -105,7 +105,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Laboratory_True() throws Throwable {
+  public void hasPermission_Laboratory_True() {
     when(laboratoryPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     when(laboratoryPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
     assertTrue(permissionEvaluator.hasPermission(authentication(), laboratory, READ));
@@ -136,7 +136,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_User_False() throws Throwable {
+  public void hasPermission_User_False() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), user, WRITE));
@@ -164,7 +164,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_User_True() throws Throwable {
+  public void hasPermission_User_True() {
     when(userPermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     when(userPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
     assertTrue(permissionEvaluator.hasPermission(authentication(), user, READ));
@@ -193,7 +193,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Submission_False() throws Throwable {
+  public void hasPermission_Submission_False() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), submission, WRITE));
@@ -222,7 +222,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Submission_True() throws Throwable {
+  public void hasPermission_Submission_True() {
     when(submissionPermissionEvaluator.hasPermission(any(Authentication.class), any(), any()))
         .thenReturn(true);
     when(submissionPermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
@@ -254,7 +254,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Sample_False() throws Throwable {
+  public void hasPermission_Sample_False() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), sample, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), sample, BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), sample, WRITE));
@@ -283,7 +283,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Sample_True() throws Throwable {
+  public void hasPermission_Sample_True() {
     when(samplePermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     when(samplePermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
     assertTrue(permissionEvaluator.hasPermission(authentication(), sample, READ));
@@ -314,7 +314,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Plate_False() throws Throwable {
+  public void hasPermission_Plate_False() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), plate, WRITE));
@@ -343,7 +343,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Plate_True() throws Throwable {
+  public void hasPermission_Plate_True() {
     when(platePermissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
     when(platePermissionEvaluator.hasPermission(any(), any(), any(), any())).thenReturn(true);
     assertTrue(permissionEvaluator.hasPermission(authentication(), plate, READ));
@@ -374,7 +374,7 @@ public class PermissionEvaluatorDelegatorTest {
 
   @Test
   @WithAnonymousUser
-  public void hasPermission_Other() throws Throwable {
+  public void hasPermission_Other() {
     assertFalse(permissionEvaluator.hasPermission(authentication(), "test", READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), "test", BASE_READ));
     assertFalse(permissionEvaluator.hasPermission(authentication(), "test", WRITE));

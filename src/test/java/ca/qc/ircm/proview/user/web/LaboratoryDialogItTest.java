@@ -40,7 +40,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
@@ -53,7 +53,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void save() throws Throwable {
+  public void save() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);
@@ -75,7 +75,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void cancel() throws Throwable {
+  public void cancel() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
     view.users().select(0);

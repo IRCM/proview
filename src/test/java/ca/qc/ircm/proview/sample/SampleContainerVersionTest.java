@@ -19,7 +19,7 @@ public class SampleContainerVersionTest extends AbstractServiceTestCase {
   private SampleRepository sampleRepository;
 
   @Test
-  public void update_FailVersion() throws Throwable {
+  public void update_FailVersion() {
     final Sample sample1 = sampleRepository.findById(442L).orElseThrow();
     final Sample sample2 = sampleRepository.findById(443L).orElseThrow();
     SampleContainer sampleContainer1 = repository.findById(130L).orElseThrow();

@@ -43,7 +43,7 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -55,7 +55,7 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     ForgotPasswordViewElement view = $(ForgotPasswordViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.header()).isPresent());
@@ -65,7 +65,7 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void save() throws Throwable {
+  public void save() {
     open();
     ForgotPasswordViewElement view = $(ForgotPasswordViewElement.class).waitForFirst();
     view.email().setValue(email);

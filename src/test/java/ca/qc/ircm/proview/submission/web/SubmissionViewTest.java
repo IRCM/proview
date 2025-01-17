@@ -475,7 +475,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void addFile_IoException() throws IOException {
+  public void addFile_IoException() {
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     SubmissionFile file = files.get(0);
     InputStream input = new InputStream() {

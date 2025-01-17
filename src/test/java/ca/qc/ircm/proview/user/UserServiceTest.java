@@ -65,7 +65,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
    * Before test.
    */
   @BeforeEach
-  public void beforeTest() throws Throwable {
+  public void beforeTest() {
     hashedPassword = "da78f3a74658706/4ae8470fc73a83f369fed012";
     when(passwordEncoder.encode(any(String.class))).thenReturn(hashedPassword);
     when(permissionEvaluator.hasPermission(any(), any(), any())).thenReturn(true);
@@ -83,7 +83,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Id() throws Throwable {
+  public void get_Id() {
     User user = service.get(3L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
@@ -118,7 +118,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Email() throws Throwable {
+  public void get_Email() {
     User user = service.get("benoit.coulombe@ircm.qc.ca").orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(READ));
@@ -153,7 +153,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_Email_True() throws Throwable {
+  public void exists_Email_True() {
     boolean exists = service.exists("christian.poitras@ircm.qc.ca");
 
     assertEquals(true, exists);
@@ -162,7 +162,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_Email_False() throws Throwable {
+  public void exists_Email_False() {
     boolean exists = service.exists("abc@ircm.qc.ca");
 
     assertEquals(false, exists);
@@ -172,7 +172,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_Filter() throws Throwable {
+  public void all_Filter() {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
@@ -186,7 +186,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_EmptyFilter() throws Throwable {
+  public void all_EmptyFilter() {
     List<User> users = service.all(new UserFilter());
 
     assertEquals(12, users.size());
@@ -206,7 +206,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void all_Filter_AccessDenied_Anonymous() throws Throwable {
+  public void all_Filter_AccessDenied_Anonymous() {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
@@ -217,7 +217,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void all_Filter_AccessDenied() throws Throwable {
+  public void all_Filter_AccessDenied() {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
@@ -227,7 +227,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Laboratory_Filter() throws Throwable {
+  public void all_Laboratory_Filter() {
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
@@ -242,7 +242,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void all_Laboratory_EmptyFilter() throws Throwable {
+  public void all_Laboratory_EmptyFilter() {
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
 
     List<User> users = service.all(new UserFilter(), laboratory);
@@ -254,7 +254,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Insert_Admin() throws Throwable {
+  public void save_Insert_Admin() {
     final User manager = repository.findById(1L).orElseThrow();
     when(authenticatedUser.getUser()).thenReturn(Optional.of(manager));
     User user = new User();
@@ -315,7 +315,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Insert_ExistingLaboratory() throws Throwable {
+  public void save_Insert_ExistingLaboratory() {
     User user = new User();
     user.setEmail("unit_test@ircm.qc.ca");
     user.setName("Christian Poitras");
@@ -379,7 +379,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Insert_NewLaboratory() throws Throwable {
+  public void save_Insert_NewLaboratory() {
     Laboratory laboratory = new Laboratory();
     laboratory.setName("Ribonucleoprotein Biochemistry");
     User user = new User();
@@ -441,7 +441,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Insert_NewLaboratoryNotManager() throws Throwable {
+  public void save_Insert_NewLaboratoryNotManager() {
     Laboratory laboratory = new Laboratory();
     laboratory.setName("Ribonucleoprotein Biochemistry");
     User user = new User();
@@ -470,7 +470,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update() throws Throwable {
+  public void save_Update() {
     User user = repository.findById(12L).orElseThrow();
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -534,7 +534,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_CurrentManager() throws Throwable {
+  public void save_Update_CurrentManager() {
     User user = repository.findById(3L).orElseThrow();
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -598,7 +598,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_AddManager() throws Throwable {
+  public void save_Update_AddManager() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
     user.setManager(true);
@@ -613,7 +613,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_AddManagerDirectorChange() throws Throwable {
+  public void save_Update_AddManagerDirectorChange() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
     user.setManager(true);
@@ -625,7 +625,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_RemoveManager() throws Throwable {
+  public void save_Update_RemoveManager() {
     User user = repository.findById(27L).orElseThrow();
     detach(user);
     user.setManager(false);
@@ -639,7 +639,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_RemoveManagerUnmanagedLaboratory() throws Throwable {
+  public void save_Update_RemoveManagerUnmanagedLaboratory() {
     User user = repository.findById(25L).orElseThrow();
     detach(user);
     user.setManager(false);
@@ -650,7 +650,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_RemoveManagerDirectorChange() throws Throwable {
+  public void save_Update_RemoveManagerDirectorChange() {
     User user = repository.findById(27L).orElseThrow();
     detach(user);
     user.setManager(false);
@@ -662,7 +662,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_UpdatePassword() throws Throwable {
+  public void save_UpdatePassword() {
     User user = repository.findById(4L).orElseThrow();
     detach(user);
 
@@ -679,7 +679,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_Lab() throws Throwable {
+  public void save_Update_Lab() {
     User user = repository.findById(3L).orElseThrow();
     detach(user);
 
@@ -696,7 +696,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_CreateLab() throws Throwable {
+  public void save_Update_CreateLab() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
     user.setManager(true);
@@ -714,7 +714,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_CreateLabNotManager() throws Throwable {
+  public void save_Update_CreateLabNotManager() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
     user.setEmail("unit_test@ircm.qc.ca");
@@ -726,7 +726,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_ChangeLab() throws Throwable {
+  public void save_Update_ChangeLab() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
 
@@ -744,7 +744,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_Activate() throws Throwable {
+  public void save_Update_Activate() {
     User user = repository.findById(12L).orElseThrow();
     detach(user);
     assertFalse(user.isActive());
@@ -759,7 +759,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void save_Update_Deactivate() throws Throwable {
+  public void save_Update_Deactivate() {
     User user = repository.findById(10L).orElseThrow();
     detach(user);
     user.setActive(false);

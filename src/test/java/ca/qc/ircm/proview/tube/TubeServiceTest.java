@@ -44,7 +44,7 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void get() throws Throwable {
+  public void get() {
     Tube tube = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(tube.getSample()), eq(READ));
@@ -56,13 +56,13 @@ public class TubeServiceTest {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void nameAvailable_True() throws Throwable {
+  public void nameAvailable_True() {
     boolean available = service.nameAvailable("FAM119A_band_01");
 
     assertFalse(available);
@@ -70,7 +70,7 @@ public class TubeServiceTest {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void nameAvailable_False() throws Throwable {
+  public void nameAvailable_False() {
     boolean available = service.nameAvailable("unit_test");
 
     assertTrue(available);
@@ -78,7 +78,7 @@ public class TubeServiceTest {
 
   @Test
   @WithAnonymousUser
-  public void nameAvailable_AccessDenied_Anonymous() throws Throwable {
+  public void nameAvailable_AccessDenied_Anonymous() {
     assertThrows(AccessDeniedException.class, () -> {
       service.nameAvailable("FAM119A_band_01");
     });
@@ -86,14 +86,14 @@ public class TubeServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void nameAvailable_AccessDenied() throws Throwable {
+  public void nameAvailable_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.nameAvailable("FAM119A_band_01");
     });
   }
 
   @Test
-  public void all() throws Throwable {
+  public void all() {
     Sample sample = new SubmissionSample(1L);
 
     List<Tube> tubes = service.all(sample);

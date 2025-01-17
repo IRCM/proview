@@ -27,7 +27,7 @@ public class ProtocolServiceTest {
   private ProtocolService service;
 
   @Test
-  public void get_DigestionProtocol() throws Throwable {
+  public void get_DigestionProtocol() {
     Protocol protocol = service.get(1L).orElseThrow();
 
     assertEquals((Long) 1L, protocol.getId());
@@ -36,7 +36,7 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  public void get_EnrichmentProtocol() throws Throwable {
+  public void get_EnrichmentProtocol() {
     Protocol protocol = service.get(2L).orElseThrow();
 
     assertEquals((Long) 2L, protocol.getId());
@@ -45,13 +45,13 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
   @WithAnonymousUser
-  public void get_AccessDenied_Anonymous() throws Throwable {
+  public void get_AccessDenied_Anonymous() {
     assertThrows(AccessDeniedException.class, () -> {
       service.get(1L);
     });
@@ -59,14 +59,14 @@ public class ProtocolServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void get_AccessDenied() throws Throwable {
+  public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.get(1L);
     });
   }
 
   @Test
-  public void all_Digestion() throws Throwable {
+  public void all_Digestion() {
     List<Protocol> protocols = service.all(DIGESTION);
 
     assertEquals(2, protocols.size());
@@ -75,7 +75,7 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  public void all_Enrichment() throws Throwable {
+  public void all_Enrichment() {
     List<Protocol> protocols = service.all(ENRICHMENT);
 
     assertEquals(2, protocols.size());
@@ -85,7 +85,7 @@ public class ProtocolServiceTest {
 
   @Test
   @WithAnonymousUser
-  public void all_AccessDenied_Anonymous() throws Throwable {
+  public void all_AccessDenied_Anonymous() {
     assertThrows(AccessDeniedException.class, () -> {
       service.all(DIGESTION);
     });
@@ -93,7 +93,7 @@ public class ProtocolServiceTest {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void all_AccessDenied() throws Throwable {
+  public void all_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.all(DIGESTION);
     });

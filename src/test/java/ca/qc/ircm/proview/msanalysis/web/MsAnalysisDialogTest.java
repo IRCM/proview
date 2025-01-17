@@ -81,7 +81,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
    * Before tests.
    */
   @BeforeEach
-  public void beforeTest() throws NoSuchFieldException, IllegalAccessException {
+  public void beforeTest() {
     when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     HistoryView view = navigate(HistoryView.class, 32L);

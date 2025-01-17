@@ -74,7 +74,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
@@ -82,7 +82,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
-  public void security_User() throws Throwable {
+  public void security_User() {
     open();
 
     $(AccessDeniedViewElement.class).waitForFirst();
@@ -90,14 +90,14 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
-  public void security_Manager() throws Throwable {
+  public void security_Manager() {
     open();
 
     $(UserViewElement.class).waitForFirst();
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -109,7 +109,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence() throws Throwable {
+  public void fieldsExistence() {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.userForm()).isPresent());
@@ -117,7 +117,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void update() throws Throwable {
+  public void update() {
     open(2L);
     UserViewElement view = $(UserViewElement.class).waitForFirst();
     final Locale locale = currentLocale();
@@ -167,7 +167,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void add() throws Throwable {
+  public void add() {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
     final Locale locale = currentLocale();

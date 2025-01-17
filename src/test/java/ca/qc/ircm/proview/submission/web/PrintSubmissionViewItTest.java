@@ -39,21 +39,21 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser
-  public void security_Anonymous() throws Throwable {
+  public void security_Anonymous() {
     open();
 
     $(SigninViewElement.class).waitForFirst();
   }
 
   @Test
-  public void url() throws Throwable {
+  public void url() {
     open();
     $(PrintSubmissionViewElement.class).waitForFirst();
     assertEquals(viewUrl(VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 
   @Test
-  public void title() throws Throwable {
+  public void title() {
     open();
 
     Locale locale = currentLocale();
@@ -65,7 +65,7 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void fieldsExistence_User() throws Throwable {
+  public void fieldsExistence_User() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissionsView()).isPresent());
@@ -76,7 +76,7 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
-  public void fieldsExistence_Admin() throws Throwable {
+  public void fieldsExistence_Admin() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
     assertTrue(optional(() -> view.submissionsView()).isPresent());
@@ -86,7 +86,7 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
   }
 
   @Test
-  public void submissionsView() throws Throwable {
+  public void submissionsView() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
 

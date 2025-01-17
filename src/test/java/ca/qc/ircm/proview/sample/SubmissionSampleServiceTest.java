@@ -68,7 +68,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_Gel() throws Throwable {
+  public void get_Gel() {
     SubmissionSample sample = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
@@ -84,7 +84,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get() throws Throwable {
+  public void get() {
     SubmissionSample sample = service.get(442L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
@@ -102,12 +102,12 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void get_0() throws Throwable {
+  public void get_0() {
     assertFalse(service.get(0).isPresent());
   }
 
   @Test
-  public void exists_True() throws Throwable {
+  public void exists_True() {
     User user = new User(3L);
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
@@ -117,7 +117,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_False() throws Throwable {
+  public void exists_False() {
     User user = new User(3L);
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
@@ -127,7 +127,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_OtherUser() throws Throwable {
+  public void exists_OtherUser() {
     User user = new User(10L);
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
@@ -137,7 +137,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  public void exists_ControlName() throws Throwable {
+  public void exists_ControlName() {
     User user = new User(3L);
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
@@ -148,7 +148,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void exists_AccessDenied() throws Throwable {
+  public void exists_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> {
       service.exists("CAP_20111013_05");
     });
@@ -156,7 +156,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus() throws Throwable {
+  public void updateStatus() {
     SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
@@ -187,7 +187,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Name() throws Throwable {
+  public void updateStatus_Name() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     final String name = sample.getName();
@@ -208,7 +208,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() throws Throwable {
+  public void updateStatus_Received_SampleDeliveryDate_UpdatedNull() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
@@ -225,7 +225,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Received_SampleDeliveryDate_NotUpdated() throws Throwable {
+  public void updateStatus_Received_SampleDeliveryDate_NotUpdated() {
     SubmissionSample sample = repository.findById(559L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.RECEIVED);
@@ -240,7 +240,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() throws Throwable {
+  public void updateStatus_Digested_SampleDeliveryDate_NotUpdated() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
@@ -255,7 +255,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() throws Throwable {
+  public void updateStatus_Digested_SubmissionDigestionDate_UpdatedNull() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
@@ -271,7 +271,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() throws Throwable {
+  public void updateStatus_Digested_SubmissionDigestionDate_NotUpdated() {
     SubmissionSample sample = repository.findById(559L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.DIGESTED);
@@ -286,7 +286,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() throws Throwable {
+  public void updateStatus_Analysed_SubmissionDigestionDate_NotUpdated() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
@@ -301,7 +301,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() throws Throwable {
+  public void updateStatus_Analysed_SubmissionAnalysisDate_UpdatedNull() {
     SubmissionSample sample = repository.findById(443L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
@@ -317,7 +317,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() throws Throwable {
+  public void updateStatus_Analysed_SubmissionAnalysisDate_NotUpdated() {
     SubmissionSample sample = repository.findById(621L).orElseThrow();
     detach(sample);
     sample.setStatus(SampleStatus.ANALYSED);
@@ -332,7 +332,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void updateStatus_AccessDenied_Anonymous() throws Throwable {
+  public void updateStatus_AccessDenied_Anonymous() {
     SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
@@ -351,7 +351,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
-  public void updateStatus_AccessDenied() throws Throwable {
+  public void updateStatus_AccessDenied() {
     SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);
     sample1.setStatus(SampleStatus.DIGESTED);
