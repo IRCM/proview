@@ -40,11 +40,11 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence() {
     SamplesStatusDialogElement dialog = open();
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertTrue(optional(() -> dialog.samples()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertTrue(optional(dialog::samples).isPresent());
     assertTrue(optional(() -> dialog.samples().allStatus()).isPresent());
-    assertTrue(optional(() -> dialog.save()).isPresent());
-    assertTrue(optional(() -> dialog.cancel()).isPresent());
+    assertTrue(optional(dialog::save).isPresent());
+    assertTrue(optional(dialog::cancel).isPresent());
   }
 
   @Test

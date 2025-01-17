@@ -2384,9 +2384,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.setExperiment("experiment");
     submission.setGoal("goal");
     LocalDateTime newDate = LocalDateTime.now();
@@ -2443,9 +2441,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_Sample() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sample -> {
-      detach(sample);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.setExperiment("experiment");
     submission.setGoal("goal");
     submission.getSamples().get(0).setName("unit_test_01");
@@ -2499,9 +2495,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.setSamples(samples);
 
     service.update(submission, null);
@@ -2532,9 +2526,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_UpdateUser() {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     User user = userRepository.findById(4L).orElseThrow();
     submission.setUser(user);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -2548,9 +2540,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_Received() {
     Submission submission = repository.findById(149L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
 
     assertThrows(IllegalArgumentException.class, () -> {
       service.update(submission, null);
@@ -2561,9 +2551,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_AfterReceived() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
 
     assertThrows(IllegalArgumentException.class, () -> {
       service.update(submission, null);
@@ -2574,9 +2562,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_Email() throws Exception {
     Submission submission = repository.findById(36L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.setExperiment("experiment");
     submission.setGoal("goal");
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
@@ -2605,9 +2591,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   public void update_Admin() {
     Submission submission = repository.findById(1L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.setService(Service.LC_MS_MS);
     submission.setTaxonomy("human");
     submission.setExperiment("experiment");
@@ -2705,9 +2689,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample.setMolecularWeight(120.0);
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
-    submission.getSamples().forEach(sa -> {
-      detach(sa);
-    });
+    submission.getSamples().forEach(this::detach);
     submission.getSamples().add(sample);
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));

@@ -56,13 +56,13 @@ public class ContactViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     ContactViewElement view = $(ContactViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.proteomicHeader()).isPresent());
-    assertTrue(optional(() -> view.proteomicName()).isPresent());
-    assertTrue(optional(() -> view.proteomicAddress()).isPresent());
-    assertTrue(optional(() -> view.proteomicPhone()).isPresent());
-    assertTrue(optional(() -> view.websiteHeader()).isPresent());
-    assertTrue(optional(() -> view.websiteName()).isPresent());
-    assertTrue(optional(() -> view.websiteAddress()).isPresent());
-    assertTrue(optional(() -> view.websitePhone()).isPresent());
+    assertTrue(optional(view::proteomicHeader).isPresent());
+    assertTrue(optional(view::proteomicName).isPresent());
+    assertTrue(optional(view::proteomicAddress).isPresent());
+    assertTrue(optional(view::proteomicPhone).isPresent());
+    assertTrue(optional(view::websiteHeader).isPresent());
+    assertTrue(optional(view::websiteName).isPresent());
+    assertTrue(optional(view::websiteAddress).isPresent());
+    assertTrue(optional(view::websitePhone).isPresent());
   }
 }

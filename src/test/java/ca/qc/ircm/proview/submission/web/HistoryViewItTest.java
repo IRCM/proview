@@ -80,7 +80,7 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.activities()).isPresent());
+    assertTrue(optional(view::activities).isPresent());
   }
 
   @Test

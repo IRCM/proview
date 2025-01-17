@@ -28,12 +28,12 @@ public class TreatmentDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     TreatmentDialogElement dialog = $(TreatmentDialogElement.class).waitForFirst();
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertFalse(optional(() -> dialog.deleted()).isPresent());
-    assertFalse(optional(() -> dialog.protocol()).isPresent());
-    assertTrue(optional(() -> dialog.fractionationType()).isPresent());
-    assertTrue(optional(() -> dialog.date()).isPresent());
-    assertTrue(optional(() -> dialog.samplesHeader()).isPresent());
-    assertTrue(optional(() -> dialog.samples()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertFalse(optional(dialog::deleted).isPresent());
+    assertFalse(optional(dialog::protocol).isPresent());
+    assertTrue(optional(dialog::fractionationType).isPresent());
+    assertTrue(optional(dialog::date).isPresent());
+    assertTrue(optional(dialog::samplesHeader).isPresent());
+    assertTrue(optional(dialog::samples).isPresent());
   }
 }

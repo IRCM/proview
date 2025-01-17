@@ -64,7 +64,7 @@ public class ExitSwitchUserViewItTest extends AbstractTestBenchTestCase {
     openView(ExitSwitchUserView.VIEW_NAME);
     $(SubmissionsViewElement.class).waitForFirst();
     ViewLayoutElement viewReload = $(ViewLayoutElement.class).waitForFirst();
-    assertFalse(optional(() -> viewReload.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> viewReload.users()).isPresent());
+    assertFalse(optional(viewReload::exitSwitchUser).isPresent());
+    assertTrue(optional(viewReload::users).isPresent());
   }
 }

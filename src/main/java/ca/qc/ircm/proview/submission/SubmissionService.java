@@ -348,9 +348,7 @@ public class SubmissionService {
   private void deleteOrphans(Submission submission) {
     Submission old = repository.findById(submission.getId()).orElseThrow();
     old.getSamples().stream().filter(sample -> !submission.getSamples().stream()
-        .filter(s2 -> sample.getId() == s2.getId()).findAny().isPresent()).forEach(sample -> {
-          sampleRepository.delete(sample);
-        });
+        .filter(s2 -> sample.getId() == s2.getId()).findAny().isPresent()).forEach(sampleRepository::delete);
   }
 
   /**

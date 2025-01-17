@@ -58,26 +58,26 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   @Test
   public void fieldsExistence_User() {
     SubmissionDialogElement dialog = openDialog(0);
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertTrue(optional(() -> dialog.printSubmission()).isPresent());
-    assertFalse(optional(() -> dialog.instrument()).isPresent());
-    assertFalse(optional(() -> dialog.dataAvailableDate()).isPresent());
-    assertFalse(optional(() -> dialog.save()).isPresent());
-    assertTrue(optional(() -> dialog.print()).isPresent());
-    assertTrue(optional(() -> dialog.edit()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertTrue(optional(dialog::printSubmission).isPresent());
+    assertFalse(optional(dialog::instrument).isPresent());
+    assertFalse(optional(dialog::dataAvailableDate).isPresent());
+    assertFalse(optional(dialog::save).isPresent());
+    assertTrue(optional(dialog::print).isPresent());
+    assertTrue(optional(dialog::edit).isPresent());
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() {
     SubmissionDialogElement dialog = openDialog(0);
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertTrue(optional(() -> dialog.printSubmission()).isPresent());
-    assertTrue(optional(() -> dialog.instrument()).isPresent());
-    assertTrue(optional(() -> dialog.dataAvailableDate()).isPresent());
-    assertTrue(optional(() -> dialog.save()).isPresent());
-    assertTrue(optional(() -> dialog.print()).isPresent());
-    assertTrue(optional(() -> dialog.edit()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertTrue(optional(dialog::printSubmission).isPresent());
+    assertTrue(optional(dialog::instrument).isPresent());
+    assertTrue(optional(dialog::dataAvailableDate).isPresent());
+    assertTrue(optional(dialog::save).isPresent());
+    assertTrue(optional(dialog::print).isPresent());
+    assertTrue(optional(dialog::edit).isPresent());
   }
 
   @Test

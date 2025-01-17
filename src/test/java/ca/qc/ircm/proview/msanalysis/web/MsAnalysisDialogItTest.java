@@ -28,12 +28,12 @@ public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).waitForFirst();
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertFalse(optional(() -> dialog.deleted()).isPresent());
-    assertTrue(optional(() -> dialog.instrument()).isPresent());
-    assertTrue(optional(() -> dialog.source()).isPresent());
-    assertTrue(optional(() -> dialog.date()).isPresent());
-    assertTrue(optional(() -> dialog.acquisitionsHeader()).isPresent());
-    assertTrue(optional(() -> dialog.acquisitions()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertFalse(optional(dialog::deleted).isPresent());
+    assertTrue(optional(dialog::instrument).isPresent());
+    assertTrue(optional(dialog::source).isPresent());
+    assertTrue(optional(dialog::date).isPresent());
+    assertTrue(optional(dialog::acquisitionsHeader).isPresent());
+    assertTrue(optional(dialog::acquisitions).isPresent());
   }
 }

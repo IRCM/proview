@@ -189,7 +189,7 @@ public class PlateService {
     repository.save(plate);
 
     Optional<Activity> optionalActivity = plateActivityService.update(plate);
-    optionalActivity.ifPresent(activity -> activityService.insert(activity));
+    optionalActivity.ifPresent(activityService::insert);
   }
 
   /**

@@ -68,7 +68,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     view.users().select(0);
     view.edit().click();
     UserDialogElement dialog = view.dialog();
-    assertTrue(optional(() -> dialog.header()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
     assertTrue(optional(() -> dialog.userForm().email()).isPresent());
     assertTrue(optional(() -> dialog.userForm().name()).isPresent());
     assertTrue(optional(() -> dialog.userForm().admin()).isPresent());
@@ -85,8 +85,8 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> dialog.userForm().phoneType()).isPresent());
     assertTrue(optional(() -> dialog.userForm().number()).isPresent());
     assertTrue(optional(() -> dialog.userForm().extension()).isPresent());
-    assertTrue(optional(() -> dialog.save()).isPresent());
-    assertTrue(optional(() -> dialog.cancel()).isPresent());
+    assertTrue(optional(dialog::save).isPresent());
+    assertTrue(optional(dialog::cancel).isPresent());
   }
 
   @Test

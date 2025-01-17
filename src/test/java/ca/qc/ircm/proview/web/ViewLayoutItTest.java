@@ -41,17 +41,17 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_User() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(optional(() -> view.applicationName()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.drawerToggle()).isPresent());
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.profile()).isPresent());
-    assertFalse(optional(() -> view.users()).isPresent());
-    assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> view.signout()).isPresent());
-    assertTrue(optional(() -> view.changeLanguage()).isPresent());
-    assertTrue(optional(() -> view.contact()).isPresent());
-    assertTrue(optional(() -> view.guidelines()).isPresent());
+    assertTrue(optional(view::applicationName).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::drawerToggle).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::profile).isPresent());
+    assertFalse(optional(view::users).isPresent());
+    assertFalse(optional(view::exitSwitchUser).isPresent());
+    assertTrue(optional(view::signout).isPresent());
+    assertTrue(optional(view::changeLanguage).isPresent());
+    assertTrue(optional(view::contact).isPresent());
+    assertTrue(optional(view::guidelines).isPresent());
   }
 
   @Test
@@ -59,17 +59,17 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Manager() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(optional(() -> view.applicationName()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.drawerToggle()).isPresent());
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.profile()).isPresent());
-    assertTrue(optional(() -> view.users()).isPresent());
-    assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> view.signout()).isPresent());
-    assertTrue(optional(() -> view.changeLanguage()).isPresent());
-    assertTrue(optional(() -> view.contact()).isPresent());
-    assertTrue(optional(() -> view.guidelines()).isPresent());
+    assertTrue(optional(view::applicationName).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::drawerToggle).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::profile).isPresent());
+    assertTrue(optional(view::users).isPresent());
+    assertFalse(optional(view::exitSwitchUser).isPresent());
+    assertTrue(optional(view::signout).isPresent());
+    assertTrue(optional(view::changeLanguage).isPresent());
+    assertTrue(optional(view::contact).isPresent());
+    assertTrue(optional(view::guidelines).isPresent());
   }
 
   @Test
@@ -77,17 +77,17 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(optional(() -> view.applicationName()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.drawerToggle()).isPresent());
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.profile()).isPresent());
-    assertTrue(optional(() -> view.users()).isPresent());
-    assertFalse(optional(() -> view.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> view.signout()).isPresent());
-    assertTrue(optional(() -> view.changeLanguage()).isPresent());
-    assertTrue(optional(() -> view.contact()).isPresent());
-    assertTrue(optional(() -> view.guidelines()).isPresent());
+    assertTrue(optional(view::applicationName).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::drawerToggle).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::profile).isPresent());
+    assertTrue(optional(view::users).isPresent());
+    assertFalse(optional(view::exitSwitchUser).isPresent());
+    assertTrue(optional(view::signout).isPresent());
+    assertTrue(optional(view::changeLanguage).isPresent());
+    assertTrue(optional(view::contact).isPresent());
+    assertTrue(optional(view::guidelines).isPresent());
   }
 
   @Test
@@ -100,17 +100,17 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     usersView.switchUser().click();
     $(SubmissionsViewElement.class).waitForFirst();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(optional(() -> view.applicationName()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.drawerToggle()).isPresent());
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.profile()).isPresent());
-    assertTrue(optional(() -> view.users()).isPresent());
-    assertTrue(optional(() -> view.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> view.signout()).isPresent());
-    assertTrue(optional(() -> view.changeLanguage()).isPresent());
-    assertTrue(optional(() -> view.contact()).isPresent());
-    assertTrue(optional(() -> view.guidelines()).isPresent());
+    assertTrue(optional(view::applicationName).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::drawerToggle).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::profile).isPresent());
+    assertTrue(optional(view::users).isPresent());
+    assertTrue(optional(view::exitSwitchUser).isPresent());
+    assertTrue(optional(view::signout).isPresent());
+    assertTrue(optional(view::changeLanguage).isPresent());
+    assertTrue(optional(view::contact).isPresent());
+    assertTrue(optional(view::guidelines).isPresent());
   }
 
   @Test
@@ -152,8 +152,8 @@ public class ViewLayoutItTest extends AbstractTestBenchTestCase {
     view.exitSwitchUser().click();
     $(SubmissionsViewElement.class).waitForFirst();
     ViewLayoutElement viewAfterExitSwitchUser = $(ViewLayoutElement.class).first();
-    assertFalse(optional(() -> viewAfterExitSwitchUser.exitSwitchUser()).isPresent());
-    assertTrue(optional(() -> viewAfterExitSwitchUser.users()).isPresent());
+    assertFalse(optional(viewAfterExitSwitchUser::exitSwitchUser).isPresent());
+    assertTrue(optional(viewAfterExitSwitchUser::users).isPresent());
   }
 
   @Test

@@ -116,27 +116,27 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     container =
         samples.addColumn(ts -> ts.getContainer().getFullName(), CONTAINER).setKey(CONTAINER);
     sourceVolume =
-        samples.addColumn(ts -> ts.getSourceVolume(), SOURCE_VOLUME).setKey(SOURCE_VOLUME);
+        samples.addColumn(TreatedSample::getSourceVolume, SOURCE_VOLUME).setKey(SOURCE_VOLUME);
     sourceVolume.setVisible(false);
-    solvent = samples.addColumn(ts -> ts.getSolvent(), SOLVENT).setKey(SOLVENT);
+    solvent = samples.addColumn(TreatedSample::getSolvent, SOLVENT).setKey(SOLVENT);
     solvent.setVisible(false);
     solventVolume =
-        samples.addColumn(ts -> ts.getSolventVolume(), SOLVENT_VOLUME).setKey(SOLVENT_VOLUME);
+        samples.addColumn(TreatedSample::getSolventVolume, SOLVENT_VOLUME).setKey(SOLVENT_VOLUME);
     solventVolume.setVisible(false);
-    name = samples.addColumn(ts -> ts.getName(), NAME).setKey(NAME);
+    name = samples.addColumn(TreatedSample::getName, NAME).setKey(NAME);
     name.setVisible(false);
-    quantity = samples.addColumn(ts -> ts.getQuantity(), QUANTITY).setKey(QUANTITY);
+    quantity = samples.addColumn(TreatedSample::getQuantity, QUANTITY).setKey(QUANTITY);
     quantity.setVisible(false);
     destinationContainer = samples.addColumn(
         ts -> ts.getDestinationContainer() != null ? ts.getDestinationContainer().getFullName()
             : "",
         DESTINATION_CONTAINER).setKey(DESTINATION_CONTAINER);
     destinationContainer.setVisible(false);
-    number = samples.addColumn(ts -> ts.getNumber(), NUMBER).setKey(NUMBER);
+    number = samples.addColumn(TreatedSample::getNumber, NUMBER).setKey(NUMBER);
     number.setVisible(false);
-    piInterval = samples.addColumn(ts -> ts.getPiInterval(), PI_INTERVAL).setKey(PI_INTERVAL);
+    piInterval = samples.addColumn(TreatedSample::getPiInterval, PI_INTERVAL).setKey(PI_INTERVAL);
     piInterval.setVisible(false);
-    comment = samples.addColumn(ts -> ts.getComment(), COMMENT).setKey(COMMENT).setSortable(false);
+    comment = samples.addColumn(TreatedSample::getComment, COMMENT).setKey(COMMENT).setSortable(false);
   }
 
   @Override

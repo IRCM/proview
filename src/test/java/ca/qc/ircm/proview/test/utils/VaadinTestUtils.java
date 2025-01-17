@@ -253,7 +253,7 @@ public class VaadinTestUtils {
       return Optional.of((C) start);
     }
     return start.getChildren().map(child -> findChild(child, componentType))
-        .filter(oc -> oc.isPresent()).findFirst().orElse(Optional.empty());
+        .filter(Optional::isPresent).findFirst().orElse(Optional.empty());
   }
 
   /**

@@ -46,10 +46,10 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
     view.users().select(0);
     view.viewLaboratory().click();
     LaboratoryDialogElement dialog = view.laboratoryDialog();
-    assertTrue(optional(() -> dialog.header()).isPresent());
-    assertTrue(optional(() -> dialog.name()).isPresent());
-    assertTrue(optional(() -> dialog.save()).isPresent());
-    assertTrue(optional(() -> dialog.cancel()).isPresent());
+    assertTrue(optional(dialog::header).isPresent());
+    assertTrue(optional(dialog::name).isPresent());
+    assertTrue(optional(dialog::save).isPresent());
+    assertTrue(optional(dialog::cancel).isPresent());
   }
 
   @Test

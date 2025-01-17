@@ -522,7 +522,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     filesActivity.setRecordId(newSubmission.getId());
     filesActivity.setColumn("submissionfiles");
     filesActivity.setOldValue("protocol.txt,frag.jpg");
-    filesActivity.setNewValue(newSubmission.getFiles().stream().map(file -> file.getFilename())
+    filesActivity.setNewValue(newSubmission.getFiles().stream().map(SubmissionFile::getFilename)
         .collect(Collectors.joining(",")));
     expectedUpdateActivities.add(filesActivity);
     LogTestUtils.validateUpdateActivities(expectedUpdateActivities, activity.getUpdates());

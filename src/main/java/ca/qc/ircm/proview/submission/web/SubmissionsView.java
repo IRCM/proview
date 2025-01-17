@@ -256,20 +256,20 @@ public class SubmissionsView extends VerticalLayout
     samplesCount.setVisible(columnVisibility.apply(samplesCount));
     samples = submissions
         .addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
-            .withProperty("samplesValue", submission -> sampleNamesValue(submission))
-            .withProperty("samplesTitle", submission -> sampleNamesTitle(submission)))
+            .withProperty("samplesValue", this::sampleNamesValue)
+            .withProperty("samplesTitle", this::sampleNamesTitle))
         .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
     samples.setVisible(columnVisibility.apply(samples));
     status = submissions
         .addColumn(LitRenderer.<Submission>of(STATUS_SPAN)
-            .withProperty("statusValue", submission -> statusesValue(submission))
-            .withProperty("statusTitle", submission -> statusesTitle(submission)))
+            .withProperty("statusValue", this::statusesValue)
+            .withProperty("statusTitle", this::statusesTitle))
         .setKey(STATUS).setSortable(false).setFlexGrow(2);
     status.setVisible(columnVisibility.apply(status));
     hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
-        .withProperty("hiddenTheme", submission -> hiddenTheme(submission))
-        .withProperty("hiddenValue", submission -> hiddenValue(submission))
-        .withProperty("hiddenIcon", submission -> hiddenIcon(submission))
+        .withProperty("hiddenTheme", this::hiddenTheme)
+        .withProperty("hiddenValue", this::hiddenValue)
+        .withProperty("hiddenIcon", this::hiddenIcon)
         .withFunction("toggleHidden", submission -> {
           toggleHidden(submission);
           submissions.getDataProvider().refreshItem(submission);
@@ -391,14 +391,14 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String statusesValue(Submission submission) {
-    List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
+    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
         .distinct().collect(Collectors.toList());
     return getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
         getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size());
   }
 
   private String statusesTitle(Submission submission) {
-    List<SampleStatus> statuses = submission.getSamples().stream().map(sample -> sample.getStatus())
+    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
         .distinct().collect(Collectors.toList());
     return statuses.stream().map(status -> getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
         .collect(Collectors.joining("\n"));

@@ -193,7 +193,7 @@ public class ActivityService {
     final List<Activity> activities = new ArrayList<>();
     final List<SubmissionSample> samples = submission.getSamples();
     final List<Long> sampleIds =
-        samples.stream().map(sa -> sa.getId()).collect(Collectors.toList());
+        samples.stream().map(Sample::getId).collect(Collectors.toList());
     // Inserts / updates.
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);

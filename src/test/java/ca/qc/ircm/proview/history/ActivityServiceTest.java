@@ -678,13 +678,13 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
       UpdateActivity update = activity.getUpdates().get(i);
       String name = null;
       if (update.getTableName().equals(Submission.TABLE_NAME)) {
-        name = submissionRepository.findById(update.getRecordId()).map(su -> su.getExperiment())
+        name = submissionRepository.findById(update.getRecordId()).map(Submission::getExperiment)
             .orElseThrow();
       } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
         name =
-            sampleRepository.findById(update.getRecordId()).map(su -> su.getName()).orElseThrow();
+            sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
       } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
-        name = plateRepository.findById(update.getRecordId()).map(su -> su.getName()).orElseThrow();
+        name = plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
       }
       assertEquals(messageSource.getMessage(MESSAGES_PREFIX + "update",
           new Object[] { update.getActionType().ordinal(), update.getTableName(), name,

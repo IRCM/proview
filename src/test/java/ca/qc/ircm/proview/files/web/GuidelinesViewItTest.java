@@ -82,7 +82,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     for (int i = 0; i < categories.size(); i++) {
       Category category = categories.get(i);
       CategoryComponentElement categoryElement = view.categories().get(i);
-      assertTrue(optional(() -> categoryElement.header()).isPresent());
+      assertTrue(optional(categoryElement::header).isPresent());
       assertEquals(category.getGuidelines().size(), categoryElement.guidelines().size());
     }
   }

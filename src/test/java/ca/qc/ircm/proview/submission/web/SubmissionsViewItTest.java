@@ -75,10 +75,10 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.add()).isPresent());
-    assertFalse(optional(() -> view.editStatus()).isPresent());
-    assertFalse(optional(() -> view.history()).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::add).isPresent());
+    assertFalse(optional(view::editStatus).isPresent());
+    assertFalse(optional(view::history).isPresent());
   }
 
   @Test
@@ -86,10 +86,10 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.submissions()).isPresent());
-    assertTrue(optional(() -> view.add()).isPresent());
-    assertTrue(optional(() -> view.editStatus()).isPresent());
-    assertTrue(optional(() -> view.history()).isPresent());
+    assertTrue(optional(view::submissions).isPresent());
+    assertTrue(optional(view::add).isPresent());
+    assertTrue(optional(view::editStatus).isPresent());
+    assertTrue(optional(view::history).isPresent());
   }
 
   @Test

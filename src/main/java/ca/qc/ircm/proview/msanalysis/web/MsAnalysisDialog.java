@@ -102,16 +102,16 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
     container =
         acquisitions.addColumn(ac -> ac.getContainer().getFullName(), CONTAINER).setKey(CONTAINER);
     numberOfAcquisition =
-        acquisitions.addColumn(ac -> ac.getNumberOfAcquisition(), NUMBER_OF_ACQUISITION)
+        acquisitions.addColumn(Acquisition::getNumberOfAcquisition, NUMBER_OF_ACQUISITION)
             .setKey(NUMBER_OF_ACQUISITION).setFlexGrow(0);
-    sampleListName = acquisitions.addColumn(ac -> ac.getSampleListName(), SAMPLE_LIST_NAME)
+    sampleListName = acquisitions.addColumn(Acquisition::getSampleListName, SAMPLE_LIST_NAME)
         .setKey(SAMPLE_LIST_NAME);
-    acquisitionFile = acquisitions.addColumn(ac -> ac.getAcquisitionFile(), ACQUISITION_FILE)
+    acquisitionFile = acquisitions.addColumn(Acquisition::getAcquisitionFile, ACQUISITION_FILE)
         .setKey(ACQUISITION_FILE);
     position =
-        acquisitions.addColumn(ac -> ac.getPosition(), POSITION).setKey(POSITION).setFlexGrow(0);
+        acquisitions.addColumn(Acquisition::getPosition, POSITION).setKey(POSITION).setFlexGrow(0);
     comment =
-        acquisitions.addColumn(ac -> ac.getComment(), COMMENT).setKey(COMMENT).setSortable(false);
+        acquisitions.addColumn(Acquisition::getComment, COMMENT).setKey(COMMENT).setSortable(false);
   }
 
   @Override

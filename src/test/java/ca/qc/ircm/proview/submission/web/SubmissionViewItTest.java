@@ -266,20 +266,20 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.service()).isPresent());
-    assertTrue(optional(() -> view.lcmsms()).isPresent());
+    assertTrue(optional(view::service).isPresent());
+    assertTrue(optional(view::lcmsms).isPresent());
     view.lcmsms().click();
-    assertTrue(optional(() -> view.lcmsmsSubmissionForm()).isPresent());
-    assertTrue(optional(() -> view.smallMolecule()).isPresent());
+    assertTrue(optional(view::lcmsmsSubmissionForm).isPresent());
+    assertTrue(optional(view::smallMolecule).isPresent());
     view.smallMolecule().click();
-    assertTrue(optional(() -> view.smallMoleculeSubmissionForm()).isPresent());
-    assertTrue(optional(() -> view.intactProtein()).isPresent());
+    assertTrue(optional(view::smallMoleculeSubmissionForm).isPresent());
+    assertTrue(optional(view::intactProtein).isPresent());
     view.intactProtein().click();
-    assertTrue(optional(() -> view.intactProteinSubmissionForm()).isPresent());
-    assertTrue(optional(() -> view.comment()).isPresent());
-    assertTrue(optional(() -> view.upload()).isPresent());
-    assertTrue(optional(() -> view.files()).isPresent());
-    assertTrue(optional(() -> view.save()).isPresent());
+    assertTrue(optional(view::intactProteinSubmissionForm).isPresent());
+    assertTrue(optional(view::comment).isPresent());
+    assertTrue(optional(view::upload).isPresent());
+    assertTrue(optional(view::files).isPresent());
+    assertTrue(optional(view::save).isPresent());
   }
 
   @Test

@@ -118,13 +118,13 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
         .setKey(TIMESTAMP).setFlexGrow(3);
     description = activities
         .addColumn(LitRenderer.<Activity>of(DESCRIPTION_SPAN)
-            .withProperty("descriptionTitle", ac -> description(ac))
-            .withProperty("descriptionValue", ac -> description(ac)))
+            .withProperty("descriptionTitle", this::description)
+            .withProperty("descriptionValue", this::description))
         .setKey(DESCRIPTION).setSortable(false).setFlexGrow(5);
     explanation = activities
         .addColumn(LitRenderer.<Activity>of(EXPLANATION_SPAN)
-            .withProperty("explanationTitle", ac -> ac.getExplanation())
-            .withProperty("explanationValue", ac -> ac.getExplanation()))
+            .withProperty("explanationTitle", Activity::getExplanation)
+            .withProperty("explanationValue", Activity::getExplanation))
         .setKey(EXPLANATION).setSortable(false).setFlexGrow(5);
     activities.addItemDoubleClickListener(e -> view(e.getItem()));
     activities.addSelectionListener(e -> view.setEnabled(e.getAllSelectedItems().size() == 1));

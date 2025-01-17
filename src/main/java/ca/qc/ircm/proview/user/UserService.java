@@ -194,7 +194,7 @@ public class UserService {
 
   private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
     repository.findAllByLaboratoryAndManagerTrue(laboratory).stream()
-        .mapToLong(manager -> manager.getId()).min().ifPresent(id -> {
+        .mapToLong(User::getId).min().ifPresent(id -> {
           User manager = repository.findById(id).orElseThrow();
           laboratory.setDirector(manager.getName());
         });

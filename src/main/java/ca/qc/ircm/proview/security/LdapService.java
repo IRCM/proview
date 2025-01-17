@@ -71,7 +71,7 @@ public class LdapService {
           } catch (NamingException e) {
             return null;
           }
-        }).map(value -> value.toString()).orElse(null);
+        }).map(Object::toString).orElse(null);
     Optional<String> email = ldapOperations.search(query, mapper).stream().findFirst();
     logger.debug("Found LDAP email {} for user [{}]", email, username);
     return email;
@@ -96,7 +96,7 @@ public class LdapService {
           } catch (NamingException e) {
             return null;
           }
-        }).map(value -> value.toString()).orElse(null);
+        }).map(Object::toString).orElse(null);
     Optional<String> username = ldapOperations.search(query, mapper).stream().findFirst();
     logger.debug("Found LDAP username {} for user [{}]", username, email);
     return username;

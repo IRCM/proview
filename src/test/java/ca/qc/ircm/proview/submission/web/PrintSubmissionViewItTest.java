@@ -68,10 +68,10 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_User() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.submissionsView()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.secondHeader()).isPresent());
-    assertTrue(optional(() -> view.printSubmission()).isPresent());
+    assertTrue(optional(view::submissionsView).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::secondHeader).isPresent());
+    assertTrue(optional(view::printSubmission).isPresent());
   }
 
   @Test
@@ -79,10 +79,10 @@ public class PrintSubmissionViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence_Admin() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.submissionsView()).isPresent());
-    assertTrue(optional(() -> view.header()).isPresent());
-    assertTrue(optional(() -> view.secondHeader()).isPresent());
-    assertTrue(optional(() -> view.printSubmission()).isPresent());
+    assertTrue(optional(view::submissionsView).isPresent());
+    assertTrue(optional(view::header).isPresent());
+    assertTrue(optional(view::secondHeader).isPresent());
+    assertTrue(optional(view::printSubmission).isPresent());
   }
 
   @Test

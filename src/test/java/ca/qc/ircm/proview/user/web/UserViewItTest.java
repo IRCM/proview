@@ -112,8 +112,8 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   public void fieldsExistence() {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
-    assertTrue(optional(() -> view.userForm()).isPresent());
-    assertTrue(optional(() -> view.save()).isPresent());
+    assertTrue(optional(view::userForm).isPresent());
+    assertTrue(optional(view::save).isPresent());
   }
 
   @Test

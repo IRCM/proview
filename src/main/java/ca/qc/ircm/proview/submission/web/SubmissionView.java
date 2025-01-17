@@ -169,10 +169,10 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     files.setId(FILES);
     files.setHeight("15em");
     files.setWidth("45em");
-    filename = files.addColumn(new ComponentRenderer<>(file -> filenameAnchor(file)))
+    filename = files.addColumn(new ComponentRenderer<>(this::filenameAnchor))
         .setKey(FILENAME).setSortProperty(FILENAME)
         .setComparator(NormalizedComparator.of(SubmissionFile::getFilename)).setFlexGrow(3);
-    remove = files.addColumn(new ComponentRenderer<>(file -> removeButton(file))).setKey(REMOVE);
+    remove = files.addColumn(new ComponentRenderer<>(this::removeButton)).setKey(REMOVE);
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setIcon(VaadinIcon.CHECK.create());

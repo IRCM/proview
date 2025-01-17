@@ -149,20 +149,20 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       switchUser.setEnabled(e.getAllSelectedItems().size() == 1);
       viewLaboratory.setEnabled(e.getAllSelectedItems().size() == 1);
     });
-    email = users.addColumn(user -> user.getEmail(), EMAIL).setKey(EMAIL)
-        .setComparator(NormalizedComparator.of(user -> user.getEmail())).setFlexGrow(3);
-    name = users.addColumn(user -> user.getName(), NAME).setKey(NAME)
-        .setComparator(NormalizedComparator.of(user -> user.getName())).setFlexGrow(3);
+    email = users.addColumn(User::getEmail, EMAIL).setKey(EMAIL)
+        .setComparator(NormalizedComparator.of(User::getEmail)).setFlexGrow(3);
+    name = users.addColumn(User::getName, NAME).setKey(NAME)
+        .setComparator(NormalizedComparator.of(User::getName)).setFlexGrow(3);
     laboratory =
         users.addColumn(user -> user.getLaboratory().getName(), LABORATORY).setKey(LABORATORY)
             .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()))
             .setFlexGrow(3);
     active = users
         .addColumn(LitRenderer.<User>of(ACTIVE_BUTTON)
-            .withProperty("activeTheme", user -> activeTheme(user))
-            .withProperty("activeValue", user -> activeValue(user))
-            .withProperty("activeIcon", user -> activeIcon(user))
-            .withFunction("toggleActive", user -> toggleActive(user)))
+            .withProperty("activeTheme", this::activeTheme)
+            .withProperty("activeValue", this::activeValue)
+            .withProperty("activeIcon", this::activeIcon)
+            .withFunction("toggleActive", this::toggleActive))
         .setKey(ACTIVE).setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     active.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     users.appendHeaderRow(); // Headers.

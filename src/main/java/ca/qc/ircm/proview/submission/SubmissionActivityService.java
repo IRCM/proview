@@ -214,9 +214,9 @@ public class SubmissionActivityService {
     // Sample.
     Set<Long> oldSampleIds =
         oldSubmission.getSamples().stream().filter(sample -> sample.getId() != 0)
-            .map(sample -> sample.getId()).collect(Collectors.toSet());
+            .map(Sample::getId).collect(Collectors.toSet());
     Set<Long> newSampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != 0)
-        .map(sample -> sample.getId()).collect(Collectors.toSet());
+        .map(Sample::getId).collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)
@@ -227,7 +227,7 @@ public class SubmissionActivityService {
       if (oldSampleIds.contains(sample.getId())) {
         Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
         optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
-            .map(ua -> new UpdateActivityBuilder(ua)).collect(Collectors.toList())));
+            .map(UpdateActivityBuilder::new).collect(Collectors.toList())));
       } else {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
@@ -241,10 +241,10 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("solvent").oldValue(oldSolvents)
         .newValue(newSolvents));
     // Files.
-    List<String> oldFiles = oldSubmission.getFiles().stream().map(file -> file.getFilename())
+    List<String> oldFiles = oldSubmission.getFiles().stream().map(SubmissionFile::getFilename)
         .collect(Collectors.toList());
     List<String> newFiles =
-        submission.getFiles().stream().map(file -> file.getFilename()).collect(Collectors.toList());
+        submission.getFiles().stream().map(SubmissionFile::getFilename).collect(Collectors.toList());
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
         .oldValue(oldFiles).newValue(newFiles));
 
