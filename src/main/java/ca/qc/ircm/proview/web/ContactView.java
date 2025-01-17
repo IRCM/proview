@@ -8,7 +8,6 @@ import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.files.web.GuidelinesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
@@ -44,7 +43,7 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final long serialVersionUID = -5066595299866514742L;
-  private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
+  private static final Logger logger = LoggerFactory.getLogger(ContactView.class);
   protected H3 proteomicHeader = new H3();
   protected Anchor proteomicNameAnchor = new Anchor();
   protected Span proteomicName = new Span();

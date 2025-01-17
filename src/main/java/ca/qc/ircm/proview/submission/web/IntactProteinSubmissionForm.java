@@ -345,8 +345,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
       try {
         firstSampleBinder.writeBean(sample);
       } catch (ValidationException e) {
-        logger.warn(
-            "firstSampleBinder validation passed, but failed when writing to sample " + sample);
+        logger.warn("firstSampleBinder validation passed, but failed when writing to sample {}",
+            sample);
         throw e;
       }
       submission.getSamples().get(i).setName(samples.getSamplesNames().get(i));
