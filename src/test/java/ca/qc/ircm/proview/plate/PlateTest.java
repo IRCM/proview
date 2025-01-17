@@ -45,9 +45,9 @@ public class PlateTest {
       assertEquals(plate, well.getPlate());
       wellLocations[well.getRow()][well.getColumn()] = true;
     }
-    for (int row = 0; row < wellLocations.length; row++) {
-      for (int column = 0; column < wellLocations[row].length; column++) {
-        assertTrue(wellLocations[row][column]);
+    for (boolean[] wellLocation : wellLocations) {
+      for (boolean b : wellLocation) {
+        assertTrue(b);
       }
     }
   }

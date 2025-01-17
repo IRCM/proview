@@ -437,8 +437,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
       assertEquals("", removeButton.getText());
       validateIcon(VaadinIcon.TRASH.create(), removeButton.getIcon());
     }
-    for (int i = 0; i < files.size(); i++) {
-      SubmissionFile file = files.get(i);
+    for (SubmissionFile file : files) {
       ((Button) test(view.files).getCellComponent(0, view.remove.getKey())).click();
       assertFalse(view.files.getListDataView().getItems().map(SubmissionFile::getFilename)
           .anyMatch(name -> name.equals(file.getFilename())));
