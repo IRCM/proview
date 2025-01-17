@@ -6,6 +6,7 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.binder.ValueContext;
+import java.util.Objects;
 import org.springframework.lang.Nullable;
 
 /**
@@ -26,7 +27,7 @@ public class RequiredIfEnabledValidator<T> implements Validator<T> {
     HasValue<?, T> componentWithValue = (HasValue<?, T>) component;
     if (((HasEnabled) component).isEnabled()) {
       T empty = componentWithValue.getEmptyValue();
-      if (empty == null ? value == null : empty.equals(value)) {
+      if (Objects.equals(empty, value)) {
         return ValidationResult.error(errorMessage);
       }
     }
