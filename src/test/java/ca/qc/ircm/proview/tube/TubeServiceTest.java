@@ -79,17 +79,13 @@ public class TubeServiceTest {
   @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.nameAvailable("FAM119A_band_01");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.nameAvailable("FAM119A_band_01"));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void nameAvailable_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.nameAvailable("FAM119A_band_01");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.nameAvailable("FAM119A_band_01"));
   }
 
   @Test

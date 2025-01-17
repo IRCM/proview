@@ -542,9 +542,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(filter);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(filter));
   }
 
   @Test
@@ -621,9 +619,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionFilter filter = mock(SubmissionFilter.class);
     when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.count(filter);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.count(filter));
   }
 
   private Submission submissionForPrint(Service service) {
@@ -2375,9 +2371,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     files.add(gelImage);
     submission.setFiles(files);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.insert(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.insert(submission));
   }
 
   @Test
@@ -2531,9 +2525,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setUser(user);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      service.update(submission, null);
-    });
+    assertThrows(IllegalArgumentException.class, () -> service.update(submission, null));
   }
 
   @Test
@@ -2542,9 +2534,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(this::detach);
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      service.update(submission, null);
-    });
+    assertThrows(IllegalArgumentException.class, () -> service.update(submission, null));
   }
 
   @Test
@@ -2553,9 +2543,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     submission.getSamples().forEach(this::detach);
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      service.update(submission, null);
-    });
+    assertThrows(IllegalArgumentException.class, () -> service.update(submission, null));
   }
 
   @Test
@@ -2744,9 +2732,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.hide(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.hide(submission));
   }
 
   @Test
@@ -2756,9 +2742,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     detach(submission);
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.hide(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.hide(submission));
   }
 
   @Test
@@ -2788,9 +2772,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
         Optional.empty());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.show(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.show(submission));
   }
 
   @Test
@@ -2802,8 +2784,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(submissionActivityService.update(any(), any())).thenReturn(Optional.of(activity),
         Optional.empty());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.show(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.show(submission));
   }
 }

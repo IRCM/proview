@@ -45,9 +45,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { USER, MANAGER })
   public void get_NotAdmin() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.get(1L);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.get(1L));
   }
 
   @Test
@@ -70,8 +68,6 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   public void all_NotAdmin() {
     Submission submission = new Submission(155L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(submission));
   }
 }

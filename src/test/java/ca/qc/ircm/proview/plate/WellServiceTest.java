@@ -46,16 +46,12 @@ public class WellServiceTest {
   @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.get(129L);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.get(129L));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.get(129L);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.get(129L));
   }
 }

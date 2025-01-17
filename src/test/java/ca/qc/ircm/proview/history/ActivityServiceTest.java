@@ -391,9 +391,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void record_AccessDenied_Anonymous() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.record(activity);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.record(activity));
   }
 
   @Test
@@ -401,9 +399,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void record_AccessDenied() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.record(activity);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.record(activity));
   }
 
   @Test
@@ -443,9 +439,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void all_AccessDenied_Anonymous() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.all(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.all(submission));
   }
 
   @Test
@@ -453,9 +447,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.all(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.all(submission));
   }
 
   @Test
@@ -480,9 +472,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allInsertActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allInsertActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allInsertActivities(plate));
   }
 
   @Test
@@ -490,9 +480,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allInsertActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allInsertActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allInsertActivities(plate));
   }
 
   @Test
@@ -524,9 +512,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allUpdateWellActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allUpdateWellActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allUpdateWellActivities(plate));
   }
 
   @Test
@@ -534,9 +520,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allUpdateWellActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allUpdateWellActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allUpdateWellActivities(plate));
   }
 
   @Test
@@ -586,9 +570,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allTreatmentActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allTreatmentActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allTreatmentActivities(plate));
   }
 
   @Test
@@ -596,9 +578,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allTreatmentActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allTreatmentActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allTreatmentActivities(plate));
   }
 
   @Test
@@ -630,9 +610,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allMsAnalysisActivities_AccessDenied_Anonymous() {
     Plate plate = new Plate(115L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allMsAnalysisActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allMsAnalysisActivities(plate));
   }
 
   @Test
@@ -640,9 +618,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void allMsAnalysisActivities_AccessDenied() {
     Plate plate = new Plate(115L);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.allMsAnalysisActivities(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.allMsAnalysisActivities(plate));
   }
 
   @Test
@@ -681,8 +657,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
         name = submissionRepository.findById(update.getRecordId()).map(Submission::getExperiment)
             .orElseThrow();
       } else if (update.getTableName().equals(Sample.TABLE_NAME)) {
-        name =
-            sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
+        name = sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
       } else if (update.getTableName().equals(Plate.TABLE_NAME)) {
         name = plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
       }
@@ -699,9 +674,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void description_AccessDenied_Anonymous() {
     Activity activity = repository.findById(5543L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.description(activity, locale);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.description(activity, locale));
   }
 
   @Test
@@ -709,9 +682,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   public void description_AccessDenied() {
     Activity activity = repository.findById(5543L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      activityService.description(activity, locale);
-    });
+    assertThrows(AccessDeniedException.class, () -> activityService.description(activity, locale));
   }
 
   @Test

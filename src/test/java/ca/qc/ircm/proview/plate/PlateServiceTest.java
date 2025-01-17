@@ -174,9 +174,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void nameAvailable_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.nameAvailable("unit_test");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.nameAvailable("unit_test"));
   }
 
   private Plate plateForPrint() {
@@ -238,17 +236,15 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void lastTreatmentOrAnalysisDate_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow());
-    });
+    assertThrows(AccessDeniedException.class,
+        () -> service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow()));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void lastTreatmentOrAnalysisDate_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow());
-    });
+    assertThrows(AccessDeniedException.class,
+        () -> service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow()));
   }
 
   @Test
@@ -275,9 +271,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     plate.setName("test_plate_4896415");
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.insert(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.insert(plate));
   }
 
   @Test
@@ -287,9 +281,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     plate.setName("test_plate_4896415");
     when(plateActivityService.insert(any(Plate.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.insert(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.insert(plate));
   }
 
   @Test
@@ -316,9 +308,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.update(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.update(plate));
   }
 
   @Test
@@ -328,9 +318,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     plate.setName("test_plate_4896415");
     when(plateActivityService.update(any(Plate.class))).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.update(plate);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.update(plate));
   }
 
   @Test
@@ -388,9 +376,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation to = new WellLocation(5, 4);
     when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.ban(plate, from, to, "unit test");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.ban(plate, from, to, "unit test"));
   }
 
   @Test
@@ -402,9 +388,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation to = new WellLocation(5, 4);
     when(plateActivityService.ban(anyCollection(), any(String.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.ban(plate, from, to, "unit test");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.ban(plate, from, to, "unit test"));
   }
 
   @Test
@@ -462,9 +446,8 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.activate(plate, location, location, "unit test");
-    });
+    assertThrows(AccessDeniedException.class,
+        () -> service.activate(plate, location, location, "unit test"));
   }
 
   @Test
@@ -475,8 +458,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     WellLocation location = new WellLocation(6, 11);
     when(plateActivityService.activate(anyCollection(), any(String.class))).thenReturn(activity);
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.activate(plate, location, location, "unit test");
-    });
+    assertThrows(AccessDeniedException.class,
+        () -> service.activate(plate, location, location, "unit test"));
   }
 }

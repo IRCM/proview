@@ -61,10 +61,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     Map<String, PasswordEncoder> encoders = new HashMap<>();
     PasswordEncoder defaultPasswordEncoder = new BCryptPasswordEncoder();
     encoders.put(PASSWORD_ENCRYPTION, defaultPasswordEncoder);
-    configuration.passwords().forEach(pv -> {
-      encoders.put(String.valueOf(pv.version()),
-          new ShiroPasswordEncoder(pv.algorithm(), pv.iterations()));
-    });
+    configuration.passwords().forEach(pv -> encoders.put(String.valueOf(pv.version()),
+        new ShiroPasswordEncoder(pv.algorithm(), pv.iterations())));
 
     DelegatingPasswordEncoder passworEncoder =
         new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION, encoders);

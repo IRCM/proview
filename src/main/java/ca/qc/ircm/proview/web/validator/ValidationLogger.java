@@ -18,15 +18,13 @@ public class ValidationLogger {
    *          binder's validation status
    */
   public static void logValidation(BinderValidationStatus<?> status) {
-    status.getFieldValidationErrors().forEach(error -> {
-      logger.trace("Validation error {} for field {}-{} with value {} in binder {}",
-          error.getMessage(), ((Component) error.getField()).getElement().getAttribute("id"),
-          ((Component) error.getField()).getElement().getAttribute("class"),
-          error.getField().getValue(), status.getBinder().getBean());
-    });
-    status.getBeanValidationErrors().forEach(error -> {
-      logger.trace("Validation error {} in binder {}", error.getErrorMessage(),
-          status.getBinder().getBean());
-    });
+    status.getFieldValidationErrors().forEach(
+        error -> logger.trace("Validation error {} for field {}-{} with value {} in binder {}",
+            error.getMessage(), ((Component) error.getField()).getElement().getAttribute("id"),
+            ((Component) error.getField()).getElement().getAttribute("class"),
+            error.getField().getValue(), status.getBinder().getBean()));
+    status.getBeanValidationErrors()
+        .forEach(error -> logger.trace("Validation error {} in binder {}", error.getErrorMessage(),
+            status.getBinder().getBean()));
   }
 }

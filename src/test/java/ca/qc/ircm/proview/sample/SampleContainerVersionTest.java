@@ -28,8 +28,7 @@ public class SampleContainerVersionTest extends AbstractServiceTestCase {
     sampleContainer1.setSample(sample1);
     sampleContainer2.setSample(sample2);
     repository.saveAndFlush(sampleContainer1);
-    assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
-      repository.save(sampleContainer2);
-    });
+    assertThrows(ObjectOptimisticLockingFailureException.class,
+        () -> repository.save(sampleContainer2));
   }
 }

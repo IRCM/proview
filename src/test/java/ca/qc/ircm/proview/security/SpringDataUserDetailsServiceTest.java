@@ -142,9 +142,8 @@ public class SpringDataUserDetailsServiceTest {
   public void loadUserByUsername_NotExists() {
     when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
-    assertThrows(UsernameNotFoundException.class, () -> {
-      userDetailsService.loadUserByUsername("proview@ircm.qc.ca");
-    });
+    assertThrows(UsernameNotFoundException.class,
+        () -> userDetailsService.loadUserByUsername("proview@ircm.qc.ca"));
   }
 
   @Test

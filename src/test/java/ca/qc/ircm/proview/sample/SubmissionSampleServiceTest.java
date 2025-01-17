@@ -149,9 +149,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   @Test
   @WithAnonymousUser
   public void exists_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.exists("CAP_20111013_05");
-    });
+    assertThrows(AccessDeniedException.class, () -> service.exists("CAP_20111013_05"));
   }
 
   @Test
@@ -344,9 +342,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     samples.add(sample2);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.updateStatus(samples);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.updateStatus(samples));
   }
 
   @Test
@@ -363,8 +359,6 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     samples.add(sample2);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.updateStatus(samples);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.updateStatus(samples));
   }
 }

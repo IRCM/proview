@@ -494,9 +494,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   @Test
   public void addFile_OverMaximumCount() {
     SubmissionFile file = files.get(0);
-    IntStream.range(0, MAXIMUM_FILES_COUNT).forEach(i -> {
-      view.addFile(file.getFilename() + i, new ByteArrayInputStream(file.getContent()));
-    });
+    IntStream.range(0, MAXIMUM_FILES_COUNT).forEach(
+        i -> view.addFile(file.getFilename() + i, new ByteArrayInputStream(file.getContent())));
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     view.addFile(file.getFilename() + MAXIMUM_FILES_COUNT,
         new ByteArrayInputStream(file.getContent()));

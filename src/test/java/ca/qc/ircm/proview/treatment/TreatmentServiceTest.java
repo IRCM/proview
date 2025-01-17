@@ -85,17 +85,13 @@ public class TreatmentServiceTest {
   @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      treatmentService.get(1L);
-    });
+    assertThrows(AccessDeniedException.class, () -> treatmentService.get(1L));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      treatmentService.get(1L);
-    });
+    assertThrows(AccessDeniedException.class, () -> treatmentService.get(1L));
   }
 
   @Test
@@ -129,9 +125,7 @@ public class TreatmentServiceTest {
   public void all_AccessDenied_Anonymous() {
     Submission submission = submissionRepository.findById(149L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      treatmentService.all(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> treatmentService.all(submission));
   }
 
   @Test
@@ -139,8 +133,6 @@ public class TreatmentServiceTest {
   public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(149L).orElseThrow();
 
-    assertThrows(AccessDeniedException.class, () -> {
-      treatmentService.all(submission);
-    });
+    assertThrows(AccessDeniedException.class, () -> treatmentService.all(submission));
   }
 }

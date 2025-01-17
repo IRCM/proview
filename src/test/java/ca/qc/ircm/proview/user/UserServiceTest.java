@@ -210,9 +210,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(filter);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(filter));
   }
 
   @Test
@@ -221,9 +219,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());
 
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(filter);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(filter));
   }
 
   @Test
@@ -464,9 +460,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumbers.add(phoneNumber);
     user.setPhoneNumbers(phoneNumbers);
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      service.save(user, "password");
-    });
+    assertThrows(IllegalArgumentException.class, () -> service.save(user, "password"));
   }
 
   @Test
@@ -644,9 +638,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     detach(user);
     user.setManager(false);
 
-    assertThrows(UnmanagedLaboratoryException.class, () -> {
-      service.save(user, null);
-    });
+    assertThrows(UnmanagedLaboratoryException.class, () -> service.save(user, null));
   }
 
   @Test
@@ -720,9 +712,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     user.setEmail("unit_test@ircm.qc.ca");
     user.setLaboratory(new Laboratory("lab test"));
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      service.save(user, null);
-    });
+    assertThrows(IllegalArgumentException.class, () -> service.save(user, null));
   }
 
   @Test

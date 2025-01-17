@@ -480,8 +480,6 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
 
   @Test
   public void setTreatmentId_0() {
-    assertThrows(NoSuchElementException.class, () -> {
-      dialog.setTreatmentId(0);
-    });
+    assertThrows(NoSuchElementException.class, () -> dialog.setTreatmentId(0));
   }
 }

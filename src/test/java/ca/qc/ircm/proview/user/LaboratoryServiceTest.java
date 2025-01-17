@@ -64,9 +64,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   @Test
   @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
   public void all_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all();
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all());
   }
 
   @Test

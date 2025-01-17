@@ -52,17 +52,13 @@ public class ProtocolServiceTest {
   @Test
   @WithAnonymousUser
   public void get_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.get(1L);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.get(1L));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void get_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.get(1L);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.get(1L));
   }
 
   @Test
@@ -86,16 +82,12 @@ public class ProtocolServiceTest {
   @Test
   @WithAnonymousUser
   public void all_AccessDenied_Anonymous() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(DIGESTION);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(DIGESTION));
   }
 
   @Test
   @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
   public void all_AccessDenied() {
-    assertThrows(AccessDeniedException.class, () -> {
-      service.all(DIGESTION);
-    });
+    assertThrows(AccessDeniedException.class, () -> service.all(DIGESTION));
   }
 }
