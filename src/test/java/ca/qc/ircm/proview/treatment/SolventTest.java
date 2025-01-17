@@ -48,9 +48,9 @@ public class SolventTest {
 
   @Test
   public void getLabel_Chcl3() {
-    assertEquals("CHCl\u2083",
+    assertEquals("CHCl₃",
         messageSource.getMessage(SOLVENT_PREFIX + CHCL3.name(), null, Locale.ENGLISH));
-    assertEquals("CHCl\u2083",
+    assertEquals("CHCl₃",
         messageSource.getMessage(SOLVENT_PREFIX + CHCL3.name(), null, Locale.FRENCH));
   }
 
