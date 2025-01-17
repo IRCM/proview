@@ -118,7 +118,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
 
   private Submission submission() {
     Submission submission = new Submission();
-    submission.setSamples(new ArrayList<SubmissionSample>());
+    submission.setSamples(new ArrayList<>());
     submission.getSamples().add(new SubmissionSample());
     submission.getSamples().get(0).setType(sampleType);
     submission.getSamples().get(0).setName(sampleName);

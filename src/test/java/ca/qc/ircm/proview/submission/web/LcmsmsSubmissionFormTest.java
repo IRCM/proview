@@ -184,7 +184,7 @@ public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
     submission.setGoal(goal);
     submission.setTaxonomy(taxonomy);
     submission.setProtein(protein);
-    submission.setSamples(new ArrayList<SubmissionSample>());
+    submission.setSamples(new ArrayList<>());
     submission.getSamples().add(new SubmissionSample());
     submission.getSamples().add(new SubmissionSample());
     submission.getSamples().get(0).setMolecularWeight(molecularWeight);
