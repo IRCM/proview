@@ -57,6 +57,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -429,7 +430,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.sortOrders = Collections.singletonList(submission.id.asc());
     filter.offset = 2;
     filter.limit = 3;
 
@@ -448,7 +449,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.anySampleNameContains = "POLR2A";
-    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.sortOrders = Collections.singletonList(submission.id.asc());
     filter.offset = 2;
     filter.limit = 3;
 
@@ -466,7 +467,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.experiment.asc());
+    filter.sortOrders = Collections.singletonList(submission.experiment.asc());
 
     List<Submission> submissions = service.all(filter);
 
@@ -482,7 +483,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.samples.any().name.asc());
+    filter.sortOrders = Collections.singletonList(submission.samples.any().name.asc());
 
     List<Submission> submissions = service.all(filter);
 
@@ -498,7 +499,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.samples.any().status.asc());
+    filter.sortOrders = Collections.singletonList(submission.samples.any().status.asc());
 
     List<Submission> submissions = service.all(filter);
 
@@ -514,7 +515,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Arrays.asList(submission.samples.any().status.desc());
+    filter.sortOrders = Collections.singletonList(submission.samples.any().status.desc());
 
     List<Submission> submissions = service.all(filter);
 
@@ -593,7 +594,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.anySampleNameContains = "POLR2A";
-    filter.sortOrders = Arrays.asList(submission.id.asc());
+    filter.sortOrders = Collections.singletonList(submission.id.asc());
     filter.offset = 2;
     filter.limit = 3;
 
@@ -643,7 +644,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     sample2.setNumberProtein(6);
     sample2.setMolecularWeight(9.3);
     if (service == Service.SMALL_MOLECULE) {
-      submission.setSamples(new ArrayList<>(Arrays.asList(sample1)));
+      submission.setSamples(new ArrayList<>(List.of(sample1)));
     } else {
       submission.setSamples(new ArrayList<>(Arrays.asList(sample1, sample2)));
     }
@@ -2168,7 +2169,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     submission.setToxicity("none");
     submission.setLightSensitive(true);
     submission.setStorageTemperature(StorageTemperature.LOW);
-    submission.setSolvents(Arrays.asList(Solvent.ACETONITRILE));
+    submission.setSolvents(List.of(Solvent.ACETONITRILE));
     submission.setOtherSolvent("chrisanol");
     submission.setComment("comment");
     submission.setSamples(samples);

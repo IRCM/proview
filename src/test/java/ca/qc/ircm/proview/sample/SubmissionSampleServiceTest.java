@@ -19,9 +19,9 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRole;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -212,7 +212,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(443L).orElseThrow();
@@ -229,7 +229,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.RECEIVED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(559L).orElseThrow();
@@ -244,7 +244,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(443L).orElseThrow();
@@ -259,7 +259,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(443L).orElseThrow();
@@ -275,7 +275,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.DIGESTED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(559L).orElseThrow();
@@ -290,7 +290,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(443L).orElseThrow();
@@ -305,7 +305,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(443L).orElseThrow();
@@ -321,7 +321,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     sample.setStatus(SampleStatus.ANALYSED);
     when(sampleActivityService.updateStatus(any())).thenReturn(Optional.of(activity));
 
-    service.updateStatus(Arrays.asList(sample));
+    service.updateStatus(List.of(sample));
 
     repository.flush();
     sample = repository.findById(621L).orElseThrow();

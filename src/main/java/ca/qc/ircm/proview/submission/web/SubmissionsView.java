@@ -74,7 +74,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,15 +261,14 @@ public class SubmissionsView extends VerticalLayout
         .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
     samples.setVisible(columnVisibility.apply(samples));
     status = submissions
-        .addColumn(LitRenderer.<Submission>of(STATUS_SPAN)
-            .withProperty("statusValue", this::statusesValue)
-            .withProperty("statusTitle", this::statusesTitle))
+        .addColumn(
+            LitRenderer.<Submission>of(STATUS_SPAN).withProperty("statusValue", this::statusesValue)
+                .withProperty("statusTitle", this::statusesTitle))
         .setKey(STATUS).setSortable(false).setFlexGrow(2);
     status.setVisible(columnVisibility.apply(status));
     hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
         .withProperty("hiddenTheme", this::hiddenTheme)
-        .withProperty("hiddenValue", this::hiddenValue)
-        .withProperty("hiddenIcon", this::hiddenIcon)
+        .withProperty("hiddenValue", this::hiddenValue).withProperty("hiddenIcon", this::hiddenIcon)
         .withFunction("toggleHidden", submission -> {
           toggleHidden(submission);
           submissions.getDataProvider().refreshItem(submission);
@@ -371,7 +370,7 @@ public class SubmissionsView extends VerticalLayout
                 .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
                     order.getDirection() == SortDirection.DESCENDING))
                 .collect(Collectors.toList())
-            : Arrays.asList(submission.id.desc());
+            : Collections.singletonList(submission.id.desc());
     submissions.setItems(query -> {
       filter.sortOrders = filterSortOrders.apply(query);
       filter.offset = query.getOffset();

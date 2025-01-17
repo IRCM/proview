@@ -616,7 +616,7 @@ public class SubmissionFilterTest {
 
   @Test
   public void addConditions_Sort_UserAsc() {
-    filter.sortOrders = Arrays.asList(submission.user.name.asc());
+    filter.sortOrders = Collections.singletonList(submission.user.name.asc());
 
     filter.addConditions(query);
 
@@ -625,7 +625,7 @@ public class SubmissionFilterTest {
 
   @Test
   public void addConditions_Sort_UserDesc() {
-    filter.sortOrders = Arrays.asList(submission.user.name.desc());
+    filter.sortOrders = Collections.singletonList(submission.user.name.desc());
 
     filter.addConditions(query);
 
@@ -932,7 +932,7 @@ public class SubmissionFilterTest {
 
   @Test
   public void addCountConditions_Sort_UserAsc() {
-    filter.sortOrders = Arrays.asList(submission.user.name.asc());
+    filter.sortOrders = Collections.singletonList(submission.user.name.asc());
 
     filter.addCountConditions(query);
 
@@ -941,7 +941,7 @@ public class SubmissionFilterTest {
 
   @Test
   public void addCountConditions_Sort_UserDesc() {
-    filter.sortOrders = Arrays.asList(submission.user.name.desc());
+    filter.sortOrders = Collections.singletonList(submission.user.name.desc());
 
     filter.addCountConditions(query);
 
