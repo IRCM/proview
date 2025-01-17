@@ -68,8 +68,4 @@ public class DefaultAddressConfiguration {
   public void setCountry(String country) {
     this.country = country;
   }
-
-  public static String getPrefix() {
-    return PREFIX;
-  }
 }
