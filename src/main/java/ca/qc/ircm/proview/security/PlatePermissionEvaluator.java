@@ -36,11 +36,10 @@ public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if (!(targetDomainObject instanceof Plate)
+    if (!(targetDomainObject instanceof Plate plate)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Plate plate = (Plate) targetDomainObject;
     User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(plate, currentUser, realPermission);

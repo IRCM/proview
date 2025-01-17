@@ -47,8 +47,7 @@ public class DatabaseConverter {
     } else if (value instanceof LocalDate) {
       DateTimeFormatter localDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
       converterValue = localDateFormatter.format((LocalDate) value);
-    } else if (value instanceof Collection) {
-      Collection<?> collection = ((Collection<?>) value);
+    } else if (value instanceof Collection<?> collection) {
       if (collection.isEmpty()) {
         return Optional.empty();
       }

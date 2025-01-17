@@ -136,9 +136,8 @@ public class SampleActivityService {
         .oldValue(oldSample.getVolume()).newValue(newSample.getVolume()));
     updateBuilders.add(sampleUpdateActivity(newSample).column("quantity")
         .oldValue(oldSample.getQuantity()).newValue(newSample.getQuantity()));
-    if (newSample instanceof SubmissionSample) {
+    if (newSample instanceof SubmissionSample newSubmissionSample) {
       SubmissionSample oldSubmissionSample = (SubmissionSample) oldSample;
-      SubmissionSample newSubmissionSample = (SubmissionSample) newSample;
       updateBuilders.add(sampleUpdateActivity(newSample).column("status")
           .oldValue(oldSubmissionSample.getStatus()).newValue(newSubmissionSample.getStatus()));
       updateBuilders.add(sampleUpdateActivity(newSample).column("numberProtein")
@@ -148,9 +147,8 @@ public class SampleActivityService {
           .oldValue(oldSubmissionSample.getMolecularWeight())
           .newValue(newSubmissionSample.getMolecularWeight()));
     }
-    if (newSample instanceof Control) {
+    if (newSample instanceof Control newControl) {
       Control oldControl = (Control) oldSample;
-      Control newControl = (Control) newSample;
       updateBuilders.add(sampleUpdateActivity(newSample).column("controlType")
           .oldValue(oldControl.getControlType()).newValue(newControl.getControlType()));
     }

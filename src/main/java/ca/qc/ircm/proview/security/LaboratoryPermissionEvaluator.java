@@ -34,11 +34,10 @@ public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    if (!(targetDomainObject instanceof Laboratory)
+    if (!(targetDomainObject instanceof Laboratory laboratory)
         || (!(permission instanceof String) && !(permission instanceof Permission))) {
       return false;
     }
-    Laboratory laboratory = (Laboratory) targetDomainObject;
     User currentUser = getUser(authentication).orElse(null);
     Permission realPermission = resolvePermission(permission);
     return hasPermission(laboratory, currentUser, realPermission);
