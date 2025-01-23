@@ -16,7 +16,6 @@ import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
-import com.vaadin.flow.component.grid.editor.EditorImpl;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.radiobutton.dataview.RadioButtonGroupDataView;
@@ -327,25 +326,6 @@ public class VaadinTestUtils {
   public static Optional<BindingValidationStatus<?>>
       findValidationStatusByField(List<BindingValidationStatus<?>> statuses, HasValue<?, ?> field) {
     return statuses.stream().filter(ve -> ve.getField().equals(field)).findFirst();
-  }
-
-  /**
-   * Simulates a open edit event in grid.
-   *
-   * @param grid
-   *          grid
-   * @param value
-   *          value to edit
-   */
-  public static <V> void gridStartEdit(Grid<V> grid, V value) {
-    try {
-      Method method = EditorImpl.class.getDeclaredMethod("doEdit", Object.class);
-      method.setAccessible(true);
-      method.invoke(grid.getEditor(), value);
-    } catch (SecurityException | IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException | NoSuchMethodException e) {
-      throw new IllegalStateException("Could not call doEdit", e);
-    }
   }
 
   /**
