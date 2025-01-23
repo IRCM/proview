@@ -34,9 +34,9 @@ public interface Named {
         builder.append(matcher.group(1) != null ? matcher.group(1) : "");
         int number = Integer.parseInt(matcher.group(2));
         int length = matcher.group(2).length();
-        String newNumber = String.valueOf(number + 1);
+        StringBuilder newNumber = new StringBuilder(String.valueOf(number + 1));
         while (newNumber.length() < length) {
-          newNumber = "0" + newNumber;
+          newNumber.insert(0, "0");
         }
         builder.append(newNumber);
         builder.append(matcher.group(3));
