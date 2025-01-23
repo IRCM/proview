@@ -190,10 +190,8 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> all(Submission submission) {
-    final List<Activity> activities = new ArrayList<>();
     final List<SubmissionSample> samples = submission.getSamples();
-    final List<Long> sampleIds =
-        samples.stream().map(Sample::getId).collect(Collectors.toList());
+    final List<Long> sampleIds = samples.stream().map(Sample::getId).collect(Collectors.toList());
     // Inserts / updates.
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
@@ -203,7 +201,7 @@ public class ActivityService {
     condition =
         condition.or(activity.recordId.in(sampleIds).and(activity.tableName.eq(Sample.TABLE_NAME)));
     query.where(condition);
-    activities.addAll(query.distinct().fetch());
+    final List<Activity> activities = new ArrayList<>(query.distinct().fetch());
     // Treatments.
     query = queryFactory.select(activity);
     query.from(activity);
@@ -278,7 +276,6 @@ public class ActivityService {
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public List<Activity> allTreatmentActivities(Plate plate) {
-    final List<Activity> activities = new ArrayList<>();
     JPAQuery<Activity> query = queryFactory.select(activity);
     query.from(activity);
     query.leftJoin(activity.updates, updateActivity).fetch();
@@ -289,7 +286,7 @@ public class ActivityService {
     query.where(well.eq(treatedSample.container).or(well.eq(treatedSample.destinationContainer)));
     query.where(activity.tableName.eq("treatment"));
     query.where(well.plate.eq(plate));
-    activities.addAll(query.distinct().fetch());
+    final List<Activity> activities = new ArrayList<>(query.distinct().fetch());
 
     activities.sort(new ActivityComparator());
     return activities;
