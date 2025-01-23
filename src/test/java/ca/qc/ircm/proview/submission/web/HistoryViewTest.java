@@ -237,7 +237,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
           test(view.activities).getCellText(i, indexOfColumn(TIMESTAMP)));
       Renderer<Activity> descriptionRawRenderer =
           test(view.activities).getColumn(DESCRIPTION).getRenderer();
-      assertInstanceOf(LitRenderer<Activity>.class, descriptionRawRenderer);
+      assertInstanceOf(LitRenderer.class, descriptionRawRenderer);
       LitRenderer<Activity> descriptionRenderer = (LitRenderer<Activity>) descriptionRawRenderer;
       assertEquals(DESCRIPTION_SPAN, rendererTemplate(descriptionRenderer));
       assertTrue(descriptionRenderer.getValueProviders().containsKey("descriptionValue"));
@@ -249,7 +249,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
       verify(service, times(2)).description(activity, locale);
       Renderer<Activity> explanationRawRenderer =
           test(view.activities).getColumn(EXPLANATION).getRenderer();
-      assertInstanceOf(LitRenderer<Activity>.class, explanationRawRenderer);
+      assertInstanceOf(LitRenderer.class, explanationRawRenderer);
       LitRenderer<Activity> explanationRenderer = (LitRenderer<Activity>) explanationRawRenderer;
       assertEquals(EXPLANATION_SPAN, rendererTemplate(explanationRenderer));
       assertTrue(explanationRenderer.getValueProviders().containsKey("explanationValue"));

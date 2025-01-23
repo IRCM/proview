@@ -485,7 +485,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           test(view.submissions).getCellText(i, indexOfColumn(SAMPLES_COUNT)));
       Renderer<Submission> samplesRawRenderer =
           view.submissions.getColumnByKey(SAMPLES).getRenderer();
-      assertInstanceOf(LitRenderer<Submission>.class, samplesRawRenderer);
+      assertInstanceOf(LitRenderer.class, samplesRawRenderer);
       LitRenderer<Submission> samplesRenderer = (LitRenderer<Submission>) samplesRawRenderer;
       assertEquals(SAMPLES_SPAN, rendererTemplate(samplesRenderer));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesValue"));
@@ -502,7 +502,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
       Renderer<Submission> statusRawRenderer =
           view.submissions.getColumnByKey(STATUS).getRenderer();
-      assertInstanceOf(LitRenderer<Submission>.class, statusRawRenderer);
+      assertInstanceOf(LitRenderer.class, statusRawRenderer);
       LitRenderer<Submission> statusRenderer = (LitRenderer<Submission>) statusRawRenderer;
       assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
@@ -517,7 +517,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           statusRenderer.getValueProviders().get("statusTitle").apply(submission));
       Renderer<Submission> hiddenRawRenderer =
           view.submissions.getColumnByKey(HIDDEN).getRenderer();
-      assertInstanceOf(LitRenderer<Submission>.class, hiddenRawRenderer);
+      assertInstanceOf(LitRenderer.class, hiddenRawRenderer);
       LitRenderer<Submission> hiddenRenderer = (LitRenderer<Submission>) hiddenRawRenderer;
       assertEquals(HIDDEN_BUTTON, rendererTemplate(hiddenRenderer));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenTheme"));

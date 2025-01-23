@@ -315,7 +315,7 @@ public class UsersViewTest extends SpringUIUnitTest {
       assertEquals(user.getLaboratory().getName(),
           test(view.users).getCellText(i, indexOfColumn(LABORATORY)));
       Renderer<User> activeRawRenderer = view.users.getColumnByKey(ACTIVE).getRenderer();
-      assertInstanceOf(LitRenderer<User>.class, activeRawRenderer);
+      assertInstanceOf(LitRenderer.class, activeRawRenderer);
       LitRenderer<User> activeRenderer = (LitRenderer<User>) activeRawRenderer;
       assertEquals(ACTIVE_BUTTON, rendererTemplate(activeRenderer));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeTheme"));
