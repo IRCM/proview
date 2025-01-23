@@ -124,7 +124,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("unit_test");
 
-    assertEquals(true, available);
+    assertTrue(available);
   }
 
   @Test
@@ -135,7 +135,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("A_20111108");
 
-    assertEquals(false, available);
+    assertFalse(available);
   }
 
   @Test
@@ -146,7 +146,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("unit_test");
 
-    assertEquals(true, available);
+    assertTrue(available);
   }
 
   @Test
@@ -157,7 +157,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("Andrew-20171108");
 
-    assertEquals(false, available);
+    assertFalse(available);
   }
 
   @Test
@@ -168,7 +168,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
 
     boolean available = service.nameAvailable("Andrew-20171108");
 
-    assertEquals(true, available);
+    assertTrue(available);
   }
 
   @Test
@@ -335,7 +335,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(plateActivityService).ban(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
     Well well = wellRepository.findById(128L).orElseThrow();
-    assertEquals(true, well.isBanned());
+    assertTrue(well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
     assertTrue(find(loggedWells, 128L).isPresent());
@@ -358,7 +358,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     List<Well> bannedWells = service.get(plate.getId()).orElseThrow().wells(from, to);
     for (Well bannedWell : bannedWells) {
       Well well = wellRepository.findById(bannedWell.getId()).orElseThrow();
-      assertEquals(true, well.isBanned());
+      assertTrue(well.isBanned());
     }
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(bannedWells.size(), loggedWells.size());
@@ -405,7 +405,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
     Well well = wellRepository.findById(211L).orElseThrow();
-    assertEquals(false, well.isBanned());
+    assertFalse(well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(1, loggedWells.size());
     assertTrue(find(loggedWells, 211L).isPresent());
@@ -426,11 +426,11 @@ public class PlateServiceTest extends AbstractServiceTestCase {
     verify(plateActivityService).activate(wellsCaptor.capture(), eq("unit test"));
     verify(activityService).insert(activity);
     Well well = wellRepository.findById(199L).orElseThrow();
-    assertEquals(false, well.isBanned());
+    assertFalse(well.isBanned());
     well = wellRepository.findById(211L).orElseThrow();
-    assertEquals(false, well.isBanned());
+    assertFalse(well.isBanned());
     well = wellRepository.findById(223L).orElseThrow();
-    assertEquals(false, well.isBanned());
+    assertFalse(well.isBanned());
     Collection<Well> loggedWells = wellsCaptor.getValue();
     assertEquals(3, loggedWells.size());
     assertTrue(find(loggedWells, 199L).isPresent());

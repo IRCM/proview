@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,7 +67,7 @@ public class IgnoreConversionIfDisabledConverterTest {
     Result<Double> result = converter.convertToModel(value, context);
     verify(delegate).convertToModel(value, context);
     assertFalse(result.isError());
-    assertEquals(null, result.getOrThrow(ignored -> new IllegalStateException()));
+    assertNull(result.getOrThrow(ignored -> new IllegalStateException()));
   }
 
   @Test

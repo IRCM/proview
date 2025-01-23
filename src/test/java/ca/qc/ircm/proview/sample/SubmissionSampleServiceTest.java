@@ -77,8 +77,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleType.GEL, sample.getType());
     assertEquals(Sample.Category.SUBMISSION, sample.getCategory());
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
-    assertEquals(null, sample.getNumberProtein());
-    assertEquals(null, sample.getMolecularWeight());
+    assertNull(sample.getNumberProtein());
+    assertNull(sample.getMolecularWeight());
     assertEquals((Long) 1L, sample.getSubmission().getId());
     assertEquals(0, sample.getVersion());
   }
@@ -96,8 +96,8 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 32L, sample.getSubmission().getId());
     assertEquals("1.5 μg", sample.getQuantity());
     assertEquals("50 μl", sample.getVolume());
-    assertEquals(null, sample.getNumberProtein());
-    assertEquals(null, sample.getMolecularWeight());
+    assertNull(sample.getNumberProtein());
+    assertNull(sample.getMolecularWeight());
     assertEquals(0, sample.getVersion());
   }
 
@@ -113,7 +113,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    assertEquals(true, exists);
+    assertTrue(exists);
   }
 
   @Test
@@ -123,7 +123,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_80");
 
-    assertEquals(false, exists);
+    assertFalse(exists);
   }
 
   @Test
@@ -133,7 +133,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("CAP_20111013_05");
 
-    assertEquals(false, exists);
+    assertFalse(exists);
   }
 
   @Test
@@ -143,7 +143,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
 
     boolean exists = service.exists("control_01");
 
-    assertEquals(false, exists);
+    assertFalse(exists);
   }
 
   @Test

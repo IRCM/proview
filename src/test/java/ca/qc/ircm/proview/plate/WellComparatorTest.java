@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.plate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.plate.WellComparator.Compare;
@@ -84,7 +85,7 @@ public class WellComparatorTest {
 
     int compare = comparator.compare(well1, well2);
 
-    assertTrue(compare == 0);
+    assertEquals(0, compare);
   }
 
   @Test
@@ -123,7 +124,7 @@ public class WellComparatorTest {
 
     int compare = comparator.compare(well1, well2);
 
-    assertTrue(compare == 0);
+    assertEquals(0, compare);
   }
 
   @Test
@@ -200,6 +201,6 @@ public class WellComparatorTest {
 
     int compare = comparator.compare(well1, well2);
 
-    assertTrue(compare == 0);
+    assertEquals(0, compare);
   }
 }

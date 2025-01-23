@@ -4,6 +4,8 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -78,7 +80,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment digestion = (Treatment) object.get();
     assertEquals((Long) 195L, digestion.getId());
   }
@@ -89,7 +91,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment dilution = (Treatment) object.get();
     assertEquals((Long) 210L, dilution.getId());
   }
@@ -100,7 +102,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment enrichment = (Treatment) object.get();
     assertEquals((Long) 225L, enrichment.getId());
   }
@@ -111,7 +113,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment fractionation = (Treatment) object.get();
     assertEquals((Long) 203L, fractionation.getId());
   }
@@ -124,7 +126,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Acquisition);
+    assertInstanceOf(Acquisition.class, object.orElseThrow());
     Acquisition acquisition = (Acquisition) object.get();
     assertEquals((Long) 1L, acquisition.getId());
   }
@@ -135,7 +137,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof MsAnalysis);
+    assertInstanceOf(MsAnalysis.class, object.orElseThrow());
     MsAnalysis msAnalysis = (MsAnalysis) object.get();
     assertEquals((Long) 19L, msAnalysis.getId());
   }
@@ -146,7 +148,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Plate);
+    assertInstanceOf(Plate.class, object.orElseThrow());
     Plate plate = (Plate) object.get();
     assertEquals((Long) 26L, plate.getId());
   }
@@ -159,7 +161,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Well);
+    assertInstanceOf(Well.class, object.orElseThrow());
     Well well = (Well) object.get();
     assertEquals((Long) 128L, well.getId());
   }
@@ -172,7 +174,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Control);
+    assertInstanceOf(Control.class, object.orElseThrow());
     Control control = (Control) object.get();
     assertEquals((Long) 444L, control.getId());
   }
@@ -183,7 +185,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof SubmissionSample);
+    assertInstanceOf(SubmissionSample.class, object.orElseThrow());
     SubmissionSample sample = (SubmissionSample) object.get();
     assertEquals((Long) 559L, sample.getId());
   }
@@ -196,7 +198,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof SampleContainer);
+    assertInstanceOf(SampleContainer.class, object.orElseThrow());
     SampleContainer container = (SampleContainer) object.get();
     assertEquals((Long) 1L, container.getId());
   }
@@ -209,7 +211,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof SubmissionSample);
+    assertInstanceOf(SubmissionSample.class, object.orElseThrow());
     SubmissionSample sample = (SubmissionSample) object.get();
     assertEquals((Long) 1L, sample.getId());
   }
@@ -220,7 +222,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment solubilisation = (Treatment) object.get();
     assertEquals((Long) 236L, solubilisation.getId());
   }
@@ -231,7 +233,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment standardAddition = (Treatment) object.get();
     assertEquals((Long) 248L, standardAddition.getId());
   }
@@ -242,7 +244,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Submission);
+    assertInstanceOf(Submission.class, object.orElseThrow());
     Submission submission = (Submission) object.get();
     assertEquals((Long) 1L, submission.getId());
   }
@@ -255,7 +257,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof SubmissionFile);
+    assertInstanceOf(SubmissionFile.class, object.orElseThrow());
     SubmissionFile file = (SubmissionFile) object.get();
     assertEquals((Long) 1L, file.getId());
   }
@@ -266,7 +268,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Protocol);
+    assertInstanceOf(Protocol.class, object.orElseThrow());
     Protocol protocol = (Protocol) object.get();
     assertEquals((Long) 1L, protocol.getId());
   }
@@ -279,7 +281,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof TreatedSample);
+    assertInstanceOf(TreatedSample.class, object.orElseThrow());
     TreatedSample ts = (TreatedSample) object.get();
     assertEquals((Long) 1L, ts.getId());
   }
@@ -292,7 +294,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment treatment = (Treatment) object.get();
     assertEquals((Long) 1L, treatment.getId());
   }
@@ -303,7 +305,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Treatment);
+    assertInstanceOf(Treatment.class, object.orElseThrow());
     Treatment transfer = (Treatment) object.get();
     assertEquals((Long) 201L, transfer.getId());
   }
@@ -316,7 +318,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Tube);
+    assertInstanceOf(Tube.class, object.orElseThrow());
     Tube tube = (Tube) object.get();
     assertEquals((Long) 1L, tube.getId());
   }
@@ -329,7 +331,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof ForgotPassword);
+    assertInstanceOf(ForgotPassword.class, object.orElseThrow());
     ForgotPassword forgotPassword = (ForgotPassword) object.get();
     assertEquals((Long) 7L, forgotPassword.getId());
   }
@@ -342,7 +344,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Address);
+    assertInstanceOf(Address.class, object.orElseThrow());
     Address address = (Address) object.get();
     assertEquals((Long) 1L, address.getId());
   }
@@ -355,7 +357,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof Laboratory);
+    assertInstanceOf(Laboratory.class, object.orElseThrow());
     Laboratory laboratory = (Laboratory) object.get();
     assertEquals((Long) 2L, laboratory.getId());
   }
@@ -368,7 +370,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof PhoneNumber);
+    assertInstanceOf(PhoneNumber.class, object.orElseThrow());
     PhoneNumber phoneNumber = (PhoneNumber) object.get();
     assertEquals((Long) 1L, phoneNumber.getId());
   }
@@ -381,7 +383,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Object> object = activityService.record(activity);
 
-    assertTrue(object.orElseThrow() instanceof User);
+    assertInstanceOf(User.class, object.orElseThrow());
     User user = (User) object.get();
     assertEquals((Long) 1L, user.getId());
   }
@@ -459,7 +461,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertFalse(activities.isEmpty());
     Activity activity = activities.get(activities.size() - 1);
     assertEquals(ActionType.INSERT, activity.getActionType());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals((Long) 26L, activity.getRecordId());
     assertEquals("plate", activity.getTableName());
     assertEquals(LocalDateTime.of(2011, 11, 8, 13, 33, 21), activity.getTimestamp());
@@ -535,7 +537,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 9L, activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34, 0), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 4L, activity.getUser().getId());
@@ -544,7 +546,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 129L, updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("sampleId", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
+    assertNull(updateActivity.getOldValue());
     assertEquals("1", updateActivity.getNewValue());
     // Fractionation.
     assertTrue(find(activities, 5569L).isPresent());
@@ -552,7 +554,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("treatment", activity.getTableName());
     assertEquals((Long) 8L, activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(LocalDateTime.of(2011, 11, 16, 13, 31, 13, 0), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 2L, activity.getUser().getId());
@@ -561,7 +563,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals((Long) 128L, updateActivity.getRecordId());
     assertEquals(ActionType.UPDATE, updateActivity.getActionType());
     assertEquals("sampleId", updateActivity.getColumn());
-    assertEquals(null, updateActivity.getOldValue());
+    assertNull(updateActivity.getOldValue());
     assertEquals("1", updateActivity.getNewValue());
   }
 
@@ -592,7 +594,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("msanalysis", activity.getTableName());
     assertEquals((Long) 20L, activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(LocalDateTime.of(2014, 10, 15, 15, 53, 34), activity.getTimestamp());
     assertEquals(1, activity.getUpdates().size());
     assertEquals((Long) 4L, activity.getUser().getId());
@@ -715,7 +717,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     LocalDateTime afterInsert = LocalDateTime.now().plusMinutes(2);
     assertTrue(activity.getTimestamp().isBefore(afterInsert)
         || activity.getTimestamp().equals(afterInsert));
-    assertEquals(true, activity.getUpdates().isEmpty());
+    assertTrue(activity.getUpdates().isEmpty());
     assertEquals(user.getId(), activity.getUser().getId());
   }
 
@@ -769,9 +771,9 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(2, activity.getUpdates().size());
     updateActivity = activity.getUpdates().get(0);
     assertEquals(ActionType.INSERT, updateActivity.getActionType());
-    assertEquals(null, updateActivity.getColumn());
-    assertEquals(null, updateActivity.getNewValue());
-    assertEquals(null, updateActivity.getOldValue());
+    assertNull(updateActivity.getColumn());
+    assertNull(updateActivity.getNewValue());
+    assertNull(updateActivity.getOldValue());
     assertEquals((Long) 12L, updateActivity.getRecordId());
     assertEquals("contaminant", updateActivity.getTableName());
     updateActivity = activity.getUpdates().get(1);

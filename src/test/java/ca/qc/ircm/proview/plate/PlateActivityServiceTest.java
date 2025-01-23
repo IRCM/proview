@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.plate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -59,7 +60,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals("plate", activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -82,7 +83,7 @@ public class PlateActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Plate.TABLE_NAME, activity.getTableName());
     assertEquals(plate.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(user.getId(), activity.getUser().getId());
     final Collection<UpdateActivity> expectedUpdateActivities = new ArrayList<>();
     UpdateActivity nameUpdate = new UpdateActivity();

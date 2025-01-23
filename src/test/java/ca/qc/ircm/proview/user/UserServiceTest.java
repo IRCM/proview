@@ -111,10 +111,10 @@ public class UserServiceTest extends AbstractServiceTestCase {
     PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5556", phoneNumber.getNumber());
-    assertEquals(null, phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isManager());
+    assertNull(phoneNumber.getExtension());
+    assertTrue(user.isActive());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
   }
 
   @Test
@@ -146,17 +146,17 @@ public class UserServiceTest extends AbstractServiceTestCase {
     PhoneNumber phoneNumber = user.getPhoneNumbers().get(0);
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5556", phoneNumber.getNumber());
-    assertEquals(null, phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isManager());
+    assertNull(phoneNumber.getExtension());
+    assertTrue(user.isActive());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
   }
 
   @Test
   public void exists_Email_True() {
     boolean exists = service.exists("christian.poitras@ircm.qc.ca");
 
-    assertEquals(true, exists);
+    assertTrue(exists);
 
     verifyNoInteractions(authenticatedUser);
   }
@@ -165,7 +165,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   public void exists_Email_False() {
     boolean exists = service.exists("abc@ircm.qc.ca");
 
-    assertEquals(false, exists);
+    assertFalse(exists);
 
     verifyNoInteractions(authenticatedUser);
   }
@@ -301,9 +301,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(true, user.isAdmin());
-    assertEquals(false, user.isManager());
+    assertTrue(user.isActive());
+    assertTrue(user.isAdmin());
+    assertFalse(user.isManager());
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 1L, laboratory.getId());
     assertEquals("Admin", laboratory.getName());
@@ -365,9 +365,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(false, user.isManager());
+    assertTrue(user.isActive());
+    assertFalse(user.isAdmin());
+    assertFalse(user.isManager());
     Laboratory laboratory = user.getLaboratory();
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals("Ribonucleoprotein Biochemistry", laboratory.getName());
@@ -431,9 +431,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     assertEquals(PhoneNumberType.WORK, phoneNumber.getType());
     assertEquals("514-555-5500", phoneNumber.getNumber());
     assertEquals("3228", phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isManager());
+    assertTrue(user.isActive());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
   }
 
   @Test
@@ -522,9 +522,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.FAX).orElseThrow();
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
-    assertEquals(false, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(false, user.isManager());
+    assertFalse(user.isActive());
+    assertFalse(user.isAdmin());
+    assertFalse(user.isManager());
   }
 
   @Test
@@ -586,9 +586,9 @@ public class UserServiceTest extends AbstractServiceTestCase {
     phoneNumber = findPhoneNumber(user.getPhoneNumbers(), PhoneNumberType.FAX).orElseThrow();
     assertEquals("514-987-5502", phoneNumber.getNumber());
     assertEquals("1234", phoneNumber.getExtension());
-    assertEquals(true, user.isActive());
-    assertEquals(false, user.isAdmin());
-    assertEquals(true, user.isManager());
+    assertTrue(user.isActive());
+    assertFalse(user.isAdmin());
+    assertTrue(user.isManager());
   }
 
   @Test
@@ -603,7 +603,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     verify(authenticatedUser).hasPermission(eq(user.getLaboratory()), eq(Permission.WRITE));
     user = repository.findById(user.getId()).orElseThrow();
-    assertEquals(true, user.isManager());
+    assertTrue(user.isManager());
   }
 
   @Test
@@ -629,7 +629,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
     repository.flush();
     verify(permissionEvaluator).hasPermission(any(), eq(user), eq(WRITE));
     user = repository.findById(user.getId()).orElseThrow();
-    assertEquals(false, user.isManager());
+    assertFalse(user.isManager());
   }
 
   @Test

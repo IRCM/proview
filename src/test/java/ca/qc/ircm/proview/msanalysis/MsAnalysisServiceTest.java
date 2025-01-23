@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.user.UserRole.USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,8 +39,8 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertEquals(MassDetectionInstrument.LTQ_ORBI_TRAP, msAnalysis.getMassDetectionInstrument());
     assertEquals(MassDetectionInstrumentSource.NSI, msAnalysis.getSource());
     assertEquals(LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0), msAnalysis.getInsertTime());
-    assertEquals(false, msAnalysis.isDeleted());
-    assertEquals(null, msAnalysis.getDeletionExplanation());
+    assertFalse(msAnalysis.isDeleted());
+    assertNull(msAnalysis.getDeletionExplanation());
   }
 
   @Test

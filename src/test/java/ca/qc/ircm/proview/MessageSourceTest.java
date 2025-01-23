@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -21,7 +22,7 @@ public class MessageSourceTest {
 
   @Test
   public void configuration() {
-    assertTrue(messageSource instanceof ReloadableResourceBundleMessageSource);
+    assertInstanceOf(ReloadableResourceBundleMessageSource.class, messageSource);
     ReloadableResourceBundleMessageSource reloadableMessageSource =
         (ReloadableResourceBundleMessageSource) messageSource;
     List<String> basenames =

@@ -119,7 +119,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    assertEquals(null, user.getLastSignAttempt());
+    assertNull(user.getLastSignAttempt());
     assertEquals(Locale.US, user.getLocale());
     assertEquals(LocalDateTime.of(2011, 11, 11, 9, 45, 26), user.getRegisterTime());
     entityManager.refresh(user.getLaboratory());

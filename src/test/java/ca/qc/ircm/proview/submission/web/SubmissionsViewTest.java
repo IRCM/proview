@@ -39,7 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -424,7 +426,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_SelectionMode() {
-    assertTrue(view.submissions.getSelectionModel() instanceof SelectionModel.Single);
+    assertInstanceOf(SelectionModel.Single.class, view.submissions.getSelectionModel());
   }
 
   @Test
@@ -483,7 +485,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           test(view.submissions).getCellText(i, indexOfColumn(SAMPLES_COUNT)));
       Renderer<Submission> samplesRawRenderer =
           view.submissions.getColumnByKey(SAMPLES).getRenderer();
-      assertTrue(samplesRawRenderer instanceof LitRenderer<Submission>);
+      assertInstanceOf(LitRenderer<Submission>.class, samplesRawRenderer);
       LitRenderer<Submission> samplesRenderer = (LitRenderer<Submission>) samplesRawRenderer;
       assertEquals(SAMPLES_SPAN, rendererTemplate(samplesRenderer));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesValue"));
@@ -500,7 +502,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
       Renderer<Submission> statusRawRenderer =
           view.submissions.getColumnByKey(STATUS).getRenderer();
-      assertTrue(statusRawRenderer instanceof LitRenderer<Submission>);
+      assertInstanceOf(LitRenderer<Submission>.class, statusRawRenderer);
       LitRenderer<Submission> statusRenderer = (LitRenderer<Submission>) statusRawRenderer;
       assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
@@ -515,7 +517,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           statusRenderer.getValueProviders().get("statusTitle").apply(submission));
       Renderer<Submission> hiddenRawRenderer =
           view.submissions.getColumnByKey(HIDDEN).getRenderer();
-      assertTrue(hiddenRawRenderer instanceof LitRenderer<Submission>);
+      assertInstanceOf(LitRenderer<Submission>.class, hiddenRawRenderer);
       LitRenderer<Submission> hiddenRenderer = (LitRenderer<Submission>) hiddenRawRenderer;
       assertEquals(HIDDEN_BUTTON, rendererTemplate(hiddenRenderer));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenTheme"));
@@ -577,8 +579,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     Comparator<Submission> comparator =
         test(view.submissions).getColumn(HIDDEN).getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(hidden(false), hidden(true)) < 0);
-    assertTrue(comparator.compare(hidden(false), hidden(false)) == 0);
-    assertTrue(comparator.compare(hidden(true), hidden(true)) == 0);
+    assertEquals(0, comparator.compare(hidden(false), hidden(false)));
+    assertEquals(0, comparator.compare(hidden(true), hidden(true)));
     assertTrue(comparator.compare(hidden(true), hidden(false)) > 0);
   }
 
@@ -994,7 +996,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void instrumentFilter() {
-    assertEquals(null, view.instrumentFilter.getValue());
+    assertNull(view.instrumentFilter.getValue());
     assertTrue(view.instrumentFilter.isClearButtonVisible());
     List<MassDetectionInstrument> instruments = items(view.instrumentFilter);
     assertArrayEquals(MassDetectionInstrument.values(),
@@ -1016,7 +1018,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void serviceFilter() {
-    assertEquals(null, view.serviceFilter.getValue());
+    assertNull(view.serviceFilter.getValue());
     assertTrue(view.serviceFilter.isClearButtonVisible());
     List<Service> values = items(view.serviceFilter);
     assertArrayEquals(Service.values(), values.toArray(new Service[0]));
@@ -1052,7 +1054,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void statusFilter() {
-    assertEquals(null, view.statusFilter.getValue());
+    assertNull(view.statusFilter.getValue());
     assertTrue(view.statusFilter.isClearButtonVisible());
     List<SampleStatus> statuses = items(view.statusFilter);
     assertArrayEquals(SampleStatus.values(), statuses.toArray(new SampleStatus[0]));
@@ -1073,7 +1075,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void hiddenFilter() {
-    assertEquals(null, view.hiddenFilter.getValue());
+    assertNull(view.hiddenFilter.getValue());
     assertTrue(view.hiddenFilter.isClearButtonVisible());
     List<Boolean> values = items(view.hiddenFilter);
     assertArrayEquals(new Boolean[] { false, true }, values.toArray(new Boolean[0]));
@@ -1156,7 +1158,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     assertFalse($(SamplesStatusDialog.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());
   }
@@ -1195,7 +1197,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     assertFalse($(SamplesStatusDialog.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());
   }
@@ -1234,7 +1236,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
     assertFalse($(HistoryView.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());
   }

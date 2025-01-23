@@ -2,6 +2,7 @@ package ca.qc.ircm.proview.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -110,7 +111,7 @@ public class MailServiceTest {
     MimeMessage message = email.getMimeMessage();
     assertEquals("proview", message.getSubject());
     assertEquals(1, message.getFrom().length);
-    assertTrue(message.getFrom()[0] instanceof InternetAddress);
+    assertInstanceOf(InternetAddress.class, message.getFrom()[0]);
     assertEquals("proview@ircm.qc.ca", ((InternetAddress) message.getFrom()[0]).getAddress());
     assertEquals(content, plainContent(message).orElse(""));
   }
@@ -126,9 +127,9 @@ public class MailServiceTest {
     MimeMessage message = email.getMimeMessage();
     assertEquals("proview", message.getSubject());
     assertEquals(1, message.getFrom().length);
-    assertTrue(message.getFrom()[0] instanceof InternetAddress);
+    assertInstanceOf(InternetAddress.class, message.getFrom()[0]);
     assertEquals("proview@ircm.qc.ca", ((InternetAddress) message.getFrom()[0]).getAddress());
-    assertTrue(message.getContent() instanceof Multipart);
+    assertInstanceOf(Multipart.class, message.getContent());
     assertEquals(htmlContent, htmlContent(message).orElse(""));
     assertEquals(textContent, plainContent(message).orElse(""));
   }
@@ -143,9 +144,9 @@ public class MailServiceTest {
     MimeMessage message = email.getMimeMessage();
     assertEquals("proview", message.getSubject());
     assertEquals(1, message.getFrom().length);
-    assertTrue(message.getFrom()[0] instanceof InternetAddress);
+    assertInstanceOf(InternetAddress.class, message.getFrom()[0]);
     assertEquals("proview@ircm.qc.ca", ((InternetAddress) message.getFrom()[0]).getAddress());
-    assertTrue(message.getContent() instanceof Multipart);
+    assertInstanceOf(Multipart.class, message.getContent());
     assertFalse(htmlContent(message).isPresent());
     assertEquals(textContent, plainContent(message).orElse(""));
   }

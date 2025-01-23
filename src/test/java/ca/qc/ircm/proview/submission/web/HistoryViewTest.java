@@ -24,6 +24,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -236,7 +237,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
           test(view.activities).getCellText(i, indexOfColumn(TIMESTAMP)));
       Renderer<Activity> descriptionRawRenderer =
           test(view.activities).getColumn(DESCRIPTION).getRenderer();
-      assertTrue(descriptionRawRenderer instanceof LitRenderer<Activity>);
+      assertInstanceOf(LitRenderer<Activity>.class, descriptionRawRenderer);
       LitRenderer<Activity> descriptionRenderer = (LitRenderer<Activity>) descriptionRawRenderer;
       assertEquals(DESCRIPTION_SPAN, rendererTemplate(descriptionRenderer));
       assertTrue(descriptionRenderer.getValueProviders().containsKey("descriptionValue"));
@@ -248,7 +249,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
       verify(service, times(2)).description(activity, locale);
       Renderer<Activity> explanationRawRenderer =
           test(view.activities).getColumn(EXPLANATION).getRenderer();
-      assertTrue(explanationRawRenderer instanceof LitRenderer<Activity>);
+      assertInstanceOf(LitRenderer<Activity>.class, explanationRawRenderer);
       LitRenderer<Activity> explanationRenderer = (LitRenderer<Activity>) explanationRawRenderer;
       assertEquals(EXPLANATION_SPAN, rendererTemplate(explanationRenderer));
       assertTrue(explanationRenderer.getValueProviders().containsKey("explanationValue"));
@@ -289,7 +290,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
     view.view();
 
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(ACTIVITIES, REQUIRED)),
         ((ErrorNotification) error).getText());
   }

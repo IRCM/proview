@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.submission.web.PrintSubmission.ID;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -95,7 +96,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     Optional<AbstractStreamResource> optionalResource =
         VaadinSession.getCurrent().getResourceRegistry().getResource(new URI(uri));
     assertTrue(optionalResource.isPresent());
-    assertTrue(optionalResource.get() instanceof StreamResource);
+    assertInstanceOf(StreamResource.class, optionalResource.get());
     StreamResource resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
     byte[] file1Content = Files.readAllBytes(
@@ -106,7 +107,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     uri = matcher.group(1);
     optionalResource = VaadinSession.getCurrent().getResourceRegistry().getResource(new URI(uri));
     assertTrue(optionalResource.isPresent());
-    assertTrue(optionalResource.get() instanceof StreamResource);
+    assertInstanceOf(StreamResource.class, optionalResource.get());
     resource = (StreamResource) optionalResource.get();
     resource.getWriter().accept(output, VaadinSession.getCurrent());
     byte[] file2Content = Files.readAllBytes(

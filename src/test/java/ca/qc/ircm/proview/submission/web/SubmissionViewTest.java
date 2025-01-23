@@ -31,6 +31,7 @@ import static ca.qc.ircm.proview.web.UploadInternationalization.frenchUploadI18N
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -426,13 +427,13 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     for (int i = 0; i < files.size(); i++) {
       SubmissionFile file = files.get(i);
       Component filenameComponent = test(view.files).getCellComponent(i, view.filename.getKey());
-      assertTrue(filenameComponent instanceof Anchor);
+      assertInstanceOf(Anchor.class, filenameComponent);
       Anchor filenameAnchor = (Anchor) filenameComponent;
       assertEquals(file.getFilename(), filenameAnchor.getText());
       assertEquals(file.getFilename(), filenameAnchor.getElement().getAttribute("download"));
       assertTrue(filenameAnchor.getHref().startsWith("VAADIN/dynamic/resource"));
       Component removeComponent = test(view.files).getCellComponent(i, view.remove.getKey());
-      assertTrue(removeComponent instanceof Button);
+      assertInstanceOf(Button.class, removeComponent);
       Button removeButton = (Button) removeComponent;
       assertEquals("", removeButton.getText());
       validateIcon(VaadinIcon.TRASH.create(), removeButton.getIcon());

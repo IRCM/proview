@@ -32,7 +32,7 @@ public class WellServiceTest {
     assertNotNull(well.getSample());
     assertEquals((Long) 1L, well.getSample().getId());
     assertEquals(LocalDateTime.of(2011, 11, 16, 15, 7, 34), well.getTimestamp());
-    assertEquals(false, well.isBanned());
+    assertFalse(well.isBanned());
     assertEquals(0, well.getRow());
     assertEquals(1, well.getColumn());
   }

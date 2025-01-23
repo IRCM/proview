@@ -28,6 +28,7 @@ import static ca.qc.ircm.proview.user.web.UsersView.VIEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -244,7 +245,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_SelectionMode() {
-    assertTrue(view.users.getSelectionModel() instanceof SelectionModel.Single);
+    assertInstanceOf(SelectionModel.Single.class, view.users.getSelectionModel());
   }
 
   @Test
@@ -314,7 +315,7 @@ public class UsersViewTest extends SpringUIUnitTest {
       assertEquals(user.getLaboratory().getName(),
           test(view.users).getCellText(i, indexOfColumn(LABORATORY)));
       Renderer<User> activeRawRenderer = view.users.getColumnByKey(ACTIVE).getRenderer();
-      assertTrue(activeRawRenderer instanceof LitRenderer<User>);
+      assertInstanceOf(LitRenderer<User>.class, activeRawRenderer);
       LitRenderer<User> activeRenderer = (LitRenderer<User>) activeRawRenderer;
       assertEquals(ACTIVE_BUTTON, rendererTemplate(activeRenderer));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeTheme"));
@@ -374,8 +375,8 @@ public class UsersViewTest extends SpringUIUnitTest {
     Comparator<User> comparator =
         test(view.users).getColumn(ACTIVE).getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(active(false), active(true)) < 0);
-    assertTrue(comparator.compare(active(false), active(false)) == 0);
-    assertTrue(comparator.compare(active(true), active(true)) == 0);
+    assertEquals(0, comparator.compare(active(false), active(false)));
+    assertEquals(0, comparator.compare(active(true), active(true)));
     assertTrue(comparator.compare(active(true), active(false)) > 0);
   }
 
@@ -454,7 +455,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     view.emailFilter.setValue("test");
     view.emailFilter.setValue("");
 
-    assertEquals(null, view.filter().emailContains);
+    assertNull(view.filter().emailContains);
     verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
@@ -479,7 +480,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     view.nameFilter.setValue("test");
     view.nameFilter.setValue("");
 
-    assertEquals(null, view.filter().nameContains);
+    assertNull(view.filter().nameContains);
     verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
@@ -504,7 +505,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     view.laboratoryFilter.setValue("test");
     view.laboratoryFilter.setValue("");
 
-    assertEquals(null, view.filter().laboratoryNameContains);
+    assertNull(view.filter().laboratoryNameContains);
     verify(view.users.getDataProvider(), times(2)).refreshAll();
   }
 
@@ -571,7 +572,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     verify(service, never()).get(anyLong());
     assertTrue($(UsersView.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
   }
@@ -603,7 +604,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     verify(switchUserService, never()).switchUser(any(), any());
     assertTrue($(UsersView.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
   }
@@ -638,7 +639,7 @@ public class UsersViewTest extends SpringUIUnitTest {
     verify(laboratoryService, never()).get(anyLong());
     assertFalse($(LaboratoryDialog.class).exists());
     Notification error = $(Notification.class).first();
-    assertTrue(error instanceof ErrorNotification);
+    assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
   }

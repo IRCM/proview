@@ -2,6 +2,8 @@ package ca.qc.ircm.proview.sample;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,7 +40,7 @@ public class SampleServiceTest {
     Sample sample = service.get(1L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
-    assertTrue(sample instanceof SubmissionSample);
+    assertInstanceOf(SubmissionSample.class, sample);
     SubmissionSample gelSample = (SubmissionSample) sample;
     assertEquals((Long) 1L, gelSample.getId());
     assertEquals("FAM119A_band_01", gelSample.getName());
@@ -53,7 +55,7 @@ public class SampleServiceTest {
     Sample sample = service.get(442L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
-    assertTrue(sample instanceof SubmissionSample);
+    assertInstanceOf(SubmissionSample.class, sample);
     SubmissionSample eluateSample = (SubmissionSample) sample;
     assertEquals((Long) 442L, eluateSample.getId());
     assertEquals("CAP_20111013_01", eluateSample.getName());
@@ -70,15 +72,15 @@ public class SampleServiceTest {
     Sample sample = service.get(444L).orElseThrow();
 
     verify(permissionEvaluator).hasPermission(any(), eq(sample), eq(READ));
-    assertTrue(sample instanceof Control);
+    assertInstanceOf(Control.class, sample);
     Control control = (Control) sample;
     assertEquals((Long) 444L, control.getId());
     assertEquals("control_01", control.getName());
     assertEquals(SampleType.GEL, control.getType());
     assertEquals(Sample.Category.CONTROL, control.getCategory());
     assertEquals(ControlType.NEGATIVE_CONTROL, control.getControlType());
-    assertEquals(null, control.getVolume());
-    assertEquals(null, control.getQuantity());
+    assertNull(control.getVolume());
+    assertNull(control.getQuantity());
   }
 
   @Test

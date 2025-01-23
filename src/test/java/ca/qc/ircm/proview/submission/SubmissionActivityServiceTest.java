@@ -2,6 +2,9 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -77,7 +80,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(ActionType.INSERT, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
     assertEquals(submission.getId(), activity.getRecordId());
-    assertEquals(null, activity.getExplanation());
+    assertNull(activity.getExplanation());
     assertEquals(user.getId(), activity.getUser().getId());
     LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
   }
@@ -143,7 +146,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
         submissionActivityService.update(newSubmission, "unit_test");
 
     final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    assertEquals(true, optionalActivity.isPresent());
+    assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
@@ -549,7 +552,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
     verify(sampleActivityService).update(eq(submission.getSamples().get(0)), any());
-    assertEquals(true, optionalActivity.isPresent());
+    assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
@@ -581,7 +584,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
-    assertEquals(true, optionalActivity.isPresent());
+    assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
@@ -617,7 +620,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
-    assertEquals(true, optionalActivity.isPresent());
+    assertTrue(optionalActivity.isPresent());
     Activity activity = optionalActivity.orElseThrow();
     assertEquals(ActionType.UPDATE, activity.getActionType());
     assertEquals(Submission.TABLE_NAME, activity.getTableName());
@@ -643,6 +646,6 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
 
     Optional<Activity> optionalActivity = submissionActivityService.update(submission, "unit_test");
 
-    assertEquals(false, optionalActivity.isPresent());
+    assertFalse(optionalActivity.isPresent());
   }
 }

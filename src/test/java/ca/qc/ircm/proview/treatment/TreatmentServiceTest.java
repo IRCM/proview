@@ -4,6 +4,7 @@ import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,15 +40,15 @@ public class TreatmentServiceTest {
     assertEquals(TreatmentType.SOLUBILISATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
     assertEquals(LocalDateTime.of(2011, 10, 13, 11, 45, 0), treatment.getInsertTime());
-    assertEquals(false, treatment.isDeleted());
-    assertEquals(null, treatment.getDeletionExplanation());
+    assertFalse(treatment.isDeleted());
+    assertNull(treatment.getDeletionExplanation());
     List<TreatedSample> treatedSamples = treatment.getTreatedSamples();
     assertEquals(1, treatedSamples.size());
     TreatedSample treatedSample = treatedSamples.get(0);
     assertEquals((Long) 1L, treatedSample.getSample().getId());
     assertEquals(SampleContainerType.TUBE, treatedSample.getContainer().getType());
     assertEquals((Long) 1L, treatedSample.getContainer().getId());
-    assertEquals(null, treatedSample.getComment());
+    assertNull(treatedSample.getComment());
     assertEquals("Methanol", treatedSample.getSolvent());
     assertNotNull(treatedSample.getSolventVolume());
     assertEquals(20.0, treatedSample.getSolventVolume(), 0.01);
@@ -61,8 +62,8 @@ public class TreatmentServiceTest {
     assertEquals(TreatmentType.FRACTIONATION, treatment.getType());
     assertEquals((Long) 4L, treatment.getUser().getId());
     assertEquals(LocalDateTime.of(2011, 10, 19, 12, 20, 33, 0), treatment.getInsertTime());
-    assertEquals(false, treatment.isDeleted());
-    assertEquals(null, treatment.getDeletionExplanation());
+    assertFalse(treatment.isDeleted());
+    assertNull(treatment.getDeletionExplanation());
     assertEquals(FractionationType.MUDPIT, treatment.getFractionationType());
     TreatedSample treatedSample = treatment.getTreatedSamples().get(0);
     assertEquals((Long) 2L, treatedSample.getId());
@@ -71,10 +72,10 @@ public class TreatmentServiceTest {
     assertNotNull(treatedSample.getDestinationContainer());
     assertEquals(SampleContainerType.TUBE, treatedSample.getDestinationContainer().getType());
     assertEquals((Long) 6L, treatedSample.getDestinationContainer().getId());
-    assertEquals(null, treatedSample.getComment());
+    assertNull(treatedSample.getComment());
     assertEquals((Integer) 1, treatedSample.getPosition());
     assertEquals((Integer) 1, treatedSample.getNumber());
-    assertEquals(null, treatedSample.getPiInterval());
+    assertNull(treatedSample.getPiInterval());
   }
 
   @Test
