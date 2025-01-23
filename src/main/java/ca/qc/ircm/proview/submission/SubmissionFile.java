@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @GeneratePropertyNames
 public class SubmissionFile implements Data, Named, Serializable {
   public static final String TABLE_NAME = "submissionfiles";
+  @Serial
   private static final long serialVersionUID = 2146676462335553712L;
   /**
    * Structure database identifier.

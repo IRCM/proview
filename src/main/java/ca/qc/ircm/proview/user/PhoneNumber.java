@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import org.springframework.lang.Nullable;
 
@@ -22,6 +23,7 @@ import org.springframework.lang.Nullable;
 @GeneratePropertyNames
 public class PhoneNumber implements Serializable {
   public static final String TABLE_NAME = "phonenumber";
+  @Serial
   private static final long serialVersionUID = 5548943595609304757L;
   /**
    * Database identifier.

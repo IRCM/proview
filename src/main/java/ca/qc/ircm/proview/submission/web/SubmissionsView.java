@@ -71,6 +71,7 @@ import com.vaadin.flow.router.Route;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.Serial;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -121,6 +122,7 @@ public class SubmissionsView extends VerticalLayout
       messagePrefix(MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
+  @Serial
   private static final long serialVersionUID = 4399000178746918928L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsView.class);
   protected Grid<Submission> submissions = new Grid<>();

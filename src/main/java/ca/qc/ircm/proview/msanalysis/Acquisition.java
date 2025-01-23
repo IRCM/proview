@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import org.springframework.lang.Nullable;
 
@@ -31,6 +32,7 @@ import org.springframework.lang.Nullable;
     justification = ENTITY_EI_EXPOSE_REP)
 public class Acquisition implements Data, Named, Serializable {
   public static final String TABLE_NAME = "acquisition";
+  @Serial
   private static final long serialVersionUID = 4253647399151347110L;
 
   /**

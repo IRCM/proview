@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.security;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -7,6 +8,7 @@ import java.util.Comparator;
  * Comparator for password versions.
  */
 public class PasswordVersionComparator implements Comparator<PasswordVersion>, Serializable {
+  @Serial
   private static final long serialVersionUID = -7244984829370331243L;
 
   public PasswordVersionComparator() {

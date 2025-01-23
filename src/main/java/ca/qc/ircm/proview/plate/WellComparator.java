@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.plate;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -8,6 +9,7 @@ import java.util.Comparator;
  */
 public class WellComparator implements Comparator<Well>, Serializable {
 
+  @Serial
   static final long serialVersionUID = 4182686766891972608L;
 
   /**

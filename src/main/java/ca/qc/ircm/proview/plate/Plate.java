@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class Plate implements Data, Serializable, Named {
   public static final int DEFAULT_COLUMN_COUNT = 12;
   public static final int DEFAULT_ROW_COUNT = 8;
   public static final int DEFAULT_PLATE_SIZE = DEFAULT_COLUMN_COUNT * DEFAULT_ROW_COUNT;
+  @Serial
   private static final long serialVersionUID = 342820436770987756L;
 
   /**

@@ -44,6 +44,7 @@ import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +74,7 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
+  @Serial
   private static final long serialVersionUID = -6131172448162015562L;
   private static final Logger logger = LoggerFactory.getLogger(HistoryView.class);
   protected Grid<Activity> activities = new Grid<>();

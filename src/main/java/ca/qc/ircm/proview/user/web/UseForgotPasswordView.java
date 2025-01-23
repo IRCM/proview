@@ -27,6 +27,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.WildcardParameter;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.Locale;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ public class UseForgotPasswordView extends VerticalLayout implements LocaleChang
     HasUrlParameter<String>, HasDynamicTitle, NotificationComponent {
   private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(UseForgotPasswordView.class);
   public static final String VIEW_NAME = "useforgotpassword";

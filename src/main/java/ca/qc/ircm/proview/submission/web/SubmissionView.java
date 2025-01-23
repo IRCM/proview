@@ -70,6 +70,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
+  @Serial
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SubmissionView.class);
   protected Tabs service = new Tabs();

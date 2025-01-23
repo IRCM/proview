@@ -84,6 +84,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -142,6 +143,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   private static final String PROTEIN_CONTENT_PREFIX = messagePrefix(ProteinContent.class);
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
+  @Serial
   private static final long serialVersionUID = 1460183864073097086L;
   private static final Logger logger = LoggerFactory.getLogger(LcmsmsSubmissionForm.class);
   protected TextField experiment = new TextField();
@@ -606,6 +608,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   }
 
   private static class SamplesNamesConverter implements Converter<String, List<String>> {
+    @Serial
     private static final long serialVersionUID = 8024859234735628305L;
 
     @Override

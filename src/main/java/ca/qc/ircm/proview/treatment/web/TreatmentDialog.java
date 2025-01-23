@@ -40,6 +40,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   private static final String TREATED_SAMPLE_PREFIX = messagePrefix(TreatedSample.class);
   private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
+  @Serial
   private static final long serialVersionUID = -3458086086713549138L;
   private static final Logger logger = LoggerFactory.getLogger(TreatmentDialog.class);
   protected Div deleted = new Div();
@@ -136,7 +138,8 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
     number.setVisible(false);
     piInterval = samples.addColumn(TreatedSample::getPiInterval, PI_INTERVAL).setKey(PI_INTERVAL);
     piInterval.setVisible(false);
-    comment = samples.addColumn(TreatedSample::getComment, COMMENT).setKey(COMMENT).setSortable(false);
+    comment =
+        samples.addColumn(TreatedSample::getComment, COMMENT).setKey(COMMENT).setSortable(false);
   }
 
   @Override

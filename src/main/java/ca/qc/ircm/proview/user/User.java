@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +37,7 @@ public class User implements Data, Named, Serializable {
   public static final String TABLE_NAME = "users";
   public static final String LOCALE_PREFERENCE = "locale";
   public static final long ROBOT_ID = 1L;
+  @Serial
   private static final long serialVersionUID = 4251923438573972499L;
 
   /**

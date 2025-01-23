@@ -17,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
+import java.io.Serial;
 import org.springframework.lang.Nullable;
 
 /**
@@ -29,6 +30,7 @@ import org.springframework.lang.Nullable;
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
 public class SubmissionSample extends Sample implements LaboratoryData, Named {
+  @Serial
   private static final long serialVersionUID = -7652364189294805763L;
 
   /**

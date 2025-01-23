@@ -17,6 +17,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import org.springframework.lang.Nullable;
 
@@ -44,6 +45,7 @@ public abstract class Sample implements Data, Named, Serializable {
   }
 
   public static final String TABLE_NAME = "sample";
+  @Serial
   private static final long serialVersionUID = -3637467720218236079L;
 
   /**

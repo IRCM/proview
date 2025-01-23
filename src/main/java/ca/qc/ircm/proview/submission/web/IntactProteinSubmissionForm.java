@@ -60,6 +60,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -101,6 +102,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
+  @Serial
   private static final long serialVersionUID = 7704703308278059432L;
   protected TextField experiment = new TextField();
   protected TextField goal = new TextField();
@@ -386,6 +388,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   }
 
   private static class SamplesNamesConverter implements Converter<String, List<String>> {
+    @Serial
     private static final long serialVersionUID = 8024859234735628305L;
 
     @Override

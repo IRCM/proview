@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import org.springframework.lang.Nullable;
 
@@ -31,6 +32,7 @@ import org.springframework.lang.Nullable;
     justification = ENTITY_EI_EXPOSE_REP)
 public class TreatedSample implements Data, Serializable {
   public static final String TABLE_NAME = "treatedsample";
+  @Serial
   private static final long serialVersionUID = -1654046284723997439L;
   /**
    * Database identifier.

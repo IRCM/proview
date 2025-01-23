@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.tube;
 
 import ca.qc.ircm.proview.NamedComparator;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import java.util.Locale;
  */
 public class TubeComparator implements Comparator<Tube>, Serializable {
 
+  @Serial
   private static final long serialVersionUID = -3778027579497723915L;
 
   /**

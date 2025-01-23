@@ -20,6 +20,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import org.springframework.context.annotation.Scope;
 public class UserDialog extends Dialog implements LocaleChangeObserver {
   private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = 3285639770914046262L;
   private static final Logger logger = LoggerFactory.getLogger(UserDialog.class);
   public static final String ID = "user-dialog";

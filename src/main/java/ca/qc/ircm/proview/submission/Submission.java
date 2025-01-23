@@ -35,6 +35,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,6 +53,7 @@ import org.springframework.lang.Nullable;
     justification = ENTITY_EI_EXPOSE_REP)
 public class Submission implements Data, Named, LaboratoryData, Serializable {
   public static final String TABLE_NAME = "submission";
+  @Serial
   private static final long serialVersionUID = 2223809698076034086L;
 
   /**

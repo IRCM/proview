@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import org.springframework.lang.Nullable;
@@ -35,6 +36,7 @@ import org.springframework.lang.Nullable;
     justification = ENTITY_EI_EXPOSE_REP)
 public abstract class SampleContainer implements Data, Named, Serializable {
   public static final String TABLE_NAME = "samplecontainer";
+  @Serial
   private static final long serialVersionUID = -2976707906426974263L;
 
   /**

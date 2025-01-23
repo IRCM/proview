@@ -14,6 +14,7 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import java.io.Serial;
 import org.springframework.lang.Nullable;
 
 /**
@@ -26,6 +27,7 @@ public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
   public static final String PASSWORDS_NOT_MATCH = property(PASSWORD, "notMatch");
   private static final String MESSAGES_PREFIX = messagePrefix(PasswordsForm.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = -2396373044368644264L;
   protected PasswordField password = new PasswordField();
   protected PasswordField passwordConfirm = new PasswordField();

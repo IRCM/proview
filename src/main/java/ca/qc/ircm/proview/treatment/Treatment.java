@@ -19,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,6 +51,7 @@ public class Treatment implements Data, Serializable {
   }
 
   public static final String TABLE_NAME = "treatment";
+  @Serial
   private static final long serialVersionUID = 3942922473290365646L;
 
   /**

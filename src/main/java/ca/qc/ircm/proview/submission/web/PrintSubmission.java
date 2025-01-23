@@ -17,6 +17,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Scope;
 @JsModule("./styles/print-submission-styles.js")
 public class PrintSubmission extends VerticalLayout implements LocaleChangeObserver {
   public static final String ID = "print-submission";
+  @Serial
   private static final long serialVersionUID = 480796342756791299L;
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmission.class);
   @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = CHILD_COMPONENT_EI_EXPOSE_REP)

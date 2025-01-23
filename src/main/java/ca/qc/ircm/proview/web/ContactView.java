@@ -22,6 +22,7 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.Serial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ public class ContactView extends VerticalLayout implements LocaleChangeObserver,
   public static final String LINK = "link";
   private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = -5066595299866514742L;
   private static final Logger logger = LoggerFactory.getLogger(ContactView.class);
   protected H3 proteomicHeader = new H3();

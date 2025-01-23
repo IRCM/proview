@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.security;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,7 @@ import java.io.Serializable;
 public record PasswordVersion(int version, String algorithm, int iterations)
     implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 5651330672498933304L;
 
   @Override

@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.history;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -7,6 +8,7 @@ import java.util.Comparator;
  * Comparator for history objects.
  */
 public class ActivityComparator implements Comparator<Activity>, Serializable {
+  @Serial
   private static final long serialVersionUID = 447023857161219684L;
 
   /**

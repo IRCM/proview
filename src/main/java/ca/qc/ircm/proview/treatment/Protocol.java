@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -30,6 +31,7 @@ public class Protocol implements Data, Serializable, Named {
   }
 
   public static final String TABLE_NAME = "protocol";
+  @Serial
   private static final long serialVersionUID = -7624493017948317986L;
 
   /**

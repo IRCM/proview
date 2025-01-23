@@ -49,6 +49,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -77,6 +78,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
+  @Serial
   private static final long serialVersionUID = 7704703308278059432L;
   private static final Logger logger = LoggerFactory.getLogger(SmallMoleculeSubmissionForm.class);
   protected RadioButtonGroup<SampleType> sampleType = new RadioButtonGroup<>();

@@ -46,6 +46,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -65,6 +66,7 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
   private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = 3285639770914046262L;
   public static final String ID = "user-form";
   public static final String HEADER = "header";

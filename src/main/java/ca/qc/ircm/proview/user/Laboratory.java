@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @GeneratePropertyNames
 public class Laboratory implements Data, Named, Serializable {
   public static final String TABLE_NAME = "laboratory";
+  @Serial
   private static final long serialVersionUID = 8294913257061846746L;
 
   /**

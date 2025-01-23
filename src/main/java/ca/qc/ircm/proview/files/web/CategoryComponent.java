@@ -11,12 +11,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
+import java.io.Serial;
 
 /**
  * Category component.
  */
 public class CategoryComponent extends VerticalLayout {
   public static final String CATEGORY = "category";
+  @Serial
   private static final long serialVersionUID = -6619674234077142003L;
   protected H3 header = new H3();
 

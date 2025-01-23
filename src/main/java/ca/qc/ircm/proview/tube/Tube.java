@@ -8,6 +8,7 @@ import ca.qc.ircm.proview.sample.SampleContainerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @DiscriminatorValue("TUBE")
 @GeneratePropertyNames
 public class Tube extends SampleContainer implements Data, Named, Serializable {
+  @Serial
   private static final long serialVersionUID = 2723772707033001099L;
 
   /**

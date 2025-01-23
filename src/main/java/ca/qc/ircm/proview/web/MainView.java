@@ -8,6 +8,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.Serial;
 
 /**
  * Main view.
@@ -16,6 +17,7 @@ import jakarta.annotation.security.RolesAllowed;
 @RolesAllowed({ USER })
 public class MainView extends VerticalLayout implements BeforeEnterObserver {
   public static final String VIEW_NAME = "";
+  @Serial
   private static final long serialVersionUID = -4472228116629914718L;
 
   @Override

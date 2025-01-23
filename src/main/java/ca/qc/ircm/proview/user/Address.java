@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @GeneratePropertyNames
 public class Address implements Serializable {
   public static final String TABLE_NAME = "address";
+  @Serial
   private static final long serialVersionUID = 6036866850504348215L;
   /**
    * Database identifier.

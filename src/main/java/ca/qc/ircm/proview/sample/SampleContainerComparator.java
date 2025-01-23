@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.sample;
 
 import ca.qc.ircm.proview.plate.Well;
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import java.util.Locale;
  * Comparator for sample containers.
  */
 public class SampleContainerComparator implements Comparator<SampleContainer>, Serializable {
+  @Serial
   private static final long serialVersionUID = -1704857519143636051L;
   private final Locale locale;
 

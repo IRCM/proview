@@ -4,12 +4,14 @@ import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
+import java.io.Serial;
 import org.springframework.lang.Nullable;
 
 /**
  * Ignores conversion to model error, but only if component is disabled.
  */
 public class IgnoreConversionIfDisabledConverter<P, M> implements Converter<P, M> {
+  @Serial
   private static final long serialVersionUID = -7086544375971670487L;
   private Converter<P, M> delegate;
   private M errorValue;

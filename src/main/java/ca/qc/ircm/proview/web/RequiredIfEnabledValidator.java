@@ -6,6 +6,7 @@ import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.binder.ValueContext;
+import java.io.Serial;
 import java.util.Objects;
 import org.springframework.lang.Nullable;
 
@@ -13,6 +14,7 @@ import org.springframework.lang.Nullable;
  * Validates that value is not empty, but only if component is enabled.
  */
 public class RequiredIfEnabledValidator<T> implements Validator<T> {
+  @Serial
   private static final long serialVersionUID = 8981491477845535933L;
   private String errorMessage;
 

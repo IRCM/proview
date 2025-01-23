@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.security;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.apache.shiro.authz.Permission;
 
@@ -7,6 +8,7 @@ import org.apache.shiro.authz.Permission;
  * Permission of a maintenance robot.
  */
 public class RobotPermission implements Permission, Serializable {
+  @Serial
   private static final long serialVersionUID = -30223836569004334L;
 
   public RobotPermission() {

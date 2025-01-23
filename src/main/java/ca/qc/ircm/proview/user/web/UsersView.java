@@ -51,6 +51,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,6 +85,7 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
   private static final long serialVersionUID = 1051684045824404864L;
   private static final Logger logger = LoggerFactory.getLogger(UsersView.class);
   protected Grid<User> users = new Grid<>();
@@ -158,11 +160,11 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
             .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()))
             .setFlexGrow(3);
     active = users
-        .addColumn(LitRenderer.<User>of(ACTIVE_BUTTON)
-            .withProperty("activeTheme", this::activeTheme)
-            .withProperty("activeValue", this::activeValue)
-            .withProperty("activeIcon", this::activeIcon)
-            .withFunction("toggleActive", this::toggleActive))
+        .addColumn(
+            LitRenderer.<User>of(ACTIVE_BUTTON).withProperty("activeTheme", this::activeTheme)
+                .withProperty("activeValue", this::activeValue)
+                .withProperty("activeIcon", this::activeIcon)
+                .withFunction("toggleActive", this::toggleActive))
         .setKey(ACTIVE).setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     active.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     users.appendHeaderRow(); // Headers.

@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.plate;
 
 import ca.qc.ircm.proview.NamedComparator;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.Locale;
  */
 public class PlateComparator implements Comparator<Plate>, Serializable {
 
+  @Serial
   static final long serialVersionUID = 2810870614255728640L;
 
   /**

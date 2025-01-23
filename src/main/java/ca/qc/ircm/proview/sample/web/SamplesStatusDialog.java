@@ -41,6 +41,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SamplesStatusDialog extends Dialog
     implements LocaleChangeObserver, NotificationComponent {
+  @Serial
   private static final long serialVersionUID = -5878136560444849327L;
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
@@ -112,8 +114,8 @@ public class SamplesStatusDialog extends Dialog
         sample -> Objects.toString(sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
         .setComparator(NormalizedComparator.of(Sample::getName)).setFlexGrow(2);
-    status = samples.addColumn(new ComponentRenderer<>(this::status)).setKey(STATUS)
-        .setSortable(false);
+    status =
+        samples.addColumn(new ComponentRenderer<>(this::status)).setKey(STATUS).setSortable(false);
     samples.appendHeaderRow(); // Headers.
     HeaderRow allRow = samples.appendHeaderRow();
     allRow.getCell(status).setComponent(allStatus);

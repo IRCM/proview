@@ -13,6 +13,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.MessageFormat;
 
@@ -26,6 +27,7 @@ import java.text.MessageFormat;
     value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
     justification = ENTITY_EI_EXPOSE_REP)
 public class Well extends SampleContainer implements Data, Named, Serializable {
+  @Serial
   private static final long serialVersionUID = 212003765334493656L;
 
   /**

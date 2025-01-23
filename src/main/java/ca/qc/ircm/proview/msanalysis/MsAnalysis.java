@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.springframework.lang.Nullable;
     justification = ENTITY_EI_EXPOSE_REP)
 public class MsAnalysis implements Data, Serializable {
   public static final String TABLE_NAME = "msanalysis";
+  @Serial
   private static final long serialVersionUID = 7334138327920441104L;
 
   /**

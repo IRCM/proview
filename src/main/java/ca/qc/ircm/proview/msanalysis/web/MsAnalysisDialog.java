@@ -31,6 +31,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
+import java.io.Serial;
 import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
       messagePrefix(MassDetectionInstrument.class);
   private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
       messagePrefix(MassDetectionInstrumentSource.class);
+  @Serial
   private static final long serialVersionUID = -6114501684325516594L;
   private static final Logger logger = LoggerFactory.getLogger(MsAnalysisDialog.class);
   protected Div deleted = new Div();
