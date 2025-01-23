@@ -10,7 +10,7 @@ import java.util.Comparator;
 public class WellComparator implements Comparator<Well>, Serializable {
 
   @Serial
-  static final long serialVersionUID = 4182686766891972608L;
+  private static final long serialVersionUID = 4182686766891972608L;
 
   /**
    * Comparison types.

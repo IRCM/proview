@@ -13,7 +13,7 @@ import java.util.Locale;
 public class PlateComparator implements Comparator<Plate>, Serializable {
 
   @Serial
-  static final long serialVersionUID = 2810870614255728640L;
+  private static final long serialVersionUID = 2810870614255728640L;
 
   /**
    * Comparison used.
