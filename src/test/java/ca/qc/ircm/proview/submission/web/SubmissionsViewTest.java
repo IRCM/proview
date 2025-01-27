@@ -498,8 +498,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           submission.getSamples().stream().map(SubmissionSample::getName)
               .collect(Collectors.joining("\n")),
           samplesRenderer.getValueProviders().get("samplesTitle").apply(submission));
-      List<SampleStatus> statuses = submission.getSamples().stream()
-          .map(SubmissionSample::getStatus).distinct().collect(Collectors.toList());
+      List<SampleStatus> statuses =
+          submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
       Renderer<Submission> statusRawRenderer =
           view.submissions.getColumnByKey(STATUS).getRenderer();
       assertInstanceOf(LitRenderer.class, statusRawRenderer);

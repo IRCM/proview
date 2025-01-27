@@ -231,8 +231,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   @Test
   public void allStatus_Changed() {
     Submission submission = repository.findById(163L).orElseThrow();
-    assertTrue(submission.getSamples().stream()
-        .filter(sa -> sa.getStatus() != SampleStatus.ANALYSED).findFirst().isPresent());
+    assertTrue(
+        submission.getSamples().stream().anyMatch(sa -> sa.getStatus() != SampleStatus.ANALYSED));
     dialog.allStatus.setValue(SampleStatus.ANALYSED);
     for (SubmissionSample sample : submission.getSamples()) {
       assertEquals(SampleStatus.ANALYSED, dialog.status(sample).getValue());

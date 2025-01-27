@@ -1450,8 +1450,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         messageSource.getMessage("submission.print.submission.highResolution.true", null, locale)));
     assertTrue(content.contains("class=\"solvent\""));
     for (Solvent solvent : Solvent.values()) {
-      assertEquals(
-          submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
+      assertEquals(submission.getSolvents().stream().anyMatch(ss -> ss == solvent),
           content.contains(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),
           solvent.name());
     }
@@ -1579,8 +1578,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content
         .contains(messageSource.getMessage(SOLVENT_PREFIX + Solvent.OTHER.name(), null, locale)));
     for (Solvent solvent : Solvent.values()) {
-      assertEquals(
-          submission.getSolvents().stream().filter(ss -> ss == solvent).findAny().isPresent(),
+      assertEquals(submission.getSolvents().stream().anyMatch(ss -> ss == solvent),
           content.contains(
               solvent == Solvent.OTHER ? Objects.requireNonNull(submission.getOtherSolvent())
                   : messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)),

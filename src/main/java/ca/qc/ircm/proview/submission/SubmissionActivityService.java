@@ -212,11 +212,10 @@ public class SubmissionActivityService {
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column(qname(qsubmission.hidden))
         .oldValue(oldSubmission.isHidden()).newValue(submission.isHidden()));
     // Sample.
-    Set<Long> oldSampleIds =
-        oldSubmission.getSamples().stream().filter(sample -> sample.getId() != 0)
-            .map(Sample::getId).collect(Collectors.toSet());
-    Set<Long> newSampleIds = submission.getSamples().stream().filter(sample -> sample.getId() != 0)
-        .map(Sample::getId).collect(Collectors.toSet());
+    Set<Long> oldSampleIds = oldSubmission.getSamples().stream().map(Sample::getId)
+        .filter(id -> id != 0).collect(Collectors.toSet());
+    Set<Long> newSampleIds = submission.getSamples().stream().map(Sample::getId)
+        .filter(id -> id != 0).collect(Collectors.toSet());
     for (SubmissionSample sample : oldSubmission.getSamples()) {
       if (!newSampleIds.contains(sample.getId())) {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.DELETE)
@@ -226,8 +225,8 @@ public class SubmissionActivityService {
     for (SubmissionSample sample : submission.getSamples()) {
       if (oldSampleIds.contains(sample.getId())) {
         Optional<Activity> optionalActivity = sampleActivityService.update(sample, explanation);
-        optionalActivity.ifPresent(activity -> updateBuilders.addAll(activity.getUpdates().stream()
-            .map(UpdateActivityBuilder::new).collect(Collectors.toList())));
+        optionalActivity.ifPresent(activity -> updateBuilders
+            .addAll(activity.getUpdates().stream().map(UpdateActivityBuilder::new).toList()));
       } else {
         updateBuilders.add(new UpdateActivityBuilder().actionType(ActionType.INSERT)
             .tableName(Sample.TABLE_NAME).recordId(sample.getId()));
@@ -243,8 +242,8 @@ public class SubmissionActivityService {
     // Files.
     List<String> oldFiles = oldSubmission.getFiles().stream().map(SubmissionFile::getFilename)
         .collect(Collectors.toList());
-    List<String> newFiles =
-        submission.getFiles().stream().map(SubmissionFile::getFilename).collect(Collectors.toList());
+    List<String> newFiles = submission.getFiles().stream().map(SubmissionFile::getFilename)
+        .collect(Collectors.toList());
     updateBuilders.add(new SubmissionUpdateActivityBuilder().column("submissionfiles")
         .oldValue(oldFiles).newValue(newFiles));
 

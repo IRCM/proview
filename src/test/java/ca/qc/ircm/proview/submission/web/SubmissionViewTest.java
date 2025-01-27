@@ -250,12 +250,11 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     submission.setProtein("my protein");
     submission.setPostTranslationModification("glyco");
     List<SubmissionSample> samples = IntStream.range(0, 2)
-        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1))).map(sa -> {
+        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1))).peek(sa -> {
           sa.setType(SampleType.SOLUTION);
           sa.setMolecularWeight(12.3);
           sa.setQuantity("13g");
           sa.setVolume("9 ml");
-          return sa;
         }).collect(Collectors.toList());
     submission.setSamples(samples);
     submission.setSeparation(GelSeparation.TWO_DIMENSION);
@@ -288,12 +287,11 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     submission.setProtein("my protein");
     submission.setPostTranslationModification("glyco");
     List<SubmissionSample> samples = IntStream.range(0, 2)
-        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1))).map(sa -> {
+        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1))).peek(sa -> {
           sa.setType(SampleType.SOLUTION);
           sa.setMolecularWeight(12.3);
           sa.setQuantity("13g");
           sa.setVolume("9 ml");
-          return sa;
         }).collect(Collectors.toList());
     submission.setSamples(samples);
     submission.setInjectionType(InjectionType.LC_MS);
@@ -306,11 +304,9 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   private Submission smallMoleculeSubmission() {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
-    List<SubmissionSample> samples = IntStream.range(0, 1)
-        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1))).map(sa -> {
-          sa.setType(SampleType.SOLUTION);
-          return sa;
-        }).collect(Collectors.toList());
+    List<SubmissionSample> samples =
+        IntStream.range(0, 1).mapToObj(i -> new SubmissionSample("my sample " + (i + 1)))
+            .peek(sa -> sa.setType(SampleType.SOLUTION)).collect(Collectors.toList());
     submission.setSamples(samples);
     submission.setSolutionSolvent("ethanol");
     submission.setFormula("ch3oh");

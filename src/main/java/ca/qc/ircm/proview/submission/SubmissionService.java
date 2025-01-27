@@ -327,7 +327,7 @@ public class SubmissionService {
 
   private boolean anyStatusGreaterOrEquals(Submission submission, SampleStatus status) {
     return submission.getSamples().stream()
-        .filter(sample -> status.compareTo(sample.getStatus()) <= 0).findAny().isPresent();
+        .anyMatch(sample -> status.compareTo(sample.getStatus()) <= 0);
   }
 
   private void doUpdate(Submission submission) throws IllegalArgumentException {

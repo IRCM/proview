@@ -393,7 +393,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
 
     @Override
     public Result<List<String>> convertToModel(String value, ValueContext context) {
-      return Result.ok(Arrays.asList(value.split("\\s*[,;\\t\\n]\\s*")).stream()
+      return Result.ok(Arrays.stream(value.split("\\s*[,;\\t\\n]\\s*"))
           .filter(val -> !val.isEmpty()).collect(Collectors.toList()));
     }
 

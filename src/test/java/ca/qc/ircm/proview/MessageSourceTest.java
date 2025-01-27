@@ -2,11 +2,9 @@ package ca.qc.ircm.proview;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +23,7 @@ public class MessageSourceTest {
     assertInstanceOf(ReloadableResourceBundleMessageSource.class, messageSource);
     ReloadableResourceBundleMessageSource reloadableMessageSource =
         (ReloadableResourceBundleMessageSource) messageSource;
-    List<String> basenames =
-        reloadableMessageSource.getBasenameSet().stream().collect(Collectors.toList());
+    List<String> basenames = reloadableMessageSource.getBasenameSet().stream().toList();
     assertEquals(2, basenames.size());
     String currentDir = FilenameUtils.separatorsToUnix(System.getProperty("user.dir"));
     assertEquals("file:" + currentDir + "/messages", basenames.get(0));

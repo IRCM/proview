@@ -61,7 +61,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -581,8 +580,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   public void isValid_DuplicatedSamplesNames() {
     setFields();
     form.samplesCount.setValue("3");
-    form.samplesNames.setValue(
-        Stream.of(sampleName1, sampleName2, sampleName2).collect(Collectors.joining(", ")));
+    form.samplesNames.setValue(String.join(", ", sampleName1, sampleName2, sampleName2));
 
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();

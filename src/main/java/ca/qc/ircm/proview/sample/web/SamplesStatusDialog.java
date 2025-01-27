@@ -123,9 +123,8 @@ public class SamplesStatusDialog extends Dialog
     allStatus.setClearButtonVisible(true);
     allStatus.setItems(SampleStatus.values());
     allStatus.setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
-    allStatus.addValueChangeListener(
-        e -> Optional.ofNullable(e.getValue()).ifPresent(status -> submission.getSamples().stream()
-            .forEach(sample -> status(sample).setValue(status))));
+    allStatus.addValueChangeListener(e -> Optional.ofNullable(e.getValue()).ifPresent(
+        status -> submission.getSamples().forEach(sample -> status(sample).setValue(status))));
     addOpenedChangeListener(e -> allStatus.clear());
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     save.setId(id(SAVE));
@@ -210,7 +209,7 @@ public class SamplesStatusDialog extends Dialog
 
   private boolean validate() {
     return submission != null && !submission.getSamples().isEmpty()
-        && validateSamples().stream().filter(status -> !status.isOk()).findAny().isEmpty();
+        && validateSamples().stream().allMatch(BinderValidationStatus::isOk);
   }
 
   private void save() {

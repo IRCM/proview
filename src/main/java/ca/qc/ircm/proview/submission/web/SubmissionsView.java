@@ -392,15 +392,15 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String statusesValue(Submission submission) {
-    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
-        .distinct().collect(Collectors.toList());
+    List<SampleStatus> statuses =
+        submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
     return getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
         getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size());
   }
 
   private String statusesTitle(Submission submission) {
-    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
-        .distinct().collect(Collectors.toList());
+    List<SampleStatus> statuses =
+        submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
     return statuses.stream().map(status -> getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
         .collect(Collectors.joining("\n"));
   }

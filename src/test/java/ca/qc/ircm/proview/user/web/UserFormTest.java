@@ -291,8 +291,7 @@ public class UserFormTest extends SpringUIUnitTest {
     List<Laboratory> values = items(form.laboratory);
     assertEquals(laboratories.size(), values.size());
     for (Laboratory laboratory : laboratories) {
-      assertTrue(
-          values.stream().filter(lab -> lab.getId() == laboratory.getId()).findAny().isPresent());
+      assertTrue(values.stream().anyMatch(lab -> lab.getId() == laboratory.getId()));
       assertEquals(laboratory.getName(), form.laboratory.getItemLabelGenerator().apply(laboratory));
     }
   }
