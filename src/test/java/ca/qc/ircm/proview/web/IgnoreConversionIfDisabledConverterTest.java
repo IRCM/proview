@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
@@ -36,7 +35,7 @@ public class IgnoreConversionIfDisabledConverterTest {
   @BeforeEach
   public void before() {
     converter = new IgnoreConversionIfDisabledConverter<>(delegate);
-    when(context.getComponent()).thenReturn(Optional.of((Component) component));
+    when(context.getComponent()).thenReturn(Optional.of(component));
   }
 
   @Test

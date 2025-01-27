@@ -72,7 +72,7 @@ public class UserPreferenceServiceTest {
   @Test
   public void get() {
     assertEquals("value 1", service.get(this, PREFERENCE_1).orElse("default value"));
-    assertEquals((Integer) 208, service.get(this, PREFERENCE_2).orElse(20));
+    assertEquals(208, service.get(this, PREFERENCE_2).orElse(20));
   }
 
   @Test
@@ -80,7 +80,7 @@ public class UserPreferenceServiceTest {
     when(authenticatedUser.getUser()).thenReturn(userRepository.findById(10L));
 
     assertEquals("default value", service.get(this, PREFERENCE_1).orElse("default value"));
-    assertEquals((Integer) 20, service.get(this, PREFERENCE_2).orElse(20));
+    assertEquals(20, service.get(this, PREFERENCE_2).orElse(20));
   }
 
   @Test
