@@ -16,7 +16,6 @@ import ca.qc.ircm.proview.ApplicationConfiguration;
 import ca.qc.ircm.proview.mail.MailService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,10 +88,8 @@ public class ForgotPasswordServiceTest {
 
     assertEquals((Long) 9L, forgotPassword.getId());
     assertEquals("174407008", forgotPassword.getConfirmNumber());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
-    assertTrue(LocalDateTime.now().minus(2, ChronoUnit.MINUTES)
-        .isBefore(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(forgotPassword.getRequestMoment()));
   }
 
   @Test
@@ -135,10 +132,8 @@ public class ForgotPasswordServiceTest {
     verify(mailService).send(email);
     forgotPassword = repository.findById(forgotPassword.getId()).orElseThrow();
     assertNotNull(forgotPassword.getConfirmNumber());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(forgotPassword.getRequestMoment()));
-    assertTrue(LocalDateTime.now().minus(2, ChronoUnit.MINUTES)
-        .isBefore(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(forgotPassword.getRequestMoment()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(forgotPassword.getRequestMoment()));
   }
 
   @Test

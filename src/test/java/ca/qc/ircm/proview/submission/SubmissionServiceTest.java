@@ -54,7 +54,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -626,7 +625,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private Submission submissionForPrint(Service service) {
     Submission submission = new Submission();
     submission.setService(service);
-    submission.setSubmissionDate(LocalDateTime.now().minus(2, ChronoUnit.DAYS));
+    submission.setSubmissionDate(LocalDateTime.now().minusDays(2));
     submission.setUser(userRepository.findById(3L).orElseThrow());
     submission.setLaboratory(laboratoryRepository.findById(2L).orElseThrow());
     SubmissionSample sample1 = new SubmissionSample("first sample");
@@ -1881,10 +1880,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("comment", submission.getComment());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(
-        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -1994,10 +1991,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1 - 1.0 μg (comment)", submission.getStandards());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(
-        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -2111,10 +2106,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals("standard1 - 1.0 μg (comment)", submission.getStandards());
     assertEquals("comment", submission.getComment());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(
-        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(submission.getSubmissionDate()));
     assertNull(submission.getSampleDeliveryDate());
     assertNull(submission.getDigestionDate());
     assertNull(submission.getAnalysisDate());
@@ -2202,10 +2195,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(user.getId(), submission.getUser().getId());
     assertEquals((Long) 1L, submission.getLaboratory().getId());
     assertNotNull(submission.getSubmissionDate());
-    assertTrue(
-        LocalDateTime.now().plus(2, ChronoUnit.MINUTES).isAfter(submission.getSubmissionDate()));
-    assertTrue(
-        LocalDateTime.now().minus(2, ChronoUnit.MINUTES).isBefore(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().plusMinutes(2).isAfter(submission.getSubmissionDate()));
+    assertTrue(LocalDateTime.now().minusMinutes(2).isBefore(submission.getSubmissionDate()));
     assertEquals(Service.SMALL_MOLECULE, submission.getService());
     assertEquals("unit_test_molecule_01", submission.getExperiment());
     assertNull(submission.getGoal());
