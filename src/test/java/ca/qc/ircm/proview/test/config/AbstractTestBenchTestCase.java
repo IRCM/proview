@@ -79,14 +79,14 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
         .filter(locale -> messageSource.getMessage(LAYOUT_PREFIX + SUBMISSIONS, null, locale)
             .equals(home != null ? home.getLabel() : ""))
         .findAny();
-    if (!optlocale.isPresent()) {
+    if (optlocale.isEmpty()) {
       optlocale = locales.stream()
           .filter(locale -> messageSource.getMessage(SIGNIN_PREFIX + TITLE,
               new Object[] { applicationName.apply(locale) }, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
-    if (!optlocale.isPresent()) {
+    if (optlocale.isEmpty()) {
       optlocale = locales.stream()
           .filter(locale -> messageSource
               .getMessage(USE_FORGOT_PASSWORD_PREFIX + TITLE,
@@ -94,7 +94,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
               .equals(getDriver().getTitle()))
           .findAny();
     }
-    if (!optlocale.isPresent()) {
+    if (optlocale.isEmpty()) {
       optlocale = locales.stream()
           .filter(locale -> messageSource
               .getMessage(ACCESS_DENIED_PREFIX + TITLE,

@@ -210,7 +210,7 @@ public class SamplesStatusDialog extends Dialog
 
   private boolean validate() {
     return submission != null && !submission.getSamples().isEmpty()
-        && !validateSamples().stream().filter(status -> !status.isOk()).findAny().isPresent();
+        && validateSamples().stream().filter(status -> !status.isOk()).findAny().isEmpty();
   }
 
   private void save() {
