@@ -94,8 +94,11 @@ public class SubmissionService {
   }
 
   /**
-   * Returns current user's submissions.<br> For managers, returns all submissions made a user of
-   * his laboratory<br> For administrators, returns all submissions.
+   * Returns current user's submissions.
+   *
+   * <p>For managers, returns all submissions made a user of his laboratory.</p>
+   *
+   * <p>For administrators, returns all submissions.</p>
    *
    * @param filter filter submissions to return
    * @return current user's submissions or more for managers / administrators
@@ -118,8 +121,11 @@ public class SubmissionService {
   }
 
   /**
-   * Returns number of current user's submissions.<br> For managers, returns number of submissions
-   * made a user of his laboratory<br> For administrators, returns number of submissions.
+   * Returns number of current user's submissions.
+   *
+   * <p>For managers, returns number of submissions made a user of his laboratory.</p>
+   *
+   * <p>For administrators, returns number of submissions.</p>
    *
    * @param filter filter submissions to return
    * @return current user's submissions or more for managers / administrators
@@ -181,7 +187,9 @@ public class SubmissionService {
   }
 
   /**
-   * Add a submission to database.<br> Submission's date should not be older than yesterday.
+   * Add a submission to database.
+   *
+   * <p>Submission's date should not be older than yesterday.</p>
    *
    * @param submission submission
    */
@@ -255,8 +263,9 @@ public class SubmissionService {
   }
 
   /**
-   * Updates submission. <br>
-   * <strong>Will only work if all samples status are {@link SampleStatus#WAITING}</strong>
+   * Updates submission.
+   *
+   * <p><strong>Will only work if all samples status are {@link SampleStatus#WAITING}</strong></p>
    *
    * @param submission  submission with new information
    * @param explanation explanation for changes made to submission
