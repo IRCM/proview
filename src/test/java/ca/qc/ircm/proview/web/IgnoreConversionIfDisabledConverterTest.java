@@ -24,6 +24,7 @@ import org.mockito.Mock;
  */
 @NonTransactionalTestAnnotations
 public class IgnoreConversionIfDisabledConverterTest {
+
   private IgnoreConversionIfDisabledConverter<String, Double> converter;
   @Mock
   private Converter<String, Double> delegate;

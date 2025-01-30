@@ -19,6 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
  */
 @ServiceTestAnnotations
 public class WellServiceTest {
+
   @Autowired
   private WellService service;
 
@@ -50,7 +51,7 @@ public class WellServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> service.get(129L));
   }

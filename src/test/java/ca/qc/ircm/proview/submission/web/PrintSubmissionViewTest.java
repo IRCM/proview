@@ -46,6 +46,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);

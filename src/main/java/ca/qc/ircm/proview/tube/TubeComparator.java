@@ -19,6 +19,29 @@ public class TubeComparator implements Comparator<Tube>, Serializable {
 
   @Serial
   private static final long serialVersionUID = -3778027579497723915L;
+  /**
+   * Comparison type.
+   */
+  private final Compare compare;
+  private final NamedComparator namedComparator;
+  /**
+   * Compare digestion tubes.
+   *
+   * @param locale  user's locale
+   * @param compare comparison type
+   */
+  public TubeComparator(Locale locale, Compare compare) {
+    this.compare = compare;
+    namedComparator = new NamedComparator(locale);
+  }
+
+  @Override
+  public int compare(Tube o1, Tube o2) {
+    return switch (compare) {
+      case NAME -> namedComparator.compare(o1, o2);
+      case TIME_STAMP -> o2.getTimestamp().compareTo(o1.getTimestamp());
+    };
+  }
 
   /**
    * Comparison type.
@@ -37,32 +60,5 @@ public class TubeComparator implements Comparator<Tube>, Serializable {
      * </p>
      */
     TIME_STAMP
-  }
-
-  /**
-   * Comparison type.
-   */
-  private final Compare compare;
-  private final NamedComparator namedComparator;
-
-  /**
-   * Compare digestion tubes.
-   *
-   * @param locale
-   *          user's locale
-   * @param compare
-   *          comparison type
-   */
-  public TubeComparator(Locale locale, Compare compare) {
-    this.compare = compare;
-    namedComparator = new NamedComparator(locale);
-  }
-
-  @Override
-  public int compare(Tube o1, Tube o2) {
-    return switch (compare) {
-      case NAME -> namedComparator.compare(o1, o2);
-      case TIME_STAMP -> o2.getTimestamp().compareTo(o1.getTimestamp());
-    };
   }
 }

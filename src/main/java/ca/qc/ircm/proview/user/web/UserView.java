@@ -40,18 +40,19 @@ import org.springframework.lang.Nullable;
  * User view.
  */
 @Route(value = UserView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ MANAGER, ADMIN })
+@RolesAllowed({MANAGER, ADMIN})
 public class UserView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle,
     HasUrlParameter<Long>, NotificationComponent, ViewLayoutChild {
+
+  public static final String VIEW_NAME = "user";
+  public static final String ID = "user-view";
+  public static final String HEADER = "header";
+  public static final String SAVED = "saved";
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Serial
   private static final long serialVersionUID = 4760310643370830640L;
   private static final Logger logger = LoggerFactory.getLogger(UserView.class);
-  public static final String VIEW_NAME = "user";
-  public static final String ID = "user-view";
-  public static final String HEADER = "header";
-  public static final String SAVED = "saved";
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected UserForm form;

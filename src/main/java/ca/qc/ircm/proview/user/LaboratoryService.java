@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class LaboratoryService {
+
   private LaboratoryRepository repository;
 
   @Autowired
@@ -27,8 +28,7 @@ public class LaboratoryService {
   /**
    * Selects user from database.
    *
-   * @param id
-   *          database identifier of user
+   * @param id database identifier of user
    * @return user
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -49,8 +49,7 @@ public class LaboratoryService {
   /**
    * Saves laboratory into the database.
    *
-   * @param laboratory
-   *          laboratory
+   * @param laboratory laboratory
    */
   @PreAuthorize("hasPermission(#laboratory, 'write')")
   public void save(Laboratory laboratory) {

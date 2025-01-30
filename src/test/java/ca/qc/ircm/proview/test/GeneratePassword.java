@@ -12,11 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * Generates passwords compatible with configuration.
  */
 public class GeneratePassword {
+
   /**
    * Generates random passwords.
    *
-   * @param args
-   *          not used
+   * @param args not used
    */
   public static void main(String[] args) {
     try (ConfigurableApplicationContext context = SpringApplication.run(Main.class, args)) {

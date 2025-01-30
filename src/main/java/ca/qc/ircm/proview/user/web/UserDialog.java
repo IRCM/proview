@@ -33,13 +33,14 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserDialog extends Dialog implements LocaleChangeObserver {
+
+  public static final String ID = "user-dialog";
+  public static final String HEADER = "header";
   private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Serial
   private static final long serialVersionUID = 3285639770914046262L;
   private static final Logger logger = LoggerFactory.getLogger(UserDialog.class);
-  public static final String ID = "user-dialog";
-  public static final String HEADER = "header";
   protected Button save = new Button();
   protected Button cancel = new Button();
   protected UserForm form;
@@ -96,11 +97,10 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   /**
    * Adds listener to be informed when a user was saved.
    *
-   * @param listener
-   *          listener
+   * @param listener listener
    * @return listener registration
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Registration addSavedListener(ComponentEventListener<SavedEvent<UserDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
@@ -116,8 +116,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   /**
    * Sets user's id.
    *
-   * @param id
-   *          user's id
+   * @param id user's id
    */
   public void setUserId(long id) {
     User user = id != 0 ? service.get(id).orElseThrow() : null;

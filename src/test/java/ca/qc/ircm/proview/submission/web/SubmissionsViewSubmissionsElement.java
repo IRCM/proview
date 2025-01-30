@@ -14,6 +14,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = SUBMISSIONS)
 public class SubmissionsViewSubmissionsElement extends GridElement {
+
   private static final int EXPERIMENT_COLUMN = 0;
   private static final int VISIBLE_COLUMN = 10;
 

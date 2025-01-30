@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link Named}.
  */
 public class NamedTest {
+
   @Test
   public void incrementLastNumber() {
     assertEquals("abc2", Named.incrementLastNumber("abc1"));

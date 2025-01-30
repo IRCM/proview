@@ -6,6 +6,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
  * {@link UpdateActivityBuilder} for ban of a sample container.
  */
 public class BanSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
+
   {
     tableName("samplecontainer");
     actionType(ActionType.UPDATE);
@@ -16,8 +17,7 @@ public class BanSampleContainerUpdateActivityBuilder extends UpdateActivityBuild
   /**
    * Sets old container for activity.
    *
-   * @param oldContainer
-   *          old container
+   * @param oldContainer old container
    * @return builder
    */
   public BanSampleContainerUpdateActivityBuilder oldContainer(SampleContainer oldContainer) {

@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class InjectionTypeTest {
+
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   @Autowired
   private MessageSource messageSource;

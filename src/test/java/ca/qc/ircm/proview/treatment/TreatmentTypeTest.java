@@ -21,6 +21,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class TreatmentTypeTest {
+
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   @Autowired
   private MessageSource messageSource;

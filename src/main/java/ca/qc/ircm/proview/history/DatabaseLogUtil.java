@@ -8,33 +8,6 @@ import org.springframework.lang.Nullable;
  * Utilities for database log.
  */
 public class DatabaseLogUtil {
-  /**
-   * A boolean values as it is represented in the database.
-   */
-  public enum DatabaseBoolean {
-    FALSE("0"), TRUE("1");
-
-    public final String databaseValue;
-
-    DatabaseBoolean(String databaseValue) {
-      this.databaseValue = databaseValue;
-    }
-
-    /**
-     * Returns database value for boolean.
-     *
-     * @param value
-     *          boolean
-     * @return database value for boolean
-     */
-    public static DatabaseBoolean get(boolean value) {
-      if (value) {
-        return DatabaseBoolean.TRUE;
-      } else {
-        return DatabaseBoolean.FALSE;
-      }
-    }
-  }
 
   /**
    * Returns true if 2 objects are equal, false otherwise. 2 objects are equal if they are both null
@@ -43,10 +16,8 @@ public class DatabaseLogUtil {
    * <code>Arrays.equals((Object[])oldValue, (Object[])newValue)</code> rather than
    * <code>oldValue.equals(newValue)</code>.
    *
-   * @param first
-   *          first object
-   * @param second
-   *          second object
+   * @param first  first object
+   * @param second second object
    * @return true if 2 objects are equal, false otherwise
    */
   public static boolean equals(@Nullable Object first, @Nullable Object second) {
@@ -62,6 +33,33 @@ public class DatabaseLogUtil {
           ((Collection<?>) second).toArray(new Object[0]));
     } else {
       return first.equals(second);
+    }
+  }
+
+  /**
+   * A boolean values as it is represented in the database.
+   */
+  public enum DatabaseBoolean {
+    FALSE("0"), TRUE("1");
+
+    public final String databaseValue;
+
+    DatabaseBoolean(String databaseValue) {
+      this.databaseValue = databaseValue;
+    }
+
+    /**
+     * Returns database value for boolean.
+     *
+     * @param value boolean
+     * @return database value for boolean
+     */
+    public static DatabaseBoolean get(boolean value) {
+      if (value) {
+        return DatabaseBoolean.TRUE;
+      } else {
+        return DatabaseBoolean.FALSE;
+      }
     }
   }
 }

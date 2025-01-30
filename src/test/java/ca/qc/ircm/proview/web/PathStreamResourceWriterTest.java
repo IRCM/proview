@@ -18,6 +18,7 @@ import org.mockito.Mock;
  */
 @NonTransactionalTestAnnotations
 public class PathStreamResourceWriterTest {
+
   private PathStreamResourceWriter writer;
   private Path path;
   @Mock

@@ -12,6 +12,7 @@ import java.util.Optional;
  * Search utilities.
  */
 public class SearchUtils {
+
   public static <D extends Data> Optional<D> find(Collection<D> datas, long id) {
     return datas.stream().filter(data -> data.getId() == id).findFirst();
   }
@@ -37,8 +38,7 @@ public class SearchUtils {
   /**
    * Returns last element of a list.
    *
-   * @param elements
-   *          list
+   * @param elements list
    * @return last element of a list
    */
   public static <E> Optional<E> last(List<E> elements) {

@@ -13,6 +13,7 @@ import java.util.List;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = GuidelinesView.ID)
 public class GuidelinesViewElement extends VerticalLayoutElement {
+
   public List<CategoryComponentElement> categories() {
     return $(CategoryComponentElement.class).withAttribute("class", CATEGORY).all();
   }

@@ -4,6 +4,7 @@ package ca.qc.ircm.proview;
  * Justifications for ignoring SpotBugs warnings.
  */
 public class SpotbugsJustifications {
+
   public static final String ENTITY_EI_EXPOSE_REP =
       "Entities should expose internal representation like objects and lists to allow modification";
   public static final String SPRING_BOOT_EI_EXPOSE_REP =

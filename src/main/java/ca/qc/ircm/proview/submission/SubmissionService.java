@@ -49,6 +49,7 @@ import org.thymeleaf.context.Context;
 @org.springframework.stereotype.Service
 @Transactional
 public class SubmissionService {
+
   private static final String MESSAGE_PREFIX = messagePrefix(SubmissionService.class);
   private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
   private final SubmissionRepository repository;
@@ -84,8 +85,7 @@ public class SubmissionService {
   /**
    * Selects submission from database.
    *
-   * @param id
-   *          database identifier of submission
+   * @param id database identifier of submission
    * @return submission
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -94,12 +94,10 @@ public class SubmissionService {
   }
 
   /**
-   * Returns current user's submissions.<br>
-   * For managers, returns all submissions made a user of his laboratory<br>
-   * For administrators, returns all submissions.
+   * Returns current user's submissions.<br> For managers, returns all submissions made a user of
+   * his laboratory<br> For administrators, returns all submissions.
    *
-   * @param filter
-   *          filter submissions to return
+   * @param filter filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
@@ -120,12 +118,10 @@ public class SubmissionService {
   }
 
   /**
-   * Returns number of current user's submissions.<br>
-   * For managers, returns number of submissions made a user of his laboratory<br>
-   * For administrators, returns number of submissions.
+   * Returns number of current user's submissions.<br> For managers, returns number of submissions
+   * made a user of his laboratory<br> For administrators, returns number of submissions.
    *
-   * @param filter
-   *          filter submissions to return
+   * @param filter filter submissions to return
    * @return current user's submissions or more for managers / administrators
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
@@ -154,10 +150,8 @@ public class SubmissionService {
   /**
    * Returns printable version of submission in HTML.
    *
-   * @param submission
-   *          submission
-   * @param locale
-   *          user's locale
+   * @param submission submission
+   * @param locale     user's locale
    * @return printable version of submission in HTML
    */
   public String print(Submission submission, Locale locale) {
@@ -187,11 +181,9 @@ public class SubmissionService {
   }
 
   /**
-   * Add a submission to database.<br>
-   * Submission's date should not be older than yesterday.
+   * Add a submission to database.<br> Submission's date should not be older than yesterday.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public void insert(Submission submission) {
@@ -234,10 +226,8 @@ public class SubmissionService {
   /**
    * Sends an email to all admisn containing a summary of submission.
    *
-   * @param submission
-   *          submission
-   * @param type
-   *          type
+   * @param submission submission
+   * @param type       type
    */
   private void sendSubmissionToAdmins(Submission submission, ActionType type)
       throws MessagingException {
@@ -268,12 +258,9 @@ public class SubmissionService {
    * Updates submission. <br>
    * <strong>Will only work if all samples status are {@link SampleStatus#WAITING}</strong>
    *
-   * @param submission
-   *          submission with new information
-   * @param explanation
-   *          explanation for changes made to submission
-   * @throws IllegalArgumentException
-   *           samples don't all have {@link SampleStatus#WAITING} status
+   * @param submission  submission with new information
+   * @param explanation explanation for changes made to submission
+   * @throws IllegalArgumentException samples don't all have {@link SampleStatus#WAITING} status
    */
   @PreAuthorize("hasPermission(#submission, 'write')")
   public void update(Submission submission, @Nullable String explanation)
@@ -356,8 +343,7 @@ public class SubmissionService {
   /**
    * Hide submission.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void hide(Submission submission) {
@@ -371,8 +357,7 @@ public class SubmissionService {
   /**
    * Make submission visible, if it is hidden.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void show(Submission submission) {

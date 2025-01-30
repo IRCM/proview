@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SampleService {
+
   private final SampleRepository repository;
 
   @Autowired
@@ -22,8 +23,7 @@ public class SampleService {
   /**
    * Selects sample from database.
    *
-   * @param id
-   *          database identifier of sample
+   * @param id database identifier of sample
    * @return sample
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")

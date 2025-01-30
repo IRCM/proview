@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SampleActivityService {
+
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   private final SampleRepository repository;
@@ -44,8 +45,7 @@ public class SampleActivityService {
   /**
    * Creates an activity about insertion of control.
    *
-   * @param control
-   *          inserted control
+   * @param control inserted control
    * @return activity about insertion of control
    */
   @CheckReturnValue
@@ -65,8 +65,7 @@ public class SampleActivityService {
   /**
    * Creates an activity about update of sample status.
    *
-   * @param sample
-   *          sample containing new status
+   * @param sample sample containing new status
    * @return activity about update of sample
    */
   @CheckReturnValue
@@ -114,10 +113,8 @@ public class SampleActivityService {
   /**
    * Creates an activity about update of sample.
    *
-   * @param newSample
-   *          sample containing new properties/values
-   * @param explanation
-   *          explanation for changes made to sample
+   * @param newSample   sample containing new properties/values
+   * @param explanation explanation for changes made to sample
    * @return activity about update of sample
    */
   @CheckReturnValue

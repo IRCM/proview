@@ -44,15 +44,16 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LaboratoryDialog extends Dialog
     implements LocaleChangeObserver, NotificationComponent {
+
+  public static final String ID = "laboratory-dialog";
+  public static final String HEADER = "header";
+  public static final String SAVED = "saved";
   private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Serial
   private static final long serialVersionUID = 3285639770914046262L;
   private static final Logger logger = LoggerFactory.getLogger(LaboratoryDialog.class);
-  public static final String ID = "laboratory-dialog";
-  public static final String HEADER = "header";
-  public static final String SAVED = "saved";
   protected TextField name = new TextField();
   protected Button save = new Button();
   protected Button cancel = new Button();
@@ -118,13 +119,12 @@ public class LaboratoryDialog extends Dialog
   /**
    * Adds listener to be informed when a user was saved.
    *
-   * @param listener
-   *          listener
+   * @param listener listener
    * @return listener registration
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Registration
-      addSavedListener(ComponentEventListener<SavedEvent<LaboratoryDialog>> listener) {
+  addSavedListener(ComponentEventListener<SavedEvent<LaboratoryDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
 

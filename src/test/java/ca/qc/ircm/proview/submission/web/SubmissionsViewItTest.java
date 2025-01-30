@@ -34,6 +34,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
+
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SAMPLES_STATUS_DIALOG_PREFIX =
       messagePrefix(SamplesStatusDialog.class);
@@ -67,7 +68,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     String applicationName =
         messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
@@ -147,7 +148,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
     assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-        new Object[] { "POLR3B-Flag" }, currentLocale()), dialog.header().getText());
+        new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
   }
 
   @Test
@@ -184,7 +185,7 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
     assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-        new Object[] { "POLR3B-Flag" }, currentLocale()), dialog.header().getText());
+        new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
   }
 
   @Test

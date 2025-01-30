@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @org.springframework.stereotype.Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubmissionActivityService {
+
   private static final QSubmission qsubmission = QSubmission.submission;
   private final SampleActivityService sampleActivityService;
   private final SubmissionRepository repository;
@@ -48,8 +49,7 @@ public class SubmissionActivityService {
   /**
    * Creates an activity about insertion of samples submission.
    *
-   * @param submission
-   *          samples submission
+   * @param submission samples submission
    * @return activity about insertion of samples submission
    */
   @CheckReturnValue
@@ -69,10 +69,8 @@ public class SubmissionActivityService {
   /**
    * Creates an activity about forced update of samples submission.
    *
-   * @param submission
-   *          submission containing new properties/values
-   * @param explanation
-   *          explanation for the changes
+   * @param submission  submission containing new properties/values
+   * @param explanation explanation for the changes
    * @return activity about update of samples submission
    */
   @CheckReturnValue
@@ -84,6 +82,7 @@ public class SubmissionActivityService {
 
     final Collection<UpdateActivityBuilder> updateBuilders = new ArrayList<>();
     class SubmissionUpdateActivityBuilder extends UpdateActivityBuilder {
+
       {
         tableName(Submission.TABLE_NAME);
         actionType(ActionType.UPDATE);

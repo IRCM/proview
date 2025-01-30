@@ -11,6 +11,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = UsersView.USERS)
 public class UsersViewUsersElement extends GridElement {
+
   private static final int EMAIL_COLUMN = 0;
   private static final int LABORATORY_COLUMN = 2;
 

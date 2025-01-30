@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProtocolService {
+
   private final ProtocolRepository repository;
 
   @Autowired
@@ -25,8 +26,7 @@ public class ProtocolService {
   /**
    * Selects protocol from database.
    *
-   * @param id
-   *          database identifier of protocol
+   * @param id database identifier of protocol
    * @return protocol
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -37,8 +37,7 @@ public class ProtocolService {
   /**
    * Returns all protocols of specified type.
    *
-   * @param type
-   *          protocol type
+   * @param type protocol type
    * @return all protocols of specified type
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")

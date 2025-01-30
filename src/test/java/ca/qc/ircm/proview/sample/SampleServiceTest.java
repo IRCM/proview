@@ -23,6 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class SampleServiceTest {
+
   private static final String READ = "read";
   @Autowired
   private SampleService service;

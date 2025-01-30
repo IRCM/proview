@@ -22,6 +22,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class ProteinIdentificationTest {
+
   private static final String PROTEIN_IDENTIFICATION_PREFIX =
       messagePrefix(ProteinIdentification.class);
   @Autowired

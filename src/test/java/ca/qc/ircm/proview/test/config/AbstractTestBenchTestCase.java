@@ -28,6 +28,7 @@ import org.springframework.context.MessageSource;
  * Additional functions for TestBenchTestCase.
  */
 public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
+
   private static final String LAYOUT_PREFIX = messagePrefix(ViewLayout.class);
   private static final String SIGNIN_PREFIX = messagePrefix(SigninView.class);
   private static final String USE_FORGOT_PASSWORD_PREFIX =
@@ -82,7 +83,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
     if (optlocale.isEmpty()) {
       optlocale = locales.stream()
           .filter(locale -> messageSource.getMessage(SIGNIN_PREFIX + TITLE,
-              new Object[] { applicationName.apply(locale) }, locale)
+                  new Object[]{applicationName.apply(locale)}, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
@@ -90,7 +91,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       optlocale = locales.stream()
           .filter(locale -> messageSource
               .getMessage(USE_FORGOT_PASSWORD_PREFIX + TITLE,
-                  new Object[] { applicationName.apply(locale) }, locale)
+                  new Object[]{applicationName.apply(locale)}, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }
@@ -98,7 +99,7 @@ public abstract class AbstractTestBenchTestCase extends TestBenchTestCase {
       optlocale = locales.stream()
           .filter(locale -> messageSource
               .getMessage(ACCESS_DENIED_PREFIX + TITLE,
-                  new Object[] { applicationName.apply(locale) }, locale)
+                  new Object[]{applicationName.apply(locale)}, locale)
               .equals(getDriver().getTitle()))
           .findAny();
     }

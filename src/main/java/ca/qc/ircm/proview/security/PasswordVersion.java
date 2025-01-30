@@ -5,13 +5,10 @@ import java.io.Serializable;
 
 /**
  * Password's versions.
- * 
- * @param version
- *          version of password
- * @param algorithm
- *          hashing algorithm
- * @param iterations
- *          hashing iterations
+ *
+ * @param version    version of password
+ * @param algorithm  hashing algorithm
+ * @param iterations hashing iterations
  */
 public record PasswordVersion(int version, String algorithm, int iterations)
     implements Serializable {

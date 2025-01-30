@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class QuantificationTest {
+
   private static final String QUANTIFICATION_PREFIX = messagePrefix(Quantification.class);
   @Autowired
   private MessageSource messageSource;

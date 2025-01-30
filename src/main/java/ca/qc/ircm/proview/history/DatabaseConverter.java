@@ -19,11 +19,11 @@ import org.springframework.lang.Nullable;
  * Converts an object to a string value to save in database.
  */
 public class DatabaseConverter {
+
   /**
    * Converts an object to a string value to save in database.
    *
-   * @param value
-   *          object to convert to string
+   * @param value object to convert to string
    * @return string value to save in database
    */
   public Optional<String> convert(@Nullable Object value) {
@@ -64,10 +64,8 @@ public class DatabaseConverter {
    * Reduces the length of input to the number to bytes specified (byteCount) using UTF-8 encoding.
    * If input already fits in the number to bytes specified, then input is returned.
    *
-   * @param input
-   *          input string to reduce to specified number to bytes
-   * @param byteCount
-   *          number to bytes the input string must be reduced to
+   * @param input     input string to reduce to specified number to bytes
+   * @param byteCount number to bytes the input string must be reduced to
    * @return input reduced to the number to bytes specified
    */
   private String reduceLength(String input, int byteCount) {

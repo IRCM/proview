@@ -6,6 +6,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
  * Represents an hashed password that can be saved in database.
  */
 public class HashedPassword {
+
   /**
    * Hex encrypted hashed password.
    */
@@ -22,12 +23,9 @@ public class HashedPassword {
   /**
    * Create hashed password.
    *
-   * @param password
-   *          hashed password
-   * @param salt
-   *          salt
-   * @param version
-   *          version
+   * @param password hashed password
+   * @param salt     salt
+   * @param version  version
    */
   public HashedPassword(String password, String salt, int version) {
     this.password = password;
@@ -38,10 +36,8 @@ public class HashedPassword {
   /**
    * Create hashed password.
    *
-   * @param hash
-   *          hash containing password and salt
-   * @param version
-   *          version
+   * @param hash    hash containing password and salt
+   * @param version version
    */
   public HashedPassword(SimpleHash hash, int version) {
     this.password = hash.toHex();

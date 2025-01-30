@@ -17,6 +17,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = SamplesStatusDialog.ID + "-" + SAMPLES)
 public class SamplesStatusDialogSamplesElement extends GridElement {
+
   private static final int STATUS_INDEX = 1;
 
   public ComboBoxElement allStatus() {

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  */
 @NonTransactionalTestAnnotations
 public class ShiroPasswordEncoderTest {
+
   private String algorithm = Sha256Hash.ALGORITHM_NAME;
   private int iterations = 1000;
   private ShiroPasswordEncoder passwordEncoder = new ShiroPasswordEncoder(algorithm, iterations);

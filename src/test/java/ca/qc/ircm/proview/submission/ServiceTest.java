@@ -22,6 +22,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class ServiceTest {
+
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   @Autowired
   private MessageSource messageSource;

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @NonTransactionalTestAnnotations
 public class DefaultAddressConfigurationTest {
+
   @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;
 

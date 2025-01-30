@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @ServiceTestAnnotations
 @WithMockUser
 public class MessageSourceTest {
+
   @Autowired
   private MessageSource messageSource;
 

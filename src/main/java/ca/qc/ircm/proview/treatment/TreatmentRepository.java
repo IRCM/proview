@@ -8,4 +8,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
  */
 public interface TreatmentRepository
     extends JpaRepository<Treatment, Long>, QuerydslPredicateExecutor<Treatment> {
+
 }

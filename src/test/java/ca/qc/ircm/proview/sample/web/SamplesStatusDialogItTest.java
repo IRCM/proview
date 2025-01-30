@@ -24,6 +24,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
+
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @Autowired
   private SubmissionSampleRepository repository;

@@ -17,6 +17,7 @@ import java.io.Serial;
 @DiscriminatorValue("CONTROL")
 @GeneratePropertyNames
 public class Control extends Sample implements Named {
+
   @Serial
   private static final long serialVersionUID = 5008215649619278441L;
 
@@ -44,11 +45,11 @@ public class Control extends Sample implements Named {
     return Sample.Category.CONTROL;
   }
 
-  public void setControlType(ControlType controlType) {
-    this.controlType = controlType;
-  }
-
   public ControlType getControlType() {
     return controlType;
+  }
+
+  public void setControlType(ControlType controlType) {
+    this.controlType = controlType;
   }
 }

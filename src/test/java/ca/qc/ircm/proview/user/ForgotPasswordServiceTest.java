@@ -37,6 +37,7 @@ import org.thymeleaf.util.StringUtils;
  */
 @ServiceTestAnnotations
 public class ForgotPasswordServiceTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordService.class);
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(ForgotPasswordServiceTest.class);

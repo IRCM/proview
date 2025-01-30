@@ -23,6 +23,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = SubmissionView.ID)
 public class SubmissionViewElement extends VerticalLayoutElement {
+
   public TabsElement service() {
     return $(TabsElement.class).id(SERVICE);
   }

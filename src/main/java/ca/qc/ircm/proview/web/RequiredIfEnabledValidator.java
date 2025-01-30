@@ -14,6 +14,7 @@ import org.springframework.lang.Nullable;
  * Validates that value is not empty, but only if component is enabled.
  */
 public class RequiredIfEnabledValidator<T> implements Validator<T> {
+
   @Serial
   private static final long serialVersionUID = 8981491477845535933L;
   private String errorMessage;

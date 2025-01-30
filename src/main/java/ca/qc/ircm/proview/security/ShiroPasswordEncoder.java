@@ -11,9 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * {@link PasswordEncoder} that supports Shiro's Hash.
  */
 public class ShiroPasswordEncoder implements PasswordEncoder {
+
+  public static final String SEPARATOR = "/";
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(ShiroPasswordEncoder.class);
-  public static final String SEPARATOR = "/";
   private final SecureRandom random = new SecureRandom();
   private final String algorithm;
   private final int iterations;

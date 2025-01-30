@@ -9,6 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
  * User repository.
  */
 public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
+
   Optional<User> findByEmail(String email);
 
   List<User> findAllByLaboratoryAndManagerTrue(Laboratory laboratory);

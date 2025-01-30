@@ -9,6 +9,7 @@ import java.io.Serial;
  * Serializable {@link UserFilter}.
  */
 public class WebUserFilter extends UserFilter implements SerializablePredicate<User> {
+
   @Serial
   private static final long serialVersionUID = 7763790706767990886L;
 }

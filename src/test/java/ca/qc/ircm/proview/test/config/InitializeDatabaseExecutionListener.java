@@ -9,6 +9,7 @@ import org.springframework.test.context.TestExecutionListener;
 @Order(5001)
 public class InitializeDatabaseExecutionListener
     implements TestExecutionListener, InjectDependencies {
+
   /**
    * Matches pass1.
    */

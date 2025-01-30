@@ -45,6 +45,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
+
   public static final String ID = "ms-analysis-dialog";
   public static final String HEADER = "header";
   private static final String MESSAGES_PREFIX = messagePrefix(MsAnalysisDialog.class);

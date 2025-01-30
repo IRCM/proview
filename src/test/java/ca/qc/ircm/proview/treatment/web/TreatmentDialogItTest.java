@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogItTest extends AbstractTestBenchTestCase {
+
   private void open() {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();

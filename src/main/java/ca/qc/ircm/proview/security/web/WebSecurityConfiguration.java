@@ -36,6 +36,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfiguration extends VaadinWebSecurity {
+
   public static final String SIGNIN_PROCESSING_URL = "/" + SigninView.VIEW_NAME;
   public static final String SIGNOUT_URL = "/signout";
   private static final String SIGNIN_DEFAULT_FAILURE_URL =

@@ -8,6 +8,7 @@ import java.util.Comparator;
  * Comparator for submissions.
  */
 public class SubmissionComparator implements Comparator<Submission>, Serializable {
+
   @Serial
   private static final long serialVersionUID = -151938109581440731L;
 

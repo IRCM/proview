@@ -81,7 +81,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class IntactProteinSubmissionForm extends FormLayout implements LocaleChangeObserver {
-  private static final Logger logger = LoggerFactory.getLogger(IntactProteinSubmissionForm.class);
+
   public static final String ID = "intact-protein-submission-form";
   public static final String SAMPLES_TYPE = SAMPLES + "Type";
   public static final String SAMPLES_COUNT = SAMPLES + "Count";
@@ -91,6 +91,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   public static final String SAMPLES_NAMES_WRONG_COUNT = property(SAMPLES + "Names", "wrongCount");
   public static final String QUANTITY_PLACEHOLDER = property(QUANTITY, PLACEHOLDER);
   public static final String VOLUME_PLACEHOLDER = property(VOLUME, PLACEHOLDER);
+  private static final Logger logger = LoggerFactory.getLogger(IntactProteinSubmissionForm.class);
   private static final String MESSAGES_PREFIX = messagePrefix(IntactProteinSubmissionForm.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -143,7 +144,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
         new ResponsiveStep("15em", 3));
     add(new FormLayout(experiment, goal, taxonomy, protein, molecularWeight,
-        postTranslationModification),
+            postTranslationModification),
         new FormLayout(sampleType, samplesCount, samplesNames, quantity, volume),
         new FormLayout(injection, source, instrument));
     experiment.setId(id(EXPERIMENT));
@@ -290,7 +291,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       return exists.map(
-          ex -> ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, ex)))
+              ex -> ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_EXISTS, ex)))
           .orElse(ValidationResult.ok());
     };
   }
@@ -367,6 +368,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = INNER_CLASS_EI_EXPOSE_REP)
   protected static class Samples {
+
     private int samplesCount;
     private List<String> samplesNames;
 
@@ -388,6 +390,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   }
 
   private static class SamplesNamesConverter implements Converter<String, List<String>> {
+
     @Serial
     private static final long serialVersionUID = 8024859234735628305L;
 

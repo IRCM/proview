@@ -57,9 +57,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * History view.
  */
 @Route(value = HistoryView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ UserRole.ADMIN })
+@RolesAllowed({UserRole.ADMIN})
 public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasUrlParameter<Long>,
     LocaleChangeObserver, NotificationComponent, ViewLayoutChild {
+
   public static final String VIEW_NAME = "history";
   public static final String ID = "history-view";
   public static final String HEADER = "header";

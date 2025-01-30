@@ -6,6 +6,7 @@ import java.nio.file.Path;
  * Guideline.
  */
 public class Guideline {
+
   /**
    * Name.
    */

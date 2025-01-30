@@ -10,6 +10,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
  */
 public interface PlateRepository
     extends JpaRepository<Plate, Long>, QuerydslPredicateExecutor<Plate> {
+
   Optional<Plate> findBySubmission(Submission submission);
 
   long countByName(String name);

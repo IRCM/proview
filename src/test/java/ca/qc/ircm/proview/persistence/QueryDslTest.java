@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link QueryDsl}.
  */
 public class QueryDslTest {
+
   @Test
   public void qname_Test() {
     assertEquals("submission", qname(submission));

@@ -21,6 +21,7 @@ import org.springframework.security.access.AccessDeniedException;
  */
 @SpringComponent
 public class ConfigureUiServiceInitListener implements VaadinServiceInitListener {
+
   private static final String MESSAGES_PREFIX = messagePrefix(ConfigureUiServiceInitListener.class);
   private static final Logger logger =
       LoggerFactory.getLogger(ConfigureUiServiceInitListener.class);
@@ -45,8 +46,7 @@ public class ConfigureUiServiceInitListener implements VaadinServiceInitListener
   /**
    * Reroutes the user if she is not authorized to access the view.
    *
-   * @param event
-   *          before navigation event with event details
+   * @param event before navigation event with event details
    */
   private void beforeEnter(BeforeEnterEvent event) {
     if (!authenticatedUser.isAuthorized(event.getNavigationTarget())) {

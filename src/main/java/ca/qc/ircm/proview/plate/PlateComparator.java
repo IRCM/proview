@@ -14,43 +14,22 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
 
   @Serial
   private static final long serialVersionUID = 2810870614255728640L;
-
+  private final NamedComparator namedComparator;
   /**
-   * Comparison used.
+   * Type of comparison used.
    */
-  public enum Compare {
-    /**
-     * Compare by name.
-     */
-    NAME,
-    /**
-     * Plate with most empty well will be first.
-     */
-    EMPTY_WELL,
-    /**
-     * Plate with low timestamp will be first.
-     */
-    TIME_STAMP
-  }
+  private Compare compare;
 
   /**
    * Compare plate using selected comparison.
    *
-   * @param compare
-   *          Comparison type see {@link Compare Compare}.
-   * @param locale
-   *          user's locale
+   * @param compare Comparison type see {@link Compare Compare}.
+   * @param locale  user's locale
    */
   public PlateComparator(Compare compare, Locale locale) {
     this.compare = compare;
     namedComparator = new NamedComparator(locale);
   }
-
-  /**
-   * Type of comparison used.
-   */
-  private Compare compare;
-  private final NamedComparator namedComparator;
 
   @Override
   public int compare(Plate o1, Plate o2) {
@@ -78,5 +57,23 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
       default:
         throw new AssertionError("Case not covered in switch");
     }
+  }
+
+  /**
+   * Comparison used.
+   */
+  public enum Compare {
+    /**
+     * Compare by name.
+     */
+    NAME,
+    /**
+     * Plate with most empty well will be first.
+     */
+    EMPTY_WELL,
+    /**
+     * Plate with low timestamp will be first.
+     */
+    TIME_STAMP
   }
 }

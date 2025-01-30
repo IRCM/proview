@@ -90,6 +90,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UsersViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

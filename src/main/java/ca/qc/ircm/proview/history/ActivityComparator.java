@@ -8,6 +8,7 @@ import java.util.Comparator;
  * Comparator for history objects.
  */
 public class ActivityComparator implements Comparator<Activity>, Serializable {
+
   @Serial
   private static final long serialVersionUID = 447023857161219684L;
 

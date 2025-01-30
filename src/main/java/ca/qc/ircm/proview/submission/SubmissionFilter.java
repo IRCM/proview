@@ -20,6 +20,7 @@ import org.springframework.lang.Nullable;
  * Filters submissions.
  */
 public class SubmissionFilter implements Predicate<Submission> {
+
   public String experimentContains;
   public String userContains;
   public String directorContains;
@@ -225,8 +226,7 @@ public class SubmissionFilter implements Predicate<Submission> {
   /**
    * Adds conditions to query to match filters.
    *
-   * @param query
-   *          database query
+   * @param query database query
    */
   public void addConditions(JPAQuery<?> query) {
     addFilterConditions(query);

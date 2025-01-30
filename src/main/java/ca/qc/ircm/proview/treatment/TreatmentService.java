@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TreatmentService {
+
   private final TreatmentRepository repository;
 
   @Autowired
@@ -29,8 +30,7 @@ public class TreatmentService {
   /**
    * Selects treatment from database.
    *
-   * @param id
-   *          database identifier of treatment
+   * @param id database identifier of treatment
    * @return treatment
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -41,8 +41,7 @@ public class TreatmentService {
   /**
    * Returns all treatments where one of the submission's samples was treated.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    * @return all treatments where one of the submission's samples was treated
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")

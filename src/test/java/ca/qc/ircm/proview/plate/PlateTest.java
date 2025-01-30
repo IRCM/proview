@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link Plate}.
  */
 public class PlateTest {
+
   private Optional<Well> find(List<Well> wells, int row, int column) {
     return wells.stream().filter(s -> s.getRow() == row && s.getColumn() == column).findAny();
   }

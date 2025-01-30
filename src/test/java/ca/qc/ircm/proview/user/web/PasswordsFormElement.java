@@ -14,6 +14,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-form-layout")
 @Attribute(name = "class", value = PasswordsForm.CLASS_NAME)
 public class PasswordsFormElement extends FormLayoutElement {
+
   public PasswordFieldElement password() {
     return $(PasswordFieldElement.class).withAttribute("class", PASSWORD).first();
   }

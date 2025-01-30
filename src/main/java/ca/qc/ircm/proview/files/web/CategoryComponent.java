@@ -17,6 +17,7 @@ import java.io.Serial;
  * Category component.
  */
 public class CategoryComponent extends VerticalLayout {
+
   public static final String CATEGORY = "category";
   @Serial
   private static final long serialVersionUID = -6619674234077142003L;
@@ -25,8 +26,7 @@ public class CategoryComponent extends VerticalLayout {
   /**
    * Creates a category component for specified category.
    *
-   * @param category
-   *          category
+   * @param category category
    */
   public CategoryComponent(Category category) {
     addClassName(CATEGORY);

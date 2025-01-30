@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
  * Additional functions for service testing.
  */
 public abstract class AbstractServiceTestCase {
+
   @PersistenceContext
   private EntityManager entityManager;
 

@@ -68,6 +68,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleChangeObserver {
+
   public static final String ID = "small-molecule-submission-form";
   public static final String SAMPLE = "sample";
   public static final String SAMPLE_TYPE = SAMPLE + "Type";

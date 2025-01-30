@@ -29,6 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 public class PlatePermissionEvaluatorTest {
+
   private static final String PLATE_CLASS = Plate.class.getName();
   private static final String READ = "read";
   private static final Permission BASE_READ = Permission.READ;

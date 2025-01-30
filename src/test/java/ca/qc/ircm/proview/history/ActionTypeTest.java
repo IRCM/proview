@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class ActionTypeTest {
+
   private static final String ACTION_TYPE_PREFIX = messagePrefix(ActionType.class);
   @Autowired
   private MessageSource messageSource;

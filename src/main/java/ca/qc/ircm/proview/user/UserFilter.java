@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
  * Parameters to search users.
  */
 public class UserFilter implements Predicate<User> {
+
   public String emailContains;
   public String nameContains;
   public Boolean active;

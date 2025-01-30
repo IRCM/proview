@@ -42,6 +42,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ProfileViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(ProfileView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ProfileView view;

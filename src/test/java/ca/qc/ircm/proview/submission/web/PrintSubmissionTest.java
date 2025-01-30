@@ -46,6 +46,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class PrintSubmissionTest extends SpringUIUnitTest {
+
   private PrintSubmission component;
   @MockitoBean
   private SubmissionService service;

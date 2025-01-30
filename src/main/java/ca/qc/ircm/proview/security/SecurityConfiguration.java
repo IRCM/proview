@@ -21,7 +21,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @ConfigurationProperties(prefix = SecurityConfiguration.PREFIX)
 @EnableMethodSecurity(securedEnabled = true)
 public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int disableSignAttemps,
-    String rememberMeKey, List<PasswordVersion> passwords) {
+                                    String rememberMeKey, List<PasswordVersion> passwords) {
 
   public static final String PREFIX = "security";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);

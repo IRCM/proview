@@ -10,6 +10,7 @@ import org.springframework.context.MessageSource;
  * Constants for Web.
  */
 public class Constants {
+
   public static final Locale ENGLISH = Locale.CANADA;
   public static final Locale FRENCH = Locale.CANADA_FRENCH;
   public static final Locale DEFAULT_LOCALE = ENGLISH;
@@ -66,8 +67,7 @@ public class Constants {
    * </pre>
    * </p>
    *
-   * @param baseClass
-   *          class to use to obtain prefix
+   * @param baseClass class to use to obtain prefix
    * @return key prefix to use to get messages from {@link MessageSource}
    */
   public static String messagePrefix(Class<?> baseClass) {

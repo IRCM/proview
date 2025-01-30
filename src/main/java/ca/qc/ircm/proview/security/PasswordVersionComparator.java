@@ -8,6 +8,7 @@ import java.util.Comparator;
  * Comparator for password versions.
  */
 public class PasswordVersionComparator implements Comparator<PasswordVersion>, Serializable {
+
   @Serial
   private static final long serialVersionUID = -7244984829370331243L;
 

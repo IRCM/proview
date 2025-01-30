@@ -59,6 +59,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionViewItTest extends AbstractTestBenchTestCase {
+
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -82,14 +83,14 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewItTest.class);
+  @Value("${download-home}")
+  protected Path downloadHome;
   @Autowired
   private SubmissionRepository repository;
   @Autowired
   private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
-  @Value("${download-home}")
-  protected Path downloadHome;
   private String experiment = "my experiment";
   private String goal = "my goal";
   private String taxonomy = "my taxon";
@@ -258,7 +259,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     String applicationName =
         messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
@@ -293,7 +294,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
         currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());
@@ -350,7 +351,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
         currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());
@@ -413,7 +414,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { sampleName1 },
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{sampleName1},
         currentLocale()), notification.getText());
     Submission submission =
         repository.findOne(qsubmission.experiment.eq(sampleName1)).orElseThrow();
@@ -457,7 +458,7 @@ public class SubmissionViewItTest extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { experiment },
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
         currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
     assertEquals(experiment, submission.getExperiment());

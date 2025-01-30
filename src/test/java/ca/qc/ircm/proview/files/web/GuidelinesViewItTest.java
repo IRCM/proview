@@ -37,16 +37,17 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
+
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Value("${download-home}")
+  protected Path downloadHome;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
   @Value("${spring.application.name}")
   private String applicationName;
   @Autowired
   private MessageSource messageSource;
-  @Value("${download-home}")
-  protected Path downloadHome;
 
   private void open() {
     openView(VIEW_NAME);
@@ -68,7 +69,7 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     String applicationName =
         messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 

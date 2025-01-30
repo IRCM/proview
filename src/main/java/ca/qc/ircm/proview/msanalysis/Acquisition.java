@@ -28,9 +28,10 @@ import org.springframework.lang.Nullable;
 @Table(name = Acquisition.TABLE_NAME)
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class Acquisition implements Data, Named, Serializable {
+
   public static final String TABLE_NAME = "acquisition";
   @Serial
   private static final long serialVersionUID = 4253647399151347110L;
@@ -125,12 +126,12 @@ public class Acquisition implements Data, Named, Serializable {
     this.numberOfAcquisition = numberOfAcquisition;
   }
 
-  public void setSample(Sample sample) {
-    this.sample = sample;
-  }
-
   public Sample getSample() {
     return sample;
+  }
+
+  public void setSample(Sample sample) {
+    this.sample = sample;
   }
 
   public String getSampleListName() {

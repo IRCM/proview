@@ -24,9 +24,10 @@ import java.text.MessageFormat;
 @DiscriminatorValue("WELL")
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class Well extends SampleContainer implements Data, Named, Serializable {
+
   @Serial
   private static final long serialVersionUID = 212003765334493656L;
 
@@ -62,10 +63,8 @@ public class Well extends SampleContainer implements Data, Named, Serializable {
   /**
    * Creates a new well.
    *
-   * @param row
-   *          row where well is located on plate
-   * @param column
-   *          column where well is located on plate
+   * @param row    row where well is located on plate
+   * @param column column where well is located on plate
    */
   public Well(Integer row, Integer column) {
     this.row = row;

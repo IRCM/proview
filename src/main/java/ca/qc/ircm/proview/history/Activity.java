@@ -29,9 +29,10 @@ import org.springframework.lang.Nullable;
 @Table(name = "activity")
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class Activity implements Data {
+
   /**
    * Database identifier of activity.
    */
@@ -90,36 +91,36 @@ public class Activity implements Data {
     return id;
   }
 
-  public User getUser() {
-    return user;
-  }
-
-  public String getTableName() {
-    return tableName;
-  }
-
-  public long getRecordId() {
-    return recordId;
-  }
-
-  public ActionType getActionType() {
-    return actionType;
-  }
-
   public void setId(long id) {
     this.id = id;
+  }
+
+  public User getUser() {
+    return user;
   }
 
   public void setUser(User user) {
     this.user = user;
   }
 
+  public String getTableName() {
+    return tableName;
+  }
+
   public void setTableName(String tableName) {
     this.tableName = tableName;
   }
 
+  public long getRecordId() {
+    return recordId;
+  }
+
   public void setRecordId(long recordId) {
     this.recordId = recordId;
+  }
+
+  public ActionType getActionType() {
+    return actionType;
   }
 
   public void setActionType(ActionType actionType) {

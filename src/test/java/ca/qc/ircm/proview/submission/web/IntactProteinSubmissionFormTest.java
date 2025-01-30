@@ -73,6 +73,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(IntactProteinSubmissionForm.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -285,7 +286,7 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   public void sampleTypes() {
     List<SampleType> items = items(form.sampleType);
     assertEquals(2, items.size());
-    for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
+    for (SampleType value : new SampleType[]{DRY, SOLUTION}) {
       assertTrue(items.contains(value));
       assertEquals(form.getTranslation(SAMPLE_TYPE_PREFIX + value.name()),
           form.sampleType.getItemRenderer().createComponent(value).getElement().getText());

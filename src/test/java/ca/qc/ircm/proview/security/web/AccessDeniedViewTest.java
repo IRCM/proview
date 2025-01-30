@@ -28,6 +28,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class AccessDeniedViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(AccessDeniedView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private AccessDeniedView view;

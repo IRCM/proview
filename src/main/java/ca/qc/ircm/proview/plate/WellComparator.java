@@ -11,25 +11,12 @@ public class WellComparator implements Comparator<Well>, Serializable {
 
   @Serial
   private static final long serialVersionUID = 4182686766891972608L;
-
   /**
-   * Comparison types.
+   * Comparison type.
+   *
+   * @see ca.qc.ircm.proview.plate.WellComparator.Compare
    */
-  public enum Compare {
-    /**
-     * Compare by location on plate.
-     */
-    LOCATION,
-    /**
-     * Compare by modification time.
-     */
-    TIME_STAMP,
-    /**
-     * Sort wells to allow auto assignment of samples to well. Well are sorted by column first then
-     * by row.
-     */
-    SAMPLE_ASSIGN
-  }
+  private final Compare compare;
 
   /**
    * Use {@link ca.qc.ircm.proview.plate.WellComparator.Compare#LOCATION location} comparison by
@@ -42,22 +29,13 @@ public class WellComparator implements Comparator<Well>, Serializable {
   /**
    * Use specified comparison type.
    *
-   * @param compare
-   *          comparison type
+   * @param compare comparison type
+   * @throws NullPointerException if compare is null
    * @see ca.qc.ircm.proview.plate.WellComparator.Compare
-   * @throws NullPointerException
-   *           if compare is null
    */
   public WellComparator(Compare compare) {
     this.compare = compare;
   }
-
-  /**
-   * Comparison type.
-   *
-   * @see ca.qc.ircm.proview.plate.WellComparator.Compare
-   */
-  private final Compare compare;
 
   @Override
   public int compare(Well o1, Well o2) {
@@ -81,5 +59,24 @@ public class WellComparator implements Comparator<Well>, Serializable {
       default:
         throw new UnsupportedOperationException("Compare has an unknown value.");
     }
+  }
+
+  /**
+   * Comparison types.
+   */
+  public enum Compare {
+    /**
+     * Compare by location on plate.
+     */
+    LOCATION,
+    /**
+     * Compare by modification time.
+     */
+    TIME_STAMP,
+    /**
+     * Sort wells to allow auto assignment of samples to well. Well are sorted by column first then
+     * by row.
+     */
+    SAMPLE_ASSIGN
   }
 }

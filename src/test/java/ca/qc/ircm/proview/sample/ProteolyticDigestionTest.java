@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class ProteolyticDigestionTest {
+
   private static final String PROTEOLYTIC_DIGESTION_PREFIX =
       messagePrefix(ProteolyticDigestion.class);
   @Autowired

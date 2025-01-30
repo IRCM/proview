@@ -92,9 +92,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Submissions view.
  */
 @Route(value = SubmissionsView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ UserRole.USER })
+@RolesAllowed({UserRole.USER})
 public class SubmissionsView extends VerticalLayout
     implements HasDynamicTitle, LocaleChangeObserver, NotificationComponent {
+
   public static final String VIEW_NAME = "submissions";
   public static final String ID = "submissions-view";
   public static final String SUBMISSIONS = "submissions";
@@ -269,12 +270,12 @@ public class SubmissionsView extends VerticalLayout
         .setKey(STATUS).setSortable(false).setFlexGrow(2);
     status.setVisible(columnVisibility.apply(status));
     hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
-        .withProperty("hiddenTheme", this::hiddenTheme)
-        .withProperty("hiddenValue", this::hiddenValue).withProperty("hiddenIcon", this::hiddenIcon)
-        .withFunction("toggleHidden", submission -> {
-          toggleHidden(submission);
-          submissions.getDataProvider().refreshItem(submission);
-        })).setKey(HIDDEN).setSortProperty(HIDDEN)
+            .withProperty("hiddenTheme", this::hiddenTheme)
+            .withProperty("hiddenValue", this::hiddenValue).withProperty("hiddenIcon", this::hiddenIcon)
+            .withFunction("toggleHidden", submission -> {
+              toggleHidden(submission);
+              submissions.getDataProvider().refreshItem(submission);
+            })).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
     hidden.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(hidden));
     submissions.appendHeaderRow(); // Headers.
@@ -368,10 +369,10 @@ public class SubmissionsView extends VerticalLayout
     Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders =
         query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
             ? query.getSortOrders().stream()
-                .filter(order -> columnProperties.containsKey(order.getSorted()))
-                .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
-                    order.getDirection() == SortDirection.DESCENDING))
-                .collect(Collectors.toList())
+            .filter(order -> columnProperties.containsKey(order.getSorted()))
+            .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
+                order.getDirection() == SortDirection.DESCENDING))
+            .collect(Collectors.toList())
             : Collections.singletonList(submission.id.desc());
     submissions.setItems(query -> {
       filter.sortOrders = filterSortOrders.apply(query);
@@ -601,6 +602,7 @@ public class SubmissionsView extends VerticalLayout
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = INNER_CLASS_EI_EXPOSE_REP)
   protected class ColumnToggleContextMenu extends ContextMenu {
+
     public ColumnToggleContextMenu(Component target) {
       super(target);
       setOpenOnClick(true);

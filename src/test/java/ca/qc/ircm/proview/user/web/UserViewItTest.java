@@ -39,6 +39,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UserViewItTest extends AbstractTestBenchTestCase {
+
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
@@ -104,7 +105,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     String applicationName =
         messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
@@ -139,7 +140,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().extension().setValue(extension);
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, locale),
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
         notification.getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
@@ -189,7 +190,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().extension().setValue(extension);
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, locale),
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
         notification.getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);

@@ -13,6 +13,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = ProfileView.ID)
 public class ProfileViewElement extends VerticalLayoutElement {
+
   public UserFormElement userForm() {
     return $(UserFormElement.class).first();
   }

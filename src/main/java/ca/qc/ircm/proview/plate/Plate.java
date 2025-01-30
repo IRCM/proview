@@ -36,9 +36,10 @@ import org.springframework.lang.Nullable;
 @Table(name = Plate.TABLE_NAME)
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class Plate implements Data, Serializable, Named {
+
   public static final String TABLE_NAME = "plate";
   public static final int DEFAULT_COLUMN_COUNT = 12;
   public static final int DEFAULT_ROW_COUNT = 8;
@@ -97,14 +98,39 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Initializes plate.
    *
-   * @param id
-   *          id
-   * @param name
-   *          name
+   * @param id   id
+   * @param name name
    */
   public Plate(long id, String name) {
     this.id = id;
     this.name = name;
+  }
+
+  /**
+   * Returns row label.
+   *
+   * @param row row
+   * @return row label
+   */
+  public static String rowLabel(int row) {
+    StringBuilder rowName = new StringBuilder();
+    while (row >= 26) {
+      rowName.append((char) ('A' + row % 26));
+      row = row / 26;
+      row--;
+    }
+    rowName.append((char) ('A' + row % 26));
+    return rowName.reverse().toString();
+  }
+
+  /**
+   * Returns column label.
+   *
+   * @param column column
+   * @return column label
+   */
+  public static String columnLabel(int column) {
+    return Integer.toString(column + 1);
   }
 
   /**
@@ -127,10 +153,8 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Returns well at specified location.
    *
-   * @param row
-   *          row
-   * @param column
-   *          column
+   * @param row    row
+   * @param column column
    * @return well at specified location, or null if plate has not well at this location
    */
   @Nonnull
@@ -158,10 +182,8 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Returns wells from the 'from' location up to the 'to' location.
    *
-   * @param from
-   *          starting location
-   * @param to
-   *          end location (inclusive)
+   * @param from starting location
+   * @param to   end location (inclusive)
    * @return wells from the 'from' location up to the 'to' location
    */
   public List<Well> wells(WellLocation from, WellLocation to) {
@@ -178,8 +200,7 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Returns wells containing sample.
    *
-   * @param sample
-   *          sample
+   * @param sample sample
    * @return wells containing sample
    */
   public List<Well> wellsContainingSample(Sample sample) {
@@ -190,8 +211,7 @@ public class Plate implements Data, Serializable, Named {
   /**
    * Returns wells in column.
    *
-   * @param index
-   *          column
+   * @param index column
    * @return wells in column
    */
   public List<Well> column(int index) {
@@ -235,35 +255,6 @@ public class Plate implements Data, Serializable, Named {
       }
     }
     return count;
-  }
-
-  /**
-   * Returns row label.
-   *
-   * @param row
-   *          row
-   * @return row label
-   */
-  public static String rowLabel(int row) {
-    StringBuilder rowName = new StringBuilder();
-    while (row >= 26) {
-      rowName.append((char) ('A' + row % 26));
-      row = row / 26;
-      row--;
-    }
-    rowName.append((char) ('A' + row % 26));
-    return rowName.reverse().toString();
-  }
-
-  /**
-   * Returns column label.
-   *
-   * @param column
-   *          column
-   * @return column label
-   */
-  public static String columnLabel(int column) {
-    return Integer.toString(column + 1);
   }
 
   @Override

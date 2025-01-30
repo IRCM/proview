@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = DefaultAddressConfiguration.PREFIX)
 public class DefaultAddressConfiguration {
+
   public static final String PREFIX = "address";
   private String line;
   private String town;

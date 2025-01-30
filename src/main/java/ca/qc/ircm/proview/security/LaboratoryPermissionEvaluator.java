@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
+
   private LaboratoryRepository repository;
   private RoleValidator roleValidator;
 

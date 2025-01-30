@@ -47,6 +47,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
+
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final QSubmissionSample qsubmissionSample = QSubmissionSample.submissionSample;
   @Autowired

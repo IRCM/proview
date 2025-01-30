@@ -13,6 +13,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
  */
 @ServiceTestAnnotations
 public class SampleContainerVersionTest extends AbstractServiceTestCase {
+
   @Autowired
   private SampleContainerRepository repository;
   @Autowired

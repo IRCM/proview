@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
  */
 @NonTransactionalTestAnnotations
 public class TubeTest {
+
   @Test
   public void getName() {
     assertEquals("test_tube", new Tube(1L, "test_tube").getName());

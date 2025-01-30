@@ -21,6 +21,7 @@ import org.springframework.lang.Nullable;
  * Passwords form.
  */
 public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
+
   public static final String CLASS_NAME = "passwords";
   public static final String PASSWORD = "password";
   public static final String PASSWORD_CONFIRM = PASSWORD + "Confirm";
@@ -89,8 +90,7 @@ public class PasswordsForm extends FormLayout implements LocaleChangeObserver {
   /**
    * Sets if password is required.
    *
-   * @param required
-   *          true if password is required, false otherwise
+   * @param required true if password is required, false otherwise
    */
   public void setRequired(boolean required) {
     this.required = required;

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TubeService {
+
   private final TubeRepository repository;
 
   @Autowired
@@ -27,8 +28,7 @@ public class TubeService {
   /**
    * Selects tube from database.
    *
-   * @param id
-   *          database identifier of tube
+   * @param id database identifier of tube
    * @return tube
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get().sample, 'read')")
@@ -39,8 +39,7 @@ public class TubeService {
   /**
    * Returns true if name is available in database, false otherwise.
    *
-   * @param name
-   *          tube's name
+   * @param name tube's name
    * @return true if name is available in database, false otherwise
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -51,8 +50,7 @@ public class TubeService {
   /**
    * Returns tubes used for sample.
    *
-   * @param sample
-   *          sample.
+   * @param sample sample.
    * @return digestion tubes used for sample.
    */
   @PreAuthorize("hasPermission(#sample, 'read')")

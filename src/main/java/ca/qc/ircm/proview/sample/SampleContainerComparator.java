@@ -11,6 +11,7 @@ import java.util.Locale;
  * Comparator for sample containers.
  */
 public class SampleContainerComparator implements Comparator<SampleContainer>, Serializable {
+
   @Serial
   private static final long serialVersionUID = -1704857519143636051L;
   private final Locale locale;

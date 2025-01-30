@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class PhoneNumberTypeTest {
+
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private MessageSource messageSource;

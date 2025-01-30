@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 @ServiceTestAnnotations
 public class UserFilterTest {
+
   private UserFilter filter;
 
   @BeforeEach

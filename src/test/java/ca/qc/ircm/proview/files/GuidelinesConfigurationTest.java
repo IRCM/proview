@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @NonTransactionalTestAnnotations
 public class GuidelinesConfigurationTest {
+
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
 

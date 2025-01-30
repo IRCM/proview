@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SignoutViewTest extends SpringUIUnitTest {
+
   private SignoutView view;
   @Autowired
   private AuthenticatedUser authenticatedUser;

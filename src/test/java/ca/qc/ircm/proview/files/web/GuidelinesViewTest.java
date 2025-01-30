@@ -37,6 +37,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class GuidelinesViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private GuidelinesView view;

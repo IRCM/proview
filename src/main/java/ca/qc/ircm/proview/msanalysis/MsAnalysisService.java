@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MsAnalysisService {
+
   private final MsAnalysisRepository repository;
   private final JPAQueryFactory queryFactory;
 
@@ -33,8 +34,7 @@ public class MsAnalysisService {
   /**
    * Selects MS analysis from database.
    *
-   * @param id
-   *          database identifier of MS analysis
+   * @param id database identifier of MS analysis
    * @return MS analysis
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -45,8 +45,7 @@ public class MsAnalysisService {
   /**
    * Selects all MS analysis made on submission.
    *
-   * @param submissionParam
-   *          submission
+   * @param submissionParam submission
    * @return all MS analysis made on submission
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")

@@ -7,6 +7,7 @@ import java.util.List;
  * Guideline's category.
  */
 public class Category {
+
   /**
    * Name.
    */

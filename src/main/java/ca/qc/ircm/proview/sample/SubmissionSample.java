@@ -27,9 +27,10 @@ import org.springframework.lang.Nullable;
 @DiscriminatorValue("SUBMISSION")
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class SubmissionSample extends Sample implements LaboratoryData, Named {
+
   @Serial
   private static final long serialVersionUID = -7652364189294805763L;
 

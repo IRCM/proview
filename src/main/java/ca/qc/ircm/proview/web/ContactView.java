@@ -30,8 +30,9 @@ import org.slf4j.LoggerFactory;
  * Main view.
  */
 @Route(value = ContactView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ USER })
+@RolesAllowed({USER})
 public class ContactView extends VerticalLayout implements LocaleChangeObserver, HasDynamicTitle {
+
   public static final String VIEW_NAME = "contact";
   public static final String ID = "contact-view";
   public static final String HEADER = "header";

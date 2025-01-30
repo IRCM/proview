@@ -19,6 +19,7 @@ import org.openqa.selenium.By;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = HistoryView.ID)
 public class HistoryViewElement extends VerticalLayoutElement {
+
   public HistoryViewActivitiesElement activities() {
     return $(HistoryViewActivitiesElement.class).first();
   }

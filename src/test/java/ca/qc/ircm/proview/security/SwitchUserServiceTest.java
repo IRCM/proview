@@ -46,6 +46,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SwitchUserServiceTest extends SpringUIUnitTest {
+
   @Autowired
   private SwitchUserService service;
   @Autowired
@@ -115,7 +116,7 @@ public class SwitchUserServiceTest extends SpringUIUnitTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void switchUser_AccessDenied() {
     User user = repository.findById(10L).orElseThrow();
     assertThrows(AccessDeniedException.class,

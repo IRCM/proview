@@ -32,6 +32,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 public class PlateActivityServiceTest extends AbstractServiceTestCase {
+
   @Autowired
   private PlateActivityService plateActivityService;
   @Autowired

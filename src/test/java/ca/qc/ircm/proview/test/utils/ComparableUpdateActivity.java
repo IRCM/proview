@@ -4,10 +4,11 @@ import ca.qc.ircm.proview.history.UpdateActivity;
 import java.util.Objects;
 
 /**
- * Envelops {@link UpdateActivity} into a comparable object to allow different {@link UpdateActivity
- * UpdateActivities} to be compared.
+ * Envelops {@link UpdateActivity} into a comparable object to allow different
+ * {@link UpdateActivity UpdateActivities} to be compared.
  */
 public class ComparableUpdateActivity {
+
   private final UpdateActivity updateActivity;
 
   public ComparableUpdateActivity(UpdateActivity updateActivity) {

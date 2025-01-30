@@ -47,18 +47,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AnonymousAllowed
 public class ForgotPasswordView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle, NotificationComponent, UrlComponent {
-  private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
-  private static final String USER_PREFIX = messagePrefix(User.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  @Serial
-  private static final long serialVersionUID = 4760310643370830640L;
-  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordView.class);
+
   public static final String VIEW_NAME = "forgotpassword";
   public static final String ID = "forgotpassword-view";
   public static final String SEPARATOR = "/";
   public static final String HEADER = "header";
   public static final String MESSAGE = "message";
   public static final String SAVED = "saved";
+  private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
+  private static final long serialVersionUID = 4760310643370830640L;
+  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordView.class);
   protected H2 header = new H2();
   protected Div message = new Div();
   protected TextField email = new TextField();

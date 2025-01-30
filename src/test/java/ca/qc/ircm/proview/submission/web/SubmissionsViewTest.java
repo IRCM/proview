@@ -111,6 +111,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionsViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
@@ -1078,7 +1079,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertNull(view.hiddenFilter.getValue());
     assertTrue(view.hiddenFilter.isClearButtonVisible());
     List<Boolean> values = items(view.hiddenFilter);
-    assertArrayEquals(new Boolean[] { false, true }, values.toArray(new Boolean[0]));
+    assertArrayEquals(new Boolean[]{false, true}, values.toArray(new Boolean[0]));
     for (Boolean value : values) {
       assertEquals(view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, value)),
           view.hiddenFilter.getItemLabelGenerator().apply(value));

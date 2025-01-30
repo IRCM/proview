@@ -20,9 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
  * Integration tests for {@link ViewLayout}.
  */
 @TestBenchTestAnnotations
-@ActiveProfiles({ "integration-test", "context-path" })
+@ActiveProfiles({"integration-test", "context-path"})
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutContextPathItTest extends AbstractTestBenchTestCase {
+
   private void open() {
     openView(VIEW_NAME);
   }

@@ -14,8 +14,9 @@ import java.io.Serial;
  * Main view.
  */
 @Route(value = MainView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ USER })
+@RolesAllowed({USER})
 public class MainView extends VerticalLayout implements BeforeEnterObserver {
+
   public static final String VIEW_NAME = "";
   @Serial
   private static final long serialVersionUID = -4472228116629914718L;

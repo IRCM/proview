@@ -31,9 +31,10 @@ import org.springframework.lang.Nullable;
 @Table(name = User.TABLE_NAME)
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class User implements Data, Named, Serializable {
+
   public static final String TABLE_NAME = "users";
   public static final String LOCALE_PREFERENCE = "locale";
   public static final long ROBOT_ID = 1L;
