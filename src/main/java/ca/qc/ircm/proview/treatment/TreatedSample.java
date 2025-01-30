@@ -122,11 +122,8 @@ public class TreatedSample implements Data, Serializable {
    * @return fration's name based on sample's name
    */
   public String getFractionName() {
-    StringBuilder builder = new StringBuilder();
-    builder.append(getSample().getName());
-    builder.append(".F");
-    builder.append(position);
-    return builder.toString();
+    String builder = getSample().getName() + ".F" + position;
+    return builder;
   }
 
   @Override

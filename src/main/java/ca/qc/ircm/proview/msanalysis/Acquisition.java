@@ -98,19 +98,14 @@ public class Acquisition implements Data, Named, Serializable {
 
   @Override
   public String getName() {
-    StringBuilder builder = new StringBuilder();
-    builder.append(getSample().getName());
-    builder.append(".A");
-    builder.append(position);
-    return builder.toString();
+    String builder = getSample().getName() + ".A" + position;
+    return builder;
   }
 
   @Override
   public String toString() {
-    StringBuilder buff = new StringBuilder("Acquisition(");
-    buff.append(id);
-    buff.append(")");
-    return buff.toString();
+    String buff = "Acquisition(" + id + ")";
+    return buff;
   }
 
   @Override
