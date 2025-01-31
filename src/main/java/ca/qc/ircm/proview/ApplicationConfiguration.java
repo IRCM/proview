@@ -23,9 +23,11 @@ public class ApplicationConfiguration {
 
   /**
    * Returns urlEnd with prefix that allows to access application from anywhere.
-   * <p>
-   * For example, to obtain the full URL <code>http://myserver.com/proview/myurl?param1=abc</code> ,
-   * the urlEnd parameter should be <code>/proview/myurl?param1=abc</code>
+   *
+   * <p>For example, to obtain the full URL <code><a
+   * href="http://myserver.com/proview/myurl?param1=abc">
+   * http://myserver.com/proview/myurl?param1=abc</a></code> , the urlEnd parameter should be
+   * <code>/proview/myurl?param1=abc</code>
    * </p>
    *
    * @param urlEnd end portion of URL
