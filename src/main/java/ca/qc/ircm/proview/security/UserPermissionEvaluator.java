@@ -23,8 +23,8 @@ public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
 
   private static final long ROBOT_ID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
-  private UserRepository repository;
-  private RoleValidator roleValidator;
+  private final UserRepository repository;
+  private final RoleValidator roleValidator;
 
   @Autowired
   UserPermissionEvaluator(UserRepository repository, RoleValidator roleValidator) {

@@ -60,7 +60,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   private BeforeEvent beforeEvent;
   @Mock
   private ForgotPassword forgotPassword;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

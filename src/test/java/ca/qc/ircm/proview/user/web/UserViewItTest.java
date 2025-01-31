@@ -53,17 +53,17 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
   private EntityManager entityManager;
   @Autowired
   private MessageSource messageSource;
-  private String email = "test@ircm.qc.ca";
-  private String name = "Test User";
-  private String password = "test_password";
-  private String addressLine = "200 My Street";
-  private String town = "My Town";
-  private String state = "My State";
-  private String country = "My Country";
-  private String postalCode = "12345";
-  private PhoneNumberType phoneType = PhoneNumberType.MOBILE;
-  private String number = "514-555-1234";
-  private String extension = "443";
+  private final String email = "test@ircm.qc.ca";
+  private final String name = "Test User";
+  private final String password = "test_password";
+  private final String addressLine = "200 My Street";
+  private final String town = "My Town";
+  private final String state = "My State";
+  private final String country = "My Country";
+  private final String postalCode = "12345";
+  private final PhoneNumberType phoneType = PhoneNumberType.MOBILE;
+  private final String number = "514-555-1234";
+  private final String extension = "443";
 
   private void open() {
     openView(VIEW_NAME);

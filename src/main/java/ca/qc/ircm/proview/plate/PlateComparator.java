@@ -18,7 +18,7 @@ public class PlateComparator implements Comparator<Plate>, Serializable {
   /**
    * Type of comparison used.
    */
-  private Compare compare;
+  private final Compare compare;
 
   /**
    * Compare plate using selected comparison.

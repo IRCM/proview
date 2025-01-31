@@ -79,9 +79,9 @@ public class SamplesStatusDialog extends Dialog
   protected ComboBox<SampleStatus> allStatus = new ComboBox<>();
   protected Button save = new Button();
   protected Button cancel = new Button();
-  private Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
+  private final Map<SubmissionSample, ComboBox<SampleStatus>> statusFields = new HashMap<>();
   private Submission submission;
-  private Map<SubmissionSample, Binder<SubmissionSample>> binders = new HashMap<>();
+  private final Map<SubmissionSample, Binder<SubmissionSample>> binders = new HashMap<>();
   private transient SubmissionService service;
   private transient SubmissionSampleService sampleService;
 

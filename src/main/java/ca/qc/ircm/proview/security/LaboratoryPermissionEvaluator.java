@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class LaboratoryPermissionEvaluator extends AbstractPermissionEvaluator {
 
-  private LaboratoryRepository repository;
-  private RoleValidator roleValidator;
+  private final LaboratoryRepository repository;
+  private final RoleValidator roleValidator;
 
   @Autowired
   LaboratoryPermissionEvaluator(LaboratoryRepository repository, UserRepository userRepository,

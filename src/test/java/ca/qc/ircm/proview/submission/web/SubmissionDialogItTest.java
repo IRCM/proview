@@ -38,8 +38,8 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
   private MessageSource messageSource;
   @Value("${spring.application.name}")
   private String applicationName;
-  private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
-  private LocalDate dataAvailableDate = LocalDate.now().minusDays(1);
+  private final MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
+  private final LocalDate dataAvailableDate = LocalDate.now().minusDays(1);
 
   private SubmissionDialogElement openDialog(int row) {
     openView(VIEW_NAME);

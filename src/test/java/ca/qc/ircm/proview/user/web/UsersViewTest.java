@@ -111,7 +111,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   private ListDataProvider<User> dataProvider;
   @Captor
   private ArgumentCaptor<UserFilter> userFilterCaptor;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private List<User> users;
 
   /**

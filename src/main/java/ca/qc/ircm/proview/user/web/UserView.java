@@ -56,7 +56,7 @@ public class UserView extends VerticalLayout implements LocaleChangeObserver, Ha
   protected HorizontalLayout buttonsLayout = new HorizontalLayout();
   protected Button save = new Button();
   protected UserForm form;
-  private transient UserService service;
+  private final transient UserService service;
 
   @Autowired
   protected UserView(UserForm form, UserService service) {

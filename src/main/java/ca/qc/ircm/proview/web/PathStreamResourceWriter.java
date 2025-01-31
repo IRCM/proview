@@ -15,7 +15,7 @@ public class PathStreamResourceWriter implements StreamResourceWriter {
 
   @Serial
   private static final long serialVersionUID = 673747187193922551L;
-  private File file;
+  private final File file;
 
   public PathStreamResourceWriter(File file) {
     this.file = file;

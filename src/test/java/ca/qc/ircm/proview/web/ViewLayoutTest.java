@@ -71,8 +71,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   private SubmissionRepository submissionRepository;
   @Autowired
   private UserRepository userRepository;
-  private Locale locale = ENGLISH;
-  private User user = new User(1L, "myuser");
+  private final Locale locale = ENGLISH;
+  private final User user = new User(1L, "myuser");
 
   /**
    * Before test.

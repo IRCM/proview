@@ -132,7 +132,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   private ListDataProvider<Submission> dataProvider;
   @Captor
   private ArgumentCaptor<SubmissionFilter> filterCaptor;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private List<Submission> submissions;
 
   /**

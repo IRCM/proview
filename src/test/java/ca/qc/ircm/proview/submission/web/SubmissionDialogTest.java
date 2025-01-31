@@ -70,9 +70,9 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   private SubmissionRepository repository;
   @Mock
   private ComponentEventListener<SavedEvent<SubmissionDialog>> savedListener;
-  private Locale locale = ENGLISH;
-  private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
-  private LocalDate dataAvailableDate = LocalDate.of(2019, 8, 2);
+  private final Locale locale = ENGLISH;
+  private final MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
+  private final LocalDate dataAvailableDate = LocalDate.of(2019, 8, 2);
 
   /**
    * Before tests.

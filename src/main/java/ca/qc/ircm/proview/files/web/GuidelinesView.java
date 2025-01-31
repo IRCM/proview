@@ -35,7 +35,7 @@ public class GuidelinesView extends VerticalLayout
   @Serial
   private static final long serialVersionUID = 1881767150748374598L;
   private static final Logger logger = LoggerFactory.getLogger(GuidelinesView.class);
-  private transient GuidelinesConfiguration guidelinesConfiguration;
+  private final transient GuidelinesConfiguration guidelinesConfiguration;
 
   @Autowired
   protected GuidelinesView(GuidelinesConfiguration guidelinesConfiguration) {

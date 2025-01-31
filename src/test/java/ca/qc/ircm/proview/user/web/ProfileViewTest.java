@@ -52,7 +52,7 @@ public class ProfileViewTest extends SpringUIUnitTest {
   private DefaultAddressConfiguration defaultAddressConfiguration;
   @Mock
   private User user;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

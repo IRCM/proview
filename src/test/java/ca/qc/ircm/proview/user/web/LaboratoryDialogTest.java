@@ -67,7 +67,7 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   private ArgumentCaptor<Laboratory> laboratoryCaptor;
   @Autowired
   private LaboratoryRepository repository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

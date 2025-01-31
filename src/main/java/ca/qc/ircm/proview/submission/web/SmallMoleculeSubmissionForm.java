@@ -94,11 +94,11 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<Boolean> highResolution = new RadioButtonGroup<>();
   protected CheckboxGroup<Solvent> solvents = new CheckboxGroup<>();
   protected TextField otherSolvent = new TextField();
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder =
+  private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private final Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
-  private transient SubmissionSampleService sampleService;
-  private transient AuthenticatedUser authenticatedUser;
+  private final transient SubmissionSampleService sampleService;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SmallMoleculeSubmissionForm(SubmissionSampleService sampleService,

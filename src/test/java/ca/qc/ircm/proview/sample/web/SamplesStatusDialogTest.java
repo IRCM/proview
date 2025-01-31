@@ -95,8 +95,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   private SubmissionSampleRepository sampleRepository;
   private Locale locale = ENGLISH;
   private List<SubmissionSample> samples;
-  private SampleStatus status1 = SampleStatus.ANALYSED;
-  private SampleStatus status2 = SampleStatus.DIGESTED;
+  private final SampleStatus status1 = SampleStatus.ANALYSED;
+  private final SampleStatus status2 = SampleStatus.DIGESTED;
 
   /**
    * Before tests.

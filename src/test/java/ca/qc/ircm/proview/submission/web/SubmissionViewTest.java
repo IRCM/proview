@@ -132,12 +132,12 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   private DataProviderListener<SubmissionFile> filesDataProviderListener;
   @Captor
   private ArgumentCaptor<Submission> submissionCaptor;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private Submission submission;
-  private String experiment = "my test experiment";
+  private final String experiment = "my test experiment";
   private List<SubmissionFile> files;
-  private String comment = "comment first line\nSecond line";
-  private Random random = new Random();
+  private final String comment = "comment first line\nSecond line";
+  private final Random random = new Random();
 
   /**
    * Before test.

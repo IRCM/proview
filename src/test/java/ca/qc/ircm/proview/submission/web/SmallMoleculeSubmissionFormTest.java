@@ -85,20 +85,20 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private Submission newSubmission;
-  private SampleType sampleType = SampleType.SOLUTION;
-  private String sampleName = "my sample";
-  private String solvent = "ethanol";
-  private String formula = "ch3oh";
-  private double monoisotopicMass = 18.1;
-  private double averageMass = 18.2;
-  private String toxicity = "poison";
-  private boolean lightSensitive = true;
-  private StorageTemperature storageTemperature = StorageTemperature.MEDIUM;
-  private boolean highResolution = true;
-  private List<Solvent> solvents = Arrays.asList(Solvent.ACETONITRILE, Solvent.CHCL3);
-  private String otherSolvent = "acetone";
+  private final SampleType sampleType = SampleType.SOLUTION;
+  private final String sampleName = "my sample";
+  private final String solvent = "ethanol";
+  private final String formula = "ch3oh";
+  private final double monoisotopicMass = 18.1;
+  private final double averageMass = 18.2;
+  private final String toxicity = "poison";
+  private final boolean lightSensitive = true;
+  private final StorageTemperature storageTemperature = StorageTemperature.MEDIUM;
+  private final boolean highResolution = true;
+  private final List<Solvent> solvents = Arrays.asList(Solvent.ACETONITRILE, Solvent.CHCL3);
+  private final String otherSolvent = "acetone";
 
   /**
    * Before test.

@@ -70,9 +70,9 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected Button print = new Button();
   protected Button edit = new Button();
   protected PrintSubmission printContent;
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private transient SubmissionService service;
-  private transient AuthenticatedUser authenticatedUser;
+  private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private final transient SubmissionService service;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionDialog(PrintSubmission printContent, SubmissionService service,

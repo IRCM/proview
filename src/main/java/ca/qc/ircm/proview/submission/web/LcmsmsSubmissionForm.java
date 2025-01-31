@@ -177,12 +177,12 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   protected TextField identificationLink = new TextField();
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder =
+  private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private final Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
-  private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
-  private transient SubmissionSampleService sampleService;
-  private transient AuthenticatedUser authenticatedUser;
+  private final Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
+  private final transient SubmissionSampleService sampleService;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected LcmsmsSubmissionForm(SubmissionSampleService sampleService,

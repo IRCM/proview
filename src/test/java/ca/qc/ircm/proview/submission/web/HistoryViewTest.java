@@ -120,7 +120,7 @@ public class HistoryViewTest extends SpringUIUnitTest {
   private ArgumentCaptor<ValueProvider<Activity, String>> valueProviderCaptor;
   @Captor
   private ArgumentCaptor<LitRenderer<Activity>> litRendererCaptor;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private List<Activity> activities;
 
   /**

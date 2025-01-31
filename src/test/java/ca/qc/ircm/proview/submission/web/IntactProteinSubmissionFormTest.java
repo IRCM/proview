@@ -93,23 +93,23 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private AuthenticatedUser authenticatedUser;
   @Autowired
   private SubmissionRepository repository;
-  private Locale locale = ENGLISH;
-  private String experiment = "my experiment";
-  private String goal = "my goal";
-  private String taxonomy = "my taxon";
-  private String protein = "my protein";
-  private Double molecularWeight = 12.3;
-  private String postTranslationModification = "glyco";
-  private SampleType sampleType = SampleType.SOLUTION;
-  private int samplesCount = 2;
-  private String sampleName1 = "my sample 1";
-  private String sampleName2 = "my sample 2";
-  private String samplesNames = sampleName1 + ", " + sampleName2;
-  private String quantity = "13g";
-  private String volume = "9 ml";
-  private InjectionType injection = InjectionType.LC_MS;
-  private MassDetectionInstrumentSource source = MassDetectionInstrumentSource.LDTD;
-  private MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
+  private final Locale locale = ENGLISH;
+  private final String experiment = "my experiment";
+  private final String goal = "my goal";
+  private final String taxonomy = "my taxon";
+  private final String protein = "my protein";
+  private final Double molecularWeight = 12.3;
+  private final String postTranslationModification = "glyco";
+  private final SampleType sampleType = SampleType.SOLUTION;
+  private final int samplesCount = 2;
+  private final String sampleName1 = "my sample 1";
+  private final String sampleName2 = "my sample 2";
+  private final String samplesNames = sampleName1 + ", " + sampleName2;
+  private final String quantity = "13g";
+  private final String volume = "9 ml";
+  private final InjectionType injection = InjectionType.LC_MS;
+  private final MassDetectionInstrumentSource source = MassDetectionInstrumentSource.LDTD;
+  private final MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
 
   /**
    * Before test.

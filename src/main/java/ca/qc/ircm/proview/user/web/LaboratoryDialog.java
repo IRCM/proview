@@ -57,9 +57,9 @@ public class LaboratoryDialog extends Dialog
   protected TextField name = new TextField();
   protected Button save = new Button();
   protected Button cancel = new Button();
-  private Binder<Laboratory> binder = new BeanValidationBinder<>(Laboratory.class);
-  private transient LaboratoryService service;
-  private transient AuthenticatedUser authenticatedUser;
+  private final Binder<Laboratory> binder = new BeanValidationBinder<>(Laboratory.class);
+  private final transient LaboratoryService service;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected LaboratoryDialog(LaboratoryService service, AuthenticatedUser authenticatedUser) {

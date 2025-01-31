@@ -36,8 +36,8 @@ public class PasswordsFormTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(PasswordsForm.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private PasswordsForm form;
-  private Locale locale = ENGLISH;
-  private String password = "test_password";
+  private final Locale locale = ENGLISH;
+  private final String password = "test_password";
 
   /**
    * Before test.

@@ -30,7 +30,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
   private LaboratoryRepository repository;
   @Autowired
   private MessageSource messageSource;
-  private String name = "new laboratory name";
+  private final String name = "new laboratory name";
 
   private void open() {
     openView(VIEW_NAME);

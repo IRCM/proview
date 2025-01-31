@@ -52,7 +52,7 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
   private SubmissionService service;
   @Autowired
   private SubmissionRepository repository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   @BeforeEach
   public void beforeTest() {

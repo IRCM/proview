@@ -38,7 +38,7 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmission.class);
   @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = CHILD_COMPONENT_EI_EXPOSE_REP)
   private Submission submission;
-  private transient SubmissionService service;
+  private final transient SubmissionService service;
 
   @Autowired
   protected PrintSubmission(SubmissionService service) {

@@ -60,7 +60,7 @@ public class UserViewTest extends SpringUIUnitTest {
   private BeforeEvent beforeEvent;
   @Autowired
   private DefaultAddressConfiguration defaultAddressConfiguration;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

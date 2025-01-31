@@ -95,15 +95,16 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   protected ComboBox<PhoneNumberType> phoneType = new ComboBox<>();
   protected TextField number = new TextField();
   protected TextField extension = new TextField();
-  private Binder<User> binder = new BeanValidationBinder<>(User.class);
+  private final Binder<User> binder = new BeanValidationBinder<>(User.class);
   private ListDataProvider<Laboratory> laboratoriesDataProvider;
-  private Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
-  private Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
-  private Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(PhoneNumber.class);
+  private final Binder<Laboratory> laboratoryBinder = new BeanValidationBinder<>(Laboratory.class);
+  private final Binder<Address> addressBinder = new BeanValidationBinder<>(Address.class);
+  private final Binder<PhoneNumber> phoneNumberBinder = new BeanValidationBinder<>(
+      PhoneNumber.class);
   private User user;
-  private transient LaboratoryService laboratoryService;
-  private transient AuthenticatedUser authenticatedUser;
-  private transient DefaultAddressConfiguration defaultAddressConfiguration;
+  private final transient LaboratoryService laboratoryService;
+  private final transient AuthenticatedUser authenticatedUser;
+  private final transient DefaultAddressConfiguration defaultAddressConfiguration;
 
   @Autowired
   protected UserForm(LaboratoryService laboratoryService, AuthenticatedUser authenticatedUser,

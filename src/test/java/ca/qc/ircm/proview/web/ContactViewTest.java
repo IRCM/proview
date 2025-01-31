@@ -40,7 +40,7 @@ public class ContactViewTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ContactView view;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

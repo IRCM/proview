@@ -84,7 +84,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   protected Column<TreatedSample> piInterval;
   protected Column<TreatedSample> comment;
   private Treatment treatment;
-  private transient TreatmentService service;
+  private final transient TreatmentService service;
 
   @Autowired
   protected TreatmentDialog(TreatmentService service) {

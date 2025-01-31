@@ -77,7 +77,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
   private TreatmentRepository repository;
   @Autowired
   private TreatedSampleRepository treatedSampleRepository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private List<TreatedSample> treatedSamples;
 
   /**

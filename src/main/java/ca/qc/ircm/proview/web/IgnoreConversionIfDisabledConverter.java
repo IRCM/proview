@@ -14,8 +14,8 @@ public class IgnoreConversionIfDisabledConverter<P, M> implements Converter<P, M
 
   @Serial
   private static final long serialVersionUID = -7086544375971670487L;
-  private Converter<P, M> delegate;
-  private M errorValue;
+  private final Converter<P, M> delegate;
+  private final M errorValue;
 
   public IgnoreConversionIfDisabledConverter(Converter<P, M> delegate) {
     this(delegate, null);

@@ -86,11 +86,11 @@ public class HistoryView extends VerticalLayout implements HasDynamicTitle, HasU
   protected Column<Activity> explanation;
   protected Button view = new Button();
   private Submission submission;
-  private transient ObjectFactory<SubmissionDialog> dialogFactory;
-  private transient ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
-  private transient ObjectFactory<TreatmentDialog> treatmentDialogFactory;
-  private transient ActivityService service;
-  private transient SubmissionService submissionService;
+  private final transient ObjectFactory<SubmissionDialog> dialogFactory;
+  private final transient ObjectFactory<MsAnalysisDialog> msAnalysisDialogFactory;
+  private final transient ObjectFactory<TreatmentDialog> treatmentDialogFactory;
+  private final transient ActivityService service;
+  private final transient SubmissionService submissionService;
 
   @Autowired
   protected HistoryView(ActivityService service, SubmissionService submissionService,

@@ -59,7 +59,7 @@ public class UserDialogTest extends SpringUIUnitTest {
   private ComponentEventListener<SavedEvent<UserDialog>> savedListener;
   @Autowired
   private UserRepository repository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

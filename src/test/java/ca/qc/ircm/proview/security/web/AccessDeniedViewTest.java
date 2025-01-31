@@ -32,7 +32,7 @@ public class AccessDeniedViewTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(AccessDeniedView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private AccessDeniedView view;
-  private Locale locale = Locale.ENGLISH;
+  private final Locale locale = Locale.ENGLISH;
 
   @BeforeEach
   public void beforeTest() {

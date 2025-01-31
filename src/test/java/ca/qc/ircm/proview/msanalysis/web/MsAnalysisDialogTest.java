@@ -75,7 +75,7 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private MsAnalysisRepository repository;
   @Autowired
   private AcquisitionRepository acquisitionRepository;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
   private List<Acquisition> acquisitions;
 
   /**

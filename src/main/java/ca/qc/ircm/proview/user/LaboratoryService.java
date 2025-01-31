@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LaboratoryService {
 
-  private LaboratoryRepository repository;
+  private final LaboratoryRepository repository;
 
   @Autowired
   protected LaboratoryService(LaboratoryRepository repository) {

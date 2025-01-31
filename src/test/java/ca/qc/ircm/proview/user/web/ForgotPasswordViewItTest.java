@@ -37,7 +37,7 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   private ForgotPasswordRepository repository;
   @Autowired
   private MessageSource messageSource;
-  private String email = "christopher.anderson@ircm.qc.ca";
+  private final String email = "christopher.anderson@ircm.qc.ca";
 
   private void open() {
     openView(VIEW_NAME);

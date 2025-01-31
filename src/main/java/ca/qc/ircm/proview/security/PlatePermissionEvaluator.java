@@ -21,9 +21,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlatePermissionEvaluator extends AbstractPermissionEvaluator {
 
-  private PlateRepository repository;
-  private RoleValidator roleValidator;
-  private SubmissionPermissionEvaluator submissionPermissionEvaluator;
+  private final PlateRepository repository;
+  private final RoleValidator roleValidator;
+  private final SubmissionPermissionEvaluator submissionPermissionEvaluator;
 
   @Autowired
   PlatePermissionEvaluator(PlateRepository repository, UserRepository userRepository,

@@ -73,7 +73,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   private PlateRepository plateRepository;
   @Autowired
   private MessageSource messageSource;
-  private Locale locale = Locale.ENGLISH;
+  private final Locale locale = Locale.ENGLISH;
 
   @Test
   public void record_Digestion() {

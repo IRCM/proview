@@ -55,7 +55,7 @@ public class PrintSubmissionView extends VerticalLayout
   protected H3 secondHeader = new H3();
   protected PrintSubmission printContent;
   private Submission submission;
-  private transient SubmissionService service;
+  private final transient SubmissionService service;
 
   @Autowired
   protected PrintSubmissionView(PrintSubmission printContent, SubmissionService service) {

@@ -72,7 +72,7 @@ public class MsAnalysisDialog extends Dialog implements LocaleChangeObserver {
   protected Column<Acquisition> position;
   protected Column<Acquisition> comment;
   private MsAnalysis msAnalysis;
-  private transient MsAnalysisService service;
+  private final transient MsAnalysisService service;
 
   @Autowired
   protected MsAnalysisDialog(MsAnalysisService service) {

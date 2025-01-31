@@ -43,7 +43,7 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   private GuidelinesView view;
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
-  private Locale locale = ENGLISH;
+  private final Locale locale = ENGLISH;
 
   /**
    * Before test.

@@ -44,7 +44,7 @@ public class UserDialog extends Dialog implements LocaleChangeObserver {
   protected Button save = new Button();
   protected Button cancel = new Button();
   protected UserForm form;
-  private transient UserService service;
+  private final transient UserService service;
 
   @Autowired
   UserDialog(UserForm form, UserService service) {

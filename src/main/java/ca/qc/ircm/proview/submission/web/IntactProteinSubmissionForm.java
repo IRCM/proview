@@ -119,12 +119,12 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<InjectionType> injection = new RadioButtonGroup<>();
   protected RadioButtonGroup<MassDetectionInstrumentSource> source = new RadioButtonGroup<>();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private Binder<SubmissionSample> firstSampleBinder =
+  private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private final Binder<SubmissionSample> firstSampleBinder =
       new BeanValidationBinder<>(SubmissionSample.class);
-  private Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
-  private transient SubmissionSampleService sampleService;
-  private transient AuthenticatedUser authenticatedUser;
+  private final Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
+  private final transient SubmissionSampleService sampleService;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected IntactProteinSubmissionForm(SubmissionSampleService sampleService,

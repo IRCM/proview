@@ -34,7 +34,7 @@ public class CategoryComponentTest extends SpringUIUnitTest {
   private CategoryComponent component;
   @Mock
   private Category category;
-  private List<Guideline> guidelines = new ArrayList<>();
+  private final List<Guideline> guidelines = new ArrayList<>();
   @Mock
   private Guideline guideline1;
   @Mock

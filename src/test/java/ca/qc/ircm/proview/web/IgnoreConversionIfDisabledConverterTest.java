@@ -30,8 +30,8 @@ public class IgnoreConversionIfDisabledConverterTest {
   private Converter<String, Double> delegate;
   @Mock
   private ValueContext context;
-  private TextField component = new TextField();
-  private String errorMessage = "error message";
+  private final TextField component = new TextField();
+  private final String errorMessage = "error message";
 
   @BeforeEach
   public void before() {

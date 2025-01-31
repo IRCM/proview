@@ -119,12 +119,12 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   protected LcmsmsSubmissionForm lcmsmsSubmissionForm;
   protected SmallMoleculeSubmissionForm smallMoleculeSubmissionForm;
   protected IntactProteinSubmissionForm intactProteinSubmissionForm;
-  private Map<Tab, Component> tabsToComponents = new HashMap<>();
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private ListDataProvider<SubmissionFile> filesDataProvider =
+  private final Map<Tab, Component> tabsToComponents = new HashMap<>();
+  private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
+  private final ListDataProvider<SubmissionFile> filesDataProvider =
       DataProvider.ofCollection(new ArrayList<>());
-  private transient SubmissionService submissionService;
-  private transient AuthenticatedUser authenticatedUser;
+  private final transient SubmissionService submissionService;
+  private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected SubmissionView(SubmissionService submissionService, AuthenticatedUser authenticatedUser,

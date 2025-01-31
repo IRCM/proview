@@ -17,7 +17,7 @@ public class RequiredIfEnabledValidator<T> implements Validator<T> {
 
   @Serial
   private static final long serialVersionUID = 8981491477845535933L;
-  private String errorMessage;
+  private final String errorMessage;
 
   public RequiredIfEnabledValidator(String errorMessage) {
     this.errorMessage = errorMessage;
