@@ -39,6 +39,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 public class AuthenticatedUserTest {
+
   private static final String ADMIN = UserRole.ADMIN;
   private static final String MANAGER = UserRole.MANAGER;
   private static final String USER = UserRole.USER;
@@ -191,7 +192,7 @@ public class AuthenticatedUserTest {
   }
 
   @Test
-  @WithMockUser(authorities = { MANAGER })
+  @WithMockUser(authorities = {MANAGER})
   public void isAuthorized_ManagerRole_True() {
     when(roleValidator.hasAnyRole(any())).thenReturn(true);
     assertTrue(authenticatedUser.isAuthorized(ManagerRoleTest.class));
@@ -206,7 +207,7 @@ public class AuthenticatedUserTest {
   }
 
   @Test
-  @WithMockUser(authorities = { ADMIN })
+  @WithMockUser(authorities = {ADMIN})
   public void isAuthorized_AdminRole_True() {
     when(roleValidator.hasAnyRole(any())).thenReturn(true);
     assertTrue(authenticatedUser.isAuthorized(AdminRoleTest.class));
@@ -221,7 +222,7 @@ public class AuthenticatedUserTest {
   }
 
   @Test
-  @WithMockUser(authorities = { MANAGER })
+  @WithMockUser(authorities = {MANAGER})
   public void isAuthorized_ManagerOrAdminRole_True() {
     when(roleValidator.hasAnyRole(any(String[].class))).thenReturn(true);
     assertTrue(authenticatedUser.isAuthorized(ManagerOrAdminRoleTest.class));
@@ -275,6 +276,7 @@ public class AuthenticatedUserTest {
    * Class that requires no role.
    */
   public static final class NoRoleTest {
+
   }
 
   /**
@@ -282,6 +284,7 @@ public class AuthenticatedUserTest {
    */
   @RolesAllowed(USER)
   public static final class UserRoleTest {
+
   }
 
   /**
@@ -289,6 +292,7 @@ public class AuthenticatedUserTest {
    */
   @RolesAllowed(MANAGER)
   public static final class ManagerRoleTest {
+
   }
 
   /**
@@ -296,12 +300,14 @@ public class AuthenticatedUserTest {
    */
   @RolesAllowed(ADMIN)
   public static final class AdminRoleTest {
+
   }
 
   /**
    * Class that requires MANAGER or ADMIN role.
    */
-  @RolesAllowed({ MANAGER, ADMIN })
+  @RolesAllowed({MANAGER, ADMIN})
   public static final class ManagerOrAdminRoleTest {
+
   }
 }

@@ -44,6 +44,7 @@ import org.springframework.lang.Nullable;
  */
 @NonTransactionalTestAnnotations
 public class SubmissionFilterTest {
+
   private SubmissionFilter filter;
   @Mock
   private JPAQuery<?> query;
@@ -620,7 +621,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).orderBy(new OrderSpecifier[] { submission.user.name.asc() });
+    verify(query).orderBy(new OrderSpecifier[]{submission.user.name.asc()});
   }
 
   @Test
@@ -629,7 +630,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).orderBy(new OrderSpecifier[] { submission.user.name.desc() });
+    verify(query).orderBy(new OrderSpecifier[]{submission.user.name.desc()});
   }
 
   @Test

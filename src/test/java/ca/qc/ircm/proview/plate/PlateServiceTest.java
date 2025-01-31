@@ -47,6 +47,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class PlateServiceTest extends AbstractServiceTestCase {
+
   private static final String READ = "read";
   @Autowired
   private PlateService service;
@@ -241,7 +242,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void lastTreatmentOrAnalysisDate_AccessDenied() {
     assertThrows(AccessDeniedException.class,
         () -> service.lastTreatmentOrAnalysisDate(repository.findById(26L).orElseThrow()));
@@ -275,7 +276,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void insert_AccessDenied() {
     Plate plate = new Plate();
     plate.setName("test_plate_4896415");
@@ -312,7 +313,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void update_AccessDenied() {
     Plate plate = repository.findById(26L).orElseThrow();
     plate.setName("test_plate_4896415");
@@ -380,7 +381,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void ban_AccessDenied() {
     Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);
@@ -451,7 +452,7 @@ public class PlateServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void activate_AccessDenied() {
     Plate plate = repository.findById(26L).orElseThrow();
     detach(plate);

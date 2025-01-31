@@ -21,6 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 public class LaboratoryPermissionEvaluatorTest {
+
   private static final String LABORATORY_CLASS = Laboratory.class.getName();
   private static final String READ = "read";
   private static final Permission BASE_READ = Permission.READ;

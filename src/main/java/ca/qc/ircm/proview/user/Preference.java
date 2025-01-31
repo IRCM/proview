@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Size;
 @Table(name = "preference")
 @GeneratePropertyNames
 class Preference {
+
   /**
    * Database identifier.
    */

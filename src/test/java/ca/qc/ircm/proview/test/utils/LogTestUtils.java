@@ -11,13 +11,12 @@ import java.util.Set;
  * Utilities for tests of log classes.
  */
 public class LogTestUtils {
+
   /**
    * Validates that 2 sets of activities are the same.
    *
-   * @param expecteds
-   *          expected activities
-   * @param actuals
-   *          actual activities
+   * @param expecteds expected activities
+   * @param actuals   actual activities
    */
   public static void validateUpdateActivities(Collection<UpdateActivity> expecteds,
       Collection<UpdateActivity> actuals) {

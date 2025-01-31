@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserService {
+
   private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
   private final UserRepository repository;
@@ -46,8 +47,7 @@ public class UserService {
   /**
    * Selects user from database.
    *
-   * @param id
-   *          database identifier of user
+   * @param id database identifier of user
    * @return user
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -58,8 +58,7 @@ public class UserService {
   /**
    * Returns user with email.
    *
-   * @param email
-   *          email
+   * @param email email
    * @return user with email
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -74,8 +73,7 @@ public class UserService {
   /**
    * Returns true if a user exists with this email.
    *
-   * @param email
-   *          email
+   * @param email email
    * @return true if a user exists with this email
    */
   public boolean exists(String email) {
@@ -91,8 +89,7 @@ public class UserService {
    * Only managers can search users with a laboratory.
    * </p>
    *
-   * @param filter
-   *          parameters
+   * @param filter parameters
    * @return all users that match parameters
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -106,10 +103,8 @@ public class UserService {
    * Returns all laboratory's users that match parameters. Only managers can search users with a
    * laboratory.
    *
-   * @param filter
-   *          parameters
-   * @param laboratory
-   *          laboratory
+   * @param filter     parameters
+   * @param laboratory laboratory
    * @return all laboratory's users that match parameters
    */
   @PreAuthorize("hasPermission(#laboratory, 'write')")
@@ -123,10 +118,8 @@ public class UserService {
   /**
    * Saves user in database.
    *
-   * @param user
-   *          user
-   * @param password
-   *          user's new password, required if user does not exists
+   * @param user     user
+   * @param password user's new password, required if user does not exists
    */
   @PreAuthorize("hasPermission(#user, 'write')")
   public void save(User user, @Nullable String password) {

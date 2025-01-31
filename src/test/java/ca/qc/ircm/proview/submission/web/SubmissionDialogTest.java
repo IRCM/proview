@@ -57,6 +57,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SubmissionDialogTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

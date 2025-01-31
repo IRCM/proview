@@ -4,6 +4,7 @@ package ca.qc.ircm.proview.user;
  * User authorities.
  */
 public interface UserAuthority {
+
   /**
    * Forces user to change his password.
    */

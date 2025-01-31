@@ -27,6 +27,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @ServiceTestAnnotations
 @WithMockUser(authorities = UserRole.ADMIN)
 public class TreatmentServiceTest {
+
   @Autowired
   private TreatmentService treatmentService;
   @Autowired
@@ -90,7 +91,7 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> treatmentService.get(1L));
   }
@@ -130,7 +131,7 @@ public class TreatmentServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(149L).orElseThrow();
 

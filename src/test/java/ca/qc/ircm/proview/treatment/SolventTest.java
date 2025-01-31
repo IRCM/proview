@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class SolventTest {
+
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   @Autowired
   private MessageSource messageSource;

@@ -41,6 +41,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
+
   private static final String READ = "read";
   @Autowired
   private SubmissionSampleService service;
@@ -346,7 +347,7 @@ public class SubmissionSampleServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void updateStatus_AccessDenied() {
     SubmissionSample sample1 = repository.findById(443L).orElseThrow();
     detach(sample1);

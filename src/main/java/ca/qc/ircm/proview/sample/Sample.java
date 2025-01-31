@@ -30,24 +30,10 @@ import org.springframework.lang.Nullable;
 @DiscriminatorColumn(name = "category")
 @GeneratePropertyNames
 public abstract class Sample implements Data, Named, Serializable {
-  /**
-   * Sample category.
-   */
-  public enum Category {
-    /**
-     * Submission of sample to analyse.
-     */
-    SUBMISSION,
-    /**
-     * Control.
-     */
-    CONTROL
-  }
 
   public static final String TABLE_NAME = "sample";
   @Serial
   private static final long serialVersionUID = -3637467720218236079L;
-
   /**
    * Database identifier.
    */
@@ -85,7 +71,6 @@ public abstract class Sample implements Data, Named, Serializable {
   @Column
   @Size(max = 100)
   private String quantity;
-
   public Sample() {
   }
 
@@ -160,5 +145,19 @@ public abstract class Sample implements Data, Named, Serializable {
 
   public void setVersion(int version) {
     this.version = version;
+  }
+
+  /**
+   * Sample category.
+   */
+  public enum Category {
+    /**
+     * Submission of sample to analyse.
+     */
+    SUBMISSION,
+    /**
+     * Control.
+     */
+    CONTROL
   }
 }

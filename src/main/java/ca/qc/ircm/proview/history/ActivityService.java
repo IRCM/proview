@@ -59,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ActivityService {
+
   private static final String MESSAGES_PREFIX = messagePrefix(ActivityService.class);
   private final ActivityRepository repository;
   private final JPAQueryFactory queryFactory;
@@ -75,8 +76,7 @@ public class ActivityService {
   /**
    * Returns object associated with this activity.
    *
-   * @param activity
-   *          activity
+   * @param activity activity
    * @return object associated with this activity
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -184,8 +184,7 @@ public class ActivityService {
   /**
    * Returns all activities involving submission or one of it samples.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    * @return all activities involving submission or one of it samples
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -230,8 +229,7 @@ public class ActivityService {
   /**
    * Selects all activities of plate's insertion in database.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    * @return all activities of plate's insertion in database
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -249,8 +247,7 @@ public class ActivityService {
   /**
    * Selects all activities of plate's wells updates in database.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    * @return all activities of plate's wells updates in database
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -270,8 +267,7 @@ public class ActivityService {
   /**
    * Selects treatment activities for sample.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    * @return treatment activities
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -295,8 +291,7 @@ public class ActivityService {
   /**
    * Selects MS analysis activities for plate.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    * @return MS analysis activities
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -319,10 +314,8 @@ public class ActivityService {
   /**
    * Returns description of activity.
    *
-   * @param activity
-   *          activity
-   * @param locale
-   *          user's locale
+   * @param activity activity
+   * @param locale   user's locale
    * @return description of activity
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
@@ -330,17 +323,17 @@ public class ActivityService {
     StringBuilder builder = new StringBuilder();
     Object record = record(activity.getTableName(), activity.getRecordId()).orElse(null);
     String name = record instanceof Named ? ((Named) record).getName() : "";
-    builder.append(messageSource.getMessage(MESSAGES_PREFIX + "activity", new Object[] {
-        activity.getActionType().ordinal(), activity.getTableName(), name, activity.getRecordId() },
+    builder.append(messageSource.getMessage(MESSAGES_PREFIX + "activity", new Object[]{
+            activity.getActionType().ordinal(), activity.getTableName(), name, activity.getRecordId()},
         locale));
     for (UpdateActivity update : activity.getUpdates()) {
       Object updateRecord = record(update.getTableName(), update.getRecordId()).orElse(null);
       String updateName = updateRecord instanceof Named ? ((Named) updateRecord).getName() : "";
       builder.append("\n");
       builder.append(messageSource.getMessage(MESSAGES_PREFIX + "update",
-          new Object[] { update.getActionType().ordinal(), update.getTableName(), updateName,
+          new Object[]{update.getActionType().ordinal(), update.getTableName(), updateName,
               update.getRecordId(), update.getColumn(), update.getOldValue(),
-              update.getNewValue() },
+              update.getNewValue()},
           locale));
     }
     return Optional.of(builder.toString());
@@ -349,8 +342,7 @@ public class ActivityService {
   /**
    * Insert activity in database.
    *
-   * @param activity
-   *          activity to log
+   * @param activity activity to log
    */
   public void insert(Activity activity) {
     activity.setTimestamp(LocalDateTime.now());

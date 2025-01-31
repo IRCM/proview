@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SampleContainerService {
+
   private final SampleContainerRepository repository;
 
   @Autowired
@@ -23,8 +24,7 @@ public class SampleContainerService {
   /**
    * Selects sample container from database.
    *
-   * @param id
-   *          database identifier of sample container
+   * @param id database identifier of sample container
    * @return sample container
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get().sample, 'read')")
@@ -35,8 +35,7 @@ public class SampleContainerService {
   /**
    * Selects last sample container in which sample was.
    *
-   * @param sample
-   *          sample
+   * @param sample sample
    * @return last sample container in which sample was
    */
   @PreAuthorize("hasPermission(#sample, 'read')")

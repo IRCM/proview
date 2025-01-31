@@ -20,6 +20,7 @@ import org.mockito.Mock;
  */
 @NonTransactionalTestAnnotations
 public class RequiredIfEnabledValidatorTest {
+
   private String errorMessage = "error message";
   @Mock
   private ValueContext context;

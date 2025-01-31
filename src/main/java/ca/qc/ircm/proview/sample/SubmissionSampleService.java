@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SubmissionSampleService {
+
   private final SubmissionSampleRepository repository;
   private final SubmissionRepository submissionRepository;
   private final SampleActivityService sampleActivityService;
@@ -45,8 +46,7 @@ public class SubmissionSampleService {
   /**
    * Selects submitted sample from database.
    *
-   * @param id
-   *          database identifier of submitted sample
+   * @param id database identifier of submitted sample
    * @return submitted sample
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -58,10 +58,9 @@ public class SubmissionSampleService {
    * Returns true if a sample with this name is already in database for current user, false
    * otherwise.
    *
-   * @param name
-   *          name of sample
+   * @param name name of sample
    * @return true if a sample with this name is already in database for current user, false
-   *         otherwise
+   * otherwise
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
   public boolean exists(String name) {
@@ -75,8 +74,7 @@ public class SubmissionSampleService {
   /**
    * Update many sample's status.
    *
-   * @param samples
-   *          samples containing new status
+   * @param samples samples containing new status
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void updateStatus(Collection<? extends SubmissionSample> samples) {

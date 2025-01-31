@@ -19,6 +19,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class GelColorationTest {
+
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   @Autowired
   private MessageSource messageSource;

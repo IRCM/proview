@@ -8,4 +8,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
  */
 public interface ActivityRepository
     extends JpaRepository<Activity, Long>, QuerydslPredicateExecutor<Activity> {
+
 }

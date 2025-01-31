@@ -23,6 +23,7 @@ import org.springframework.web.util.IntrospectorCleanupListener;
  */
 @Configuration
 public class SpringWebConfiguration implements WebMvcConfigurer {
+
   private final AuthenticatedUser authenticatedUser;
 
   protected SpringWebConfiguration(AuthenticatedUser authenticatedUser) {
@@ -54,7 +55,7 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
 
   @Bean
   public ServletListenerRegistrationBean<IntrospectorCleanupListener>
-      introspectorCleanupListener() {
+  introspectorCleanupListener() {
     return new ServletListenerRegistrationBean<>(new IntrospectorCleanupListener());
   }
 

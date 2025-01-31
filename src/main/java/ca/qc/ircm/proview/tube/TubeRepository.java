@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Tube repository.
  */
 public interface TubeRepository extends JpaRepository<Tube, Long> {
+
   long countByName(String name);
 
   List<Tube> findBySample(Sample sample);

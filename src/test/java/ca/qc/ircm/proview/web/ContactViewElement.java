@@ -20,6 +20,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = ContactView.ID)
 public class ContactViewElement extends VerticalLayoutElement {
+
   public H3Element proteomicHeader() {
     return $(H3Element.class).id(styleName(PROTEOMIC, HEADER));
   }

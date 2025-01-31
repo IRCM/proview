@@ -30,6 +30,6 @@ public enum SampleStatus {
   ANALYSED;
 
   public static SampleStatus[] analysedStatuses() {
-    return new SampleStatus[] { CANCELLED, ANALYSED };
+    return new SampleStatus[]{CANCELLED, ANALYSED};
   }
 }

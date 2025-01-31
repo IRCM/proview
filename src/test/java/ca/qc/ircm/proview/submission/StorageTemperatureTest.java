@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class StorageTemperatureTest {
+
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   @Autowired
   private MessageSource messageSource;

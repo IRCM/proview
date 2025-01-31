@@ -24,6 +24,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
+
   private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   @Autowired
   private LaboratoryRepository repository;
@@ -67,7 +68,7 @@ public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[] { name }, currentLocale()),
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, currentLocale()),
         notification.getText());
     Laboratory laboratory = repository.findById(1L).orElseThrow();
     assertEquals(name, laboratory.getName());

@@ -55,6 +55,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
+
   public static final String ID = "treatment-dialog";
   public static final String HEADER = "header";
   private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
@@ -173,8 +174,7 @@ public class TreatmentDialog extends Dialog implements LocaleChangeObserver {
   /**
    * Sets dialog's treatment id.
    *
-   * @param id
-   *          treatment id
+   * @param id treatment id
    */
   public void setTreatmentId(long id) {
     treatment = service.get(id).orElseThrow();

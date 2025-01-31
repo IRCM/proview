@@ -70,6 +70,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(SmallMoleculeSubmissionForm.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -219,7 +220,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   public void sampleTypes() {
     List<SampleType> items = items(form.sampleType);
     assertEquals(2, items.size());
-    for (SampleType value : new SampleType[] { DRY, SOLUTION }) {
+    for (SampleType value : new SampleType[]{DRY, SOLUTION}) {
       assertTrue(items.contains(value));
       assertEquals(form.getTranslation(SAMPLE_TYPE_PREFIX + value.name()),
           form.sampleType.getItemRenderer().createComponent(value).getElement().getText());
@@ -252,7 +253,7 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
   public void highResolution() {
     List<Boolean> items = items(form.highResolution);
     assertEquals(2, items.size());
-    for (Boolean value : new Boolean[] { false, true }) {
+    for (Boolean value : new Boolean[]{false, true}) {
       assertTrue(items.contains(value));
       assertEquals(form.getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, value)),
           form.highResolution.getItemRenderer().createComponent(value).getElement().getText());

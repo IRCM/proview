@@ -24,6 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 public class UserPreferenceServiceTest {
+
   private static final String PREFERENCE_1 = "preference_1";
   private static final String PREFERENCE_2 = "preference_2";
   @Autowired

@@ -101,6 +101,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class LcmsmsSubmissionFormTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(LcmsmsSubmissionForm.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);

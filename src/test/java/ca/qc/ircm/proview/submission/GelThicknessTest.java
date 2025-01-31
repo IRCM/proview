@@ -17,6 +17,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class GelThicknessTest {
+
   private static final String GEL_THICKNESS_PREFIX = messagePrefix(GelThickness.class);
   @Autowired
   private MessageSource messageSource;

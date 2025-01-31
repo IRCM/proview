@@ -23,6 +23,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-dialog")
 @Attribute(name = "id", value = MsAnalysisDialog.ID)
 public class MsAnalysisDialogElement extends DialogElement {
+
   public H2Element header() {
     return $(H2Element.class).first();
   }

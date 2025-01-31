@@ -61,13 +61,7 @@ import org.springframework.lang.Nullable;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserForm extends FormLayout implements LocaleChangeObserver {
-  private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
-  private static final String USER_PREFIX = messagePrefix(User.class);
-  private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
-  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  @Serial
-  private static final long serialVersionUID = 3285639770914046262L;
+
   public static final String ID = "user-form";
   public static final String HEADER = "header";
   public static final String EMAIL_PLACEHOLDER = "john.smith@ircm.qc.ca";
@@ -77,6 +71,13 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   public static final String NEW_LABORATORY_NAME = "newLaboratoryName";
   public static final String LABORATORY_NAME_PLACEHOLDER = "Translational Proteomics";
   public static final String NUMBER_PLACEHOLDER = "514-987-5500";
+  private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
+  private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
+  private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
+  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
+  @Serial
+  private static final long serialVersionUID = 3285639770914046262L;
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   protected TextField email = new TextField();
   protected TextField name = new TextField();

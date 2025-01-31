@@ -8,6 +8,7 @@ import java.util.Objects;
  * {@link UpdateActivityBuilder} for addition of sample to a sample container.
  */
 public class AddSampleToSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
+
   {
     tableName("samplecontainer");
     actionType(ActionType.UPDATE);
@@ -18,12 +19,11 @@ public class AddSampleToSampleContainerUpdateActivityBuilder extends UpdateActiv
   /**
    * Sets new container for activity.
    *
-   * @param newContainer
-   *          new container
+   * @param newContainer new container
    * @return builder
    */
   public AddSampleToSampleContainerUpdateActivityBuilder
-      newContainer(SampleContainer newContainer) {
+  newContainer(SampleContainer newContainer) {
     recordId(newContainer.getId());
     newValue(Objects.requireNonNull(newContainer.getSample()).getId());
     if (newContainer instanceof Tube) {

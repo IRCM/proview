@@ -6,6 +6,7 @@ import ca.qc.ircm.proview.sample.SampleContainer;
  * Activity of activating a container for sample.
  */
 public class ActivateSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
+
   {
     tableName("samplecontainer");
     actionType(ActionType.UPDATE);
@@ -16,8 +17,7 @@ public class ActivateSampleContainerUpdateActivityBuilder extends UpdateActivity
   /**
    * Sets old container.
    *
-   * @param oldContainer
-   *          old container
+   * @param oldContainer old container
    * @return builder
    */
   public ActivateSampleContainerUpdateActivityBuilder oldContainer(SampleContainer oldContainer) {

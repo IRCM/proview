@@ -17,9 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
  * Integration tests for {@link UsersView}.
  */
 @TestBenchTestAnnotations
-@ActiveProfiles({ "integration-test", "context-path" })
+@ActiveProfiles({"integration-test", "context-path"})
 @WithUserDetails("proview@ircm.qc.ca")
 public class UsersViewContextPathItTest extends AbstractTestBenchTestCase {
+
   @Value("${spring.application.name}")
   private String applicationName;
 

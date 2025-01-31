@@ -28,9 +28,10 @@ import org.springframework.lang.Nullable;
 @Table(name = TreatedSample.TABLE_NAME)
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class TreatedSample implements Data, Serializable {
+
   public static final String TABLE_NAME = "treatedsample";
   @Serial
   private static final long serialVersionUID = -1654046284723997439L;

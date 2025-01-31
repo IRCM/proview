@@ -23,6 +23,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class SampleStatusTest {
+
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @Autowired
   private MessageSource messageSource;

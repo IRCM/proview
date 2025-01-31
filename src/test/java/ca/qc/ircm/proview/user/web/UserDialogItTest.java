@@ -32,6 +32,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class UserDialogItTest extends AbstractTestBenchTestCase {
+
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private UserRepository repository;

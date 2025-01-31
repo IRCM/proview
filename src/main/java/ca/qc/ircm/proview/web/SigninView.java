@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AnonymousAllowed
 public class SigninView extends LoginOverlay
     implements LocaleChangeObserver, HasDynamicTitle, AfterNavigationObserver, BeforeEnterObserver {
+
   public static final String VIEW_NAME = "signin";
   public static final String ID = "signin-view";
   public static final String HEADER = "header";

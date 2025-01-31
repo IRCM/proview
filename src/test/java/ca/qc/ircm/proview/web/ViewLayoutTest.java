@@ -59,6 +59,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ViewLayoutTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private ViewLayout view;
@@ -338,7 +339,7 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   @Test
   @WithMockUser(
       username = "christopher.anderson@ircm.qc.ca",
-      roles = { "USER", "PREVIOUS_ADMINISTRATOR" })
+      roles = {"USER", "PREVIOUS_ADMINISTRATOR"})
   public void sideNav_SwitchedUserVisibility() {
     assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());

@@ -6,14 +6,14 @@ package ca.qc.ircm.proview.submission;
 public enum StorageTemperature {
   MEDIUM(4), LOW(-20);
 
-  StorageTemperature(int temperature) {
-    this.temperature = temperature;
-  }
-
   /**
    * Real temperature of this enum.
    */
   private final int temperature;
+
+  StorageTemperature(int temperature) {
+    this.temperature = temperature;
+  }
 
   public int getTemperature() {
     return temperature;

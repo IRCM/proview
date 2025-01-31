@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
  * Builder for an update activity - change to a database column for some data.
  */
 public class UpdateActivityBuilder {
+
   private String tableName;
   private Long recordId;
   private ActionType actionType;
@@ -20,8 +21,7 @@ public class UpdateActivityBuilder {
   /**
    * Creates a builder from activity.
    *
-   * @param activity
-   *          activity
+   * @param activity activity
    */
   public UpdateActivityBuilder(UpdateActivity activity) {
     tableName = activity.getTableName();

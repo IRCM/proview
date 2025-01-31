@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 @Table(name = "userpreference")
 @GeneratePropertyNames
 class UserPreference {
+
   /**
    * Database identifier.
    */

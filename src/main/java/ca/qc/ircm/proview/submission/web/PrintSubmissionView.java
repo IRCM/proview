@@ -34,10 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Print submission view.
  */
 @Route(value = PrintSubmissionView.VIEW_NAME)
-@RolesAllowed({ UserRole.USER })
+@RolesAllowed({UserRole.USER})
 @JsModule("./styles/print-submission-view-styles.js")
 public class PrintSubmissionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<Long>, LocaleChangeObserver {
+
   public static final String VIEW_NAME = "print-submission";
   public static final String ID = "print-submission-view";
   public static final String SUBMISSIONS_VIEW = "submissionsView";

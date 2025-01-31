@@ -90,6 +90,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class HistoryViewTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

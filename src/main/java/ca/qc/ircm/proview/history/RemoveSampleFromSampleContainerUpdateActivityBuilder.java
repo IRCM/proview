@@ -8,6 +8,7 @@ import java.util.Objects;
  * Activity of removing a sample from container.
  */
 public class RemoveSampleFromSampleContainerUpdateActivityBuilder extends UpdateActivityBuilder {
+
   {
     tableName("samplecontainer");
     actionType(ActionType.UPDATE);
@@ -18,12 +19,11 @@ public class RemoveSampleFromSampleContainerUpdateActivityBuilder extends Update
   /**
    * Sets old container for activity.
    *
-   * @param oldContainer
-   *          old container
+   * @param oldContainer old container
    * @return builder
    */
   public RemoveSampleFromSampleContainerUpdateActivityBuilder
-      oldContainer(SampleContainer oldContainer) {
+  oldContainer(SampleContainer oldContainer) {
     recordId(oldContainer.getId());
     oldValue(Objects.requireNonNull(oldContainer.getSample()).getId());
     if (oldContainer instanceof Tube) {

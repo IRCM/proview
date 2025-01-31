@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
  */
 @NonTransactionalTestAnnotations
 public class WellTest {
+
   @Test
   public void getName() {
     assertEquals("C-4", new Well(2, 3).getName());

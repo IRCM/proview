@@ -34,6 +34,7 @@ import org.thymeleaf.context.Context;
 @Service
 @Transactional
 public class PlateService {
+
   public static final String PLATE = "plate";
   private final PlateRepository repository;
   private final WellRepository wellRepository;
@@ -60,8 +61,7 @@ public class PlateService {
   /**
    * Returns plate with specified id.
    *
-   * @param id
-   *          plate's database identifier
+   * @param id plate's database identifier
    * @return plate
    */
   @PostAuthorize("!returnObject.isPresent() || hasPermission(returnObject.get(), 'read')")
@@ -72,8 +72,7 @@ public class PlateService {
   /**
    * Returns submission's plate.
    *
-   * @param submission
-   *          submission
+   * @param submission submission
    * @return submission's plate
    */
   @PreAuthorize("hasPermission(#submission, 'read')")
@@ -84,8 +83,7 @@ public class PlateService {
   /**
    * Returns true if name is available in database, false otherwise.
    *
-   * @param name
-   *          plate's name
+   * @param name plate's name
    * @return true if name is available in database, false otherwise
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
@@ -106,10 +104,8 @@ public class PlateService {
   /**
    * Returns printable version of plate in HTML.
    *
-   * @param plate
-   *          plate
-   * @param locale
-   *          user's locale
+   * @param plate  plate
+   * @param locale user's locale
    * @return printable version of plate in HTML
    */
   public String print(Plate plate, Locale locale) {
@@ -127,10 +123,9 @@ public class PlateService {
    * Returns moment of last treatment or analysis made on any sample on plate, whichever is the most
    * recent.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    * @return moment of last treatment or analysis made on any sample on plate, whichever is the most
-   *         recent
+   * recent
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public Optional<LocalDateTime> lastTreatmentOrAnalysisDate(Plate plate) {
@@ -159,8 +154,7 @@ public class PlateService {
   /**
    * Insert plate and it's wells into database.
    *
-   * @param plate
-   *          plate to insert
+   * @param plate plate to insert
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void insert(Plate plate) {
@@ -181,8 +175,7 @@ public class PlateService {
   /**
    * Update plate.
    *
-   * @param plate
-   *          plate
+   * @param plate plate
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void update(Plate plate) {
@@ -197,14 +190,10 @@ public class PlateService {
    * are located from <code>from parameter</code> up to <code>to parameter</code>. If a well was
    * already banned, no change is made to that well.
    *
-   * @param plate
-   *          plate were wells are located
-   * @param from
-   *          first well to ban
-   * @param to
-   *          last well to ban
-   * @param explanation
-   *          explanation for banning wells
+   * @param plate       plate were wells are located
+   * @param from        first well to ban
+   * @param to          last well to ban
+   * @param explanation explanation for banning wells
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void ban(Plate plate, WellLocation from, WellLocation to, String explanation) {
@@ -227,14 +216,10 @@ public class PlateService {
    * located from <code>from parameter</code> up to <code>to parameter</code>. If a well was not
    * banned, no change is made to that well.
    *
-   * @param plate
-   *          plate were wells are located
-   * @param from
-   *          first well to reactivate
-   * @param to
-   *          last well to reactivate
-   * @param explanation
-   *          explanation for reactivating wells
+   * @param plate       plate were wells are located
+   * @param from        first well to reactivate
+   * @param to          last well to reactivate
+   * @param explanation explanation for reactivating wells
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
   public void activate(Plate plate, WellLocation from, WellLocation to, String explanation) {

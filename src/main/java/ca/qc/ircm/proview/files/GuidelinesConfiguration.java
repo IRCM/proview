@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = GuidelinesConfiguration.PREFIX)
 public class GuidelinesConfiguration {
+
   public static final String PREFIX = "guidelines";
   public static final String DEFAULT_GUIDELINES = "default";
   private Path home;
@@ -22,8 +23,7 @@ public class GuidelinesConfiguration {
   /**
    * Returns guideline categories for locale.
    *
-   * @param locale
-   *          locale
+   * @param locale locale
    * @return guideline categories for locale
    */
   public List<Category> categories(Locale locale) {

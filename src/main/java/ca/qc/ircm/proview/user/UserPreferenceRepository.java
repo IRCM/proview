@@ -8,5 +8,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
  */
 public interface UserPreferenceRepository
     extends JpaRepository<UserPreference, Long>, QuerydslPredicateExecutor<UserPreference> {
+
   void deleteByUserAndPreferenceRefererAndPreferenceName(User user, String referer, String name);
 }

@@ -4,6 +4,7 @@ package ca.qc.ircm.proview.plate;
  * Well location on a plate.
  */
 public class WellLocation {
+
   /**
    * Well's row.
    */

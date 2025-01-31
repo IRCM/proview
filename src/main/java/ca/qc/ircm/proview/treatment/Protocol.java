@@ -23,17 +23,10 @@ import java.io.Serializable;
 @Table(name = Protocol.TABLE_NAME)
 @GeneratePropertyNames
 public class Protocol implements Data, Serializable, Named {
-  /**
-   * Protocol types.
-   */
-  public enum Type {
-    DIGESTION, ENRICHMENT
-  }
 
   public static final String TABLE_NAME = "protocol";
   @Serial
   private static final long serialVersionUID = -7624493017948317986L;
-
   /**
    * Database identifier.
    */
@@ -53,7 +46,6 @@ public class Protocol implements Data, Serializable, Named {
   @Column(nullable = false)
   @Enumerated(STRING)
   private Type type;
-
   public Protocol() {
   }
 
@@ -95,5 +87,12 @@ public class Protocol implements Data, Serializable, Named {
 
   public void setType(Type type) {
     this.type = type;
+  }
+
+  /**
+   * Protocol types.
+   */
+  public enum Type {
+    DIGESTION, ENRICHMENT
   }
 }

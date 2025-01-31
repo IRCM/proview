@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
  * Tests for {@link WellComparator}.
  */
 public class WellComparatorTest {
+
   @Test
   public void compare_Location_Row() {
     Well well1 = new Well(1, 1);

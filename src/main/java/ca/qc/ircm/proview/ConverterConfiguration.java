@@ -15,6 +15,7 @@ import org.springframework.core.convert.converter.Converter;
  */
 @Configuration
 public class ConverterConfiguration {
+
   private Set<Converter<?, ?>> getConverters() {
     Set<Converter<?, ?>> converters = new HashSet<>();
     converters.add(new StringToPathConverter());

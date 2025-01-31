@@ -15,6 +15,7 @@ import org.springframework.ldap.core.LdapTemplate;
  */
 @ServiceTestAnnotations
 public class LdapServiceTest {
+
   private LdapService ldapService;
   @Autowired
   private LdapTemplate ldapTemplate;

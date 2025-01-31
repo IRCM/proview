@@ -44,6 +44,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ContextConfiguration
 @NonTransactionalTestAnnotations
 public class MailServiceTest {
+
   @RegisterExtension
   static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
   private static final Logger logger = LoggerFactory.getLogger(MailServiceTest.class);

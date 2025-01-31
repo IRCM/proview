@@ -17,6 +17,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = PrintSubmissionView.ID)
 public class PrintSubmissionViewElement extends VerticalLayoutElement {
+
   public ButtonElement submissionsView() {
     return $(ButtonElement.class).id(SUBMISSIONS_VIEW);
   }

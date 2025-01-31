@@ -13,6 +13,7 @@ import java.util.List;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "class", value = CategoryComponent.CATEGORY)
 public class CategoryComponentElement extends VerticalLayoutElement {
+
   public H3Element header() {
     return $(H3Element.class).first();
   }

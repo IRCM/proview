@@ -30,6 +30,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class CategoryComponentTest extends SpringUIUnitTest {
+
   private CategoryComponent component;
   @Mock
   private Category category;

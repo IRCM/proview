@@ -31,6 +31,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 public class SamplePermissionEvaluatorTest {
+
   private static final String SAMPLE_CLASS = Sample.class.getName();
   private static final String READ = "read";
   private static final Permission BASE_READ = Permission.READ;

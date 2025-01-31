@@ -32,6 +32,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class TubeServiceTest {
+
   private static final String READ = "read";
   @Autowired
   private TubeService service;
@@ -83,7 +84,7 @@ public class TubeServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void nameAvailable_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> service.nameAvailable("FAM119A_band_01"));
   }

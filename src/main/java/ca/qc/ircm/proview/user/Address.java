@@ -19,6 +19,7 @@ import java.io.Serializable;
 @Table(name = Address.TABLE_NAME)
 @GeneratePropertyNames
 public class Address implements Serializable {
+
   public static final String TABLE_NAME = "address";
   @Serial
   private static final long serialVersionUID = 6036866850504348215L;

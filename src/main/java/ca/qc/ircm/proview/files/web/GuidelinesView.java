@@ -24,9 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Guidelines view.
  */
 @Route(value = GuidelinesView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ USER })
+@RolesAllowed({USER})
 public class GuidelinesView extends VerticalLayout
     implements LocaleChangeObserver, HasDynamicTitle {
+
   public static final String VIEW_NAME = "guidelines";
   public static final String ID = "guidelines-view";
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);

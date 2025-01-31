@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserPermissionEvaluator extends AbstractPermissionEvaluator {
+
   private static final long ROBOT_ID = 1L;
   private static final Logger logger = LoggerFactory.getLogger(UserPermissionEvaluator.class);
   private UserRepository repository;

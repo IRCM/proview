@@ -12,4 +12,5 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = ACTIVITIES)
 public class HistoryViewActivitiesElement extends GridElement {
+
 }

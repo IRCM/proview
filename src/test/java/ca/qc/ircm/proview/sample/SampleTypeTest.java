@@ -22,6 +22,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class SampleTypeTest {
+
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   @Autowired
   private MessageSource messageSource;

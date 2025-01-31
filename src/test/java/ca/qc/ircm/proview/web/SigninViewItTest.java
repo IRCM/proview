@@ -28,6 +28,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 public class SigninViewItTest extends AbstractTestBenchTestCase {
+
   private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Autowired
@@ -47,7 +48,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     String applicationName =
         messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
     assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[] { applicationName }, locale),
+        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
@@ -105,7 +106,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     }
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
-            new Object[] { configuration.lockDuration().getSeconds() / 60 }, currentLocale()),
+            new Object[]{configuration.lockDuration().getSeconds() / 60}, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());
     assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));

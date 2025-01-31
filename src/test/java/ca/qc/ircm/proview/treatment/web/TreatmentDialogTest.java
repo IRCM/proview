@@ -64,6 +64,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class TreatmentDialogTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
   private static final String TREATMENT_PREFIX = messagePrefix(Treatment.class);
   private static final String TREATED_SAMPLE_PREFIX = messagePrefix(TreatedSample.class);

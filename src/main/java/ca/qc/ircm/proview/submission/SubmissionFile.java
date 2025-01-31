@@ -21,6 +21,7 @@ import java.io.Serializable;
 @Table(name = SubmissionFile.TABLE_NAME)
 @GeneratePropertyNames
 public class SubmissionFile implements Data, Named, Serializable {
+
   public static final String TABLE_NAME = "submissionfiles";
   @Serial
   private static final long serialVersionUID = 2146676462335553712L;
@@ -46,13 +47,13 @@ public class SubmissionFile implements Data, Named, Serializable {
   public SubmissionFile() {
   }
 
+  public SubmissionFile(String filename) {
+    this.filename = filename;
+  }
+
   @Override
   public String getName() {
     return filename;
-  }
-
-  public SubmissionFile(String filename) {
-    this.filename = filename;
   }
 
   public String getFilename() {

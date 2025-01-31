@@ -32,9 +32,10 @@ import org.springframework.lang.Nullable;
 @DiscriminatorColumn(name = "type")
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public abstract class SampleContainer implements Data, Named, Serializable {
+
   public static final String TABLE_NAME = "samplecontainer";
   @Serial
   private static final long serialVersionUID = -2976707906426974263L;
@@ -88,12 +89,12 @@ public abstract class SampleContainer implements Data, Named, Serializable {
     return id;
   }
 
-  public String getFullName() {
-    return getName();
-  }
-
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getFullName() {
+    return getName();
   }
 
   @Nullable

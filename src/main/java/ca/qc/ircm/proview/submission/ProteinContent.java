@@ -6,11 +6,6 @@ package ca.qc.ircm.proview.submission;
 public enum ProteinContent {
   SMALL(1, 4), MEDIUM(5, 10), LARGE(10, 20), XLARGE(20, Integer.MAX_VALUE);
 
-  ProteinContent(int start, int end) {
-    this.start = start;
-    this.end = end;
-  }
-
   /**
    * Start of interval.
    */
@@ -19,6 +14,10 @@ public enum ProteinContent {
    * End of interval.
    */
   private final int end;
+  ProteinContent(int start, int end) {
+    this.start = start;
+    this.end = end;
+  }
 
   public int getStart() {
     return start;

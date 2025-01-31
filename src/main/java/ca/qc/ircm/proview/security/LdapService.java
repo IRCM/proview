@@ -20,12 +20,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LdapService {
+
   private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
   private LdapOperations ldapOperations;
   private LdapConfiguration ldapConfiguration;
 
   @Autowired
-  @SuppressFBWarnings(value = { "EI_EXPOSE_REP2" }, justification = SPRING_BOOT_EI_EXPOSE_REP)
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2"}, justification = SPRING_BOOT_EI_EXPOSE_REP)
   public LdapService(LdapOperations ldapOperations, LdapConfiguration ldapConfiguration) {
     this.ldapOperations = ldapOperations;
     this.ldapConfiguration = ldapConfiguration;
@@ -34,10 +35,8 @@ public class LdapService {
   /**
    * Returns true if user exists in LDAP and password is valid, false otherwise.
    *
-   * @param username
-   *          username
-   * @param password
-   *          password
+   * @param username username
+   * @param password password
    * @return true if user exists in LDAP and password is valid, false otherwise
    */
   public boolean isPasswordValid(String username, String password) {
@@ -55,8 +54,7 @@ public class LdapService {
   /**
    * Returns user's email from LDAP.
    *
-   * @param username
-   *          username
+   * @param username username
    * @return user's email from LDAP or null if user does not exists
    */
   public Optional<String> getEmail(String username) {
@@ -80,8 +78,7 @@ public class LdapService {
   /**
    * Returns user's username on LDAP.
    *
-   * @param email
-   *          user's email
+   * @param email user's email
    * @return user's username on LDAP or null if user does not exists
    */
   public Optional<String> getUsername(String email) {

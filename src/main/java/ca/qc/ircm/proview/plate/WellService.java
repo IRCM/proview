@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class WellService {
+
   private final WellRepository wellRepository;
 
   @Autowired
@@ -24,8 +25,7 @@ public class WellService {
   /**
    * Selects well from database.
    *
-   * @param id
-   *          database identifier of well
+   * @param id database identifier of well
    * @return well
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")

@@ -85,9 +85,10 @@ import org.springframework.util.FileCopyUtils;
  * Submission view.
  */
 @Route(value = SubmissionView.VIEW_NAME, layout = ViewLayout.class)
-@RolesAllowed({ UserRole.USER })
+@RolesAllowed({UserRole.USER})
 public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     HasUrlParameter<Long>, LocaleChangeObserver, NotificationComponent, ViewLayoutChild {
+
   public static final String VIEW_NAME = "submission";
   public static final String ID = "submission-view";
   public static final String HEADER = "header";

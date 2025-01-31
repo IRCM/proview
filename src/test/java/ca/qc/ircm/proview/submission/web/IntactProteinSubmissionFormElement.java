@@ -30,6 +30,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-form-layout")
 @Attribute(name = "id", value = IntactProteinSubmissionForm.ID)
 public class IntactProteinSubmissionFormElement extends FormLayoutElement {
+
   public TextFieldElement experiment() {
     return $(TextFieldElement.class).id(id(EXPERIMENT));
   }

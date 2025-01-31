@@ -12,17 +12,9 @@ import java.util.regex.Pattern;
 public interface Named {
 
   /**
-   * Returns object's name.
-   *
-   * @return name.
-   */
-  String getName();
-
-  /**
    * Increments last number in name.
    *
-   * @param name
-   *          original name
+   * @param name original name
    * @return name with last number increased
    */
   static String incrementLastNumber(String name) {
@@ -48,4 +40,11 @@ public interface Named {
       return name;
     }
   }
+
+  /**
+   * Returns object's name.
+   *
+   * @return name.
+   */
+  String getName();
 }

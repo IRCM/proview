@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserPreferenceService {
+
   private final UserPreferenceRepository repository;
   private final PreferenceRepository preferenceRepository;
   private final AuthenticatedUser authenticatedUser;
@@ -75,12 +76,9 @@ public class UserPreferenceService {
   /**
    * Returns current user's preference value.
    *
-   * @param <T>
-   *          type of preference's value
-   * @param referer
-   *          object that gets / saves preference
-   * @param name
-   *          preference's name
+   * @param <T>     type of preference's value
+   * @param referer object that gets / saves preference
+   * @param name    preference's name
    * @return current user's preference value
    */
   @SuppressWarnings("unchecked")
@@ -102,12 +100,9 @@ public class UserPreferenceService {
   /**
    * Save current user's preference in database.
    *
-   * @param referer
-   *          object that gets / saves preference
-   * @param name
-   *          preference's name
-   * @param value
-   *          preference's value
+   * @param referer object that gets / saves preference
+   * @param name    preference's name
+   * @param value   preference's value
    */
   public void save(Object referer, String name, Serializable value) {
     final String refererName = referer.getClass().getName();
@@ -132,10 +127,8 @@ public class UserPreferenceService {
   /**
    * Deletes current user's preference.
    *
-   * @param referer
-   *          object that gets / saves preference
-   * @param name
-   *          preference's name
+   * @param referer object that gets / saves preference
+   * @param name    preference's name
    */
   public void delete(Object referer, String name) {
     User user = authenticatedUser.getUser().orElseThrow();
@@ -145,10 +138,8 @@ public class UserPreferenceService {
   /**
    * Deletes preference for all users.
    *
-   * @param referer
-   *          object that gets / saves preference
-   * @param name
-   *          preference's name
+   * @param referer object that gets / saves preference
+   * @param name    preference's name
    */
   public void deleteAll(Object referer, String name) {
     preferenceRepository.deleteByRefererAndName(toString(referer), name);

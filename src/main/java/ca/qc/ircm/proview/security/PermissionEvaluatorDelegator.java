@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Primary
 public class PermissionEvaluatorDelegator implements PermissionEvaluator {
+
   private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
   private UserPermissionEvaluator userPermissionEvaluator;
   private SubmissionPermissionEvaluator submissionPermissionEvaluator;

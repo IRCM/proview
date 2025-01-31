@@ -13,6 +13,7 @@ import com.vaadin.testbench.elementsbase.Element;
 @Element("vaadin-grid")
 @Attribute(name = "id", value = FILES)
 public class SubmissionViewFilesElement extends GridElement {
+
   private static final int FILENAME_COLUMN = 0;
 
   public AnchorElement filename(int row) {

@@ -52,10 +52,11 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
-  @Serial
-  private static final long serialVersionUID = 8452988829428470601L;
+
   public static final String ID = "submission-dialog";
   public static final String HEADER = "header";
+  @Serial
+  private static final long serialVersionUID = 8452988829428470601L;
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -68,8 +69,8 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   protected Button save = new Button();
   protected Button print = new Button();
   protected Button edit = new Button();
-  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   protected PrintSubmission printContent;
+  private Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
   private transient SubmissionService service;
   private transient AuthenticatedUser authenticatedUser;
 
@@ -147,13 +148,12 @@ public class SubmissionDialog extends Dialog implements LocaleChangeObserver {
   /**
    * Adds listener to be informed when a submission was saved.
    *
-   * @param listener
-   *          listener
+   * @param listener listener
    * @return listener registration
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Registration
-      addSavedListener(ComponentEventListener<SavedEvent<SubmissionDialog>> listener) {
+  addSavedListener(ComponentEventListener<SavedEvent<SubmissionDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
 

@@ -85,6 +85,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class SubmissionServiceTest extends AbstractServiceTestCase {
+
   private static final String READ = "read";
   private static final String WRITE = "write";
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
@@ -105,6 +106,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String STORAGE_TEMPERATURE_PREFIX = messagePrefix(StorageTemperature.class);
   private static final String SOLVENT_PREFIX = messagePrefix(Solvent.class);
   private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
+  private final Random random = new Random();
   @Autowired
   private SubmissionService service;
   @Autowired
@@ -138,7 +140,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   @Captor
   private ArgumentCaptor<String> stringCaptor;
   private User user;
-  private final Random random = new Random();
 
   /**
    * Before test.
@@ -721,10 +722,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         content
             .contains(
                 messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[] { phoneNumber.getNumber(),
+                    new Object[]{phoneNumber.getNumber(),
                         Optional.ofNullable(phoneNumber.getExtension())
                             .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension() },
+                        phoneNumber.getExtension()},
                     locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
@@ -1129,10 +1130,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         content
             .contains(
                 messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[] { phoneNumber.getNumber(),
+                    new Object[]{phoneNumber.getNumber(),
                         Optional.ofNullable(phoneNumber.getExtension())
                             .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension() },
+                        phoneNumber.getExtension()},
                     locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
@@ -1379,10 +1380,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         content
             .contains(
                 messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[] { phoneNumber.getNumber(),
+                    new Object[]{phoneNumber.getNumber(),
                         Optional.ofNullable(phoneNumber.getExtension())
                             .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension() },
+                        phoneNumber.getExtension()},
                     locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
@@ -1622,10 +1623,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         content
             .contains(
                 messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[] { phoneNumber.getNumber(),
+                    new Object[]{phoneNumber.getNumber(),
                         Optional.ofNullable(phoneNumber.getExtension())
                             .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension() },
+                        phoneNumber.getExtension()},
                     locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
@@ -2726,7 +2727,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void hide_AccessDenied() {
     Submission submission = repository.findById(147L).orElseThrow();
     detach(submission);
@@ -2766,7 +2767,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   @SuppressWarnings("unchecked")
   public void show_AccessDenied() {
     Submission submission = repository.findById(36L).orElseThrow();

@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class GelSeparationTest {
+
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
   @Autowired
   private MessageSource messageSource;

@@ -72,6 +72,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class UserFormTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
   private static final String ADDRESS_PREFIX = messagePrefix(Address.class);

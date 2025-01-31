@@ -27,6 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class LaboratoryServiceTest extends AbstractServiceTestCase {
+
   private static final String READ = "read";
   private static final String WRITE = "write";
   @SuppressWarnings("unused")
@@ -62,7 +63,7 @@ public class LaboratoryServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void all_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> service.all());
   }

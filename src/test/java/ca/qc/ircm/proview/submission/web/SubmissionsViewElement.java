@@ -20,6 +20,7 @@ import org.openqa.selenium.By;
 @Element("vaadin-vertical-layout")
 @Attribute(name = "id", value = SubmissionsView.ID)
 public class SubmissionsViewElement extends VerticalLayoutElement {
+
   public SubmissionsViewSubmissionsElement submissions() {
     return $(SubmissionsViewSubmissionsElement.class).first();
   }

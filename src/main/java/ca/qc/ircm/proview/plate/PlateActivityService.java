@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class PlateActivityService {
+
   @SuppressWarnings("unused")
   private final Logger logger = LoggerFactory.getLogger(PlateActivityService.class);
   private final PlateRepository repository;
@@ -44,8 +45,7 @@ public class PlateActivityService {
   /**
    * Creates an activity about insertion of plate.
    *
-   * @param plate
-   *          inserted plate
+   * @param plate inserted plate
    * @return activity about insertion of plate
    */
   @CheckReturnValue
@@ -65,8 +65,7 @@ public class PlateActivityService {
   /**
    * Creates an activity about update of plate.
    *
-   * @param plate
-   *          updated plate
+   * @param plate updated plate
    * @return activity about update of plate
    */
   @CheckReturnValue
@@ -128,10 +127,8 @@ public class PlateActivityService {
   /**
    * Creates an activity about wells being marked as banned.
    *
-   * @param wells
-   *          wells that were banned
-   * @param explanation
-   *          explanation for banning wells
+   * @param wells       wells that were banned
+   * @param explanation explanation for banning wells
    * @return activity about wells being marked as banned
    */
   @CheckReturnValue
@@ -167,10 +164,8 @@ public class PlateActivityService {
   /**
    * Creates an activity about wells being marked as reactivated.
    *
-   * @param wells
-   *          wells that were reactivated
-   * @param explanation
-   *          explanation for reactivating wells
+   * @param wells       wells that were reactivated
+   * @param explanation explanation for reactivating wells
    * @return activity about wells being marked as reactivated
    */
   @CheckReturnValue

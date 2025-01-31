@@ -61,11 +61,12 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SamplesStatusDialog extends Dialog
     implements LocaleChangeObserver, NotificationComponent {
-  @Serial
-  private static final long serialVersionUID = -5878136560444849327L;
+
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
   public static final String SAVED = "saved";
+  @Serial
+  private static final long serialVersionUID = -5878136560444849327L;
   private static final String MESSAGES_PREFIX = messagePrefix(SamplesStatusDialog.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
@@ -178,13 +179,12 @@ public class SamplesStatusDialog extends Dialog
   /**
    * Adds listener to be informed when a submission was saved.
    *
-   * @param listener
-   *          listener
+   * @param listener listener
    * @return listener registration
    */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Registration
-      addSavedListener(ComponentEventListener<SavedEvent<SamplesStatusDialog>> listener) {
+  addSavedListener(ComponentEventListener<SavedEvent<SamplesStatusDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
 

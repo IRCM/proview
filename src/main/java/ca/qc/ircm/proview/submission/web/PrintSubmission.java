@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @JsModule("./styles/print-submission-styles.js")
 public class PrintSubmission extends VerticalLayout implements LocaleChangeObserver {
+
   public static final String ID = "print-submission";
   @Serial
   private static final long serialVersionUID = 480796342756791299L;

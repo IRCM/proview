@@ -27,6 +27,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @ServiceTestAnnotations
 @WithMockUser(authorities = ADMIN)
 public class MsAnalysisServiceTest extends AbstractServiceTestCase {
+
   @Autowired
   private MsAnalysisService service;
 
@@ -44,7 +45,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { USER, MANAGER })
+  @WithMockUser(authorities = {USER, MANAGER})
   public void get_NotAdmin() {
     assertThrows(AccessDeniedException.class, () -> service.get(1L));
   }
@@ -65,7 +66,7 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { USER, MANAGER })
+  @WithMockUser(authorities = {USER, MANAGER})
   public void all_NotAdmin() {
     Submission submission = new Submission(155L);
 

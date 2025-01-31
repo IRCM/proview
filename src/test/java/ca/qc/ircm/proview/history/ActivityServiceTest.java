@@ -56,8 +56,9 @@ import org.springframework.security.test.context.support.WithMockUser;
  * Tests for {@link ActivityService}.
  */
 @ServiceTestAnnotations
-@WithMockUser(authorities = { UserRole.ADMIN })
+@WithMockUser(authorities = {UserRole.ADMIN})
 public class ActivityServiceTest extends AbstractServiceTestCase {
+
   private static final QActivity qactivity = QActivity.activity;
   private static final String MESSAGES_PREFIX = messagePrefix(ActivityService.class);
   @Autowired
@@ -397,7 +398,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void record_AccessDenied() {
     Activity activity = repository.findById(5639L).orElseThrow();
 
@@ -445,7 +446,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void all_AccessDenied() {
     Submission submission = submissionRepository.findById(1L).orElseThrow();
 
@@ -478,7 +479,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void allInsertActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
@@ -518,7 +519,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void allUpdateWellActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
@@ -576,7 +577,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void allTreatmentActivities_AccessDenied() {
     Plate plate = new Plate(26L);
 
@@ -616,7 +617,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void allMsAnalysisActivities_AccessDenied() {
     Plate plate = new Plate(115L);
 
@@ -632,8 +633,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
 
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + "activity",
-            new Object[] { activity.getActionType().ordinal(), activity.getTableName(),
-                submission.getExperiment(), activity.getRecordId() },
+            new Object[]{activity.getActionType().ordinal(), activity.getTableName(),
+                submission.getExperiment(), activity.getRecordId()},
             locale),
         description.orElse(""));
   }
@@ -648,8 +649,8 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
     String[] descriptionLines = description.orElse("").split("\n", -1);
     assertEquals(
         messageSource.getMessage(
-            MESSAGES_PREFIX + "activity", new Object[] { activity.getActionType().ordinal(),
-                activity.getTableName(), submission.getExperiment(), activity.getRecordId() },
+            MESSAGES_PREFIX + "activity", new Object[]{activity.getActionType().ordinal(),
+                activity.getTableName(), submission.getExperiment(), activity.getRecordId()},
             locale),
         descriptionLines[0]);
     for (int i = 0; i < activity.getUpdates().size(); i++) {
@@ -658,15 +659,15 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
         case Submission.TABLE_NAME -> submissionRepository.findById(update.getRecordId())
             .map(Submission::getExperiment).orElseThrow();
         case Sample.TABLE_NAME ->
-          sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
+            sampleRepository.findById(update.getRecordId()).map(Sample::getName).orElseThrow();
         case Plate.TABLE_NAME ->
-          plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
+            plateRepository.findById(update.getRecordId()).map(Plate::getName).orElseThrow();
         default -> null;
       };
       assertEquals(messageSource.getMessage(MESSAGES_PREFIX + "update",
-          new Object[] { update.getActionType().ordinal(), update.getTableName(), name,
+          new Object[]{update.getActionType().ordinal(), update.getTableName(), name,
               update.getRecordId(), update.getColumn(), update.getOldValue(),
-              update.getNewValue() },
+              update.getNewValue()},
           locale), descriptionLines[i + 1]);
     }
   }
@@ -680,7 +681,7 @@ public class ActivityServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.MANAGER, UserRole.USER })
+  @WithMockUser(authorities = {UserRole.MANAGER, UserRole.USER})
   public void description_AccessDenied() {
     Activity activity = repository.findById(5543L).orElseThrow();
 

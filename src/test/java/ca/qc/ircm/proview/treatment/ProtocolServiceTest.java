@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @ServiceTestAnnotations
 @WithMockUser(authorities = UserRole.ADMIN)
 public class ProtocolServiceTest {
+
   @Autowired
   private ProtocolService service;
 
@@ -56,7 +57,7 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void get_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> service.get(1L));
   }
@@ -86,7 +87,7 @@ public class ProtocolServiceTest {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void all_AccessDenied() {
     assertThrows(AccessDeniedException.class, () -> service.all(DIGESTION));
   }

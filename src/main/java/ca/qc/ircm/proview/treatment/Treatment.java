@@ -32,28 +32,13 @@ import org.springframework.lang.Nullable;
 @Table(name = Treatment.TABLE_NAME)
 @GeneratePropertyNames
 @SuppressFBWarnings(
-    value = { "EI_EXPOSE_REP", "EI_EXPOSE_REP2" },
+    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
     justification = ENTITY_EI_EXPOSE_REP)
 public class Treatment implements Data, Serializable {
-  /**
-   * Type of errors that forces Digestion to be deleted.
-   */
-  public enum DeletionType {
-    /**
-     * Digestion information was not entered correctly.
-     */
-    ERRONEOUS,
-    /**
-     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
-     * something went wrong.
-     */
-    FAILED
-  }
 
   public static final String TABLE_NAME = "treatment";
   @Serial
   private static final long serialVersionUID = 3942922473290365646L;
-
   /**
    * Database identifier.
    */
@@ -106,7 +91,6 @@ public class Treatment implements Data, Serializable {
   @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
   private List<TreatedSample> treatedSamples;
-
   public Treatment() {
   }
 
@@ -188,5 +172,20 @@ public class Treatment implements Data, Serializable {
 
   public void setFractionationType(@Nullable FractionationType fractionationType) {
     this.fractionationType = fractionationType;
+  }
+
+  /**
+   * Type of errors that forces Digestion to be deleted.
+   */
+  public enum DeletionType {
+    /**
+     * Digestion information was not entered correctly.
+     */
+    ERRONEOUS,
+    /**
+     * Digestion failed due to an experimental problem. An attempt was made to do the digestion but
+     * something went wrong.
+     */
+    FAILED
   }
 }

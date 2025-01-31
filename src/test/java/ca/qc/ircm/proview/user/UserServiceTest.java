@@ -43,6 +43,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @ServiceTestAnnotations
 @WithMockUser
 public class UserServiceTest extends AbstractServiceTestCase {
+
   private static final String READ = "read";
   private static final String WRITE = "write";
   @SuppressWarnings("unused")
@@ -214,7 +215,7 @@ public class UserServiceTest extends AbstractServiceTestCase {
   }
 
   @Test
-  @WithMockUser(authorities = { UserRole.USER, UserRole.MANAGER })
+  @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
   public void all_Filter_AccessDenied() {
     UserFilter filter = mock(UserFilter.class);
     when(filter.predicate()).thenReturn(user.isNotNull());

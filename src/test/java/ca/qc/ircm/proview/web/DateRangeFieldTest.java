@@ -45,6 +45,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class DateRangeFieldTest extends SpringUIUnitTest {
+
   private static final String MESSAGES_PREFIX = messagePrefix(DateRangeField.class);
   private DateRangeField dateRange;
   private Locale locale = ENGLISH;

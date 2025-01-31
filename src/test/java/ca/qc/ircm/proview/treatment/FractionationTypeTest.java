@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
  */
 @NonTransactionalTestAnnotations
 public class FractionationTypeTest {
+
   private static final String FRACTIONATION_TYPE_PREFIX = messagePrefix(FractionationType.class);
   @Autowired
   private MessageSource messageSource;

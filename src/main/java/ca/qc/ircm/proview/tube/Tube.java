@@ -18,6 +18,7 @@ import java.io.Serializable;
 @DiscriminatorValue("TUBE")
 @GeneratePropertyNames
 public class Tube extends SampleContainer implements Data, Named, Serializable {
+
   @Serial
   private static final long serialVersionUID = 2723772707033001099L;
 

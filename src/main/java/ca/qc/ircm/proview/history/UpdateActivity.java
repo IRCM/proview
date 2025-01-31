@@ -22,6 +22,7 @@ import org.springframework.lang.Nullable;
 @Table(name = "activityupdate")
 @GeneratePropertyNames
 public class UpdateActivity implements Data {
+
   /**
    * Database identifier of update activity.
    */
@@ -77,28 +78,28 @@ public class UpdateActivity implements Data {
     return id;
   }
 
-  public String getTableName() {
-    return tableName;
-  }
-
-  public long getRecordId() {
-    return recordId;
-  }
-
-  public ActionType getActionType() {
-    return actionType;
-  }
-
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getTableName() {
+    return tableName;
   }
 
   public void setTableName(String tableName) {
     this.tableName = tableName;
   }
 
+  public long getRecordId() {
+    return recordId;
+  }
+
   public void setRecordId(long recordId) {
     this.recordId = recordId;
+  }
+
+  public ActionType getActionType() {
+    return actionType;
   }
 
   public void setActionType(ActionType actionType) {

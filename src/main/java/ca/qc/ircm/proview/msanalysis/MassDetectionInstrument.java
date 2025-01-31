@@ -12,6 +12,7 @@ public enum MassDetectionInstrument {
   private static final List<MassDetectionInstrument> USER_CHOICES;
   private static final List<MassDetectionInstrument> PLATFORM_CHOICES;
   private static final List<MassDetectionInstrument> FILTER_CHOICES;
+
   static {
     List<MassDetectionInstrument> choices = new ArrayList<>();
     choices.add(VELOS);
