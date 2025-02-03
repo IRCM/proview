@@ -88,9 +88,11 @@ public class Treatment implements Data, Serializable {
   /**
    * List of all treatments done on samples.
    */
-  @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "treatment_id", nullable = false)
   @OrderColumn(name = "listIndex")
   private List<TreatedSample> treatedSamples;
+
   public Treatment() {
   }
 
