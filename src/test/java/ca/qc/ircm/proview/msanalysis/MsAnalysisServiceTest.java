@@ -42,6 +42,8 @@ public class MsAnalysisServiceTest extends AbstractServiceTestCase {
     assertEquals(LocalDateTime.of(2010, 12, 13, 14, 10, 27, 0), msAnalysis.getInsertTime());
     assertFalse(msAnalysis.isDeleted());
     assertNull(msAnalysis.getDeletionExplanation());
+    assertEquals(1, msAnalysis.getAcquisitions().size());
+    assertTrue(find(msAnalysis.getAcquisitions(), 1).isPresent());
   }
 
   @Test

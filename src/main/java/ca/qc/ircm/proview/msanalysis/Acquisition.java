@@ -44,12 +44,6 @@ public class Acquisition implements Data, Named, Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private long id;
   /**
-   * MS Analysis.
-   */
-  @ManyToOne
-  @JoinColumn(nullable = false)
-  private MsAnalysis msAnalysis;
-  /**
    * Sample's container type.
    */
   @ManyToOne
@@ -173,13 +167,5 @@ public class Acquisition implements Data, Named, Serializable {
 
   public void setContainer(SampleContainer container) {
     this.container = container;
-  }
-
-  public MsAnalysis getMsAnalysis() {
-    return msAnalysis;
-  }
-
-  public void setMsAnalysis(MsAnalysis msAnalysis) {
-    this.msAnalysis = msAnalysis;
   }
 }
