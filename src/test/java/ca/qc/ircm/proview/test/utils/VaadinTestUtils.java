@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 
 /**
  * Utilities for tests on Vaadin components.
@@ -104,8 +105,8 @@ public class VaadinTestUtils {
    * @param metaKey  <code>true</code> if the meta key was down when the event was fired,
    *                 <code>false</code> otherwise
    */
-  public static <E> void clickItem(Grid<E> grid, E item, Grid.Column<E> column, boolean ctrlKey,
-      boolean shiftKey, boolean altKey, boolean metaKey) {
+  public static <E> void clickItem(Grid<E> grid, E item, @Nullable Grid.Column<E> column,
+      boolean ctrlKey, boolean shiftKey, boolean altKey, boolean metaKey) {
     try {
       String key = grid.getDataCommunicator().getKeyMapper().key(item);
       Method method = Component.class.getDeclaredMethod("getEventBus");
@@ -147,7 +148,7 @@ public class VaadinTestUtils {
    * @param metaKey  <code>true</code> if the meta key was down when the event was fired,
    *                 <code>false</code> otherwise
    */
-  public static <E> void doubleClickItem(Grid<E> grid, E item, Grid.Column<E> column,
+  public static <E> void doubleClickItem(Grid<E> grid, E item, @Nullable Grid.Column<E> column,
       boolean ctrlKey, boolean shiftKey, boolean altKey, boolean metaKey) {
     try {
       String key = grid.getDataCommunicator().getKeyMapper().key(item);
@@ -213,9 +214,6 @@ public class VaadinTestUtils {
   @SuppressWarnings("unchecked")
   public static <C extends Component> Optional<C> findChild(Component start,
       Class<C> componentType) {
-    if (start == null) {
-      return Optional.empty();
-    }
     if (componentType.isAssignableFrom(start.getClass())) {
       return Optional.of((C) start);
     }
@@ -234,9 +232,6 @@ public class VaadinTestUtils {
   @SuppressWarnings("unchecked")
   public static <C extends Component> List<C> findChildren(Component start,
       Class<C> componentType) {
-    if (start == null) {
-      return Collections.emptyList();
-    }
     if (componentType.isAssignableFrom(start.getClass())) {
       return Collections.nCopies(1, (C) start);
     }
@@ -329,7 +324,8 @@ public class VaadinTestUtils {
     } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
              | InvocationTargetException | NoSuchFieldException | SecurityException e) {
       logger.warn("Cannot get formatted value for renderer {} and item {}", renderer, item, e);
-      return null;
+      throw new IllegalArgumentException(
+          "Cannot get formatted value for renderer " + renderer + " and item " + item, e);
     }
   }
 

@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class SubmissionActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(submission.getId(), activity.getRecordId());
     assertNull(activity.getExplanation());
     assertEquals(user.getId(), activity.getUser().getId());
-    LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+    LogTestUtils.validateUpdateActivities(Collections.emptyList(), activity.getUpdates());
   }
 
   @Test
