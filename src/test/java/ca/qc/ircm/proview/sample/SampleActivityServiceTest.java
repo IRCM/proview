@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,7 @@ public class SampleActivityServiceTest extends AbstractServiceTestCase {
     assertEquals(control.getId(), activity.getRecordId());
     assertNull(activity.getExplanation());
     assertEquals(user.getId(), activity.getUser().getId());
-    LogTestUtils.validateUpdateActivities(null, activity.getUpdates());
+    LogTestUtils.validateUpdateActivities(Collections.emptyList(), activity.getUpdates());
   }
 
   @Test

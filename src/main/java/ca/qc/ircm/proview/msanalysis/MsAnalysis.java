@@ -13,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
@@ -74,7 +75,8 @@ public class MsAnalysis implements Data, Serializable {
   /**
    * Acquisitions of samples made in this MS analysis.
    */
-  @OneToMany(mappedBy = "msAnalysis", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "msanalysis_id", nullable = false)
   @OrderColumn(name = "listIndex")
   private List<Acquisition> acquisitions;
 

@@ -22,15 +22,11 @@ public class LogTestUtils {
       Collection<UpdateActivity> actuals) {
     Set<ComparableUpdateActivity> comparableExpecteds = new HashSet<>();
     Set<ComparableUpdateActivity> comparableActuals = new HashSet<>();
-    if (expecteds != null) {
-      for (UpdateActivity updateActivity : expecteds) {
-        comparableExpecteds.add(new ComparableUpdateActivity(updateActivity));
-      }
+    for (UpdateActivity updateActivity : expecteds) {
+      comparableExpecteds.add(new ComparableUpdateActivity(updateActivity));
     }
-    if (actuals != null) {
-      for (UpdateActivity updateActivity : actuals) {
-        comparableActuals.add(new ComparableUpdateActivity(updateActivity));
-      }
+    for (UpdateActivity updateActivity : actuals) {
+      comparableActuals.add(new ComparableUpdateActivity(updateActivity));
     }
 
     for (ComparableUpdateActivity actual : comparableActuals) {

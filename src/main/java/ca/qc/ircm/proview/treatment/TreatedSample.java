@@ -43,12 +43,6 @@ public class TreatedSample implements Data, Serializable {
   @GeneratedValue(strategy = IDENTITY)
   private long id;
   /**
-   * Treatment.
-   */
-  @ManyToOne
-  @JoinColumn(nullable = false)
-  private Treatment treatment;
-  /**
    * Sample that received treatment.
    */
   @ManyToOne
@@ -245,13 +239,5 @@ public class TreatedSample implements Data, Serializable {
 
   public void setPiInterval(@Nullable String piInterval) {
     this.piInterval = piInterval;
-  }
-
-  public Treatment getTreatment() {
-    return treatment;
-  }
-
-  public void setTreatment(Treatment treatment) {
-    this.treatment = treatment;
   }
 }
