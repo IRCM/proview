@@ -74,7 +74,8 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).waitForFirst();
     assertTrue(optional(view::header).isPresent());
     assertTrue(optional(view::message).isPresent());
-    assertTrue(optional(view::passwordsForm).isPresent());
+    assertTrue(optional(view::password).isPresent());
+    assertTrue(optional(view::confirmPassword).isPresent());
     assertTrue(optional(view::save).isPresent());
   }
 
@@ -83,8 +84,8 @@ public class UseForgotPasswordViewItTest extends AbstractTestBenchTestCase {
     open();
     UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).waitForFirst();
 
-    view.passwordsForm().password().setValue(password);
-    view.passwordsForm().passwordConfirm().setValue(password);
+    view.password().setValue(password);
+    view.confirmPassword().setValue(password);
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
