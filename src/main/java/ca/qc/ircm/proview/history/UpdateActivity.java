@@ -1,10 +1,12 @@
 package ca.qc.ircm.proview.history;
 
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.UsedBy;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -78,6 +80,7 @@ public class UpdateActivity implements Data {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }

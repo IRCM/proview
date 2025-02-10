@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ public class QuerydslConfiguration {
   private final EntityManager entityManager;
 
   @Autowired
+  @UsedBy(SPRING)
   protected QuerydslConfiguration(EntityManager entityManager) {
     this.entityManager = entityManager;
   }

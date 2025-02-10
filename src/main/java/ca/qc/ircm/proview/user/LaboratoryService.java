@@ -1,7 +1,9 @@
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import ca.qc.ircm.proview.UsedBy;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,7 @@ public class LaboratoryService {
   private final LaboratoryRepository repository;
 
   @Autowired
+  @UsedBy(SPRING)
   protected LaboratoryService(LaboratoryRepository repository) {
     this.repository = repository;
   }

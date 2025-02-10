@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.UsedBy;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -97,6 +99,7 @@ public class MsAnalysis implements Data, Serializable {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -105,6 +108,7 @@ public class MsAnalysis implements Data, Serializable {
     return source;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSource(MassDetectionInstrumentSource source) {
     this.source = source;
   }
@@ -113,6 +117,7 @@ public class MsAnalysis implements Data, Serializable {
     return massDetectionInstrument;
   }
 
+  @UsedBy(HIBERNATE)
   public void setMassDetectionInstrument(MassDetectionInstrument massDetectionInstrument) {
     this.massDetectionInstrument = massDetectionInstrument;
   }
@@ -121,6 +126,7 @@ public class MsAnalysis implements Data, Serializable {
     return insertTime;
   }
 
+  @UsedBy(HIBERNATE)
   public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
@@ -130,6 +136,7 @@ public class MsAnalysis implements Data, Serializable {
     return deletionExplanation;
   }
 
+  @UsedBy(HIBERNATE)
   public void setDeletionExplanation(@Nullable String deletionExplanation) {
     this.deletionExplanation = deletionExplanation;
   }
@@ -138,6 +145,7 @@ public class MsAnalysis implements Data, Serializable {
     return deleted;
   }
 
+  @UsedBy(HIBERNATE)
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
   }
@@ -146,6 +154,7 @@ public class MsAnalysis implements Data, Serializable {
     return acquisitions;
   }
 
+  @UsedBy(HIBERNATE)
   public void setAcquisitions(List<Acquisition> acquisitions) {
     this.acquisitions = acquisitions;
   }

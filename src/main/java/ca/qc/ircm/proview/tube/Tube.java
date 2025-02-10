@@ -1,8 +1,11 @@
 package ca.qc.ircm.proview.tube;
 
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
+
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import ca.qc.ircm.proview.sample.SampleContainerType;
 import jakarta.persistence.Column;
@@ -55,6 +58,7 @@ public class Tube extends SampleContainer implements Data, Named, Serializable {
     return name;
   }
 
+  @UsedBy(HIBERNATE)
   public void setName(String name) {
     this.name = name;
   }

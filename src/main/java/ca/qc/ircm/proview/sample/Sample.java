@@ -1,5 +1,6 @@
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
@@ -7,6 +8,7 @@ import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -71,6 +73,7 @@ public abstract class Sample implements Data, Named, Serializable {
   @Column
   @Size(max = 100)
   private String quantity;
+
   public Sample() {
   }
 
@@ -143,6 +146,7 @@ public abstract class Sample implements Data, Named, Serializable {
     return version;
   }
 
+  @UsedBy(HIBERNATE)
   public void setVersion(int version) {
     this.version = version;
   }

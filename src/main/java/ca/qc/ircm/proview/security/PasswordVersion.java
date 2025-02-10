@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.security;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -10,6 +13,8 @@ import java.io.Serializable;
  * @param algorithm  hashing algorithm
  * @param iterations hashing iterations
  */
+@UsedBy(SPRING)
+@SuppressWarnings("unused")
 public record PasswordVersion(int version, String algorithm, int iterations)
     implements Serializable {
 

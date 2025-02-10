@@ -1,8 +1,10 @@
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.treatment.QTreatment.treatment;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.submission.Submission;
 import com.google.common.collect.Lists;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,6 +25,7 @@ public class TreatmentService {
   private final TreatmentRepository repository;
 
   @Autowired
+  @UsedBy(SPRING)
   protected TreatmentService(TreatmentRepository repository) {
     this.repository = repository;
   }

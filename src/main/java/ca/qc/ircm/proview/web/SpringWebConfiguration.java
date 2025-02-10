@@ -1,7 +1,9 @@
 package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.DEFAULT_LOCALE;
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.logging.web.MdcFilter;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -26,6 +28,7 @@ public class SpringWebConfiguration implements WebMvcConfigurer {
 
   private final AuthenticatedUser authenticatedUser;
 
+  @UsedBy(SPRING)
   protected SpringWebConfiguration(AuthenticatedUser authenticatedUser) {
     this.authenticatedUser = authenticatedUser;
   }

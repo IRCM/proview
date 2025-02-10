@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.msanalysis;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -108,6 +110,7 @@ public class Acquisition implements Data, Named, Serializable {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -116,6 +119,7 @@ public class Acquisition implements Data, Named, Serializable {
     return numberOfAcquisition;
   }
 
+  @UsedBy(HIBERNATE)
   public void setNumberOfAcquisition(int numberOfAcquisition) {
     this.numberOfAcquisition = numberOfAcquisition;
   }
@@ -124,6 +128,7 @@ public class Acquisition implements Data, Named, Serializable {
     return sample;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSample(Sample sample) {
     this.sample = sample;
   }
@@ -132,6 +137,7 @@ public class Acquisition implements Data, Named, Serializable {
     return sampleListName;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSampleListName(String sampleListName) {
     this.sampleListName = sampleListName;
   }
@@ -140,6 +146,7 @@ public class Acquisition implements Data, Named, Serializable {
     return acquisitionFile;
   }
 
+  @UsedBy(HIBERNATE)
   public void setAcquisitionFile(String acquisitionFile) {
     this.acquisitionFile = acquisitionFile;
   }
@@ -148,6 +155,7 @@ public class Acquisition implements Data, Named, Serializable {
     return position;
   }
 
+  @UsedBy(HIBERNATE)
   public void setPosition(int position) {
     this.position = position;
   }
@@ -157,6 +165,7 @@ public class Acquisition implements Data, Named, Serializable {
     return comment;
   }
 
+  @UsedBy(HIBERNATE)
   public void setComment(@Nullable String comment) {
     this.comment = comment;
   }
@@ -165,6 +174,7 @@ public class Acquisition implements Data, Named, Serializable {
     return container;
   }
 
+  @UsedBy(HIBERNATE)
   public void setContainer(SampleContainer container) {
     this.container = container;
   }

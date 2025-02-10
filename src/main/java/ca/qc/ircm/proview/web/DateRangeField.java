@@ -2,9 +2,11 @@ package ca.qc.ircm.proview.web;
 
 import static ca.qc.ircm.proview.Constants.PLACEHOLDER;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
+import static ca.qc.ircm.proview.UsedBy.VAADIN;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.DatePickerInternationalization.datePickerI18n;
 
+import ca.qc.ircm.proview.UsedBy;
 import com.google.common.collect.Range;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.customfield.CustomFieldVariant;
@@ -139,18 +141,22 @@ public class DateRangeField extends CustomField<Range<LocalDate>> implements Loc
     private LocalDate from;
     private LocalDate to;
 
+    @UsedBy(VAADIN)
     public LocalDate getFrom() {
       return from;
     }
 
+    @UsedBy(VAADIN)
     public void setFrom(LocalDate from) {
       this.from = from;
     }
 
+    @UsedBy(VAADIN)
     public LocalDate getTo() {
       return to;
     }
 
+    @UsedBy(VAADIN)
     public void setTo(LocalDate to) {
       this.to = to;
     }

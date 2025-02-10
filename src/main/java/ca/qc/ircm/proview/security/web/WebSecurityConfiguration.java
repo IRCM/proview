@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.security.web;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.security.DaoAuthenticationProviderWithLdap;
 import ca.qc.ircm.proview.security.LdapConfiguration;
 import ca.qc.ircm.proview.security.LdapService;
@@ -150,31 +153,37 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setUserDetailsService(UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setLdapService(LdapService ldapService) {
     this.ldapService = ldapService;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setConfiguration(SecurityConfiguration configuration) {
     this.configuration = configuration;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setLdapConfiguration(LdapConfiguration ldapConfiguration) {
     this.ldapConfiguration = ldapConfiguration;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   public void setPermissionEvaluator(PermissionEvaluator permissionEvaluator) {
     this.permissionEvaluator = permissionEvaluator;
   }

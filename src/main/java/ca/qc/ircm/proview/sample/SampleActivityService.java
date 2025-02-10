@@ -1,7 +1,9 @@
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.persistence.QueryDsl.qname;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.history.ActionType;
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.UpdateActivity;
@@ -35,6 +37,7 @@ public class SampleActivityService {
   private final AuthenticatedUser authenticatedUser;
 
   @Autowired
+  @UsedBy(SPRING)
   protected SampleActivityService(SampleRepository repository,
       SubmissionSampleRepository submissionSampleRepository, AuthenticatedUser authenticatedUser) {
     this.repository = repository;

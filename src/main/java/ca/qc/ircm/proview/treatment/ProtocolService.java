@@ -1,7 +1,9 @@
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import ca.qc.ircm.proview.UsedBy;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ public class ProtocolService {
   private final ProtocolRepository repository;
 
   @Autowired
+  @UsedBy(SPRING)
   protected ProtocolService(ProtocolRepository repository) {
     this.repository = repository;
   }

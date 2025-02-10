@@ -7,6 +7,7 @@ import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.VAADIN;
 import static ca.qc.ircm.proview.sample.SampleProperties.QUANTITY;
 import static ca.qc.ircm.proview.sample.SampleProperties.TYPE;
 import static ca.qc.ircm.proview.sample.SampleProperties.VOLUME;
@@ -43,6 +44,7 @@ import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
 import ca.qc.ircm.proview.Constants;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.ProteinIdentification;
 import ca.qc.ircm.proview.sample.ProteolyticDigestion;
@@ -592,18 +594,22 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     private int samplesCount;
     private List<String> samplesNames;
 
+    @UsedBy(VAADIN)
     public int getSamplesCount() {
       return samplesCount;
     }
 
+    @UsedBy(VAADIN)
     public void setSamplesCount(int samplesCount) {
       this.samplesCount = samplesCount;
     }
 
+    @UsedBy(VAADIN)
     public List<String> getSamplesNames() {
       return samplesNames;
     }
 
+    @UsedBy(VAADIN)
     public void setSamplesNames(List<String> samplesNames) {
       this.samplesNames = samplesNames;
     }

@@ -1,7 +1,9 @@
 package ca.qc.ircm.proview.test.config;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static org.junit.jupiter.api.Assumptions.abort;
 
+import ca.qc.ircm.proview.UsedBy;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.unit.UIUnitTest;
 import java.nio.file.Files;
@@ -56,6 +58,7 @@ public class VaadinLicenseExecutionListener implements TestExecutionListener, In
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setConfiguration(VaadinLicenseConfiguration configuration) {
     this.configuration = configuration;
   }

@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.user.User;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
@@ -105,6 +107,7 @@ public class Treatment implements Data, Serializable {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -113,6 +116,7 @@ public class Treatment implements Data, Serializable {
     return type;
   }
 
+  @UsedBy(HIBERNATE)
   public void setType(TreatmentType type) {
     this.type = type;
   }
@@ -121,6 +125,7 @@ public class Treatment implements Data, Serializable {
     return deleted;
   }
 
+  @UsedBy(HIBERNATE)
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
   }
@@ -130,6 +135,7 @@ public class Treatment implements Data, Serializable {
     return deletionExplanation;
   }
 
+  @UsedBy(HIBERNATE)
   public void setDeletionExplanation(@Nullable String deletionExplanation) {
     this.deletionExplanation = deletionExplanation;
   }
@@ -138,6 +144,7 @@ public class Treatment implements Data, Serializable {
     return user;
   }
 
+  @UsedBy(HIBERNATE)
   public void setUser(User user) {
     this.user = user;
   }
@@ -146,6 +153,7 @@ public class Treatment implements Data, Serializable {
     return treatedSamples;
   }
 
+  @UsedBy(HIBERNATE)
   public void setTreatedSamples(List<TreatedSample> treatedSamples) {
     this.treatedSamples = treatedSamples;
   }
@@ -154,6 +162,7 @@ public class Treatment implements Data, Serializable {
     return insertTime;
   }
 
+  @UsedBy(HIBERNATE)
   public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
@@ -163,6 +172,7 @@ public class Treatment implements Data, Serializable {
     return protocol;
   }
 
+  @UsedBy(HIBERNATE)
   public void setProtocol(@Nullable Protocol protocol) {
     this.protocol = protocol;
   }
@@ -172,6 +182,7 @@ public class Treatment implements Data, Serializable {
     return fractionationType;
   }
 
+  @UsedBy(HIBERNATE)
   public void setFractionationType(@Nullable FractionationType fractionationType) {
     this.fractionationType = fractionationType;
   }

@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.history;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.user.User;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.persistence.CascadeType;
@@ -91,6 +93,7 @@ public class Activity implements Data {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }

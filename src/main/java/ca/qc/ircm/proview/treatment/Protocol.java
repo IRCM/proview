@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.treatment;
 
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -46,6 +48,7 @@ public class Protocol implements Data, Serializable, Named {
   @Column(nullable = false)
   @Enumerated(STRING)
   private Type type;
+
   public Protocol() {
   }
 
@@ -68,6 +71,7 @@ public class Protocol implements Data, Serializable, Named {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -77,6 +81,7 @@ public class Protocol implements Data, Serializable, Named {
     return name;
   }
 
+  @UsedBy(HIBERNATE)
   public void setName(String name) {
     this.name = name;
   }
@@ -85,6 +90,7 @@ public class Protocol implements Data, Serializable, Named {
     return type;
   }
 
+  @UsedBy(HIBERNATE)
   public void setType(Type type) {
     this.type = type;
   }

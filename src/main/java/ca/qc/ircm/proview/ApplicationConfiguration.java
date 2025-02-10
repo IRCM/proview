@@ -1,5 +1,7 @@
 package ca.qc.ircm.proview;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,7 @@ public class ApplicationConfiguration {
     return serverUrl;
   }
 
+  @UsedBy(SPRING)
   public void setServerUrl(String serverUrl) {
     this.serverUrl = serverUrl;
   }

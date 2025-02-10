@@ -1,9 +1,11 @@
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.sample.QSubmissionSample.submissionSample;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 import static ca.qc.ircm.proview.user.UserRole.USER;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.history.ActivityService;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.submission.Submission;
@@ -33,6 +35,7 @@ public class SubmissionSampleService {
   private final AuthenticatedUser authenticatedUser;
 
   @Autowired
+  @UsedBy(SPRING)
   protected SubmissionSampleService(SubmissionSampleRepository repository,
       SubmissionRepository submissionRepository, SampleActivityService sampleActivityService,
       ActivityService activityService, AuthenticatedUser authenticatedUser) {

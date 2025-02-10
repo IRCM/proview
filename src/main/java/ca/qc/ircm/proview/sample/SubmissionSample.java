@@ -1,10 +1,12 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.ORDINAL;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
@@ -131,6 +133,7 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
     return listIndex;
   }
 
+  @UsedBy(HIBERNATE)
   public void setListIndex(int listIndex) {
     this.listIndex = listIndex;
   }

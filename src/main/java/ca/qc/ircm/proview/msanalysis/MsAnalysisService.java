@@ -1,10 +1,12 @@
 package ca.qc.ircm.proview.msanalysis;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.msanalysis.QAcquisition.acquisition;
 import static ca.qc.ircm.proview.msanalysis.QMsAnalysis.msAnalysis;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.submission.Submission;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -26,6 +28,7 @@ public class MsAnalysisService {
   private final JPAQueryFactory queryFactory;
 
   @Autowired
+  @UsedBy(SPRING)
   protected MsAnalysisService(MsAnalysisRepository repository, JPAQueryFactory queryFactory) {
     this.repository = repository;
     this.queryFactory = queryFactory;

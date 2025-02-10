@@ -1,8 +1,10 @@
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
 import static ca.qc.ircm.proview.user.QPreference.preference;
 import static ca.qc.ircm.proview.user.QUserPreference.userPreference;
 
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import java.io.ByteArrayInputStream;
@@ -28,6 +30,7 @@ public class UserPreferenceService {
   private final AuthenticatedUser authenticatedUser;
 
   @Autowired
+  @UsedBy(SPRING)
   protected UserPreferenceService(UserPreferenceRepository repository,
       PreferenceRepository preferenceRepository, AuthenticatedUser authenticatedUser) {
     this.repository = repository;

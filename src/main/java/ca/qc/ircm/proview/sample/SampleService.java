@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.sample;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -16,6 +19,7 @@ public class SampleService {
   private final SampleRepository repository;
 
   @Autowired
+  @UsedBy(SPRING)
   protected SampleService(SampleRepository repository) {
     this.repository = repository;
   }

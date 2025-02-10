@@ -1,10 +1,12 @@
 package ca.qc.ircm.proview.treatment;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.sample.SampleContainer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -130,6 +132,7 @@ public class TreatedSample implements Data, Serializable {
     return sample;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSample(Sample sample) {
     this.sample = sample;
   }
@@ -139,6 +142,7 @@ public class TreatedSample implements Data, Serializable {
     return comment;
   }
 
+  @UsedBy(HIBERNATE)
   public void setComment(@Nullable String comment) {
     this.comment = comment;
   }
@@ -148,6 +152,7 @@ public class TreatedSample implements Data, Serializable {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -156,6 +161,7 @@ public class TreatedSample implements Data, Serializable {
     return container;
   }
 
+  @UsedBy(HIBERNATE)
   public void setContainer(SampleContainer container) {
     this.container = container;
   }
@@ -165,6 +171,7 @@ public class TreatedSample implements Data, Serializable {
     return destinationContainer;
   }
 
+  @UsedBy(HIBERNATE)
   public void setDestinationContainer(@Nullable SampleContainer destinationContainer) {
     this.destinationContainer = destinationContainer;
   }
@@ -174,6 +181,7 @@ public class TreatedSample implements Data, Serializable {
     return sourceVolume;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSourceVolume(@Nullable Double sourceVolume) {
     this.sourceVolume = sourceVolume;
   }
@@ -183,6 +191,7 @@ public class TreatedSample implements Data, Serializable {
     return solvent;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSolvent(@Nullable String solvent) {
     this.solvent = solvent;
   }
@@ -192,6 +201,7 @@ public class TreatedSample implements Data, Serializable {
     return solventVolume;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSolventVolume(@Nullable Double solventVolume) {
     this.solventVolume = solventVolume;
   }
@@ -201,6 +211,7 @@ public class TreatedSample implements Data, Serializable {
     return name;
   }
 
+  @UsedBy(HIBERNATE)
   public void setName(@Nullable String name) {
     this.name = name;
   }
@@ -210,6 +221,7 @@ public class TreatedSample implements Data, Serializable {
     return quantity;
   }
 
+  @UsedBy(HIBERNATE)
   public void setQuantity(@Nullable String quantity) {
     this.quantity = quantity;
   }
@@ -219,6 +231,7 @@ public class TreatedSample implements Data, Serializable {
     return position;
   }
 
+  @UsedBy(HIBERNATE)
   public void setPosition(@Nullable Integer position) {
     this.position = position;
   }
@@ -228,6 +241,7 @@ public class TreatedSample implements Data, Serializable {
     return number;
   }
 
+  @UsedBy(HIBERNATE)
   public void setNumber(@Nullable Integer number) {
     this.number = number;
   }
@@ -237,6 +251,7 @@ public class TreatedSample implements Data, Serializable {
     return piInterval;
   }
 
+  @UsedBy(HIBERNATE)
   public void setPiInterval(@Nullable String piInterval) {
     this.piInterval = piInterval;
   }

@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -34,6 +37,7 @@ public class DefaultAddressConfiguration {
     return line;
   }
 
+  @UsedBy(SPRING)
   public void setLine(String line) {
     this.line = line;
   }
@@ -42,6 +46,7 @@ public class DefaultAddressConfiguration {
     return town;
   }
 
+  @UsedBy(SPRING)
   public void setTown(String town) {
     this.town = town;
   }
@@ -50,6 +55,7 @@ public class DefaultAddressConfiguration {
     return state;
   }
 
+  @UsedBy(SPRING)
   public void setState(String state) {
     this.state = state;
   }
@@ -58,6 +64,7 @@ public class DefaultAddressConfiguration {
     return postalCode;
   }
 
+  @UsedBy(SPRING)
   public void setPostalCode(String postalCode) {
     this.postalCode = postalCode;
   }
@@ -66,6 +73,7 @@ public class DefaultAddressConfiguration {
     return country;
   }
 
+  @UsedBy(SPRING)
   public void setCountry(String country) {
     this.country = country;
   }

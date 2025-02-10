@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.security;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.plate.Plate;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
@@ -68,28 +71,33 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setLaboratoryPermissionEvaluator(
       LaboratoryPermissionEvaluator laboratoryPermissionEvaluator) {
     this.laboratoryPermissionEvaluator = laboratoryPermissionEvaluator;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setUserPermissionEvaluator(UserPermissionEvaluator userPermissionEvaluator) {
     this.userPermissionEvaluator = userPermissionEvaluator;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setSubmissionPermissionEvaluator(
       SubmissionPermissionEvaluator submissionPermissionEvaluator) {
     this.submissionPermissionEvaluator = submissionPermissionEvaluator;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setSamplePermissionEvaluator(SamplePermissionEvaluator samplePermissionEvaluator) {
     this.samplePermissionEvaluator = samplePermissionEvaluator;
   }
 
   @Autowired
+  @UsedBy(SPRING)
   void setPlatePermissionEvaluator(PlatePermissionEvaluator platePermissionEvaluator) {
     this.platePermissionEvaluator = platePermissionEvaluator;
   }

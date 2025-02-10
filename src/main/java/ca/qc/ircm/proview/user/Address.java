@@ -1,8 +1,10 @@
 package ca.qc.ircm.proview.user;
 
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
+import ca.qc.ircm.proview.UsedBy;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -70,6 +72,7 @@ public class Address implements Serializable {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(Long id) {
     this.id = id;
   }

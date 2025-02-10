@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.files;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class Category {
     return name;
   }
 
+  @UsedBy(SPRING)
   void setName(String name) {
     this.name = name;
   }
@@ -29,6 +33,7 @@ public class Category {
     return new ArrayList<>(guidelines);
   }
 
+  @UsedBy(SPRING)
   void setGuidelines(List<Guideline> guidelines) {
     this.guidelines = guidelines;
   }

@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.files;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import jakarta.annotation.PostConstruct;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,6 +47,7 @@ public class GuidelinesConfiguration {
     return home;
   }
 
+  @UsedBy(SPRING)
   void setHome(Path home) {
     this.home = home;
   }
@@ -52,6 +56,7 @@ public class GuidelinesConfiguration {
     return categories;
   }
 
+  @UsedBy(SPRING)
   void setCategories(Map<String, List<Category>> categories) {
     this.categories = categories;
   }

@@ -1,11 +1,13 @@
 package ca.qc.ircm.proview.plate;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
+import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Data;
 import ca.qc.ircm.proview.Named;
+import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.sample.Sample;
 import ca.qc.ircm.proview.submission.Submission;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -267,6 +269,7 @@ public class Plate implements Data, Serializable, Named {
     return name;
   }
 
+  @UsedBy(HIBERNATE)
   public void setName(String name) {
     this.name = name;
   }
@@ -276,6 +279,7 @@ public class Plate implements Data, Serializable, Named {
     return id;
   }
 
+  @UsedBy(HIBERNATE)
   public void setId(long id) {
     this.id = id;
   }
@@ -284,6 +288,7 @@ public class Plate implements Data, Serializable, Named {
     return insertTime;
   }
 
+  @UsedBy(HIBERNATE)
   public void setInsertTime(LocalDateTime insertTime) {
     this.insertTime = insertTime;
   }
@@ -292,6 +297,7 @@ public class Plate implements Data, Serializable, Named {
     return wells;
   }
 
+  @UsedBy(HIBERNATE)
   public void setWells(List<Well> wells) {
     this.wells = wells;
   }
@@ -300,6 +306,7 @@ public class Plate implements Data, Serializable, Named {
     return columnCount;
   }
 
+  @UsedBy(HIBERNATE)
   public void setColumnCount(int columnCount) {
     this.columnCount = columnCount;
   }
@@ -308,6 +315,7 @@ public class Plate implements Data, Serializable, Named {
     return rowCount;
   }
 
+  @UsedBy(HIBERNATE)
   public void setRowCount(int rowCount) {
     this.rowCount = rowCount;
   }
@@ -317,6 +325,7 @@ public class Plate implements Data, Serializable, Named {
     return submission;
   }
 
+  @UsedBy(HIBERNATE)
   public void setSubmission(@Nullable Submission submission) {
     this.submission = submission;
   }

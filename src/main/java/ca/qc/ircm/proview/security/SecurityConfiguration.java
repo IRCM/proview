@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.security;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +29,7 @@ public record SecurityConfiguration(int lockAttemps, Duration lockDuration, int 
   public static final String PREFIX = "security";
   private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
 
+  @UsedBy(SPRING)
   public SecurityConfiguration(int lockAttemps, Duration lockDuration, int disableSignAttemps,
       String rememberMeKey, List<PasswordVersion> passwords) {
     this.lockAttemps = lockAttemps;

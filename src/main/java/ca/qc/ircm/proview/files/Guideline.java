@@ -1,5 +1,8 @@
 package ca.qc.ircm.proview.files;
 
+import static ca.qc.ircm.proview.UsedBy.SPRING;
+
+import ca.qc.ircm.proview.UsedBy;
 import java.nio.file.Path;
 
 /**
@@ -20,6 +23,7 @@ public class Guideline {
     return name;
   }
 
+  @UsedBy(SPRING)
   void setName(String name) {
     this.name = name;
   }
