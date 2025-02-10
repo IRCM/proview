@@ -22,11 +22,34 @@ import org.springframework.stereotype.Component;
 @Primary
 public class PermissionEvaluatorDelegator implements PermissionEvaluator {
 
-  private LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
-  private UserPermissionEvaluator userPermissionEvaluator;
-  private SubmissionPermissionEvaluator submissionPermissionEvaluator;
-  private SamplePermissionEvaluator samplePermissionEvaluator;
-  private PlatePermissionEvaluator platePermissionEvaluator;
+  private final LaboratoryPermissionEvaluator laboratoryPermissionEvaluator;
+  private final UserPermissionEvaluator userPermissionEvaluator;
+  private final SubmissionPermissionEvaluator submissionPermissionEvaluator;
+  private final SamplePermissionEvaluator samplePermissionEvaluator;
+  private final PlatePermissionEvaluator platePermissionEvaluator;
+
+  /**
+   * Create an instance of PermissionEvaluatorDelegator.
+   *
+   * @param laboratoryPermissionEvaluator laboratory permission delegator
+   * @param userPermissionEvaluator       user permission delegator
+   * @param submissionPermissionEvaluator submission permission delegator
+   * @param samplePermissionEvaluator     sample permission delegator
+   * @param platePermissionEvaluator      plate permission delegator
+   */
+  @Autowired
+  @UsedBy(SPRING)
+  public PermissionEvaluatorDelegator(LaboratoryPermissionEvaluator laboratoryPermissionEvaluator,
+      UserPermissionEvaluator userPermissionEvaluator,
+      SubmissionPermissionEvaluator submissionPermissionEvaluator,
+      SamplePermissionEvaluator samplePermissionEvaluator,
+      PlatePermissionEvaluator platePermissionEvaluator) {
+    this.laboratoryPermissionEvaluator = laboratoryPermissionEvaluator;
+    this.userPermissionEvaluator = userPermissionEvaluator;
+    this.submissionPermissionEvaluator = submissionPermissionEvaluator;
+    this.samplePermissionEvaluator = samplePermissionEvaluator;
+    this.platePermissionEvaluator = platePermissionEvaluator;
+  }
 
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
@@ -68,37 +91,5 @@ public class PermissionEvaluatorDelegator implements PermissionEvaluator {
           permission);
     }
     return false;
-  }
-
-  @Autowired
-  @UsedBy(SPRING)
-  void setLaboratoryPermissionEvaluator(
-      LaboratoryPermissionEvaluator laboratoryPermissionEvaluator) {
-    this.laboratoryPermissionEvaluator = laboratoryPermissionEvaluator;
-  }
-
-  @Autowired
-  @UsedBy(SPRING)
-  void setUserPermissionEvaluator(UserPermissionEvaluator userPermissionEvaluator) {
-    this.userPermissionEvaluator = userPermissionEvaluator;
-  }
-
-  @Autowired
-  @UsedBy(SPRING)
-  void setSubmissionPermissionEvaluator(
-      SubmissionPermissionEvaluator submissionPermissionEvaluator) {
-    this.submissionPermissionEvaluator = submissionPermissionEvaluator;
-  }
-
-  @Autowired
-  @UsedBy(SPRING)
-  void setSamplePermissionEvaluator(SamplePermissionEvaluator samplePermissionEvaluator) {
-    this.samplePermissionEvaluator = samplePermissionEvaluator;
-  }
-
-  @Autowired
-  @UsedBy(SPRING)
-  void setPlatePermissionEvaluator(PlatePermissionEvaluator platePermissionEvaluator) {
-    this.platePermissionEvaluator = platePermissionEvaluator;
   }
 }
