@@ -12,7 +12,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,18 +57,6 @@ public class PermissionEvaluatorDelegatorTest {
   private Sample sample;
   @Mock
   private Plate plate;
-
-  /**
-   * Before test.
-   */
-  @BeforeEach
-  public void beforeTest() {
-    permissionEvaluator.setLaboratoryPermissionEvaluator(laboratoryPermissionEvaluator);
-    permissionEvaluator.setUserPermissionEvaluator(userPermissionEvaluator);
-    permissionEvaluator.setSubmissionPermissionEvaluator(submissionPermissionEvaluator);
-    permissionEvaluator.setSamplePermissionEvaluator(samplePermissionEvaluator);
-    permissionEvaluator.setPlatePermissionEvaluator(platePermissionEvaluator);
-  }
 
   private Authentication authentication() {
     return SecurityContextHolder.getContext().getAuthentication();
