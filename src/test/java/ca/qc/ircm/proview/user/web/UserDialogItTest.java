@@ -75,7 +75,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertTrue(optional(() -> dialog.userForm().admin()).isPresent());
     assertTrue(optional(() -> dialog.userForm().manager()).isPresent());
     assertTrue(optional(() -> dialog.userForm().password()).isPresent());
-    assertTrue(optional(() -> dialog.userForm().passwordConfirm()).isPresent());
+    assertTrue(optional(() -> dialog.userForm().confirmPassword()).isPresent());
     assertTrue(optional(() -> dialog.userForm().laboratory()).isPresent());
     assertTrue(optional(() -> dialog.userForm().createNewLaboratory()).isPresent());
     assertTrue(optional(() -> dialog.userForm().address()).isPresent());
@@ -104,7 +104,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
-    dialog.userForm().passwordConfirm().setValue(password);
+    dialog.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
@@ -159,7 +159,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
-    dialog.userForm().passwordConfirm().setValue(password);
+    dialog.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
@@ -190,7 +190,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
-    dialog.userForm().passwordConfirm().setValue(password);
+    dialog.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);
@@ -244,7 +244,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     dialog.userForm().email().setValue(email);
     dialog.userForm().name().setValue(name);
     dialog.userForm().password().setValue(password);
-    dialog.userForm().passwordConfirm().setValue(password);
+    dialog.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     dialog.userForm().laboratory().selectByText(laboratory.getName());
     dialog.userForm().address().setValue(addressLine);

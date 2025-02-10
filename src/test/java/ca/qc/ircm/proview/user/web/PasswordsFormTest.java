@@ -45,8 +45,8 @@ public class PasswordsFormTest extends SpringUIUnitTest {
   @BeforeEach
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
-    navigate(ProfileView.class);
-    form = $(PasswordsForm.class).first();
+    form = new PasswordsForm();
+    UI.getCurrent().add(form);
   }
 
   private void fillForm() {

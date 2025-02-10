@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.ENGLISH;
-import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.INVALID_EMAIL;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
@@ -21,6 +20,9 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.web.Passwords.NOT_MATCH;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.CONFIRM_PASSWORD;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.PASSWORD;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserForm.EMAIL_PLACEHOLDER;
 import static ca.qc.ircm.proview.user.web.UserForm.ID;
@@ -32,10 +34,10 @@ import static ca.qc.ircm.proview.user.web.UserForm.id;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.qc.ircm.proview.Constants;
@@ -75,6 +77,7 @@ public class UserFormTest extends SpringUIUnitTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
+  private static final String PASSWORDS_PREFIX = messagePrefix(Passwords.class);
   private static final String ADDRESS_PREFIX = messagePrefix(Address.class);
   private static final String PHONE_NUMBER_PREFIX = messagePrefix(PhoneNumber.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -134,8 +137,8 @@ public class UserFormTest extends SpringUIUnitTest {
     form.phoneType.setValue(phoneType);
     form.number.setValue(number);
     form.extension.setValue(extension);
-    form.passwords.password.setValue(password);
-    form.passwords.passwordConfirm.setValue(password);
+    form.password.setValue(password);
+    form.confirmPassword.setValue(password);
   }
 
   @Test
@@ -145,6 +148,8 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(id(NAME), form.name.getId().orElse(""));
     assertEquals(id(ADMIN), form.admin.getId().orElse(""));
     assertEquals(id(MANAGER), form.manager.getId().orElse(""));
+    assertEquals(id(PASSWORD), form.password.getId().orElse(""));
+    assertEquals(id(CONFIRM_PASSWORD), form.confirmPassword.getId().orElse(""));
     assertEquals(id(LABORATORY), form.laboratory.getId().orElse(""));
     assertEquals(id(CREATE_NEW_LABORATORY), form.createNewLaboratory.getId().orElse(""));
     assertEquals(id(NEW_LABORATORY_NAME), form.newLaboratoryName.getId().orElse(""));
@@ -178,6 +183,9 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals(form.getTranslation(USER_PREFIX + NAME), form.name.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + ADMIN), form.admin.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + MANAGER), form.manager.getLabel());
+    assertEquals(form.getTranslation(PASSWORDS_PREFIX + PASSWORD), form.password.getLabel());
+    assertEquals(form.getTranslation(PASSWORDS_PREFIX + CONFIRM_PASSWORD),
+        form.confirmPassword.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + LABORATORY), form.laboratory.getLabel());
     assertEquals(form.getTranslation(MESSAGES_PREFIX + CREATE_NEW_LABORATORY),
         form.createNewLaboratory.getLabel());
@@ -199,12 +207,14 @@ public class UserFormTest extends SpringUIUnitTest {
 
   @Test
   public void localeChange() {
-    Locale locale = FRENCH;
     UI.getCurrent().setLocale(locale);
     assertEquals(form.getTranslation(USER_PREFIX + EMAIL), form.email.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + NAME), form.name.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + ADMIN), form.admin.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + MANAGER), form.manager.getLabel());
+    assertEquals(form.getTranslation(PASSWORDS_PREFIX + PASSWORD), form.password.getLabel());
+    assertEquals(form.getTranslation(PASSWORDS_PREFIX + CONFIRM_PASSWORD),
+        form.confirmPassword.getLabel());
     assertEquals(form.getTranslation(USER_PREFIX + LABORATORY), form.laboratory.getLabel());
     assertEquals(form.getTranslation(MESSAGES_PREFIX + CREATE_NEW_LABORATORY),
         form.createNewLaboratory.getLabel());
@@ -403,9 +413,30 @@ public class UserFormTest extends SpringUIUnitTest {
   @Test
   public void getPassword() {
     String password = "test_password";
-    form.passwords = mock(PasswordsForm.class);
-    when(form.passwords.getPassword()).thenReturn(password);
+    form.password.setValue(password);
+    form.confirmPassword.setValue(password);
     assertEquals(password, form.getPassword());
+  }
+
+  @Test
+  public void getPassword_EmptyPassword() {
+    form.password.setValue("");
+    form.confirmPassword.setValue("");
+    assertNull(form.getPassword());
+  }
+
+  @Test
+  public void getPassword_EmptyConfirmPassword() {
+    form.password.setValue("test_password");
+    form.confirmPassword.setValue("");
+    assertNull(form.getPassword());
+  }
+
+  @Test
+  public void getPassword_NotMatch() {
+    form.password.setValue("test_password");
+    form.confirmPassword.setValue("other_password");
+    assertNull(form.getPassword());
   }
 
   @Test
@@ -429,8 +460,10 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.admin.isReadOnly());
     assertFalse(form.manager.getValue());
     assertFalse(form.manager.isReadOnly());
-    assertTrue(form.passwords.isVisible());
-    assertTrue(form.passwords.isRequired());
+    assertTrue(form.password.isVisible());
+    assertTrue(form.password.isRequired());
+    assertTrue(form.confirmPassword.isVisible());
+    assertTrue(form.confirmPassword.isRequired());
     assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
@@ -470,8 +503,10 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.admin.isReadOnly());
     assertFalse(form.manager.getValue());
     assertFalse(form.manager.isReadOnly());
-    assertTrue(form.passwords.isVisible());
-    assertTrue(form.passwords.isRequired());
+    assertTrue(form.password.isVisible());
+    assertTrue(form.password.isRequired());
+    assertTrue(form.confirmPassword.isVisible());
+    assertTrue(form.confirmPassword.isRequired());
     assertEquals((Long) 1L, form.laboratory.getValue().getId());
     assertFalse(form.laboratory.isReadOnly());
     Address address = defaultAddressConfiguration.getAddress();
@@ -509,7 +544,8 @@ public class UserFormTest extends SpringUIUnitTest {
     assertTrue(form.admin.isReadOnly());
     assertFalse(form.manager.getValue());
     assertTrue(form.manager.isReadOnly());
-    assertFalse(form.passwords.isVisible());
+    assertFalse(form.password.isVisible());
+    assertFalse(form.confirmPassword.isVisible());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
@@ -548,8 +584,10 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.admin.isReadOnly());
     assertTrue(form.manager.getValue());
     assertFalse(form.manager.isReadOnly());
-    assertTrue(form.passwords.isVisible());
-    assertFalse(form.passwords.isRequired());
+    assertTrue(form.password.isVisible());
+    assertFalse(form.password.isRequired());
+    assertTrue(form.confirmPassword.isVisible());
+    assertFalse(form.confirmPassword.isRequired());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertTrue(form.laboratory.isReadOnly());
     Address address = user.getAddress();
@@ -588,8 +626,10 @@ public class UserFormTest extends SpringUIUnitTest {
     assertFalse(form.admin.isReadOnly());
     assertTrue(form.manager.getValue());
     assertFalse(form.manager.isReadOnly());
-    assertTrue(form.passwords.isVisible());
-    assertFalse(form.passwords.isRequired());
+    assertTrue(form.password.isVisible());
+    assertFalse(form.password.isRequired());
+    assertTrue(form.confirmPassword.isVisible());
+    assertFalse(form.confirmPassword.isRequired());
     assertEquals(user.getLaboratory().getId(), form.laboratory.getValue().getId());
     assertFalse(form.laboratory.isReadOnly());
     Address address = user.getAddress();
@@ -621,8 +661,10 @@ public class UserFormTest extends SpringUIUnitTest {
     assertEquals("", form.name.getValue());
     assertFalse(form.admin.getValue());
     assertFalse(form.manager.getValue());
-    assertTrue(form.passwords.isVisible());
-    assertTrue(form.passwords.isRequired());
+    assertTrue(form.password.isVisible());
+    assertTrue(form.password.isRequired());
+    assertTrue(form.confirmPassword.isVisible());
+    assertTrue(form.confirmPassword.isRequired());
     assertEquals(authenticatedUser.getUser().orElseThrow().getLaboratory().getId(),
         form.laboratory.getValue().getId());
     Address address = defaultAddressConfiguration.getAddress();
@@ -686,10 +728,68 @@ public class UserFormTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void isValid_PasswordValidationFailed() {
-    form.passwords = mock(PasswordsForm.class);
+  public void isValid_EmptyPassword_NewUser() {
+    form.setUser(null);
+    form.password.setValue("");
 
     assertFalse(form.isValid());
+
+    BinderValidationStatus<Passwords> status = form.validatePasswords();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.password);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_EmptyPassword_ExistingUser() {
+    form.password.setValue("");
+
+    assertTrue(form.isValid());
+    assertTrue(form.validatePasswords().isOk());
+  }
+
+  @Test
+  public void isValid_EmptyConfirmPassword_NewUser() {
+    form.setUser(null);
+    form.confirmPassword.setValue("");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Passwords> status = form.validatePasswords();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.confirmPassword);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
+  }
+
+  @Test
+  public void isValid_EmptyConfirmPassword_ExistingUser() {
+    form.confirmPassword.setValue("");
+
+    assertTrue(form.isValid());
+    assertTrue(form.validatePasswords().isOk());
+  }
+
+  @Test
+  public void isValid_PasswordsNotMatch() {
+    form.password.setValue("new_password");
+    form.confirmPassword.setValue("other_password");
+
+    assertFalse(form.isValid());
+
+    BinderValidationStatus<Passwords> status = form.validatePasswords();
+    assertFalse(status.isOk());
+    Optional<BindingValidationStatus<?>> optionalError =
+        findValidationStatusByField(status, form.password);
+    assertTrue(optionalError.isPresent());
+    BindingValidationStatus<?> error = optionalError.get();
+    assertEquals(Optional.of(form.getTranslation(PASSWORDS_PREFIX + NOT_MATCH)),
+        error.getMessage());
   }
 
   @Test
@@ -974,8 +1074,8 @@ public class UserFormTest extends SpringUIUnitTest {
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void isValid_UpdateUserNoPassword() {
     fillForm();
-    form.passwords.password.setValue("");
-    form.passwords.passwordConfirm.setValue("");
+    form.password.setValue("");
+    form.confirmPassword.setValue("");
 
     assertTrue(form.isValid());
 
@@ -1060,8 +1160,8 @@ public class UserFormTest extends SpringUIUnitTest {
     entityManager.detach(user);
     form.setUser(user);
     fillForm();
-    form.passwords.password.setValue("");
-    form.passwords.passwordConfirm.setValue("");
+    form.password.setValue("");
+    form.confirmPassword.setValue("");
 
     assertTrue(form.isValid());
 
