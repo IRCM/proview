@@ -36,6 +36,7 @@ import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
@@ -127,8 +128,8 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     verify(service, never()).updatePassword(any(), any());
     BinderValidationStatus<Passwords> status = view.validate();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, view.password);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        view.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -148,8 +149,8 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     verify(service, never()).updatePassword(any(), any());
     BinderValidationStatus<Passwords> status = view.validate();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, view.confirmPassword);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        view.confirmPassword);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -170,8 +171,8 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
     verify(service, never()).updatePassword(any(), any());
     BinderValidationStatus<Passwords> status = view.validate();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, view.password);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        view.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(PASSWORDS_PREFIX + NOT_MATCH)),
@@ -206,7 +207,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   @Test
   public void setParameter() {
     when(service.get(anyLong(), any())).thenReturn(Optional.of(forgotPassword));
-    view.form = mock(PasswordsForm.class);
+    view.form = mock(FormLayout.class);
     long id = 34925;
     String confirmNumber = "feafet23ts";
     String parameter = id + SEPARATOR + confirmNumber;
@@ -218,7 +219,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_IdNotNumber() {
-    view.form = mock(PasswordsForm.class);
+    view.form = mock(FormLayout.class);
     String parameter = "A434GS" + SEPARATOR + "feafet23ts";
     view.setParameter(beforeEvent, parameter);
     verify(service, never()).get(anyLong(), any());
@@ -230,7 +231,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_MissingConfirm() {
-    view.form = mock(PasswordsForm.class);
+    view.form = mock(FormLayout.class);
     String parameter = "34925";
     view.setParameter(beforeEvent, parameter);
     verify(service, never()).get(anyLong(), any());
@@ -242,7 +243,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_NullForgotPassword() {
-    view.form = mock(PasswordsForm.class);
+    view.form = mock(FormLayout.class);
     long id = 34925;
     String confirmNumber = "feafet23ts";
     String parameter = id + SEPARATOR + confirmNumber;
@@ -256,7 +257,7 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
 
   @Test
   public void setParameter_Empty() {
-    view.form = mock(PasswordsForm.class);
+    view.form = mock(FormLayout.class);
     view.setParameter(beforeEvent, "");
     verify(service, never()).get(anyLong(), any());
     Notification notification = $(Notification.class).last();
