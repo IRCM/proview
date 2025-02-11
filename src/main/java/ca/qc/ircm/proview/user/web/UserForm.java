@@ -131,22 +131,35 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   @PostConstruct
   protected void init() {
     setId(ID);
-    setResponsiveSteps(new ResponsiveStep("15em", 4));
-    add(new FormLayout(email, name, admin, manager, password, confirmPassword),
-        new FormLayout(laboratory, createNewLaboratory, newLaboratoryName),
-        new FormLayout(addressLine, town, state, country, postalCode),
-        new FormLayout(phoneType, number, extension));
+    setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("30em", 2),
+        new ResponsiveStep("60em", 4));
+    FormLayout userFields = new FormLayout(email, name, admin, manager, password, confirmPassword);
+    userFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout laboratoryFields = new FormLayout(laboratory, createNewLaboratory,
+        newLaboratoryName);
+    laboratoryFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout addressFields = new FormLayout(addressLine, town, state, country, postalCode);
+    addressFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout phoneFields = new FormLayout(phoneType, number, extension);
+    phoneFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    add(userFields, laboratoryFields, addressFields, phoneFields);
     email.setId(id(EMAIL));
     email.setPlaceholder(EMAIL_PLACEHOLDER);
+    email.setWidthFull();
     name.setId(id(NAME));
     name.setPlaceholder(NAME_PLACEHOLDER);
+    name.setWidthFull();
     admin.setId(id(ADMIN));
     admin.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
+    admin.setWidthFull();
     manager.setId(id(MANAGER));
     manager.setVisible(authenticatedUser.hasAnyRole(UserRole.ADMIN, UserRole.MANAGER));
     manager.addValueChangeListener(e -> updateManager());
+    manager.setWidthFull();
     password.setId(id(PASSWORD));
+    password.setWidthFull();
     confirmPassword.setId(id(CONFIRM_PASSWORD));
+    confirmPassword.setWidthFull();
     laboratory.setId(id(LABORATORY));
     if (authenticatedUser.hasRole(UserRole.ADMIN)) {
       laboratoriesDataProvider = DataProvider.ofCollection(laboratoryService.all());
@@ -159,32 +172,43 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
     laboratory.setEnabled(authenticatedUser.hasRole(UserRole.ADMIN));
     laboratory.setItemLabelGenerator(lab -> Objects.toString(lab.getName(), ""));
+    laboratory.setWidthFull();
     createNewLaboratory.setId(id(CREATE_NEW_LABORATORY));
     createNewLaboratory.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
     createNewLaboratory.setEnabled(false);
     createNewLaboratory.addValueChangeListener(e -> updateCreateNewLaboratory());
+    createNewLaboratory.setWidthFull();
     newLaboratoryName.setId(id(NEW_LABORATORY_NAME));
     newLaboratoryName.setPlaceholder(LABORATORY_NAME_PLACEHOLDER);
     newLaboratoryName.setVisible(authenticatedUser.hasRole(UserRole.ADMIN));
     newLaboratoryName.setEnabled(false);
+    newLaboratoryName.setWidthFull();
     Address address = defaultAddressConfiguration.getAddress();
     addressLine.setId(id(LINE));
     addressLine.setPlaceholder(address.getLine());
+    addressLine.setWidthFull();
     town.setId(id(TOWN));
     town.setPlaceholder(address.getTown());
+    town.setWidthFull();
     state.setId(id(STATE));
     state.setPlaceholder(address.getState());
+    state.setWidthFull();
     country.setId(id(COUNTRY));
     country.setPlaceholder(address.getCountry());
+    country.setWidthFull();
     postalCode.setId(id(POSTAL_CODE));
     postalCode.setPlaceholder(address.getPostalCode());
+    postalCode.setWidthFull();
     phoneType.setId(id(TYPE));
     phoneType.setItems(PhoneNumberType.values());
     phoneType.setItemLabelGenerator(type -> getTranslation(PHONE_NUMBER_TYPE_PREFIX + type.name()));
     phoneType.setValue(PhoneNumberType.WORK);
+    phoneType.setWidthFull();
     number.setId(id(NUMBER));
     number.setPlaceholder(NUMBER_PLACEHOLDER);
+    number.setWidthFull();
     extension.setId(id(EXTENSION));
+    extension.setWidthFull();
 
     setUser(null);
     updateManager();
@@ -225,11 +249,9 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
     passwordBinder.setBean(new Passwords());
     passwordBinder.forField(password)
         .withValidator(passwordRequiredValidator(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
-        .withNullRepresentation("")
-        .withValidator(password -> {
+        .withNullRepresentation("").withValidator(password -> {
           String confirmPassword = this.confirmPassword.getValue();
-          return password == null || confirmPassword == null || password.equals(
-              confirmPassword);
+          return password == null || confirmPassword == null || password.equals(confirmPassword);
         }, getTranslation(PASSWORDS_PREFIX + NOT_MATCH)).bind(PASSWORD);
     passwordBinder.forField(confirmPassword)
         .withValidator(passwordRequiredValidator(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
@@ -257,15 +279,12 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
 
   private Validator<String> passwordRequiredValidator(String errorMessage) {
     return (value, context) -> user == null || user.getId() == 0 && value.isEmpty()
-        ? ValidationResult.error(
-        errorMessage)
-        : ValidationResult.ok();
+        ? ValidationResult.error(errorMessage) : ValidationResult.ok();
   }
 
   private Validator<Laboratory> laboratoryRequiredValidator(String errorMessage) {
     return (value, context) -> !createNewLaboratory.getValue() && value == null
-        ? ValidationResult.error(errorMessage)
-        : ValidationResult.ok();
+        ? ValidationResult.error(errorMessage) : ValidationResult.ok();
   }
 
   private void updateReadOnly() {
@@ -273,8 +292,8 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
         user.getId() != 0 && !authenticatedUser.hasPermission(user, Permission.WRITE);
     binder.setReadOnly(readOnly);
     laboratory.setReadOnly(!authenticatedUser.hasRole(UserRole.ADMIN));
-    laboratory
-        .setEnabled(!authenticatedUser.hasRole(UserRole.ADMIN) || !createNewLaboratory.getValue());
+    laboratory.setEnabled(
+        !authenticatedUser.hasRole(UserRole.ADMIN) || !createNewLaboratory.getValue());
     password.setVisible(!readOnly);
     confirmPassword.setVisible(!readOnly);
     addressBinder.setReadOnly(readOnly);
@@ -334,8 +353,8 @@ public class UserForm extends FormLayout implements LocaleChangeObserver {
   }
 
   User getUser() {
-    if (laboratory.getValue() != null
-        && (!createNewLaboratory.isEnabled() || !createNewLaboratory.getValue())) {
+    if (laboratory.getValue() != null && (!createNewLaboratory.isEnabled()
+        || !createNewLaboratory.getValue())) {
       user.getLaboratory().setId(laboratory.getValue().getId());
       user.getLaboratory().setName(laboratory.getValue().getName());
     } else {
