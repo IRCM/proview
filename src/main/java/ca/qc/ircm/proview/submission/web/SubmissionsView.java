@@ -17,6 +17,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.USER;
+import static ca.qc.ircm.proview.text.Strings.normalizedCollator;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
@@ -33,7 +34,6 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.user.UserRole;
@@ -76,6 +76,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +94,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = SubmissionsView.VIEW_NAME, layout = ViewLayout.class)
 @RolesAllowed({UserRole.USER})
-public class SubmissionsView extends VerticalLayout
-    implements HasDynamicTitle, LocaleChangeObserver, NotificationComponent {
+public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
+    LocaleChangeObserver, NotificationComponent {
 
   public static final String VIEW_NAME = "submissions";
   public static final String ID = "submissions-view";
@@ -106,10 +107,8 @@ public class SubmissionsView extends VerticalLayout
   public static final String HISTORY = "history";
   public static final String ADD = "add";
   public static final String HIDE_COLUMNS = "hideColumns";
-  public static final String SAMPLES_SPAN =
-      "<span .title='${item.samplesTitle}'>${item.samplesValue}</span>";
-  public static final String STATUS_SPAN =
-      "<span .title='${item.statusTitle}'>${item.statusValue}</span>";
+  public static final String SAMPLES_SPAN = "<span .title='${item.samplesTitle}'>${item.samplesValue}</span>";
+  public static final String STATUS_SPAN = "<span .title='${item.statusTitle}'>${item.statusValue}</span>";
   public static final String HIDDEN_BUTTON =
       "<vaadin-button class='" + HIDDEN + "' .theme='${item.hiddenTheme}' @click='${toggleHidden}'>"
           + "<vaadin-icon .icon='${item.hiddenIcon}' slot='prefix'></vaadin-icon>"
@@ -119,8 +118,8 @@ public class SubmissionsView extends VerticalLayout
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
   private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   @Serial
@@ -219,63 +218,63 @@ public class SubmissionsView extends VerticalLayout
       Optional<Boolean> value = userPreferenceService.get(this, column.getKey());
       return value.orElse(true);
     };
-    ValueProvider<Submission, String> submissionExperiment =
-        submission -> Objects.toString(submission.getExperiment(), "");
+    ValueProvider<Submission, String> submissionExperiment = submission -> Objects.toString(
+        submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
-        .setComparator(NormalizedComparator.of(Submission::getExperiment)).setFlexGrow(3);
+        .setComparator(Comparator.comparing(Submission::getExperiment, normalizedCollator()))
+        .setFlexGrow(3);
     ValueProvider<Submission, String> submissionUser = submission -> submission.getUser().getName();
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
-        .setComparator(NormalizedComparator.of(s -> s.getUser().getName())).setFlexGrow(3);
+        .setComparator(Comparator.comparing(s -> s.getUser().getName(), normalizedCollator()))
+        .setFlexGrow(3);
     user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN) && columnVisibility.apply(user));
-    ValueProvider<Submission, String> submissionDirector =
-        submission -> Objects.toString(submission.getLaboratory().getDirector(), "");
-    director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
-        .setComparator(NormalizedComparator.of(s -> s.getLaboratory().getDirector()))
+    ValueProvider<Submission, String> submissionDirector = submission -> Objects.toString(
+        submission.getLaboratory().getDirector(), "");
+    director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR).setComparator(
+            Comparator.comparing(s -> s.getLaboratory().getDirector(), normalizedCollator()))
         .setFlexGrow(3);
     director.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(director));
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-    dataAvailableDate =
-        submissions.addColumn(submission -> submission.getDataAvailableDate() != null
-            ? dateFormatter.format(submission.getDataAvailableDate())
-            : "", DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
+    dataAvailableDate = submissions.addColumn(
+            submission -> submission.getDataAvailableDate() != null ? dateFormatter.format(
+                submission.getDataAvailableDate()) : "", DATA_AVAILABLE_DATE)
+        .setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
     dataAvailableDate.setVisible(columnVisibility.apply(dataAvailableDate));
-    date = submissions.addColumn(submission -> submission.getSubmissionDate().toLocalDate() != null
-        ? dateFormatter.format(submission.getSubmissionDate().toLocalDate())
-        : "", SUBMISSION_DATE).setKey(SUBMISSION_DATE).setFlexGrow(2);
+    date = submissions.addColumn(
+            submission -> submission.getSubmissionDate().toLocalDate() != null ? dateFormatter.format(
+                submission.getSubmissionDate().toLocalDate()) : "", SUBMISSION_DATE)
+        .setKey(SUBMISSION_DATE).setFlexGrow(2);
     date.setVisible(columnVisibility.apply(date));
-    instrument = submissions.addColumn(
-        submission -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
-            .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
-        INSTRUMENT).setKey(INSTRUMENT).setFlexGrow(2);
+    instrument = submissions.addColumn(submission -> getTranslation(
+            MASS_DETECTION_INSTRUMENT_PREFIX + Optional.ofNullable(submission.getInstrument())
+                .orElse(MassDetectionInstrument.NULL).name()), INSTRUMENT).setKey(INSTRUMENT)
+        .setFlexGrow(2);
     instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
-    service = submissions
-        .addColumn(submission -> getTranslation(SERVICE_PREFIX + submission.getService().name()),
-            SERVICE)
+    service = submissions.addColumn(
+            submission -> getTranslation(SERVICE_PREFIX + submission.getService().name()), SERVICE)
         .setKey(SERVICE).setFlexGrow(2);
     service.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(service));
-    samplesCount =
-        submissions.addColumn(submission -> submission.getSamples().size(), SAMPLES_COUNT)
-            .setKey(SAMPLES_COUNT).setFlexGrow(0);
+    samplesCount = submissions.addColumn(submission -> submission.getSamples().size(),
+        SAMPLES_COUNT).setKey(SAMPLES_COUNT).setFlexGrow(0);
     samplesCount.setVisible(columnVisibility.apply(samplesCount));
-    samples = submissions
-        .addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
+    samples = submissions.addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
             .withProperty("samplesValue", this::sampleNamesValue)
-            .withProperty("samplesTitle", this::sampleNamesTitle))
-        .setKey(SAMPLES).setSortable(false).setFlexGrow(3);
+            .withProperty("samplesTitle", this::sampleNamesTitle)).setKey(SAMPLES).setSortable(false)
+        .setFlexGrow(3);
     samples.setVisible(columnVisibility.apply(samples));
-    status = submissions
-        .addColumn(
+    status = submissions.addColumn(
             LitRenderer.<Submission>of(STATUS_SPAN).withProperty("statusValue", this::statusesValue)
-                .withProperty("statusTitle", this::statusesTitle))
-        .setKey(STATUS).setSortable(false).setFlexGrow(2);
+                .withProperty("statusTitle", this::statusesTitle)).setKey(STATUS).setSortable(false)
+        .setFlexGrow(2);
     status.setVisible(columnVisibility.apply(status));
-    hidden = submissions.addColumn(LitRenderer.<Submission>of(HIDDEN_BUTTON)
-            .withProperty("hiddenTheme", this::hiddenTheme)
-            .withProperty("hiddenValue", this::hiddenValue).withProperty("hiddenIcon", this::hiddenIcon)
-            .withFunction("toggleHidden", submission -> {
-              toggleHidden(submission);
-              submissions.getDataProvider().refreshItem(submission);
-            })).setKey(HIDDEN).setSortProperty(HIDDEN)
+    hidden = submissions.addColumn(
+            LitRenderer.<Submission>of(HIDDEN_BUTTON).withProperty("hiddenTheme", this::hiddenTheme)
+                .withProperty("hiddenValue", this::hiddenValue)
+                .withProperty("hiddenIcon", this::hiddenIcon)
+                .withFunction("toggleHidden", submission -> {
+                  toggleHidden(submission);
+                  submissions.getDataProvider().refreshItem(submission);
+                })).setKey(HIDDEN).setSortProperty(HIDDEN)
         .setComparator((s1, s2) -> Boolean.compare(s1.isHidden(), s2.isHidden()));
     hidden.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(hidden));
     submissions.appendHeaderRow(); // Headers.
@@ -366,13 +365,11 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private void loadSubmissions() {
-    Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders =
-        query -> query.getSortOrders() != null && !query.getSortOrders().isEmpty()
-            ? query.getSortOrders().stream()
-            .filter(order -> columnProperties.containsKey(order.getSorted()))
-            .map(order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
-                order.getDirection() == SortDirection.DESCENDING))
-            .collect(Collectors.toList())
+    Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders = query ->
+        query.getSortOrders() != null && !query.getSortOrders().isEmpty() ? query.getSortOrders()
+            .stream().filter(order -> columnProperties.containsKey(order.getSorted())).map(
+                order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
+                    order.getDirection() == SortDirection.DESCENDING)).collect(Collectors.toList())
             : Collections.singletonList(submission.id.desc());
     submissions.setItems(query -> {
       filter.sortOrders = filterSortOrders.apply(query);
@@ -393,15 +390,15 @@ public class SubmissionsView extends VerticalLayout
   }
 
   private String statusesValue(Submission submission) {
-    List<SampleStatus> statuses =
-        submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
+    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
+        .distinct().toList();
     return getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
         getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size());
   }
 
   private String statusesTitle(Submission submission) {
-    List<SampleStatus> statuses =
-        submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
+    List<SampleStatus> statuses = submission.getSamples().stream().map(SubmissionSample::getStatus)
+        .distinct().toList();
     return statuses.stream().map(status -> getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
         .collect(Collectors.joining("\n"));
   }
@@ -453,8 +450,8 @@ public class SubmissionsView extends VerticalLayout
     serviceFilter.setItemLabelGenerator(value -> getTranslation(SERVICE_PREFIX + value.name()));
     samplesFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     statusFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
-    statusFilter
-        .setItemLabelGenerator(value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
+    statusFilter.setItemLabelGenerator(
+        value -> getTranslation(SAMPLE_STATUS_PREFIX + value.name()));
     hiddenFilter.setPlaceholder(getTranslation(MESSAGES_PREFIX + ALL));
     hiddenFilter.setItemLabelGenerator(
         value -> getTranslation(SUBMISSION_PREFIX + property(HIDDEN, value)));
@@ -538,8 +535,8 @@ public class SubmissionsView extends VerticalLayout
     if (os.isPresent()) {
       view(os.get());
     } else {
-      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
-          .open();
+      new ErrorNotification(
+          getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED))).open();
     }
   }
 
@@ -555,8 +552,8 @@ public class SubmissionsView extends VerticalLayout
     if (os.isPresent()) {
       editStatus(os.get());
     } else {
-      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
-          .open();
+      new ErrorNotification(
+          getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED))).open();
     }
   }
 
@@ -574,8 +571,8 @@ public class SubmissionsView extends VerticalLayout
     if (os.isPresent()) {
       history(os.get());
     } else {
-      new ErrorNotification(getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)))
-          .open();
+      new ErrorNotification(
+          getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED))).open();
     }
   }
 

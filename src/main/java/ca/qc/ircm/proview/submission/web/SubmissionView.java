@@ -13,6 +13,7 @@ import static ca.qc.ircm.proview.submission.SubmissionFileProperties.FILENAME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
+import static ca.qc.ircm.proview.text.Strings.normalizedCollator;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.web.UploadInternationalization.uploadI18N;
 
@@ -32,7 +33,6 @@ import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -121,8 +122,8 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   protected IntactProteinSubmissionForm intactProteinSubmissionForm;
   private final Map<Tab, Component> tabsToComponents = new HashMap<>();
   private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private final ListDataProvider<SubmissionFile> filesDataProvider =
-      DataProvider.ofCollection(new ArrayList<>());
+  private final ListDataProvider<SubmissionFile> filesDataProvider = DataProvider.ofCollection(
+      new ArrayList<>());
   private final transient SubmissionService submissionService;
   private final transient AuthenticatedUser authenticatedUser;
 
@@ -174,7 +175,8 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     files.setWidth("45em");
     filename = files.addColumn(new ComponentRenderer<>(this::filenameAnchor)).setKey(FILENAME)
         .setSortProperty(FILENAME)
-        .setComparator(NormalizedComparator.of(SubmissionFile::getFilename)).setFlexGrow(3);
+        .setComparator(Comparator.comparing(SubmissionFile::getFilename, normalizedCollator()))
+        .setFlexGrow(3);
     remove = files.addColumn(new ComponentRenderer<>(this::removeButton)).setKey(REMOVE);
     save.setId(SAVE);
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -217,8 +219,9 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
 
   private void updateHeader() {
     Submission submission = binder.getBean();
-    viewLayout().ifPresent(layout -> layout.setHeaderText(getTranslation(MESSAGES_PREFIX + HEADER,
-        submission.getId() != 0 ? 1 : 0, submission.getExperiment())));
+    viewLayout().ifPresent(layout -> layout.setHeaderText(
+        getTranslation(MESSAGES_PREFIX + HEADER, submission.getId() != 0 ? 1 : 0,
+            submission.getExperiment())));
   }
 
   @Override

@@ -1,8 +1,10 @@
 package ca.qc.ircm.proview.text;
 
+import java.text.Collator;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -42,5 +44,17 @@ public class Strings {
     value = value.replaceAll("æ", "ae");
     return Normalizer.normalize(value, Form.NFKD)
         .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+  }
+
+  /**
+   * Returns {@link Collator} that treats modified characters (for example, accents) as non-modified
+   * characters.
+   *
+   * @return {@link Collator} that treats modified characters as non-modified characters
+   */
+  public static Collator normalizedCollator() {
+    Collator collator = Collator.getInstance(Locale.US);
+    collator.setStrength(Collator.PRIMARY);
+    return collator;
   }
 }

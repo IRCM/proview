@@ -6,6 +6,7 @@ import static ca.qc.ircm.proview.Constants.EDIT;
 import static ca.qc.ircm.proview.Constants.REQUIRED;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
+import static ca.qc.ircm.proview.text.Strings.normalizedCollator;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.UserProperties.ACTIVE;
 import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
@@ -17,7 +18,6 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.SwitchUserService;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
@@ -52,6 +52,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 import java.io.Serial;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -153,20 +154,19 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
       viewLaboratory.setEnabled(e.getAllSelectedItems().size() == 1);
     });
     email = users.addColumn(User::getEmail, EMAIL).setKey(EMAIL)
-        .setComparator(NormalizedComparator.of(User::getEmail)).setFlexGrow(3);
+        .setComparator(Comparator.comparing(User::getEmail, normalizedCollator())).setFlexGrow(3);
     name = users.addColumn(User::getName, NAME).setKey(NAME)
-        .setComparator(NormalizedComparator.of(User::getName)).setFlexGrow(3);
-    laboratory =
-        users.addColumn(user -> user.getLaboratory().getName(), LABORATORY).setKey(LABORATORY)
-            .setComparator(NormalizedComparator.of(user -> user.getLaboratory().getName()))
-            .setFlexGrow(3);
-    active = users
-        .addColumn(
+        .setComparator(Comparator.comparing(User::getName, normalizedCollator())).setFlexGrow(3);
+    laboratory = users.addColumn(user -> user.getLaboratory().getName(), LABORATORY)
+        .setKey(LABORATORY).setComparator(
+            Comparator.comparing(user -> user.getLaboratory().getName(), normalizedCollator()))
+        .setFlexGrow(3);
+    active = users.addColumn(
             LitRenderer.<User>of(ACTIVE_BUTTON).withProperty("activeTheme", this::activeTheme)
                 .withProperty("activeValue", this::activeValue)
                 .withProperty("activeIcon", this::activeIcon)
-                .withFunction("toggleActive", this::toggleActive))
-        .setKey(ACTIVE).setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
+                .withFunction("toggleActive", this::toggleActive)).setKey(ACTIVE)
+        .setComparator((u1, u2) -> Boolean.compare(u1.isActive(), u2.isActive()));
     active.setVisible(authenticatedUser.hasAnyRole(ADMIN, MANAGER));
     users.appendHeaderRow(); // Headers.
     HeaderRow filtersRow = users.appendHeaderRow();

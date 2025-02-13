@@ -8,6 +8,7 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.sample.SampleProperties.NAME;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
+import static ca.qc.ircm.proview.text.Strings.normalizedCollator;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 
@@ -18,7 +19,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.SubmissionSampleService;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.text.NormalizedComparator;
 import ca.qc.ircm.proview.web.SavedEvent;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -42,6 +42,7 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.annotation.PostConstruct;
 import java.io.Serial;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,8 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class SamplesStatusDialog extends Dialog
-    implements LocaleChangeObserver, NotificationComponent {
+public class SamplesStatusDialog extends Dialog implements LocaleChangeObserver,
+    NotificationComponent {
 
   public static final String ID = "samples-status-dialog";
   public static final String HEADER = "header";
@@ -111,12 +112,12 @@ public class SamplesStatusDialog extends Dialog
     layout.expand(samples);
     getFooter().add(cancel, save);
     samples.setId(id(SAMPLES));
-    ValueProvider<SubmissionSample, String> sampleName =
-        sample -> Objects.toString(sample.getName(), "");
+    ValueProvider<SubmissionSample, String> sampleName = sample -> Objects.toString(
+        sample.getName(), "");
     name = samples.addColumn(sampleName, NAME).setKey(NAME)
-        .setComparator(NormalizedComparator.of(Sample::getName)).setFlexGrow(2);
-    status =
-        samples.addColumn(new ComponentRenderer<>(this::status)).setKey(STATUS).setSortable(false);
+        .setComparator(Comparator.comparing(Sample::getName, normalizedCollator())).setFlexGrow(2);
+    status = samples.addColumn(new ComponentRenderer<>(this::status)).setKey(STATUS)
+        .setSortable(false);
     samples.appendHeaderRow(); // Headers.
     HeaderRow allRow = samples.appendHeaderRow();
     allRow.getCell(status).setComponent(allStatus);
@@ -183,8 +184,8 @@ public class SamplesStatusDialog extends Dialog
    * @return listener registration
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public Registration
-  addSavedListener(ComponentEventListener<SavedEvent<SamplesStatusDialog>> listener) {
+  public Registration addSavedListener(
+      ComponentEventListener<SavedEvent<SamplesStatusDialog>> listener) {
     return addListener((Class) SavedEvent.class, listener);
   }
 
@@ -208,8 +209,8 @@ public class SamplesStatusDialog extends Dialog
   }
 
   private boolean validate() {
-    return submission != null && !submission.getSamples().isEmpty()
-        && validateSamples().stream().allMatch(BinderValidationStatus::isOk);
+    return submission != null && !submission.getSamples().isEmpty() && validateSamples().stream()
+        .allMatch(BinderValidationStatus::isOk);
   }
 
   private void save() {
