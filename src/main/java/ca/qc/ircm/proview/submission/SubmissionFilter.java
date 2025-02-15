@@ -6,14 +6,14 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import org.springframework.data.domain.Range;
 import org.springframework.lang.Nullable;
 
 /**
@@ -74,11 +74,12 @@ public class SubmissionFilter implements Predicate<Submission> {
       }
     }
     if (dateRange != null) {
-      test &= dateRange.contains(submission.getSubmissionDate().toLocalDate());
+      test &= dateRange.contains(submission.getSubmissionDate().toLocalDate(),
+          Comparator.naturalOrder());
     }
     if (dataAvailableDateRange != null) {
-      test &= submission.getDataAvailableDate() != null
-          && dataAvailableDateRange.contains(submission.getDataAvailableDate());
+      test &= submission.getDataAvailableDate() != null && dataAvailableDateRange.contains(
+          submission.getDataAvailableDate(), Comparator.naturalOrder());
     }
     return test;
   }
@@ -118,32 +119,32 @@ public class SubmissionFilter implements Predicate<Submission> {
       }
     }
     if (dateRange != null) {
-      if (dateRange.hasLowerBound()) {
-        LocalDate date = dateRange.lowerEndpoint();
-        if (dateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
+      if (dateRange.getLowerBound().isBounded()) {
+        LocalDate date = dateRange.getLowerBound().getValue().orElseThrow();
+        if (dateRange.getLowerBound().isInclusive()) {
+          date = date.minusDays(1);
         }
-        predicate.and(submission.submissionDate.goe(toLocalDateTime(date)));
+        predicate.and(submission.submissionDate.after(toLocalDateTime(date)));
       }
-      if (dateRange.hasUpperBound()) {
-        LocalDate date = dateRange.upperEndpoint();
-        if (dateRange.upperBoundType() == BoundType.CLOSED) {
+      if (dateRange.getUpperBound().isBounded()) {
+        LocalDate date = dateRange.getUpperBound().getValue().orElseThrow();
+        if (dateRange.getUpperBound().isInclusive()) {
           date = date.plusDays(1);
         }
         predicate.and(submission.submissionDate.before(toLocalDateTime(date)));
       }
     }
     if (dataAvailableDateRange != null) {
-      if (dataAvailableDateRange.hasLowerBound()) {
-        LocalDate date = dataAvailableDateRange.lowerEndpoint();
-        if (dataAvailableDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
+      if (dataAvailableDateRange.getLowerBound().isBounded()) {
+        LocalDate date = dataAvailableDateRange.getLowerBound().getValue().orElseThrow();
+        if (dataAvailableDateRange.getLowerBound().isInclusive()) {
+          date = date.minusDays(1);
         }
-        predicate.and(submission.dataAvailableDate.goe(date));
+        predicate.and(submission.dataAvailableDate.after(date));
       }
-      if (dataAvailableDateRange.hasUpperBound()) {
-        LocalDate date = dataAvailableDateRange.upperEndpoint();
-        if (dataAvailableDateRange.upperBoundType() == BoundType.CLOSED) {
+      if (dataAvailableDateRange.getUpperBound().isBounded()) {
+        LocalDate date = dataAvailableDateRange.getUpperBound().getValue().orElseThrow();
+        if (dataAvailableDateRange.getUpperBound().isInclusive()) {
           date = date.plusDays(1);
         }
         predicate.and(submission.dataAvailableDate.before(date));
@@ -183,32 +184,32 @@ public class SubmissionFilter implements Predicate<Submission> {
       }
     }
     if (dateRange != null) {
-      if (dateRange.hasLowerBound()) {
-        LocalDate date = dateRange.lowerEndpoint();
-        if (dateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
+      if (dateRange.getLowerBound().isBounded()) {
+        LocalDate date = dateRange.getLowerBound().getValue().orElseThrow();
+        if (dateRange.getLowerBound().isInclusive()) {
+          date = date.minusDays(1);
         }
-        query.where(submission.submissionDate.goe(toLocalDateTime(date)));
+        query.where(submission.submissionDate.after(toLocalDateTime(date)));
       }
-      if (dateRange.hasUpperBound()) {
-        LocalDate date = dateRange.upperEndpoint();
-        if (dateRange.upperBoundType() == BoundType.CLOSED) {
+      if (dateRange.getUpperBound().isBounded()) {
+        LocalDate date = dateRange.getUpperBound().getValue().orElseThrow();
+        if (dateRange.getUpperBound().isInclusive()) {
           date = date.plusDays(1);
         }
         query.where(submission.submissionDate.before(toLocalDateTime(date)));
       }
     }
     if (dataAvailableDateRange != null) {
-      if (dataAvailableDateRange.hasLowerBound()) {
-        LocalDate date = dataAvailableDateRange.lowerEndpoint();
-        if (dataAvailableDateRange.lowerBoundType() == BoundType.OPEN) {
-          date = date.plusDays(1);
+      if (dataAvailableDateRange.getLowerBound().isBounded()) {
+        LocalDate date = dataAvailableDateRange.getLowerBound().getValue().orElseThrow();
+        if (dataAvailableDateRange.getLowerBound().isInclusive()) {
+          date = date.minusDays(1);
         }
-        query.where(submission.dataAvailableDate.goe(date));
+        query.where(submission.dataAvailableDate.after(date));
       }
-      if (dataAvailableDateRange.hasUpperBound()) {
-        LocalDate date = dataAvailableDateRange.upperEndpoint();
-        if (dataAvailableDateRange.upperBoundType() == BoundType.CLOSED) {
+      if (dataAvailableDateRange.getUpperBound().isBounded()) {
+        LocalDate date = dataAvailableDateRange.getUpperBound().getValue().orElseThrow();
+        if (dataAvailableDateRange.getUpperBound().isInclusive()) {
           date = date.plusDays(1);
         }
         query.where(submission.dataAvailableDate.before(date));

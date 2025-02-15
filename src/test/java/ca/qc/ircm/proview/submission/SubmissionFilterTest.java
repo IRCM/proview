@@ -22,7 +22,6 @@ import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.test.config.NonTransactionalTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
-import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -37,6 +36,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.data.domain.Range;
+import org.springframework.data.domain.Range.Bound;
 import org.springframework.lang.Nullable;
 
 /**
@@ -140,7 +141,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1)))
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start))
         .and(submission.submissionDate.before(toLocalDateTime(end))));
   }
 
@@ -152,7 +153,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start))
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start.minusDays(1)))
         .and(submission.submissionDate.before(toLocalDateTime(end.plusDays(1)))));
   }
 
@@ -160,11 +161,11 @@ public class SubmissionFilterTest {
   public void predicate_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.openClosed(start, end);
+    filter.dateRange = Range.leftOpen(start, end);
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1)))
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start))
         .and(submission.submissionDate.before(toLocalDateTime(end.plusDays(1)))));
   }
 
@@ -172,38 +173,38 @@ public class SubmissionFilterTest {
   public void predicate_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.closedOpen(start, end);
+    filter.dateRange = Range.rightOpen(start, end);
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start))
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start.minusDays(1)))
         .and(submission.submissionDate.before(toLocalDateTime(end))));
   }
 
   @Test
   public void predicate_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.atLeast(start);
+    filter.dateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start)));
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
   }
 
   @Test
   public void predicate_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.greaterThan(start);
+    filter.dateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    assertEquals(predicate, submission.submissionDate.gt(toLocalDateTime(start)));
   }
 
   @Test
   public void predicate_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.atMost(end);
+    filter.dateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     Predicate predicate = filter.predicate();
 
@@ -213,7 +214,7 @@ public class SubmissionFilterTest {
   @Test
   public void predicate_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.lessThan(end);
+    filter.dateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     Predicate predicate = filter.predicate();
 
@@ -228,8 +229,8 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1))
-        .and(submission.dataAvailableDate.before(end)));
+    assertEquals(predicate,
+        submission.dataAvailableDate.gt(start).and(submission.dataAvailableDate.before(end)));
   }
 
   @Test
@@ -240,7 +241,7 @@ public class SubmissionFilterTest {
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.dataAvailableDate.goe(start)
+    assertEquals(predicate, submission.dataAvailableDate.gt(start.minusDays(1))
         .and(submission.dataAvailableDate.before(end.plusDays(1))));
   }
 
@@ -248,11 +249,11 @@ public class SubmissionFilterTest {
   public void predicate_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.openClosed(start, end);
+    filter.dataAvailableDateRange = Range.leftOpen(start, end);
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1))
+    assertEquals(predicate, submission.dataAvailableDate.gt(start)
         .and(submission.dataAvailableDate.before(end.plusDays(1))));
   }
 
@@ -260,38 +261,38 @@ public class SubmissionFilterTest {
   public void predicate_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+    filter.dataAvailableDateRange = Range.rightOpen(start, end);
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate,
-        submission.dataAvailableDate.goe(start).and(submission.dataAvailableDate.before(end)));
+    assertEquals(predicate, submission.dataAvailableDate.gt(start.minusDays(1))
+        .and(submission.dataAvailableDate.before(end)));
   }
 
   @Test
   public void predicate_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.atLeast(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.dataAvailableDate.goe(start));
+    assertEquals(predicate, submission.dataAvailableDate.gt(start.minusDays(1)));
   }
 
   @Test
   public void predicate_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.greaterThan(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     Predicate predicate = filter.predicate();
 
-    assertEquals(predicate, submission.dataAvailableDate.goe(start.plusDays(1)));
+    assertEquals(predicate, submission.dataAvailableDate.gt(start));
   }
 
   @Test
   public void predicate_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.atMost(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     Predicate predicate = filter.predicate();
 
@@ -301,7 +302,7 @@ public class SubmissionFilterTest {
   @Test
   public void predicate_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.lessThan(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     Predicate predicate = filter.predicate();
 
@@ -352,8 +353,8 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query)
-        .where(submission.user.email.contains("test").or(submission.user.name.contains("test")));
+    verify(query).where(
+        submission.user.email.contains("test").or(submission.user.name.contains("test")));
   }
 
   @Test
@@ -418,7 +419,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
@@ -430,7 +431,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
@@ -438,11 +439,11 @@ public class SubmissionFilterTest {
   public void addConditions_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.openClosed(start, end);
+    filter.dateRange = Range.leftOpen(start, end);
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
@@ -450,38 +451,38 @@ public class SubmissionFilterTest {
   public void addConditions_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.closedOpen(start, end);
+    filter.dateRange = Range.rightOpen(start, end);
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
   public void addConditions_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.atLeast(start);
+    filter.dateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
   }
 
   @Test
   public void addConditions_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.greaterThan(start);
+    filter.dateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     filter.addConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
   }
 
   @Test
   public void addConditions_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.atMost(end);
+    filter.dateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     filter.addConditions(query);
 
@@ -491,7 +492,7 @@ public class SubmissionFilterTest {
   @Test
   public void addConditions_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.lessThan(end);
+    filter.dateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     filter.addConditions(query);
 
@@ -506,7 +507,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
     verify(query).where(submission.dataAvailableDate.before(end));
   }
 
@@ -518,7 +519,7 @@ public class SubmissionFilterTest {
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
     verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
   }
 
@@ -526,11 +527,11 @@ public class SubmissionFilterTest {
   public void addConditions_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.openClosed(start, end);
+    filter.dataAvailableDateRange = Range.leftOpen(start, end);
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
     verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
   }
 
@@ -538,38 +539,38 @@ public class SubmissionFilterTest {
   public void addConditions_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+    filter.dataAvailableDateRange = Range.rightOpen(start, end);
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
     verify(query).where(submission.dataAvailableDate.before(end));
   }
 
   @Test
   public void addConditions_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.atLeast(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
   }
 
   @Test
   public void addConditions_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.greaterThan(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     filter.addConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
   }
 
   @Test
   public void addConditions_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.atMost(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     filter.addConditions(query);
 
@@ -579,7 +580,7 @@ public class SubmissionFilterTest {
   @Test
   public void addConditions_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.lessThan(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     filter.addConditions(query);
 
@@ -686,8 +687,8 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query)
-        .where(submission.user.email.contains("test").or(submission.user.name.contains("test")));
+    verify(query).where(
+        submission.user.email.contains("test").or(submission.user.name.contains("test")));
   }
 
   @Test
@@ -752,7 +753,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
@@ -764,7 +765,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
@@ -772,11 +773,11 @@ public class SubmissionFilterTest {
   public void addCountConditions_DateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.openClosed(start, end);
+    filter.dateRange = Range.leftOpen(start, end);
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end.plusDays(1))));
   }
 
@@ -784,38 +785,38 @@ public class SubmissionFilterTest {
   public void addCountConditions_DateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.closedOpen(start, end);
+    filter.dateRange = Range.rightOpen(start, end);
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
     verify(query).where(submission.submissionDate.before(toLocalDateTime(end)));
   }
 
   @Test
   public void addCountConditions_DateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.atLeast(start);
+    filter.dateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start)));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start.minusDays(1))));
   }
 
   @Test
   public void addCountConditions_DateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dateRange = Range.greaterThan(start);
+    filter.dateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.submissionDate.goe(toLocalDateTime(start.plusDays(1))));
+    verify(query).where(submission.submissionDate.gt(toLocalDateTime(start)));
   }
 
   @Test
   public void addCountConditions_DateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.atMost(end);
+    filter.dateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     filter.addCountConditions(query);
 
@@ -825,7 +826,7 @@ public class SubmissionFilterTest {
   @Test
   public void addCountConditions_DateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dateRange = Range.lessThan(end);
+    filter.dateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     filter.addCountConditions(query);
 
@@ -840,7 +841,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
     verify(query).where(submission.dataAvailableDate.before(end));
   }
 
@@ -852,7 +853,7 @@ public class SubmissionFilterTest {
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
     verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
   }
 
@@ -860,11 +861,11 @@ public class SubmissionFilterTest {
   public void addCountConditions_DataAvailableDateRange_OpenClosedRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.openClosed(start, end);
+    filter.dataAvailableDateRange = Range.leftOpen(start, end);
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
     verify(query).where(submission.dataAvailableDate.before(end.plusDays(1)));
   }
 
@@ -872,38 +873,38 @@ public class SubmissionFilterTest {
   public void addCountConditions_DataAvailableDateRange_ClosedOpenRange() {
     LocalDate start = LocalDate.now().minusDays(10);
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.closedOpen(start, end);
+    filter.dataAvailableDateRange = Range.rightOpen(start, end);
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
     verify(query).where(submission.dataAvailableDate.before(end));
   }
 
   @Test
   public void addCountConditions_DataAvailableDateRange_AtLeast() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.atLeast(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.inclusive(start));
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start));
+    verify(query).where(submission.dataAvailableDate.gt(start.minusDays(1)));
   }
 
   @Test
   public void addCountConditions_DataAvailableDateRange_GreaterThan() {
     LocalDate start = LocalDate.now().minusDays(10);
-    filter.dataAvailableDateRange = Range.greaterThan(start);
+    filter.dataAvailableDateRange = Range.rightUnbounded(Bound.exclusive(start));
 
     filter.addCountConditions(query);
 
-    verify(query).where(submission.dataAvailableDate.goe(start.plusDays(1)));
+    verify(query).where(submission.dataAvailableDate.gt(start));
   }
 
   @Test
   public void addCountConditions_DataAvailableDateRange_AtMost() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.atMost(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.inclusive(end));
 
     filter.addCountConditions(query);
 
@@ -913,7 +914,7 @@ public class SubmissionFilterTest {
   @Test
   public void addCountConditions_DataAvailableDateRange_LessThan() {
     LocalDate end = LocalDate.now();
-    filter.dataAvailableDateRange = Range.lessThan(end);
+    filter.dataAvailableDateRange = Range.leftUnbounded(Bound.exclusive(end));
 
     filter.addCountConditions(query);
 

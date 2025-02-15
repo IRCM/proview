@@ -68,7 +68,6 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.ErrorNotification;
-import com.google.common.collect.Range;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -102,6 +101,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Range;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -117,8 +117,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
   private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private SubmissionsView view;
@@ -252,23 +252,21 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.directorFilter.getPlaceholder());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
         view.instrumentFilter.getPlaceholder());
-    view.instrumentFilter.getListDataView().getItems()
-        .forEach(instrument -> assertEquals(
-            view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
-            view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
+    view.instrumentFilter.getListDataView().getItems().forEach(instrument -> assertEquals(
+        view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
+        view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.serviceFilter.getPlaceholder());
-    view.serviceFilter.getListDataView().getItems()
-        .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
+    view.serviceFilter.getListDataView().getItems().forEach(
+        service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.samplesFilter.getPlaceholder());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.statusFilter.getPlaceholder());
-    view.statusFilter.getListDataView().getItems()
-        .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
+    view.statusFilter.getListDataView().getItems().forEach(
+        status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.hiddenFilter.getPlaceholder());
-    view.hiddenFilter.getListDataView().getItems()
-        .forEach(hidden -> assertEquals(
-            view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
+    view.hiddenFilter.getListDataView().getItems().forEach(
+        hidden -> assertEquals(view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
@@ -337,23 +335,21 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.directorFilter.getPlaceholder());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL),
         view.instrumentFilter.getPlaceholder());
-    view.instrumentFilter.getListDataView().getItems()
-        .forEach(instrument -> assertEquals(
-            view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
-            view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
+    view.instrumentFilter.getListDataView().getItems().forEach(instrument -> assertEquals(
+        view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()),
+        view.instrumentFilter.getItemLabelGenerator().apply(instrument)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.serviceFilter.getPlaceholder());
-    view.serviceFilter.getListDataView().getItems()
-        .forEach(service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
+    view.serviceFilter.getListDataView().getItems().forEach(
+        service -> assertEquals(view.getTranslation(SERVICE_PREFIX + service.name()),
             view.serviceFilter.getItemLabelGenerator().apply(service)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.samplesFilter.getPlaceholder());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.statusFilter.getPlaceholder());
-    view.statusFilter.getListDataView().getItems()
-        .forEach(status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
+    view.statusFilter.getListDataView().getItems().forEach(
+        status -> assertEquals(view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()),
             view.statusFilter.getItemLabelGenerator().apply(status)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ALL), view.hiddenFilter.getPlaceholder());
-    view.hiddenFilter.getListDataView().getItems()
-        .forEach(hidden -> assertEquals(
-            view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
+    view.hiddenFilter.getListDataView().getItems().forEach(
+        hidden -> assertEquals(view.getTranslation(SUBMISSION_PREFIX + property(HIDDEN, hidden)),
             view.hiddenFilter.getItemLabelGenerator().apply(hidden)));
     assertEquals(view.getTranslation(MESSAGES_PREFIX + ADD), view.add.getText());
     assertEquals(view.getTranslation(CONSTANTS_PREFIX + VIEW), view.view.getText());
@@ -396,8 +392,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
     assertDoesNotThrow(() -> view.submissions.getLazyDataView());
     DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
-    List<Submission> submissions = dataProvider
-        .fetch(new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
+    List<Submission> submissions = dataProvider.fetch(
+        new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
     verify(service).all(filterCaptor.capture());
     SubmissionFilter filter = filterCaptor.getValue();
@@ -410,13 +406,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     when(service.all(any())).thenReturn(submissions);
     assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
     assertDoesNotThrow(() -> view.submissions.getLazyDataView());
-    List<QuerySortOrder> sortOrders =
-        Arrays.asList(new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
-            new QuerySortOrder(USER, SortDirection.DESCENDING));
+    List<QuerySortOrder> sortOrders = Arrays.asList(
+        new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
+        new QuerySortOrder(USER, SortDirection.DESCENDING));
     DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
-    List<Submission> submissions =
-        dataProvider.fetch(new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null))
-            .collect(Collectors.toList());
+    List<Submission> submissions = dataProvider.fetch(
+        new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null)).collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
     verify(service).all(filterCaptor.capture());
     SubmissionFilter filter = filterCaptor.getValue();
@@ -471,44 +466,41 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
       assertEquals(submission.getLaboratory().getDirector(),
           test(view.submissions).getCellText(i, indexOfColumn(DIRECTOR)));
       DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
-      assertEquals(submission.getDataAvailableDate() != null
-          ? dateFormatter.format(submission.getDataAvailableDate())
-          : "", test(view.submissions).getCellText(i, indexOfColumn(DATA_AVAILABLE_DATE)));
+      assertEquals(submission.getDataAvailableDate() != null ? dateFormatter.format(
+              submission.getDataAvailableDate()) : "",
+          test(view.submissions).getCellText(i, indexOfColumn(DATA_AVAILABLE_DATE)));
       assertEquals(dateFormatter.format(submission.getSubmissionDate()),
           test(view.submissions).getCellText(i, indexOfColumn(SUBMISSION_DATE)));
-      assertEquals(
-          view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + Optional
-              .ofNullable(submission.getInstrument()).orElse(MassDetectionInstrument.NULL).name()),
+      assertEquals(view.getTranslation(
+              MASS_DETECTION_INSTRUMENT_PREFIX + Optional.ofNullable(submission.getInstrument())
+                  .orElse(MassDetectionInstrument.NULL).name()),
           test(view.submissions).getCellText(i, indexOfColumn(INSTRUMENT)));
       assertEquals(view.getTranslation(SERVICE_PREFIX + submission.getService().name()),
           test(view.submissions).getCellText(i, indexOfColumn(SERVICE)));
       assertEquals(Objects.toString(submission.getSamples().size()),
           test(view.submissions).getCellText(i, indexOfColumn(SAMPLES_COUNT)));
-      Renderer<Submission> samplesRawRenderer =
-          view.submissions.getColumnByKey(SAMPLES).getRenderer();
+      Renderer<Submission> samplesRawRenderer = view.submissions.getColumnByKey(SAMPLES)
+          .getRenderer();
       assertInstanceOf(LitRenderer.class, samplesRawRenderer);
       LitRenderer<Submission> samplesRenderer = (LitRenderer<Submission>) samplesRawRenderer;
       assertEquals(SAMPLES_SPAN, rendererTemplate(samplesRenderer));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesValue"));
-      assertEquals(
-          view.getTranslation(MESSAGES_PREFIX + SAMPLES_VALUE,
+      assertEquals(view.getTranslation(MESSAGES_PREFIX + SAMPLES_VALUE,
               submission.getSamples().get(0).getName(), submission.getSamples().size()),
           samplesRenderer.getValueProviders().get("samplesValue").apply(submission));
       assertTrue(samplesRenderer.getValueProviders().containsKey("samplesTitle"));
-      assertEquals(
-          submission.getSamples().stream().map(SubmissionSample::getName)
+      assertEquals(submission.getSamples().stream().map(SubmissionSample::getName)
               .collect(Collectors.joining("\n")),
           samplesRenderer.getValueProviders().get("samplesTitle").apply(submission));
-      List<SampleStatus> statuses =
-          submission.getSamples().stream().map(SubmissionSample::getStatus).distinct().toList();
-      Renderer<Submission> statusRawRenderer =
-          view.submissions.getColumnByKey(STATUS).getRenderer();
+      List<SampleStatus> statuses = submission.getSamples().stream()
+          .map(SubmissionSample::getStatus).distinct().toList();
+      Renderer<Submission> statusRawRenderer = view.submissions.getColumnByKey(STATUS)
+          .getRenderer();
       assertInstanceOf(LitRenderer.class, statusRawRenderer);
       LitRenderer<Submission> statusRenderer = (LitRenderer<Submission>) statusRawRenderer;
       assertEquals(STATUS_SPAN, rendererTemplate(statusRenderer));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusValue"));
-      assertEquals(
-          view.getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
+      assertEquals(view.getTranslation(MESSAGES_PREFIX + STATUS_VALUE,
               view.getTranslation(SAMPLE_STATUS_PREFIX + statuses.get(0).name()), statuses.size()),
           statusRenderer.getValueProviders().get("statusValue").apply(submission));
       assertTrue(statusRenderer.getValueProviders().containsKey("statusTitle"));
@@ -516,14 +508,13 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
           statuses.stream().map(status -> view.getTranslation(SAMPLE_STATUS_PREFIX + status.name()))
               .collect(Collectors.joining("\n")),
           statusRenderer.getValueProviders().get("statusTitle").apply(submission));
-      Renderer<Submission> hiddenRawRenderer =
-          view.submissions.getColumnByKey(HIDDEN).getRenderer();
+      Renderer<Submission> hiddenRawRenderer = view.submissions.getColumnByKey(HIDDEN)
+          .getRenderer();
       assertInstanceOf(LitRenderer.class, hiddenRawRenderer);
       LitRenderer<Submission> hiddenRenderer = (LitRenderer<Submission>) hiddenRawRenderer;
       assertEquals(HIDDEN_BUTTON, rendererTemplate(hiddenRenderer));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenTheme"));
-      assertEquals(
-          submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
+      assertEquals(submission.isHidden() ? ButtonVariant.LUMO_ERROR.getVariantName()
               : ButtonVariant.LUMO_SUCCESS.getVariantName(),
           hiddenRenderer.getValueProviders().get("hiddenTheme").apply(submission));
       assertTrue(hiddenRenderer.getValueProviders().containsKey("hiddenValue"));
@@ -544,8 +535,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_ExperimentColumnComparator() {
-    Comparator<Submission> comparator =
-        test(view.submissions).getColumn(EXPERIMENT).getComparator(SortDirection.ASCENDING);
+    Comparator<Submission> comparator = test(view.submissions).getColumn(EXPERIMENT)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(experiment("éê"), experiment("ee")));
     assertTrue(comparator.compare(experiment("a"), experiment("e")) < 0);
     assertTrue(comparator.compare(experiment("a"), experiment("é")) < 0);
@@ -555,8 +546,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_UserColumnComparator() {
-    Comparator<Submission> comparator =
-        test(view.submissions).getColumn(USER).getComparator(SortDirection.ASCENDING);
+    Comparator<Submission> comparator = test(view.submissions).getColumn(USER)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(user("éê"), user("ee")));
     assertTrue(comparator.compare(user("a"), user("e")) < 0);
     assertTrue(comparator.compare(user("a"), user("é")) < 0);
@@ -566,8 +557,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_DirectorColumnComparator() {
-    Comparator<Submission> comparator =
-        test(view.submissions).getColumn(DIRECTOR).getComparator(SortDirection.ASCENDING);
+    Comparator<Submission> comparator = test(view.submissions).getColumn(DIRECTOR)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(director("éê"), director("ee")));
     assertTrue(comparator.compare(director("a"), director("e")) < 0);
     assertTrue(comparator.compare(director("a"), director("é")) < 0);
@@ -577,8 +568,8 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions_HiddenColumnComparator() {
-    Comparator<Submission> comparator =
-        test(view.submissions).getColumn(HIDDEN).getComparator(SortDirection.ASCENDING);
+    Comparator<Submission> comparator = test(view.submissions).getColumn(HIDDEN)
+        .getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(hidden(false), hidden(true)) < 0);
     assertEquals(0, comparator.compare(hidden(false), hidden(false)));
     assertEquals(0, comparator.compare(hidden(true), hidden(true)));
@@ -620,12 +611,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
         .withText(header.getCell(view.director).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.service).getText()).exists());
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
     verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     assertTrue(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
@@ -634,12 +625,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.instrument).getText()).exists());
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
     verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     assertFalse(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());
@@ -696,12 +687,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
         .withText(header.getCell(view.director).getText()).exists());
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.service).getText()).exists());
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
     verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     assertTrue(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
@@ -710,12 +701,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
     assertFalse(test(view.hideColumnsContextMenu).find(MenuItem.class)
         .withText(header.getCell(view.instrument).getText()).exists());
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
     verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     assertFalse(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());
@@ -780,12 +771,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     verify(userPreferenceService).save(view, view.service.getKey(), false);
     assertFalse(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.service).getText()));
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.dataAvailableDate).getText());
     verify(userPreferenceService).save(view, view.dataAvailableDate.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.dataAvailableDate).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.dataAvailableDate).getText()));
     assertTrue(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.date).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.date).getText());
@@ -798,12 +789,12 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     verify(userPreferenceService).save(view, view.instrument.getKey(), false);
     assertFalse(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.instrument).getText()));
-    assertTrue(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertTrue(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samplesCount).getText());
     verify(userPreferenceService).save(view, view.samplesCount.getKey(), false);
-    assertFalse(test(view.hideColumnsContextMenu)
-        .isItemChecked(header.getCell(view.samplesCount).getText()));
+    assertFalse(test(view.hideColumnsContextMenu).isItemChecked(
+        header.getCell(view.samplesCount).getText()));
     assertFalse(
         test(view.hideColumnsContextMenu).isItemChecked(header.getCell(view.samples).getText()));
     test(view.hideColumnsContextMenu).clickItem(header.getCell(view.samples).getText());

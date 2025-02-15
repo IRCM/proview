@@ -41,7 +41,6 @@ import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
-import com.google.common.collect.Range;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.Component;
@@ -88,6 +87,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Range;
 
 /**
  * Submissions view.
