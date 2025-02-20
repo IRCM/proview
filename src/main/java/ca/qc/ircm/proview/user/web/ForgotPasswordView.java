@@ -45,8 +45,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = ForgotPasswordView.VIEW_NAME)
 @AnonymousAllowed
-public class ForgotPasswordView extends VerticalLayout
-    implements LocaleChangeObserver, HasDynamicTitle, NotificationComponent, UrlComponent {
+public class ForgotPasswordView extends VerticalLayout implements LocaleChangeObserver,
+    HasDynamicTitle, NotificationComponent, UrlComponent {
 
   public static final String VIEW_NAME = "forgotpassword";
   public static final String ID = "forgotpassword-view";
@@ -127,8 +127,8 @@ public class ForgotPasswordView extends VerticalLayout
       String email = this.email.getValue();
       logger.debug("create new forgot password for user {}", email);
       if (userService.exists(email)) {
-        service.insert(email, (fp, locale) -> getUrl(UseForgotPasswordView.VIEW_NAME) + "/"
-            + fp.getId() + UseForgotPasswordView.SEPARATOR + fp.getConfirmNumber());
+        service.insert(email, (fp, locale) -> getUrl(UseForgotPasswordView.class) + "/" + fp.getId()
+            + UseForgotPasswordView.SEPARATOR + fp.getConfirmNumber());
       }
       showNotification(getTranslation(MESSAGES_PREFIX + SAVED, email));
       UI.getCurrent().navigate(SigninView.class);
