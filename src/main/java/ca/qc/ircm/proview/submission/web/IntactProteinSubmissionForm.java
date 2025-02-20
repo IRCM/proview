@@ -100,10 +100,10 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
-  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
-      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX = messagePrefix(
+      MassDetectionInstrumentSource.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   @Serial
   private static final long serialVersionUID = 7704703308278059432L;
@@ -122,8 +122,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   protected RadioButtonGroup<MassDetectionInstrumentSource> source = new RadioButtonGroup<>();
   protected ComboBox<MassDetectionInstrument> instrument = new ComboBox<>();
   private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private final Binder<SubmissionSample> firstSampleBinder =
-      new BeanValidationBinder<>(SubmissionSample.class);
+  private final Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
+      SubmissionSample.class);
   private final Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private final transient SubmissionSampleService sampleService;
   private final transient AuthenticatedUser authenticatedUser;
@@ -143,12 +143,17 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   void init() {
     setId(ID);
     setMaxWidth("80em");
-    setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3));
-    add(new FormLayout(experiment, goal, taxonomy, protein, molecularWeight,
-            postTranslationModification),
-        new FormLayout(sampleType, samplesCount, samplesNames, quantity, volume),
-        new FormLayout(injection, source, instrument));
+    setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("30em", 2),
+        new ResponsiveStep("60em", 3));
+    FormLayout submissionFields = new FormLayout(experiment, goal, taxonomy, protein,
+        molecularWeight, postTranslationModification);
+    submissionFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout sampleFields = new FormLayout(sampleType, samplesCount, samplesNames, quantity,
+        volume);
+    sampleFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout analysisFields = new FormLayout(injection, source, instrument);
+    sampleFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    add(submissionFields, sampleFields, analysisFields);
     experiment.setId(id(EXPERIMENT));
     goal.setId(id(GOAL));
     taxonomy.setId(id(TAXONOMY));
@@ -189,8 +194,8 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     taxonomy.setLabel(getTranslation(SUBMISSION_PREFIX + TAXONOMY));
     protein.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN));
     molecularWeight.setLabel(getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT));
-    postTranslationModification
-        .setLabel(getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
+    postTranslationModification.setLabel(
+        getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
     quantity.setLabel(getTranslation(SAMPLE_PREFIX + QUANTITY));
     quantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER));
     volume.setLabel(getTranslation(SAMPLE_PREFIX + VOLUME));
@@ -207,8 +212,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     binder.forField(taxonomy).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(TAXONOMY);
     binder.forField(protein).withNullRepresentation("").bind(PROTEIN);
-    firstSampleBinder.forField(molecularWeight).withNullRepresentation("")
-        .withConverter(
+    firstSampleBinder.forField(molecularWeight).withNullRepresentation("").withConverter(
             new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MOLECULAR_WEIGHT);
     binder.forField(postTranslationModification).withNullRepresentation("")
@@ -216,8 +220,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     firstSampleBinder.forField(sampleType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(TYPE);
     samplesBinder.forField(samplesCount).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
-        .withNullRepresentation("")
-        .withConverter(
+        .withNullRepresentation("").withConverter(
             new StringToIntegerConverter(getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)))
         .bind(SAMPLES_COUNT);
     samplesBinder.forField(samplesNames).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
@@ -229,8 +232,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     firstSampleBinder.forField(quantity).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(QUANTITY);
     volume.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(volume)
-        .withValidator(
+    firstSampleBinder.forField(volume).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(VOLUME);
     binder.forField(injection).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
@@ -277,19 +279,18 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
   private Validator<List<String>> samplesNamesDuplicates(Locale locale) {
     return (values, context) -> {
       Set<String> duplicates = new HashSet<>();
-      Optional<String> duplicate =
-          values.stream().filter(name -> !duplicates.add(name)).findFirst();
-      return duplicate
-          .map(du -> ValidationResult
-              .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, du)))
+      Optional<String> duplicate = values.stream().filter(name -> !duplicates.add(name))
+          .findFirst();
+      return duplicate.map(du -> ValidationResult.error(
+              getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, du)))
           .orElse(ValidationResult.ok());
     };
   }
 
   private Validator<List<String>> samplesNamesExists(Locale locale) {
     return (values, context) -> {
-      Set<String> oldNames =
-          binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
+      Set<String> oldNames = binder.getBean().getSamples().stream().map(Sample::getName)
+          .collect(Collectors.toSet());
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       return exists.map(
@@ -302,8 +303,9 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     return (values, context) -> {
       Optional<Integer> samplesCount = samplesCount();
       if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
-        return ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT,
-            values.size(), samplesCount.get()));
+        return ValidationResult.error(
+            getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, values.size(),
+                samplesCount.get()));
       }
       return ValidationResult.ok();
     };
@@ -402,8 +404,9 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
 
     @Override
     public Result<List<String>> convertToModel(String value, ValueContext context) {
-      return Result.ok(Arrays.stream(value.split("\\s*[,;\\t\\n]\\s*"))
-          .filter(val -> !val.isEmpty()).collect(Collectors.toList()));
+      return Result.ok(
+          Arrays.stream(value.split("\\s*[,;\\t\\n]\\s*")).filter(val -> !val.isEmpty())
+              .collect(Collectors.toList()));
     }
 
     @Override

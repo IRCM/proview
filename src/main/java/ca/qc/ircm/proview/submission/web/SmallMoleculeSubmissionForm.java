@@ -95,8 +95,8 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   protected CheckboxGroup<Solvent> solvents = new CheckboxGroup<>();
   protected TextField otherSolvent = new TextField();
   private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private final Binder<SubmissionSample> firstSampleBinder =
-      new BeanValidationBinder<>(SubmissionSample.class);
+  private final Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
+      SubmissionSample.class);
   private final transient SubmissionSampleService sampleService;
   private final transient AuthenticatedUser authenticatedUser;
 
@@ -115,11 +115,16 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
   void init() {
     setId(ID);
     setMaxWidth("80em");
-    setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3));
-    add(new FormLayout(sampleType, sampleName, solvent, formula),
-        new FormLayout(monoisotopicMass, averageMass, toxicity, lightSensitive, storageTemperature),
-        new FormLayout(highResolution, solvents, otherSolvent));
+    setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("30em", 2),
+        new ResponsiveStep("60em", 3));
+    FormLayout submissionFields = new FormLayout(sampleType, sampleName, solvent, formula);
+    submissionFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout sampleFields = new FormLayout(monoisotopicMass, averageMass, toxicity,
+        lightSensitive, storageTemperature);
+    sampleFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout analysisFields = new FormLayout(highResolution, solvents, otherSolvent);
+    analysisFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    add(submissionFields, sampleFields, analysisFields);
     sampleType.setId(id(SAMPLE_TYPE));
     sampleType.setItems(DRY, SOLUTION);
     sampleType.setRenderer(
@@ -170,19 +175,16 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     firstSampleBinder.forField(sampleName).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").withValidator(sampleNameExists(locale)).bind(NAME);
     solvent.setRequiredIndicatorVisible(true);
-    binder.forField(solvent)
-        .withValidator(
+    binder.forField(solvent).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(SOLUTION_SOLVENT);
     binder.forField(formula).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(FORMULA);
     binder.forField(monoisotopicMass).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
-        .withNullRepresentation("")
-        .withConverter(
+        .withNullRepresentation("").withConverter(
             new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MONOISOTOPIC_MASS);
-    binder.forField(averageMass).withNullRepresentation("")
-        .withConverter(
+    binder.forField(averageMass).withNullRepresentation("").withConverter(
             new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(AVERAGE_MASS);
     binder.forField(toxicity).withNullRepresentation("").bind(TOXICITY);
@@ -196,8 +198,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
             value -> value != null ? new HashSet<>(value) : new HashSet<>())
         .withValidator(solventsNotEmpty(locale)).bind(SOLVENTS);
     otherSolvent.setRequiredIndicatorVisible(true);
-    binder.forField(otherSolvent)
-        .withValidator(
+    binder.forField(otherSolvent).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_SOLVENT);
     sampleTypeChanged();

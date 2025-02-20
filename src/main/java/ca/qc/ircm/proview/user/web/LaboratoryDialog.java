@@ -18,7 +18,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -86,7 +85,6 @@ public class LaboratoryDialog extends Dialog
     layout.add(form);
     layout.setSizeFull();
     form.add(name);
-    form.setResponsiveSteps(new ResponsiveStep("15em", 1));
     getFooter().add(cancel, save);
     name.setId(id(NAME));
     save.setId(id(SAVE));

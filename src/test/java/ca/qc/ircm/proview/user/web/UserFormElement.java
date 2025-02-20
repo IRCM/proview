@@ -13,6 +13,8 @@ import static ca.qc.ircm.proview.user.UserProperties.EMAIL;
 import static ca.qc.ircm.proview.user.UserProperties.LABORATORY;
 import static ca.qc.ircm.proview.user.UserProperties.MANAGER;
 import static ca.qc.ircm.proview.user.UserProperties.NAME;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.CONFIRM_PASSWORD;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.PASSWORD;
 import static ca.qc.ircm.proview.user.web.UserForm.CREATE_NEW_LABORATORY;
 import static ca.qc.ircm.proview.user.web.UserForm.NEW_LABORATORY_NAME;
 import static ca.qc.ircm.proview.user.web.UserForm.id;
@@ -48,16 +50,12 @@ public class UserFormElement extends FormLayoutElement {
     return $(CheckboxElement.class).id(id(MANAGER));
   }
 
-  private PasswordsFormElement passwords() {
-    return $(PasswordsFormElement.class).withAttribute("class", PasswordsForm.CLASS_NAME).first();
-  }
-
   public PasswordFieldElement password() {
-    return passwords().password();
+    return $(PasswordFieldElement.class).id(id(PASSWORD));
   }
 
-  public PasswordFieldElement passwordConfirm() {
-    return passwords().passwordConfirm();
+  public PasswordFieldElement confirmPassword() {
+    return $(PasswordFieldElement.class).id(id(CONFIRM_PASSWORD));
   }
 
   public ComboBoxElement laboratory() {

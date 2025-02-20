@@ -87,6 +87,18 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     open();
     ProfileViewElement view = $(ProfileViewElement.class).waitForFirst();
     assertTrue(optional(view::userForm).isPresent());
+    assertTrue(optional(() -> view.userForm().email()).isPresent());
+    assertTrue(optional(() -> view.userForm().name()).isPresent());
+    assertTrue(optional(() -> view.userForm().password()).isPresent());
+    assertTrue(optional(() -> view.userForm().confirmPassword()).isPresent());
+    assertTrue(optional(() -> view.userForm().address()).isPresent());
+    assertTrue(optional(() -> view.userForm().town()).isPresent());
+    assertTrue(optional(() -> view.userForm().state()).isPresent());
+    assertTrue(optional(() -> view.userForm().country()).isPresent());
+    assertTrue(optional(() -> view.userForm().postalCode()).isPresent());
+    assertTrue(optional(() -> view.userForm().phoneType()).isPresent());
+    assertTrue(optional(() -> view.userForm().number()).isPresent());
+    assertTrue(optional(() -> view.userForm().extension()).isPresent());
     assertTrue(optional(view::save).isPresent());
   }
 
@@ -99,7 +111,7 @@ public class ProfileViewItTest extends AbstractTestBenchTestCase {
     view.userForm().email().setValue(email);
     view.userForm().name().setValue(name);
     view.userForm().password().setValue(password);
-    view.userForm().passwordConfirm().setValue(password);
+    view.userForm().confirmPassword().setValue(password);
     view.userForm().address().setValue(addressLine);
     view.userForm().town().setValue(town);
     view.userForm().state().setValue(state);

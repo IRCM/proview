@@ -126,7 +126,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().email().setValue(email);
     view.userForm().name().setValue(name);
     view.userForm().password().setValue(password);
-    view.userForm().passwordConfirm().setValue(password);
+    view.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     view.userForm().laboratory().selectByText(laboratory.getName());
     view.userForm().address().setValue(addressLine);
@@ -176,7 +176,7 @@ public class UserViewItTest extends AbstractTestBenchTestCase {
     view.userForm().email().setValue(email);
     view.userForm().name().setValue(name);
     view.userForm().password().setValue(password);
-    view.userForm().passwordConfirm().setValue(password);
+    view.userForm().confirmPassword().setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
     view.userForm().laboratory().selectByText(laboratory.getName());
     view.userForm().address().setValue(addressLine);

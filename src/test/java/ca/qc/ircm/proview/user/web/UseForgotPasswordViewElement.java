@@ -1,6 +1,8 @@
 package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.SAVE;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.CONFIRM_PASSWORD;
+import static ca.qc.ircm.proview.user.web.PasswordsProperties.PASSWORD;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.HEADER;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.MESSAGE;
 
@@ -8,6 +10,7 @@ import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.html.testbench.DivElement;
 import com.vaadin.flow.component.html.testbench.H2Element;
 import com.vaadin.flow.component.orderedlayout.testbench.VerticalLayoutElement;
+import com.vaadin.flow.component.textfield.testbench.PasswordFieldElement;
 import com.vaadin.testbench.annotations.Attribute;
 import com.vaadin.testbench.elementsbase.Element;
 
@@ -26,8 +29,12 @@ public class UseForgotPasswordViewElement extends VerticalLayoutElement {
     return $(DivElement.class).id(MESSAGE);
   }
 
-  public PasswordsFormElement passwordsForm() {
-    return $(PasswordsFormElement.class).withAttribute("class", PasswordsForm.CLASS_NAME).first();
+  public PasswordFieldElement password() {
+    return $(PasswordFieldElement.class).id(PASSWORD);
+  }
+
+  public PasswordFieldElement confirmPassword() {
+    return $(PasswordFieldElement.class).id(CONFIRM_PASSWORD);
   }
 
   public ButtonElement save() {

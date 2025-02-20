@@ -122,24 +122,24 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   public static final String CONTAMINANTS_PLACEHOLDER = property(CONTAMINANTS, PLACEHOLDER);
   public static final String STANDARDS_PLACEHOLDER = property(STANDARDS, PLACEHOLDER);
   public static final String DEVELOPMENT_TIME_PLACEHOLDER = property(DEVELOPMENT_TIME, PLACEHOLDER);
-  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER =
-      property(WEIGHT_MARKER_QUANTITY, PLACEHOLDER);
+  public static final String WEIGHT_MARKER_QUANTITY_PLACEHOLDER = property(WEIGHT_MARKER_QUANTITY,
+      PLACEHOLDER);
   public static final String PROTEIN_QUANTITY_PLACEHOLDER = property(PROTEIN_QUANTITY, PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER =
-      property(QUANTIFICATION_COMMENT, PLACEHOLDER);
-  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT =
-      property(QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER = property(QUANTIFICATION_COMMENT,
+      PLACEHOLDER);
+  public static final String QUANTIFICATION_COMMENT_PLACEHOLDER_TMT = property(
+      QUANTIFICATION_COMMENT, PLACEHOLDER, Quantification.TMT.name());
   private static final String MESSAGES_PREFIX = messagePrefix(LcmsmsSubmissionForm.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
-  private static final String PROTEIN_IDENTIFICATION_PREFIX =
-      messagePrefix(ProteinIdentification.class);
-  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
-      messagePrefix(ProteolyticDigestion.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX = messagePrefix(
+      ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX = messagePrefix(
+      ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
@@ -180,8 +180,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   protected ComboBox<Quantification> quantification = new ComboBox<>();
   protected TextArea quantificationComment = new TextArea();
   private final Binder<Submission> binder = new BeanValidationBinder<>(Submission.class);
-  private final Binder<SubmissionSample> firstSampleBinder =
-      new BeanValidationBinder<>(SubmissionSample.class);
+  private final Binder<SubmissionSample> firstSampleBinder = new BeanValidationBinder<>(
+      SubmissionSample.class);
   private final Binder<Samples> samplesBinder = new BeanValidationBinder<>(Samples.class);
   private final transient SubmissionSampleService sampleService;
   private final transient AuthenticatedUser authenticatedUser;
@@ -201,15 +201,20 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   void init() {
     setId(ID);
     setMaxWidth("80em");
-    setResponsiveSteps(new ResponsiveStep("15em", 1), new ResponsiveStep("15em", 2),
-        new ResponsiveStep("15em", 3));
-    add(new FormLayout(experiment, goal, taxonomy, protein, molecularWeight,
-            postTranslationModification),
-        new FormLayout(sampleType, samplesCount, samplesNames, quantity, volume, separation,
-            thickness, coloration, otherColoration, developmentTime, destained,
-            weightMarkerQuantity, proteinQuantity),
-        new FormLayout(digestion, usedDigestion, otherDigestion, proteinContent, instrument,
-            identification, identificationLink, quantification, quantificationComment));
+    setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("30em", 2),
+        new ResponsiveStep("60em", 3));
+    FormLayout submissionFields = new FormLayout(experiment, goal, taxonomy, protein,
+        molecularWeight, postTranslationModification);
+    submissionFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout sampleFields = new FormLayout(sampleType, samplesCount, samplesNames, quantity,
+        volume, separation, thickness, coloration, otherColoration, developmentTime, destained,
+        weightMarkerQuantity, proteinQuantity);
+    sampleFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    FormLayout analysisFields = new FormLayout(digestion, usedDigestion, otherDigestion,
+        proteinContent, instrument, identification, identificationLink, quantification,
+        quantificationComment);
+    sampleFields.setResponsiveSteps(new ResponsiveStep("0", 1));
+    add(submissionFields, sampleFields, analysisFields);
     experiment.setId(id(EXPERIMENT));
     goal.setId(id(GOAL));
     taxonomy.setId(id(TAXONOMY));
@@ -269,8 +274,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     identificationLink.setId(id(IDENTIFICATION_LINK));
     quantification.setId(id(QUANTIFICATION));
     quantification.setItems(Quantification.values());
-    quantification
-        .setItemLabelGenerator(value -> getTranslation(QUANTIFICATION_PREFIX + value.name()));
+    quantification.setItemLabelGenerator(
+        value -> getTranslation(QUANTIFICATION_PREFIX + value.name()));
     quantification.addValueChangeListener(e -> updateQuantificationComment());
     quantification.addValueChangeListener(e -> quantificationChanged());
     quantificationComment.setId(id(QUANTIFICATION_COMMENT));
@@ -284,8 +289,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     taxonomy.setLabel(getTranslation(SUBMISSION_PREFIX + TAXONOMY));
     protein.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN));
     molecularWeight.setLabel(getTranslation(SUBMISSION_SAMPLE_PREFIX + MOLECULAR_WEIGHT));
-    postTranslationModification
-        .setLabel(getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
+    postTranslationModification.setLabel(
+        getTranslation(SUBMISSION_PREFIX + POST_TRANSLATION_MODIFICATION));
     quantity.setLabel(getTranslation(SAMPLE_PREFIX + QUANTITY));
     quantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTITY_PLACEHOLDER));
     volume.setLabel(getTranslation(SAMPLE_PREFIX + VOLUME));
@@ -298,8 +303,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     samplesCount.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_COUNT));
     samplesNames.setLabel(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES));
     samplesNames.setPlaceholder(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_PLACEHOLDER));
-    samplesNames.getElement().setAttribute(TITLE,
-        getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_TITLE));
+    samplesNames.getElement()
+        .setAttribute(TITLE, getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_TITLE));
     separation.setLabel(getTranslation(SUBMISSION_PREFIX + SEPARATION));
     thickness.setLabel(getTranslation(SUBMISSION_PREFIX + THICKNESS));
     coloration.setLabel(getTranslation(SUBMISSION_PREFIX + COLORATION));
@@ -308,8 +313,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     developmentTime.setPlaceholder(getTranslation(MESSAGES_PREFIX + DEVELOPMENT_TIME_PLACEHOLDER));
     destained.setLabel(getTranslation(SUBMISSION_PREFIX + DECOLORATION));
     weightMarkerQuantity.setLabel(getTranslation(SUBMISSION_PREFIX + WEIGHT_MARKER_QUANTITY));
-    weightMarkerQuantity
-        .setPlaceholder(getTranslation(MESSAGES_PREFIX + WEIGHT_MARKER_QUANTITY_PLACEHOLDER));
+    weightMarkerQuantity.setPlaceholder(
+        getTranslation(MESSAGES_PREFIX + WEIGHT_MARKER_QUANTITY_PLACEHOLDER));
     proteinQuantity.setLabel(getTranslation(SUBMISSION_PREFIX + PROTEIN_QUANTITY));
     proteinQuantity.setPlaceholder(getTranslation(MESSAGES_PREFIX + PROTEIN_QUANTITY_PLACEHOLDER));
     digestion.setLabel(getTranslation(SUBMISSION_PREFIX + DIGESTION));
@@ -321,16 +326,15 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     identificationLink.setLabel(getTranslation(SUBMISSION_PREFIX + IDENTIFICATION_LINK));
     quantification.setLabel(getTranslation(SUBMISSION_PREFIX + QUANTIFICATION));
     quantificationComment.setLabel(getTranslation(SUBMISSION_PREFIX + QUANTIFICATION_COMMENT));
-    quantificationComment
-        .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
+    quantificationComment.setPlaceholder(
+        getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
     binder.forField(experiment).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(EXPERIMENT);
     binder.forField(goal).withNullRepresentation("").bind(GOAL);
     binder.forField(taxonomy).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .withNullRepresentation("").bind(TAXONOMY);
     binder.forField(protein).withNullRepresentation("").bind(PROTEIN);
-    firstSampleBinder.forField(molecularWeight).withNullRepresentation("")
-        .withConverter(
+    firstSampleBinder.forField(molecularWeight).withNullRepresentation("").withConverter(
             new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)))
         .bind(MOLECULAR_WEIGHT);
     binder.forField(postTranslationModification).withNullRepresentation("")
@@ -338,8 +342,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     firstSampleBinder.forField(sampleType).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(TYPE);
     samplesBinder.forField(samplesCount).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
-        .withNullRepresentation("")
-        .withConverter(
+        .withNullRepresentation("").withConverter(
             new StringToIntegerConverter(getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)))
         .bind(SAMPLES_COUNT);
     samplesBinder.forField(samplesNames).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
@@ -347,52 +350,44 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
         .withValidator(samplesNamesDuplicates(locale)).withValidator(samplesNamesExists(locale))
         .withValidator(samplesNamesCount(locale)).bind(SAMPLES_NAMES);
     quantity.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(quantity)
-        .withValidator(
+    firstSampleBinder.forField(quantity).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(QUANTITY);
     volume.setRequiredIndicatorVisible(true);
-    firstSampleBinder.forField(volume)
-        .withValidator(
+    firstSampleBinder.forField(volume).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .withNullRepresentation("").bind(VOLUME);
     separation.setRequiredIndicatorVisible(true);
-    binder.forField(separation)
-        .withValidator(
+    binder.forField(separation).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(SEPARATION);
     thickness.setRequiredIndicatorVisible(true);
-    binder.forField(thickness)
-        .withValidator(
+    binder.forField(thickness).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(THICKNESS);
     coloration.setRequiredIndicatorVisible(true);
-    binder.forField(coloration)
-        .withValidator(
+    binder.forField(coloration).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(COLORATION);
     otherColoration.setRequiredIndicatorVisible(true);
-    binder.forField(otherColoration)
-        .withValidator(
+    binder.forField(otherColoration).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_COLORATION);
     binder.forField(developmentTime).bind(DEVELOPMENT_TIME);
     binder.forField(destained).bind(DECOLORATION);
-    binder.forField(weightMarkerQuantity).withNullRepresentation("")
-        .withConverter(new IgnoreConversionIfDisabledConverter<>(
-            new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER))))
+    binder.forField(weightMarkerQuantity).withNullRepresentation("").withConverter(
+            new IgnoreConversionIfDisabledConverter<>(
+                new StringToDoubleConverter(getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER))))
         .bind(WEIGHT_MARKER_QUANTITY);
     binder.forField(proteinQuantity).bind(PROTEIN_QUANTITY);
     binder.forField(digestion).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(DIGESTION);
     usedDigestion.setRequiredIndicatorVisible(true);
-    binder.forField(usedDigestion)
-        .withValidator(
+    binder.forField(usedDigestion).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(USED_DIGESTION);
     otherDigestion.setRequiredIndicatorVisible(true);
-    binder.forField(otherDigestion)
-        .withValidator(
+    binder.forField(otherDigestion).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(OTHER_DIGESTION);
     binder.forField(proteinContent).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
@@ -402,15 +397,13 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     binder.forField(identification).asRequired(getTranslation(CONSTANTS_PREFIX + REQUIRED))
         .bind(IDENTIFICATION);
     identificationLink.setRequiredIndicatorVisible(true);
-    binder.forField(identificationLink)
-        .withValidator(
+    binder.forField(identificationLink).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(IDENTIFICATION_LINK);
     binder.forField(quantification).withNullRepresentation(Quantification.NULL)
         .bind(QUANTIFICATION);
     quantificationComment.setRequiredIndicatorVisible(true);
-    binder.forField(quantificationComment)
-        .withValidator(
+    binder.forField(quantificationComment).withValidator(
             new RequiredIfEnabledValidator<>(getTranslation(CONSTANTS_PREFIX + REQUIRED)))
         .bind(QUANTIFICATION_COMMENT);
     sampleTypeChanged();
@@ -422,11 +415,11 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
 
   private void updateQuantificationComment() {
     if (quantification.getValue() == Quantification.TMT) {
-      quantificationComment
-          .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));
+      quantificationComment.setPlaceholder(
+          getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER_TMT));
     } else {
-      quantificationComment
-          .setPlaceholder(getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
+      quantificationComment.setPlaceholder(
+          getTranslation(MESSAGES_PREFIX + QUANTIFICATION_COMMENT_PLACEHOLDER));
     }
   }
 
@@ -463,8 +456,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
 
   private void quantificationChanged() {
     Quantification quantification = this.quantification.getValue();
-    quantificationComment
-        .setEnabled(quantification == Quantification.SILAC || quantification == Quantification.TMT);
+    quantificationComment.setEnabled(
+        quantification == Quantification.SILAC || quantification == Quantification.TMT);
   }
 
   private Optional<Integer> samplesCount() {
@@ -478,19 +471,18 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
   private Validator<List<String>> samplesNamesDuplicates(Locale locale) {
     return (values, context) -> {
       Set<String> duplicates = new HashSet<>();
-      Optional<String> duplicate =
-          values.stream().filter(name -> !duplicates.add(name)).findFirst();
-      return duplicate
-          .map(du -> ValidationResult
-              .error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, du)))
+      Optional<String> duplicate = values.stream().filter(name -> !duplicates.add(name))
+          .findFirst();
+      return duplicate.map(du -> ValidationResult.error(
+              getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_DUPLICATES, du)))
           .orElse(ValidationResult.ok());
     };
   }
 
   private Validator<List<String>> samplesNamesExists(Locale locale) {
     return (values, context) -> {
-      Set<String> oldNames =
-          binder.getBean().getSamples().stream().map(Sample::getName).collect(Collectors.toSet());
+      Set<String> oldNames = binder.getBean().getSamples().stream().map(Sample::getName)
+          .collect(Collectors.toSet());
       Optional<String> exists = values.stream()
           .filter(name -> sampleService.exists(name) && !oldNames.contains(name)).findFirst();
       return exists.map(
@@ -503,8 +495,9 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     return (values, context) -> {
       Optional<Integer> samplesCount = samplesCount();
       if (samplesCount.isPresent() && samplesCount.get() != values.size()) {
-        return ValidationResult.error(getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT,
-            values.size(), samplesCount.get()));
+        return ValidationResult.error(
+            getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, values.size(),
+                samplesCount.get()));
       }
       return ValidationResult.ok();
     };
@@ -622,8 +615,9 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
 
     @Override
     public Result<List<String>> convertToModel(String value, ValueContext context) {
-      return Result.ok(Arrays.stream(value.split("\\s*[,;\\t\\n]\\s*"))
-          .filter(val -> !val.isEmpty()).collect(Collectors.toList()));
+      return Result.ok(
+          Arrays.stream(value.split("\\s*[,;\\t\\n]\\s*")).filter(val -> !val.isEmpty())
+              .collect(Collectors.toList()));
     }
 
     @Override
