@@ -78,8 +78,8 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
     open();
 
     Locale locale = currentLocale();
-    String applicationName =
-        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
+        locale);
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
@@ -122,7 +122,7 @@ public class UsersViewItTest extends AbstractTestBenchTestCase {
   public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
-    view.users().select(4);
+    view.users().select(5);
 
     view.switchUser().click();
 

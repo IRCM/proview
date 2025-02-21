@@ -21,7 +21,6 @@ import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
-import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.MainView;
@@ -223,8 +222,8 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   }
 
   private void loadUsers() {
-    List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all(new UserFilter())
-        : service.all(new UserFilter(), authenticatedUser.getUser().orElseThrow().getLaboratory());
+    List<User> users = authenticatedUser.hasRole(ADMIN) ? service.all()
+        : service.all(authenticatedUser.getUser().orElseThrow().getLaboratory());
     this.users.setItems(users);
     this.users.getListDataView().setFilter(filter);
   }

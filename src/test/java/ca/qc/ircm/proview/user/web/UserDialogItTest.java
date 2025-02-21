@@ -97,7 +97,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     final int rows = view.users().getRowCount();
     final Locale locale = currentLocale();
 
-    view.users().select(0);
+    view.users().select(1);
     view.edit().click();
 
     UserDialogElement dialog = view.dialog();
@@ -142,7 +142,7 @@ public class UserDialogItTest extends AbstractTestBenchTestCase {
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
     assertEquals(rows, view.users().getRowCount());
-    assertEquals(email, view.users().email(0));
+    assertEquals(email, view.users().email(1));
   }
 
   @Test

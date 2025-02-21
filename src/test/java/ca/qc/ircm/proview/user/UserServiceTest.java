@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.user;
 
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
-import static ca.qc.ircm.proview.user.QUser.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -11,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -173,24 +171,11 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_Filter() {
-    UserFilter filter = mock(UserFilter.class);
-    when(filter.predicate()).thenReturn(user.isNotNull());
+  public void all() {
+    List<User> users = service.all();
 
-    List<User> users = service.all(filter);
-
-    verify(filter).predicate();
-    assertEquals(12, users.size());
-    assertTrue(find(users, 2).isPresent());
-    assertFalse(find(users, 1).isPresent());
-  }
-
-  @Test
-  @WithMockUser(authorities = UserRole.ADMIN)
-  public void all_EmptyFilter() {
-    List<User> users = service.all(new UserFilter());
-
-    assertEquals(12, users.size());
+    assertEquals(13, users.size());
+    assertTrue(find(users, 1).isPresent());
     assertTrue(find(users, 2).isPresent());
     assertTrue(find(users, 3).isPresent());
     assertTrue(find(users, 4).isPresent());
@@ -207,47 +192,28 @@ public class UserServiceTest extends AbstractServiceTestCase {
 
   @Test
   @WithAnonymousUser
-  public void all_Filter_AccessDenied_Anonymous() {
-    UserFilter filter = mock(UserFilter.class);
-    when(filter.predicate()).thenReturn(user.isNotNull());
-
-    assertThrows(AccessDeniedException.class, () -> service.all(filter));
+  public void all_AccessDenied_Anonymous() {
+    assertThrows(AccessDeniedException.class, () -> service.all());
   }
 
   @Test
   @WithMockUser(authorities = {UserRole.USER, UserRole.MANAGER})
-  public void all_Filter_AccessDenied() {
-    UserFilter filter = mock(UserFilter.class);
-    when(filter.predicate()).thenReturn(user.isNotNull());
-
-    assertThrows(AccessDeniedException.class, () -> service.all(filter));
+  public void all_AccessDenied_Manager() {
+    assertThrows(AccessDeniedException.class, () -> service.all());
   }
 
   @Test
-  public void all_Laboratory_Filter() {
-    Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
-    UserFilter filter = mock(UserFilter.class);
-    when(filter.predicate()).thenReturn(user.isNotNull());
-
-    List<User> users = service.all(filter, laboratory);
-
-    verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
-    verify(filter).predicate();
-    assertEquals(4, users.size());
-    assertTrue(find(users, 3).isPresent());
-    assertFalse(find(users, 2).isPresent());
-  }
-
-  @Test
-  public void all_Laboratory_EmptyFilter() {
+  public void all_Laboratory() {
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
 
-    List<User> users = service.all(new UserFilter(), laboratory);
+    List<User> users = service.all(laboratory);
 
     verify(permissionEvaluator).hasPermission(any(), eq(laboratory), eq(WRITE));
     assertEquals(4, users.size());
     assertTrue(find(users, 3).isPresent());
-    assertFalse(find(users, 2).isPresent());
+    assertTrue(find(users, 10).isPresent());
+    assertTrue(find(users, 12).isPresent());
+    assertTrue(find(users, 27).isPresent());
   }
 
   @Test

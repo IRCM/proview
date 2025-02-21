@@ -32,7 +32,7 @@ public class UsersViewContextPathItTest extends AbstractTestBenchTestCase {
   public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
-    view.users().select(4);
+    view.users().select(5);
 
     view.switchUser().click();
 

@@ -12,5 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredi
 
   Optional<User> findByEmail(String email);
 
+  List<User> findAllByLaboratory(Laboratory laboratory);
+
   List<User> findAllByLaboratoryAndManagerTrue(Laboratory laboratory);
 }

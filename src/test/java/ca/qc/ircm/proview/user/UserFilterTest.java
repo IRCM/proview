@@ -1,12 +1,9 @@
 package ca.qc.ircm.proview.user;
 
-import static ca.qc.ircm.proview.user.QUser.user;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.querydsl.core.types.Predicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -149,50 +146,5 @@ public class UserFilterTest {
     assertFalse(filter.test(active(email("abc@abc.com"), true)));
     assertFalse(filter.test(active(email("test@abc.com"), false)));
     assertFalse(filter.test(active(email("abc@abc.com"), false)));
-  }
-
-  @Test
-  public void predicate_EmailContains() {
-    filter.emailContains = "test";
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.email.contains("test"));
-  }
-
-  @Test
-  public void predicate_NameContains() {
-    filter.nameContains = "test";
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.name.contains("test"));
-  }
-
-  @Test
-  public void predicate_ActiveTrue() {
-    filter.active = true;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.active.eq(true));
-  }
-
-  @Test
-  public void predicate_ActiveFalse() {
-    filter.active = false;
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.active.eq(false));
-  }
-
-  @Test
-  public void predicate_LaboratoryNameContains() {
-    filter.laboratoryNameContains = "test";
-
-    Predicate predicate = filter.predicate();
-
-    assertEquals(predicate, user.laboratory.name.contains("test"));
   }
 }

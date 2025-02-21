@@ -122,8 +122,8 @@ public class UsersViewTest extends SpringUIUnitTest {
     when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     users = repository.findAll();
+    when(service.all()).thenReturn(users);
     when(service.all(any())).thenReturn(users);
-    when(service.all(any(), any())).thenReturn(users);
     view = navigate(UsersView.class);
   }
 
@@ -252,12 +252,7 @@ public class UsersViewTest extends SpringUIUnitTest {
   @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void users_Manager() {
-    verify(service).all(userFilterCaptor.capture(),
-        eq(authenticatedUser.getUser().orElseThrow().getLaboratory()));
-    assertNull(userFilterCaptor.getValue().emailContains);
-    assertNull(userFilterCaptor.getValue().nameContains);
-    assertNull(userFilterCaptor.getValue().active);
-    assertNull(userFilterCaptor.getValue().laboratoryNameContains);
+    verify(service).all(eq(authenticatedUser.getUser().orElseThrow().getLaboratory()));
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -274,11 +269,7 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_Admin() {
-    verify(service).all(userFilterCaptor.capture());
-    assertNull(userFilterCaptor.getValue().emailContains);
-    assertNull(userFilterCaptor.getValue().nameContains);
-    assertNull(userFilterCaptor.getValue().active);
-    assertNull(userFilterCaptor.getValue().laboratoryNameContains);
+    verify(service).all();
     List<User> users = items(view.users);
     assertEquals(this.users.size(), users.size());
     for (User user : this.users) {
@@ -320,8 +311,7 @@ public class UsersViewTest extends SpringUIUnitTest {
       LitRenderer<User> activeRenderer = (LitRenderer<User>) activeRawRenderer;
       assertEquals(ACTIVE_BUTTON, rendererTemplate(activeRenderer));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeTheme"));
-      assertEquals(
-          user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
+      assertEquals(user.isActive() ? ButtonVariant.LUMO_SUCCESS.getVariantName()
               : ButtonVariant.LUMO_ERROR.getVariantName(),
           activeRenderer.getValueProviders().get("activeTheme").apply(user));
       assertTrue(activeRenderer.getValueProviders().containsKey("activeValue"));
@@ -340,8 +330,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_EmailColumnComparator() {
-    Comparator<User> comparator =
-        test(view.users).getColumn(EMAIL).getComparator(SortDirection.ASCENDING);
+    Comparator<User> comparator = test(view.users).getColumn(EMAIL)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(email("éê"), email("ee")));
     assertTrue(comparator.compare(email("a"), email("e")) < 0);
     assertTrue(comparator.compare(email("a"), email("é")) < 0);
@@ -351,8 +341,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_NameColumnComparator() {
-    Comparator<User> comparator =
-        test(view.users).getColumn(NAME).getComparator(SortDirection.ASCENDING);
+    Comparator<User> comparator = test(view.users).getColumn(NAME)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(name("éê"), name("ee")));
     assertTrue(comparator.compare(name("a"), name("e")) < 0);
     assertTrue(comparator.compare(name("a"), name("é")) < 0);
@@ -362,8 +352,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_LaboratoryColumnComparator() {
-    Comparator<User> comparator =
-        test(view.users).getColumn(LABORATORY).getComparator(SortDirection.ASCENDING);
+    Comparator<User> comparator = test(view.users).getColumn(LABORATORY)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, comparator.compare(laboratory("éê"), laboratory("ee")));
     assertTrue(comparator.compare(laboratory("a"), laboratory("e")) < 0);
     assertTrue(comparator.compare(laboratory("a"), laboratory("é")) < 0);
@@ -373,8 +363,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_ActiveColumnComparator() {
-    Comparator<User> comparator =
-        test(view.users).getColumn(ACTIVE).getComparator(SortDirection.ASCENDING);
+    Comparator<User> comparator = test(view.users).getColumn(ACTIVE)
+        .getComparator(SortDirection.ASCENDING);
     assertTrue(comparator.compare(active(false), active(true)) < 0);
     assertEquals(0, comparator.compare(active(false), active(false)));
     assertEquals(0, comparator.compare(active(true), active(true)));
@@ -394,8 +384,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void users_DoubleClickLaboratory() {
-    when(laboratoryService.get(any(Long.class)))
-        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
+    when(laboratoryService.get(any(Long.class))).thenAnswer(
+        i -> laboratoryRepository.findById(i.getArgument(0)));
     User user = users.get(0);
     doubleClickItem(view.users, user, view.laboratory);
 
@@ -411,19 +401,19 @@ public class UsersViewTest extends SpringUIUnitTest {
 
     UserDialog dialog = $(UserDialog.class).first();
     test(dialog.save).click();
-    verify(service, times(2)).all(any());
+    verify(service, times(2)).all();
   }
 
   @Test
   public void laboratoryDialog_RefreshOnSave() {
-    when(laboratoryService.get(any(Long.class)))
-        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
+    when(laboratoryService.get(any(Long.class))).thenAnswer(
+        i -> laboratoryRepository.findById(i.getArgument(0)));
     User user = users.get(1);
     doubleClickItem(view.users, user, view.laboratory);
 
     LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
     test(dialog.save).click();
-    verify(service, times(2)).all(any());
+    verify(service, times(2)).all();
   }
 
   @Test
@@ -617,10 +607,9 @@ public class UsersViewTest extends SpringUIUnitTest {
 
     test(view.switchUser).click();
     verify(switchUserService).switchUser(user, VaadinServletRequest.getCurrent());
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
-            && !i.getInvocation().getParameters().isEmpty()
-            && i.getInvocation().getParameters().get(0).equals("/")));
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
+            .getParameters().isEmpty() && i.getInvocation().getParameters().get(0).equals("/")));
     assertFalse($(Notification.class).exists());
   }
 
@@ -647,8 +636,8 @@ public class UsersViewTest extends SpringUIUnitTest {
 
   @Test
   public void viewLaboratory() {
-    when(laboratoryService.get(any(Long.class)))
-        .thenAnswer(i -> laboratoryRepository.findById(i.getArgument(0)));
+    when(laboratoryService.get(any(Long.class))).thenAnswer(
+        i -> laboratoryRepository.findById(i.getArgument(0)));
     User user = repository.findById(10L).orElseThrow();
     view.users.select(user);
 

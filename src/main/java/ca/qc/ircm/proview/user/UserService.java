@@ -1,12 +1,9 @@
 package ca.qc.ircm.proview.user;
 
-import static ca.qc.ircm.proview.user.QUser.user;
 import static ca.qc.ircm.proview.user.UserRole.ADMIN;
 
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
-import com.google.common.collect.Lists;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService {
 
-  private static final long ROBOT_ID = 1L;
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
   private final UserRepository repository;
   private final LaboratoryRepository laboratoryRepository;
@@ -81,38 +77,27 @@ public class UserService {
   }
 
   /**
-   * Returns all users that match parameters.
+   * Returns all users.
    * <p>
    * Only admin users can search users without a laboratory.
    * </p>
-   * <p>
-   * Only managers can search users with a laboratory.
-   * </p>
    *
-   * @param filter parameters
-   * @return all users that match parameters
+   * @return all users
    */
   @PreAuthorize("hasAuthority('" + ADMIN + "')")
-  public List<User> all(UserFilter filter) {
-    BooleanExpression predicate = user.id.ne(ROBOT_ID);
-    predicate = predicate.and(filter.predicate());
-    return Lists.newArrayList(repository.findAll(predicate));
+  public List<User> all() {
+    return repository.findAll();
   }
 
   /**
-   * Returns all laboratory's users that match parameters. Only managers can search users with a
-   * laboratory.
+   * Returns all laboratory's users. Only managers can search users with a laboratory.
    *
-   * @param filter     parameters
    * @param laboratory laboratory
-   * @return all laboratory's users that match parameters
+   * @return all laboratory's users
    */
   @PreAuthorize("hasPermission(#laboratory, 'write')")
-  public List<User> all(UserFilter filter, Laboratory laboratory) {
-    BooleanExpression predicate = user.id.ne(ROBOT_ID);
-    predicate = predicate.and(filter.predicate());
-    predicate = predicate.and(user.laboratory.eq(laboratory));
-    return Lists.newArrayList(repository.findAll(predicate));
+  public List<User> all(Laboratory laboratory) {
+    return repository.findAllByLaboratory(laboratory);
   }
 
   /**
@@ -166,8 +151,8 @@ public class UserService {
       setUserPassword(user, newPassword);
     }
 
-    boolean updateLaboratory =
-        authenticatedUser.hasPermission(user.getLaboratory(), Permission.WRITE);
+    boolean updateLaboratory = authenticatedUser.hasPermission(user.getLaboratory(),
+        Permission.WRITE);
     if (updateLaboratory) {
       laboratoryRepository.save(user.getLaboratory());
     }
@@ -186,8 +171,8 @@ public class UserService {
   }
 
   private void updateDirectorName(Laboratory laboratory, User possibleDirector) {
-    repository.findAllByLaboratoryAndManagerTrue(laboratory).stream()
-        .mapToLong(User::getId).min().ifPresent(id -> {
+    repository.findAllByLaboratoryAndManagerTrue(laboratory).stream().mapToLong(User::getId).min()
+        .ifPresent(id -> {
           User manager = repository.findById(id).orElseThrow();
           laboratory.setDirector(manager.getName());
         });
