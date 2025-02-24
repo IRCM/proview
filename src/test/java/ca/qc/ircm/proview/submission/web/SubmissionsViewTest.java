@@ -13,6 +13,7 @@ import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.LABORATORY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
@@ -35,6 +36,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.rendererTemplate;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static ca.qc.ircm.proview.user.LaboratoryProperties.DIRECTOR;
+import static com.vaadin.flow.data.provider.SortDirection.ASCENDING;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,22 +52,23 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.submission.QSubmission;
 import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
-import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.user.UserProperties;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import com.vaadin.flow.component.UI;
@@ -80,6 +83,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
+import com.vaadin.flow.data.provider.SortOrder;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.selection.SelectionModel;
@@ -88,6 +92,7 @@ import com.vaadin.testbench.unit.MetaKeys;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -101,7 +106,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Range;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -131,7 +138,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Mock
   private ListDataProvider<Submission> dataProvider;
   @Captor
-  private ArgumentCaptor<SubmissionFilter> filterCaptor;
+  private ArgumentCaptor<Pageable> pageableCaptor;
   private final Locale locale = ENGLISH;
   private List<Submission> submissions;
 
@@ -274,7 +281,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
-        test(view.submissions).getCellText(2, 5));
+        test(view.submissions).getCellText(18, 5));
   }
 
   @Test
@@ -357,7 +364,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HISTORY), view.history.getText());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + HIDE_COLUMNS), view.hideColumns.getText());
     assertEquals(view.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL"),
-        test(view.submissions).getCellText(2, 5));
+        test(view.submissions).getCellText(18, 5));
   }
 
   @Test
@@ -388,36 +395,38 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
 
   @Test
   public void submissions() {
-    when(service.all(any())).thenReturn(submissions);
+    when(service.all(any(), any())).then(i -> submissions.stream());
     assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
     assertDoesNotThrow(() -> view.submissions.getLazyDataView());
     DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
     List<Submission> submissions = dataProvider.fetch(
-        new Query<>(0, Integer.MAX_VALUE, null, null, null)).collect(Collectors.toList());
+            new Query<>(0, Integer.MAX_VALUE, new ArrayList<>(), null, null))
+        .collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
-    verify(service).all(filterCaptor.capture());
-    SubmissionFilter filter = filterCaptor.getValue();
-    assertEquals(1, filter.sortOrders.size());
-    assertEquals(QSubmission.submission.id.desc(), filter.sortOrders.get(0));
+    verify(service).all(any(), pageableCaptor.capture());
+    Pageable pageable = pageableCaptor.getValue();
+    assertEquals(0, pageable.getSort().stream().count());
   }
 
   @Test
   public void submissions_SortOrder() {
-    when(service.all(any())).thenReturn(submissions);
+    when(service.all(any(), any())).then(i -> submissions.stream());
     assertThrows(IllegalStateException.class, () -> view.submissions.getListDataView());
     assertDoesNotThrow(() -> view.submissions.getLazyDataView());
-    List<QuerySortOrder> sortOrders = Arrays.asList(
-        new QuerySortOrder(EXPERIMENT, SortDirection.ASCENDING),
-        new QuerySortOrder(USER, SortDirection.DESCENDING));
+    List<QuerySortOrder> sortOrders = Arrays.asList(new QuerySortOrder(EXPERIMENT, ASCENDING),
+        new QuerySortOrder(USER + "." + UserProperties.NAME, SortDirection.DESCENDING));
     DataProvider<Submission, ?> dataProvider = view.submissions.getDataProvider();
     List<Submission> submissions = dataProvider.fetch(
         new Query<>(0, Integer.MAX_VALUE, sortOrders, null, null)).collect(Collectors.toList());
     assertEquals(this.submissions, submissions);
-    verify(service).all(filterCaptor.capture());
-    SubmissionFilter filter = filterCaptor.getValue();
-    assertEquals(2, filter.sortOrders.size());
-    assertEquals(QSubmission.submission.experiment.asc(), filter.sortOrders.get(0));
-    assertEquals(QSubmission.submission.user.name.desc(), filter.sortOrders.get(1));
+    verify(service).all(any(), pageableCaptor.capture());
+    Pageable pageable = pageableCaptor.getValue();
+    assertEquals(2, pageable.getSort().stream().count());
+    List<Order> orders = pageable.getSort().stream().toList();
+    assertEquals(ASC, orders.get(0).getDirection());
+    assertEquals(EXPERIMENT, orders.get(0).getProperty());
+    assertEquals(DESC, orders.get(1).getDirection());
+    assertEquals(USER + "." + UserProperties.NAME, orders.get(1).getProperty());
   }
 
   @Test
@@ -430,32 +439,56 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     assertEquals(11, view.submissions.getColumns().size());
     assertNotNull(view.submissions.getColumnByKey(EXPERIMENT));
     assertTrue(view.submissions.getColumnByKey(EXPERIMENT).isSortable());
+    assertEquals(EXPERIMENT,
+        view.submissions.getColumnByKey(EXPERIMENT).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(USER));
     assertTrue(view.submissions.getColumnByKey(USER).isSortable());
+    assertEquals(USER + "." + UserProperties.NAME,
+        view.submissions.getColumnByKey(USER).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(DIRECTOR));
     assertTrue(view.submissions.getColumnByKey(DIRECTOR).isSortable());
+    assertEquals(LABORATORY + "." + DIRECTOR,
+        view.submissions.getColumnByKey(DIRECTOR).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(DATA_AVAILABLE_DATE));
     assertTrue(view.submissions.getColumnByKey(DATA_AVAILABLE_DATE).isSortable());
+    assertEquals(DATA_AVAILABLE_DATE,
+        view.submissions.getColumnByKey(DATA_AVAILABLE_DATE).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(SUBMISSION_DATE));
     assertTrue(view.submissions.getColumnByKey(SUBMISSION_DATE).isSortable());
+    assertEquals(SUBMISSION_DATE,
+        view.submissions.getColumnByKey(SUBMISSION_DATE).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(SERVICE));
     assertTrue(view.submissions.getColumnByKey(SERVICE).isSortable());
+    assertEquals(SERVICE,
+        view.submissions.getColumnByKey(SERVICE).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(INSTRUMENT));
     assertTrue(view.submissions.getColumnByKey(INSTRUMENT).isSortable());
+    assertEquals(INSTRUMENT,
+        view.submissions.getColumnByKey(INSTRUMENT).getSortOrder(ASCENDING).findFirst()
+            .map(SortOrder::getSorted).orElseThrow());
     assertNotNull(view.submissions.getColumnByKey(SAMPLES_COUNT));
-    assertTrue(view.submissions.getColumnByKey(SAMPLES_COUNT).isSortable());
+    assertFalse(view.submissions.getColumnByKey(SAMPLES_COUNT).isSortable());
     assertNotNull(view.submissions.getColumnByKey(SAMPLES));
     assertFalse(view.submissions.getColumnByKey(SAMPLES).isSortable());
     assertNotNull(view.submissions.getColumnByKey(STATUS));
     assertFalse(view.submissions.getColumnByKey(STATUS).isSortable());
     assertNotNull(view.submissions.getColumnByKey(HIDDEN));
     assertTrue(view.submissions.getColumnByKey(HIDDEN).isSortable());
+    assertEquals(HIDDEN, view.submissions.getColumnByKey(HIDDEN).getSortOrder(ASCENDING).findFirst()
+        .map(SortOrder::getSorted).orElseThrow());
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void submissions_ColumnsValueProvider() {
     view.submissions.setItems(submissions);
+    List<Submission> submissions = view.submissions.getListDataView().getItems().toList();
     view.samples.setVisible(true);
     for (int i = 0; i < submissions.size(); i++) {
       Submission submission = submissions.get(i);
@@ -536,7 +569,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void submissions_ExperimentColumnComparator() {
     Comparator<Submission> comparator = test(view.submissions).getColumn(EXPERIMENT)
-        .getComparator(SortDirection.ASCENDING);
+        .getComparator(ASCENDING);
     assertEquals(0, comparator.compare(experiment("éê"), experiment("ee")));
     assertTrue(comparator.compare(experiment("a"), experiment("e")) < 0);
     assertTrue(comparator.compare(experiment("a"), experiment("é")) < 0);
@@ -547,7 +580,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void submissions_UserColumnComparator() {
     Comparator<Submission> comparator = test(view.submissions).getColumn(USER)
-        .getComparator(SortDirection.ASCENDING);
+        .getComparator(ASCENDING);
     assertEquals(0, comparator.compare(user("éê"), user("ee")));
     assertTrue(comparator.compare(user("a"), user("e")) < 0);
     assertTrue(comparator.compare(user("a"), user("é")) < 0);
@@ -558,7 +591,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void submissions_DirectorColumnComparator() {
     Comparator<Submission> comparator = test(view.submissions).getColumn(DIRECTOR)
-        .getComparator(SortDirection.ASCENDING);
+        .getComparator(ASCENDING);
     assertEquals(0, comparator.compare(director("éê"), director("ee")));
     assertTrue(comparator.compare(director("a"), director("e")) < 0);
     assertTrue(comparator.compare(director("a"), director("é")) < 0);
@@ -569,7 +602,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @Test
   public void submissions_HiddenColumnComparator() {
     Comparator<Submission> comparator = test(view.submissions).getColumn(HIDDEN)
-        .getComparator(SortDirection.ASCENDING);
+        .getComparator(ASCENDING);
     assertTrue(comparator.compare(hidden(false), hidden(true)) < 0);
     assertEquals(0, comparator.compare(hidden(false), hidden(false)));
     assertEquals(0, comparator.compare(hidden(true), hidden(true)));
@@ -837,13 +870,13 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void singleClickSubmission_ShiftAdmin() {
     view.submissions.setItems(submissions);
-    Submission submission = submissions.get(0);
+    Submission submission = submissions.get(19);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    verify(service).get(1L);
+    verify(service).get(164L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(1L, dialog.getSubmissionId());
+    assertEquals(164L, dialog.getSubmissionId());
   }
 
   @Test
@@ -858,13 +891,13 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void singleClickSubmission_ControlAdmin() {
     view.submissions.setItems(submissions);
-    Submission submission = submissions.get(0);
+    Submission submission = submissions.get(19);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
-    verify(service).get(1L);
+    verify(service).get(164L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(1L, dialog.getSubmissionId());
+    assertEquals(164L, dialog.getSubmissionId());
   }
 
   @Test
@@ -879,13 +912,13 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void singleClickSubmission_MetaAdmin() {
     view.submissions.setItems(submissions);
-    Submission submission = submissions.get(0);
+    Submission submission = submissions.get(19);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().meta());
 
-    verify(service).get(1L);
+    verify(service).get(164L);
     SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
-    assertEquals(1L, dialog.getSubmissionId());
+    assertEquals(164L, dialog.getSubmissionId());
   }
 
   @Test
@@ -900,25 +933,25 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void singleClickSubmission_AltAdmin() {
     view.submissions.setItems(submissions);
-    Submission submission = submissions.get(0);
+    Submission submission = submissions.get(19);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).clickRow(0, new MetaKeys().alt());
 
-    verify(service).get(1L);
+    verify(service).get(164L);
     HistoryView view = $(HistoryView.class).first();
-    assertEquals(1L, view.getSubmissionId());
+    assertEquals(164L, view.getSubmissionId());
   }
 
   @Test
   public void doubleClickSubmission() {
     view.submissions.setItems(submissions);
-    Submission submission = submissions.get(0);
+    Submission submission = submissions.get(19);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     test(view.submissions).doubleClickRow(0);
 
-    verify(service).get(1L);
+    verify(service).get(164L);
     SubmissionDialog dialog = $(SubmissionDialog.class).first();
-    assertEquals(1L, dialog.getSubmissionId());
+    assertEquals(164L, dialog.getSubmissionId());
   }
 
   @Test
@@ -1134,7 +1167,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
-    test(view.submissions).select(1);
+    test(view.submissions).select(17);
 
     test(view.view).click();
 
@@ -1172,7 +1205,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
-    test(view.submissions).select(1);
+    test(view.submissions).select(17);
 
     test(view.editStatus).click();
 
@@ -1211,7 +1244,7 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
     view.submissions.setItems(submissions);
     Submission submission = submissions.get(1);
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
-    test(view.submissions).select(1);
+    test(view.submissions).select(17);
 
     test(view.history).click();
 

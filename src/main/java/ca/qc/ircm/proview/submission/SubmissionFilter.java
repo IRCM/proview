@@ -7,14 +7,11 @@ import static ca.qc.ircm.proview.time.TimeConverter.toLocalDateTime;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.Expressions;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.Predicate;
 import org.springframework.data.domain.Range;
-import org.springframework.lang.Nullable;
 
 /**
  * Filters submissions.
@@ -31,9 +28,6 @@ public class SubmissionFilter implements Predicate<Submission> {
   public Range<LocalDate> dateRange;
   public Range<LocalDate> dataAvailableDateRange;
   public Boolean hidden;
-  public List<OrderSpecifier<?>> sortOrders;
-  public Integer offset;
-  public Integer limit;
 
   @Override
   public boolean test(Submission submission) {
@@ -89,7 +83,6 @@ public class SubmissionFilter implements Predicate<Submission> {
    *
    * @return QueryDSL predicate matching filter
    */
-  @Nullable
   public com.querydsl.core.types.Predicate predicate() {
     BooleanBuilder predicate = new BooleanBuilder();
     if (experimentContains != null) {
@@ -153,92 +146,7 @@ public class SubmissionFilter implements Predicate<Submission> {
     if (hidden != null) {
       predicate.and(submission.hidden.eq(hidden));
     }
-    return predicate.getValue();
-  }
-
-  private void addFilterConditions(JPAQuery<?> query) {
-    if (experimentContains != null) {
-      query.where(submission.experiment.contains(experimentContains));
-    }
-    if (userContains != null) {
-      query.where(submission.user.email.contains(userContains)
-          .or(submission.user.name.contains(userContains)));
-    }
-    if (directorContains != null) {
-      query.where(submission.laboratory.director.contains(directorContains));
-    }
-    if (service != null) {
-      query.where(submission.service.eq(service));
-    }
-    if (anySampleNameContains != null) {
-      query.where(submission.samples.any().name.contains(anySampleNameContains));
-    }
-    if (anySampleStatus != null) {
-      query.where(submission.samples.any().status.eq(anySampleStatus));
-    }
-    if (instrument != null) {
-      if (instrument == MassDetectionInstrument.NULL) {
-        query.where(submission.instrument.isNull());
-      } else {
-        query.where(submission.instrument.eq(instrument));
-      }
-    }
-    if (dateRange != null) {
-      if (dateRange.getLowerBound().isBounded()) {
-        LocalDate date = dateRange.getLowerBound().getValue().orElseThrow();
-        if (dateRange.getLowerBound().isInclusive()) {
-          date = date.minusDays(1);
-        }
-        query.where(submission.submissionDate.after(toLocalDateTime(date)));
-      }
-      if (dateRange.getUpperBound().isBounded()) {
-        LocalDate date = dateRange.getUpperBound().getValue().orElseThrow();
-        if (dateRange.getUpperBound().isInclusive()) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.submissionDate.before(toLocalDateTime(date)));
-      }
-    }
-    if (dataAvailableDateRange != null) {
-      if (dataAvailableDateRange.getLowerBound().isBounded()) {
-        LocalDate date = dataAvailableDateRange.getLowerBound().getValue().orElseThrow();
-        if (dataAvailableDateRange.getLowerBound().isInclusive()) {
-          date = date.minusDays(1);
-        }
-        query.where(submission.dataAvailableDate.after(date));
-      }
-      if (dataAvailableDateRange.getUpperBound().isBounded()) {
-        LocalDate date = dataAvailableDateRange.getUpperBound().getValue().orElseThrow();
-        if (dataAvailableDateRange.getUpperBound().isInclusive()) {
-          date = date.plusDays(1);
-        }
-        query.where(submission.dataAvailableDate.before(date));
-      }
-    }
-    if (hidden != null) {
-      query.where(submission.hidden.eq(hidden));
-    }
-  }
-
-  public void addCountConditions(JPAQuery<?> query) {
-    addFilterConditions(query);
-  }
-
-  /**
-   * Adds conditions to query to match filters.
-   *
-   * @param query database query
-   */
-  public void addConditions(JPAQuery<?> query) {
-    addFilterConditions(query);
-    if (sortOrders != null) {
-      query.orderBy(sortOrders.toArray(new OrderSpecifier[0]));
-    }
-    if (offset != null) {
-      query.offset(offset);
-    }
-    if (limit != null) {
-      query.limit(limit);
-    }
+    return predicate.getValue() != null ? predicate.getValue()
+        : Expressions.asBoolean(true).isTrue();
   }
 }

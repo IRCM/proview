@@ -8,11 +8,11 @@ import static ca.qc.ircm.proview.Constants.VIEW;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.SpotbugsJustifications.INNER_CLASS_EI_EXPOSE_REP;
 import static ca.qc.ircm.proview.sample.SubmissionSampleProperties.STATUS;
-import static ca.qc.ircm.proview.submission.QSubmission.submission;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.DATA_AVAILABLE_DATE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIDDEN;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.INSTRUMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.LABORATORY;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SAMPLES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
@@ -25,7 +25,6 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
-import ca.qc.ircm.proview.persistence.QueryDsl;
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSample;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
@@ -36,13 +35,12 @@ import ca.qc.ircm.proview.submission.SubmissionFilter;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.UserPreferenceService;
+import ca.qc.ircm.proview.user.UserProperties;
 import ca.qc.ircm.proview.user.UserRole;
 import ca.qc.ircm.proview.web.DateRangeField;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -53,13 +51,12 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.customfield.CustomFieldVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
@@ -67,6 +64,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
@@ -74,11 +72,8 @@ import java.io.Serial;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -153,7 +148,6 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
   protected Button history = new Button();
   protected Button hideColumns = new Button();
   protected ColumnToggleContextMenu hideColumnsContextMenu;
-  private final Map<String, ComparableExpressionBase<?>> columnProperties = new HashMap<>();
   private final List<Grid.Column<Submission>> hidableColumns = new ArrayList<>();
   private final transient ObjectFactory<SubmissionDialog> dialogFactory;
   private final transient ObjectFactory<SamplesStatusDialog> statusDialogFactory;
@@ -189,16 +183,6 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
     add(submissionsLayout, buttonsLayout);
     expand(submissionsLayout);
 
-    columnProperties.put(EXPERIMENT, submission.experiment);
-    columnProperties.put(USER, submission.user.name);
-    columnProperties.put(DIRECTOR, submission.laboratory.director);
-    columnProperties.put(DATA_AVAILABLE_DATE, submission.dataAvailableDate);
-    columnProperties.put(SERVICE, submission.service);
-    columnProperties.put(INSTRUMENT, submission.instrument);
-    columnProperties.put(SAMPLES_COUNT, submission.samples.size());
-    columnProperties.put(SUBMISSION_DATE, submission.submissionDate);
-    columnProperties.put(HIDDEN, submission.hidden);
-
     submissions.setId(SUBMISSIONS);
     submissions.setMinHeight("500px");
     submissions.addItemDoubleClickListener(e -> view(e.getItem()));
@@ -221,16 +205,19 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
     ValueProvider<Submission, String> submissionExperiment = submission -> Objects.toString(
         submission.getExperiment(), "");
     experiment = submissions.addColumn(submissionExperiment, EXPERIMENT).setKey(EXPERIMENT)
+        .setSortProperty(EXPERIMENT)
         .setComparator(Comparator.comparing(Submission::getExperiment, normalizedCollator()))
         .setFlexGrow(3);
     ValueProvider<Submission, String> submissionUser = submission -> submission.getUser().getName();
     user = submissions.addColumn(submissionUser, USER).setKey(USER)
+        .setSortProperty(USER + "." + UserProperties.NAME)
         .setComparator(Comparator.comparing(s -> s.getUser().getName(), normalizedCollator()))
         .setFlexGrow(3);
     user.setVisible(authenticatedUser.hasAnyRole(MANAGER, ADMIN) && columnVisibility.apply(user));
     ValueProvider<Submission, String> submissionDirector = submission -> Objects.toString(
         submission.getLaboratory().getDirector(), "");
-    director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR).setComparator(
+    director = submissions.addColumn(submissionDirector, DIRECTOR).setKey(DIRECTOR)
+        .setSortProperty(LABORATORY + "." + DIRECTOR).setComparator(
             Comparator.comparing(s -> s.getLaboratory().getDirector(), normalizedCollator()))
         .setFlexGrow(3);
     director.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(director));
@@ -238,24 +225,24 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
     dataAvailableDate = submissions.addColumn(
             submission -> submission.getDataAvailableDate() != null ? dateFormatter.format(
                 submission.getDataAvailableDate()) : "", DATA_AVAILABLE_DATE)
-        .setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
+        .setSortProperty(DATA_AVAILABLE_DATE).setKey(DATA_AVAILABLE_DATE).setFlexGrow(2);
     dataAvailableDate.setVisible(columnVisibility.apply(dataAvailableDate));
     date = submissions.addColumn(
             submission -> submission.getSubmissionDate().toLocalDate() != null ? dateFormatter.format(
                 submission.getSubmissionDate().toLocalDate()) : "", SUBMISSION_DATE)
-        .setKey(SUBMISSION_DATE).setFlexGrow(2);
+        .setKey(SUBMISSION_DATE).setSortProperty(SUBMISSION_DATE).setFlexGrow(2);
     date.setVisible(columnVisibility.apply(date));
     instrument = submissions.addColumn(submission -> getTranslation(
             MASS_DETECTION_INSTRUMENT_PREFIX + Optional.ofNullable(submission.getInstrument())
                 .orElse(MassDetectionInstrument.NULL).name()), INSTRUMENT).setKey(INSTRUMENT)
-        .setFlexGrow(2);
+        .setSortProperty(INSTRUMENT).setFlexGrow(2);
     instrument.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(instrument));
     service = submissions.addColumn(
             submission -> getTranslation(SERVICE_PREFIX + submission.getService().name()), SERVICE)
-        .setKey(SERVICE).setFlexGrow(2);
+        .setKey(SERVICE).setSortProperty(SERVICE).setFlexGrow(2);
     service.setVisible(authenticatedUser.hasRole(ADMIN) && columnVisibility.apply(service));
     samplesCount = submissions.addColumn(submission -> submission.getSamples().size(),
-        SAMPLES_COUNT).setKey(SAMPLES_COUNT).setFlexGrow(0);
+        SAMPLES_COUNT).setKey(SAMPLES_COUNT).setSortable(false).setFlexGrow(0);
     samplesCount.setVisible(columnVisibility.apply(samplesCount));
     samples = submissions.addColumn(LitRenderer.<Submission>of(SAMPLES_SPAN)
             .withProperty("samplesValue", this::sampleNamesValue)
@@ -323,6 +310,7 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
     hiddenFilter.setClearButtonVisible(true);
     hiddenFilter.addValueChangeListener(e -> filterHidden(e.getValue()));
     hiddenFilter.setSizeFull();
+    submissions.sort(GridSortOrder.desc(date).build());
 
     add.setId(ADD);
     add.setIcon(VaadinIcon.PLUS.create());
@@ -365,18 +353,8 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
   }
 
   private void loadSubmissions() {
-    Function<Query<Submission, Void>, List<OrderSpecifier<?>>> filterSortOrders = query ->
-        query.getSortOrders() != null && !query.getSortOrders().isEmpty() ? query.getSortOrders()
-            .stream().filter(order -> columnProperties.containsKey(order.getSorted())).map(
-                order -> QueryDsl.direction(columnProperties.get(order.getSorted()),
-                    order.getDirection() == SortDirection.DESCENDING)).collect(Collectors.toList())
-            : Collections.singletonList(submission.id.desc());
-    submissions.setItems(query -> {
-      filter.sortOrders = filterSortOrders.apply(query);
-      filter.offset = query.getOffset();
-      filter.limit = query.getLimit();
-      return submissionService.all(filter).stream();
-    });
+    submissions.setItems(
+        query -> submissionService.all(filter, VaadinSpringDataHelpers.toSpringPageRequest(query)));
   }
 
   private String sampleNamesValue(Submission submission) {

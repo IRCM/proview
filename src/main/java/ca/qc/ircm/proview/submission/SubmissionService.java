@@ -22,9 +22,9 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import com.google.common.collect.Lists;
-import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -32,9 +32,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -100,24 +102,16 @@ public class SubmissionService {
    *
    * <p>For administrators, returns all submissions.</p>
    *
-   * @param filter filter submissions to return
+   * @param filter   filter submissions to return
+   * @param pageable sorts and limits number of results
    * @return current user's submissions or more for managers / administrators
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
-  public List<Submission> all(SubmissionFilter filter) {
-    JPAQuery<Submission> query = queryFactory.select(submission);
-    initializeAllQuery(query);
-    query.where(filter.predicate());
-    if (filter.sortOrders != null) {
-      query.orderBy(filter.sortOrders.toArray(new OrderSpecifier[0]));
-    }
-    if (filter.offset != null) {
-      query.offset(filter.offset);
-    }
-    if (filter.limit != null) {
-      query.limit(filter.limit);
-    }
-    return query.distinct().fetch();
+  public Stream<Submission> all(SubmissionFilter filter, Pageable pageable) {
+    BooleanBuilder predicate = new BooleanBuilder();
+    predicate.and(authenticatedUserPredicate());
+    predicate.and(filter.predicate());
+    return repository.findAll(predicate, pageable).stream();
   }
 
   /**
@@ -131,26 +125,28 @@ public class SubmissionService {
    * @return current user's submissions or more for managers / administrators
    */
   @PreAuthorize("hasAuthority('" + USER + "')")
-  public int count(SubmissionFilter filter) {
-    JPAQuery<Long> query = queryFactory.select(submission.id.countDistinct());
-    initializeAllQuery(query);
-    query.where(filter.predicate());
-    return query.fetchFirst().intValue();
+  public long count(SubmissionFilter filter) {
+    BooleanBuilder predicate = new BooleanBuilder();
+    predicate.and(authenticatedUserPredicate());
+    predicate.and(filter.predicate());
+    return repository.count(predicate);
   }
 
-  private void initializeAllQuery(JPAQuery<?> query) {
+  private com.querydsl.core.types.Predicate authenticatedUserPredicate() {
     final User currentUser = authenticatedUser.getUser().orElseThrow();
     final Laboratory currentLaboratory = currentUser.getLaboratory();
 
-    query.from(submission);
+    BooleanBuilder predicate = new BooleanBuilder();
     if (!authenticatedUser.hasRole(UserRole.ADMIN)) {
-      query.where(submission.hidden.eq(false));
+      predicate.and(submission.hidden.eq(false));
       if (authenticatedUser.hasPermission(currentLaboratory, Permission.WRITE)) {
-        query.where(submission.laboratory.eq(currentLaboratory));
+        predicate.and(submission.laboratory.eq(currentLaboratory));
       } else {
-        query.where(submission.user.eq(currentUser));
+        predicate.and(submission.user.eq(currentUser));
       }
     }
+    return predicate.getValue() != null ? predicate.getValue()
+        : Expressions.asBoolean(true).isTrue();
   }
 
   /**
@@ -280,8 +276,8 @@ public class SubmissionService {
       sample.setStatus(SampleStatus.WAITING);
     });
     validateUpdateSubmission(submission);
-    if (!authenticatedUser.hasRole(UserRole.ADMIN)
-        && anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
+    if (!authenticatedUser.hasRole(UserRole.ADMIN) && anyStatusGreaterOrEquals(submission,
+        SampleStatus.RECEIVED)) {
       submission = repository.findById(submission.getId()).orElseThrow();
       for (int i = 0; i < submission.getSamples().size(); i++) {
         SubmissionSample sample = submission.getSamples().get(i);
@@ -315,8 +311,9 @@ public class SubmissionService {
       }
 
       if (anyStatusGreaterOrEquals(submission, SampleStatus.RECEIVED)) {
-        throw new IllegalArgumentException("Cannot update submission if samples don't have "
-            + SampleStatus.WAITING.name() + " status or less");
+        throw new IllegalArgumentException(
+            "Cannot update submission if samples don't have " + SampleStatus.WAITING.name()
+                + " status or less");
       }
     }
   }
@@ -343,10 +340,9 @@ public class SubmissionService {
 
   private void deleteOrphans(Submission submission) {
     Submission old = repository.findById(submission.getId()).orElseThrow();
-    old.getSamples().stream()
-        .filter(sample -> submission.getSamples().stream()
-            .filter(s2 -> sample.getId() == s2.getId()).findAny().isEmpty())
-        .forEach(sampleRepository::delete);
+    old.getSamples().stream().filter(
+        sample -> submission.getSamples().stream().filter(s2 -> sample.getId() == s2.getId())
+            .findAny().isEmpty()).forEach(sampleRepository::delete);
   }
 
   /**
