@@ -61,8 +61,8 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
   private SubmissionDialog dialog;
   @MockitoBean
   private SubmissionService service;
@@ -84,7 +84,7 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
     view.submissions.setItems(repository.findAll());
-    test(view.submissions).doubleClickRow(1);
+    test(view.submissions).doubleClickRow(17);
     dialog = $(SubmissionDialog.class).first();
   }
 

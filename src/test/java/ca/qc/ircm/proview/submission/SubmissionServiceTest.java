@@ -2,6 +2,9 @@ package ca.qc.ircm.proview.submission;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.QSubmission.submission;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.EXPERIMENT;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.ID;
+import static ca.qc.ircm.proview.submission.SubmissionProperties.SUBMISSION_DATE;
 import static ca.qc.ircm.proview.test.utils.SearchUtils.find;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 import ca.qc.ircm.proview.history.Activity;
 import ca.qc.ircm.proview.history.ActivityService;
@@ -38,7 +42,6 @@ import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.security.Permission;
 import ca.qc.ircm.proview.test.config.AbstractServiceTestCase;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import ca.qc.ircm.proview.test.utils.SearchUtils;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -56,7 +59,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -64,13 +66,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Range;
+import org.springframework.data.domain.Range.Bound;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.AccessDeniedException;
@@ -89,14 +96,14 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
   private static final String READ = "read";
   private static final String WRITE = "write";
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
-  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
-      messagePrefix(MassDetectionInstrumentSource.class);
-  private static final String PROTEIN_IDENTIFICATION_PREFIX =
-      messagePrefix(ProteinIdentification.class);
-  private static final String PROTEOLYTIC_DIGESTION_PREFIX =
-      messagePrefix(ProteolyticDigestion.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX = messagePrefix(
+      MassDetectionInstrumentSource.class);
+  private static final String PROTEIN_IDENTIFICATION_PREFIX = messagePrefix(
+      ProteinIdentification.class);
+  private static final String PROTEOLYTIC_DIGESTION_PREFIX = messagePrefix(
+      ProteolyticDigestion.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String GEL_COLORATION_PREFIX = messagePrefix(GelColoration.class);
   private static final String GEL_SEPARATION_PREFIX = messagePrefix(GelSeparation.class);
@@ -219,15 +226,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionFile file = submission.getFiles().get(0);
     assertEquals((Long) 1L, file.getId());
     assertEquals("protocol.txt", file.getFilename());
-    assertArrayEquals(
-        Files.readAllBytes(Paths
-            .get(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI())),
+    assertArrayEquals(Files.readAllBytes(
+            Paths.get(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI())),
         file.getContent());
     file = submission.getFiles().get(1);
     assertEquals((Long) 2L, file.getId());
     assertEquals("frag.jpg", file.getFilename());
-    assertArrayEquals(
-        Files.readAllBytes(
+    assertArrayEquals(Files.readAllBytes(
             Paths.get(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI())),
         file.getContent());
   }
@@ -317,12 +322,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    List<Submission> submissions = service.all(new SubmissionFilter());
+    List<Submission> submissions = service.all(new SubmissionFilter(), Pageable.unpaged()).toList();
 
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
-    assertFalse(SearchUtils.find(submissions, 34).isPresent());
-    Submission submission = SearchUtils.find(submissions, 32).get();
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    Submission submission = find(submissions, 32).get();
     assertEquals((Long) 32L, submission.getId());
     assertEquals("cap_experiment", submission.getExperiment());
     assertEquals("cap_goal", submission.getGoal());
@@ -332,7 +338,7 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertEquals(SampleStatus.ANALYSED, sample.getStatus());
     assertEquals(LocalDateTime.of(2011, 10, 13, 0, 0, 0, 0),
         sample.getSubmission().getSubmissionDate());
-    submission = SearchUtils.find(submissions, 33).get();
+    submission = find(submissions, 33).get();
     assertEquals((Long) 33L, submission.getId());
     sample = submission.getSamples().get(0);
     assertEquals((Long) 443L, sample.getId());
@@ -348,12 +354,12 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
 
-    List<Submission> submissions = service.all(new SubmissionFilter());
+    List<Submission> submissions = service.all(new SubmissionFilter(), Pageable.unpaged()).toList();
 
     assertEquals(3, submissions.size());
-    assertTrue(SearchUtils.find(submissions, 1).isPresent());
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
   }
 
   @Test
@@ -363,16 +369,30 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasPermission(any(), any())).thenReturn(true);
 
-    List<Submission> submissions = service.all(new SubmissionFilter());
+    List<Submission> submissions = service.all(new SubmissionFilter(), Pageable.unpaged()).toList();
 
     verify(authenticatedUser).hasPermission(user.getLaboratory(), Permission.WRITE);
     assertEquals(18, submissions.size());
-    assertTrue(SearchUtils.find(submissions, 1).isPresent());
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
-    assertFalse(SearchUtils.find(submissions, 34).isPresent());
-    assertTrue(SearchUtils.find(submissions, 35).isPresent());
-    assertFalse(SearchUtils.find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertFalse(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertFalse(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
   }
 
   @Test
@@ -382,15 +402,29 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
 
-    List<Submission> submissions = service.all(new SubmissionFilter());
+    List<Submission> submissions = service.all(new SubmissionFilter(), Pageable.unpaged()).toList();
 
     assertEquals(20, submissions.size());
-    assertTrue(SearchUtils.find(submissions, 1).isPresent());
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
-    assertTrue(SearchUtils.find(submissions, 34).isPresent());
-    assertTrue(SearchUtils.find(submissions, 35).isPresent());
-    assertTrue(SearchUtils.find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
   }
 
   @Test
@@ -398,15 +432,13 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    SubmissionFilter filter = mock(SubmissionFilter.class);
-    when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(new SubmissionFilter(), Pageable.unpaged()).toList();
 
-    verify(filter).predicate();
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
-    assertFalse(SearchUtils.find(submissions, 34).isPresent());
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
   }
 
   @Test
@@ -417,48 +449,548 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
 
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertFalse(SearchUtils.find(submissions, 33).isPresent());
-    assertFalse(SearchUtils.find(submissions, 34).isPresent());
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 32).isPresent());
   }
 
   @Test
-  public void all_FilterOffset() {
+  public void all_FilterUser() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.userContains = "it";
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(4, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+  }
+
+  @Test
+  public void all_FilterUserEmail() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.userContains = "er.anderson";
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(16, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterUserName() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.userContains = "er anderson";
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(16, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterDirector() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.directorContains = "Coulombe";
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(19, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterService() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.service = Service.LC_MS_MS;
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(19, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 36).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterSampleName() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Collections.singletonList(submission.id.asc());
-    filter.offset = 2;
-    filter.limit = 3;
+    filter.anySampleNameContains = "POLR2B";
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
 
-    assertEquals(3, submissions.size());
-    assertTrue(SearchUtils.find(submissions, 148).isPresent());
-    assertTrue(SearchUtils.find(submissions, 149).isPresent());
-    assertTrue(SearchUtils.find(submissions, 150).isPresent());
+    assertEquals(4, submissions.size());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
   }
 
   @Test
-  public void all_FilterOffsetJoin() {
+  public void all_FilterSampleStatus() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.anySampleStatus = SampleStatus.WAITING;
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(2, submissions.size());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterInstrument() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.instrument = MassDetectionInstrument.LTQ_ORBI_TRAP;
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.closed(LocalDate.of(2014, 10, 16), LocalDate.of(2018, 6, 1));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(6, submissions.size());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_Closed() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.closed(LocalDate.of(2014, 10, 17), LocalDate.of(2018, 5, 3));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(6, submissions.size());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_Open() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.open(LocalDate.of(2014, 10, 17), LocalDate.of(2018, 5, 3));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(4, submissions.size());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_LeftOnly_Inclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.rightUnbounded(Bound.inclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(6, submissions.size());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_LeftOnly_Exclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.rightUnbounded(Bound.exclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(5, submissions.size());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_RightOnly_Inclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.leftUnbounded(Bound.inclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(10, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+  }
+
+  @Test
+  public void all_FilterDateRange_RightOnly_Exclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dateRange = Range.leftUnbounded(Bound.exclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(9, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.closed(LocalDate.of(2014, 10, 1),
+        LocalDate.of(2014, 11, 1));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_Closed() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.closed(LocalDate.of(2014, 10, 17),
+        LocalDate.of(2014, 10, 24));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_Open() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.open(LocalDate.of(2014, 10, 17),
+        LocalDate.of(2014, 10, 24));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 155).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_LeftOnly_Inclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.rightUnbounded(
+        Bound.inclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_LeftOnly_Exclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.rightUnbounded(
+        Bound.exclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(2, submissions.size());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_RightOnly_Inclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.leftUnbounded(
+        Bound.inclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+    System.out.println(submissions);
+
+    assertEquals(2, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+  }
+
+  @Test
+  public void all_FilterDataAvailableDateRange_RightOnly_Exclusive() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.dataAvailableDateRange = Range.leftUnbounded(
+        Bound.exclusive(LocalDate.of(2014, 10, 17)));
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 35).isPresent());
+  }
+
+  @Test
+  public void all_FilterHidden_False() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.hidden = false;
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(19, submissions.size());
+    assertTrue(find(submissions, 1).isPresent());
+    assertTrue(find(submissions, 32).isPresent());
+    assertTrue(find(submissions, 33).isPresent());
+    assertTrue(find(submissions, 34).isPresent());
+    assertTrue(find(submissions, 35).isPresent());
+    assertTrue(find(submissions, 147).isPresent());
+    assertTrue(find(submissions, 148).isPresent());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
+    assertTrue(find(submissions, 153).isPresent());
+    assertTrue(find(submissions, 154).isPresent());
+    assertTrue(find(submissions, 155).isPresent());
+    assertTrue(find(submissions, 156).isPresent());
+    assertTrue(find(submissions, 161).isPresent());
+    assertTrue(find(submissions, 162).isPresent());
+    assertTrue(find(submissions, 163).isPresent());
+    assertTrue(find(submissions, 164).isPresent());
+  }
+
+  @Test
+  public void all_FilterHidden_True() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.hidden = true;
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 36).isPresent());
+  }
+
+  @Test
+  public void all_FilterExperimentAndSampleName() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
+    SubmissionFilter filter = new SubmissionFilter();
+    filter.experimentContains = "exper";
+    filter.anySampleNameContains = "17";
+
+    List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
+
+    assertEquals(1, submissions.size());
+    assertTrue(find(submissions, 34).isPresent());
+  }
+
+  @Test
+  public void all_FilterPage() {
+    User user = new User(10L);
+    user.setLaboratory(new Laboratory(2L));
+    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    SubmissionFilter filter = new SubmissionFilter();
+
+    List<Submission> submissions = service.all(filter, PageRequest.of(1, 3, Sort.by(ASC, ID)))
+        .toList();
+
+    assertEquals(3, submissions.size());
+    assertTrue(find(submissions, 149).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+  }
+
+  @Test
+  public void all_FilterPageJoin() {
     User user = new User(10L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
     filter.anySampleNameContains = "POLR2A";
-    filter.sortOrders = Collections.singletonList(submission.id.asc());
-    filter.offset = 2;
-    filter.limit = 3;
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter, PageRequest.of(1, 3, Sort.by(ASC, ID)))
+        .toList();
 
     assertEquals(3, submissions.size());
-    assertTrue(SearchUtils.find(submissions, 149).isPresent());
-    assertTrue(SearchUtils.find(submissions, 150).isPresent());
-    assertTrue(SearchUtils.find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 150).isPresent());
+    assertTrue(find(submissions, 151).isPresent());
+    assertTrue(find(submissions, 152).isPresent());
   }
 
   @Test
@@ -467,83 +999,73 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Collections.singletonList(submission.experiment.asc());
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter, Pageable.unpaged(Sort.by(ASC, EXPERIMENT)))
+        .toList();
 
+    assertEquals(3, submissions.size());
     assertEquals((Long) 33L, submissions.get(0).getId());
     assertEquals((Long) 32L, submissions.get(1).getId());
     assertEquals((Long) 1L, submissions.get(2).getId());
   }
 
   @Test
-  @Disabled
-  public void all_SortSampleName() {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
+  public void all_FilterExperimentSortDate() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Collections.singletonList(submission.samples.any().name.asc());
+    filter.experimentContains = "POLR2B";
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter,
+        Pageable.unpaged(Sort.by(ASC, SUBMISSION_DATE))).toList();
 
-    assertEquals((Long) 32L, submissions.get(0).getId());
-    assertEquals((Long) 33L, submissions.get(1).getId());
-    assertEquals((Long) 1L, submissions.get(2).getId());
+    assertEquals(3, submissions.size());
+    assertEquals(162, submissions.get(0).getId());
+    assertEquals(161, submissions.get(1).getId());
+    assertEquals(163, submissions.get(2).getId());
   }
 
   @Test
-  @Disabled
-  public void all_SortSampleStatus() {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
+  public void all_SortExperimentAndDate() {
+    User user = new User(1L);
+    user.setLaboratory(new Laboratory(1L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
+    when(authenticatedUser.hasRole(UserRole.ADMIN)).thenReturn(true);
     SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Collections.singletonList(submission.samples.any().status.asc());
 
-    List<Submission> submissions = service.all(filter);
+    List<Submission> submissions = service.all(filter,
+        Pageable.unpaged(Sort.by(Order.asc(EXPERIMENT), Order.asc(SUBMISSION_DATE)))).toList();
 
-    assertEquals((Long) 33L, submissions.get(0).getId());
-    assertEquals((Long) 32L, submissions.get(1).getId());
-    assertEquals((Long) 1L, submissions.get(2).getId());
-  }
-
-  @Test
-  @Disabled
-  public void all_SortResults() {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    SubmissionFilter filter = new SubmissionFilter();
-    filter.sortOrders = Collections.singletonList(submission.samples.any().status.desc());
-
-    List<Submission> submissions = service.all(filter);
-
-    assertEquals((Long) 1L, submissions.get(0).getId());
-    assertEquals((Long) 32L, submissions.get(1).getId());
-    assertEquals((Long) 33L, submissions.get(2).getId());
-  }
-
-  @Test
-  public void all_EmptyFilter() {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-
-    List<Submission> submissions = service.all(new SubmissionFilter());
-
-    assertTrue(SearchUtils.find(submissions, 32).isPresent());
-    assertTrue(SearchUtils.find(submissions, 33).isPresent());
-    assertFalse(SearchUtils.find(submissions, 34).isPresent());
+    assertEquals(20, submissions.size());
+    assertEquals(33, submissions.get(0).getId());
+    assertEquals(32, submissions.get(1).getId());
+    assertEquals(34, submissions.get(2).getId());
+    assertEquals(35, submissions.get(3).getId());
+    assertEquals(36, submissions.get(4).getId());
+    assertEquals(1, submissions.get(5).getId());
+    assertEquals(147, submissions.get(6).getId());
+    assertEquals(148, submissions.get(7).getId());
+    assertEquals(149, submissions.get(8).getId());
+    assertEquals(150, submissions.get(9).getId());
+    assertEquals(151, submissions.get(10).getId());
+    assertEquals(152, submissions.get(11).getId());
+    assertEquals(153, submissions.get(12).getId());
+    assertEquals(154, submissions.get(13).getId());
+    assertEquals(155, submissions.get(14).getId());
+    assertEquals(156, submissions.get(15).getId());
+    assertEquals(162, submissions.get(16).getId());
+    assertEquals(161, submissions.get(17).getId());
+    assertEquals(163, submissions.get(18).getId());
+    assertEquals(164, submissions.get(19).getId());
   }
 
   @Test
   @WithAnonymousUser
   public void all_AccessDenied() {
-    SubmissionFilter filter = mock(SubmissionFilter.class);
-    when(filter.predicate()).thenReturn(submission.isNotNull());
-
-    assertThrows(AccessDeniedException.class, () -> service.all(filter));
+    assertThrows(AccessDeniedException.class,
+        () -> service.all(new SubmissionFilter(), Pageable.unpaged()));
   }
 
   @Test
@@ -551,12 +1073,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     User user = new User(3L);
     user.setLaboratory(new Laboratory(2L));
     when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    SubmissionFilter filter = mock(SubmissionFilter.class);
-    when(filter.predicate()).thenReturn(submission.isNotNull());
 
-    int count = service.count(filter);
+    long count = service.count(new SubmissionFilter());
 
-    verify(filter).predicate();
     assertEquals(3, count);
   }
 
@@ -568,50 +1087,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     SubmissionFilter filter = new SubmissionFilter();
     filter.experimentContains = "exp";
 
-    int count = service.count(filter);
+    long count = service.count(filter);
 
     assertEquals(1, count);
-  }
-
-  @Test
-  public void count_FilterOffset() {
-    User user = new User(10L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    SubmissionFilter filter = new SubmissionFilter();
-    filter.offset = 2;
-    filter.limit = 2;
-
-    int count = service.count(filter);
-
-    assertEquals(15, count);
-  }
-
-  @Test
-  public void count_FilterOffsetJoin() {
-    User user = new User(10L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-    SubmissionFilter filter = new SubmissionFilter();
-    filter.anySampleNameContains = "POLR2A";
-    filter.sortOrders = Collections.singletonList(submission.id.asc());
-    filter.offset = 2;
-    filter.limit = 3;
-
-    int count = service.count(filter);
-
-    assertEquals(10, count);
-  }
-
-  @Test
-  public void count_EmptyFilter() {
-    User user = new User(3L);
-    user.setLaboratory(new Laboratory(2L));
-    when(authenticatedUser.getUser()).thenReturn(Optional.of(user));
-
-    int count = service.count(new SubmissionFilter());
-
-    assertEquals(3, count);
   }
 
   @Test
@@ -718,15 +1196,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
     PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
-    assertTrue(
-        content
-            .contains(
-                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[]{phoneNumber.getNumber(),
-                        Optional.ofNullable(phoneNumber.getExtension())
-                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension()},
-                    locale)));
+    assertTrue(content.contains(messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+        new Object[]{phoneNumber.getNumber(),
+            Optional.ofNullable(phoneNumber.getExtension()).map(ex -> ex.isEmpty() ? 0 : 1).orElse(
+                0), phoneNumber.getExtension()}, locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -782,16 +1255,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
     assertNotNull(submission.getDigestion());
-    assertTrue(content.contains(messageSource.getMessage(
-        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(),
+            null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
     assertNotNull(submission.getProteinContent());
-    assertTrue(content.contains(messageSource
-        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(),
+            null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
     assertNotNull(submission.getInstrument());
     assertTrue(content.contains(messageSource.getMessage(
@@ -803,8 +1278,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertNotNull(submission.getQuantification());
-    assertTrue(content.contains(messageSource
-        .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(),
+            null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
@@ -943,8 +1419,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
     assertNotNull(submission.getDigestion());
-    assertTrue(content.contains(messageSource.getMessage(
-        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(),
+            null, locale)));
     assertTrue(content.contains("class=\"usedDigestion\""));
     assertNotNull(submission.getUsedDigestion());
     assertTrue(content.contains(submission.getUsedDigestion()));
@@ -961,8 +1438,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"digestion\""));
     assertNotNull(submission.getDigestion());
-    assertTrue(content.contains(messageSource.getMessage(
-        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(),
+            null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertTrue(content.contains("class=\"otherDigestion\""));
     assertNotNull(submission.getOtherDigestion());
@@ -989,8 +1467,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"instrument\""));
-    assertTrue(content
-        .contains(messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, locale)
+    assertTrue(content.contains(
+        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + "NULL", null, locale)
             .replaceAll("'", "&#39;")));
   }
 
@@ -1056,8 +1534,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(messageSource
-        .getMessage("submission.print.submission.quantificationComment", null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.quantificationComment", null,
+            locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1072,8 +1551,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(messageSource
-        .getMessage("submission.print.submission.quantificationComment", null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.quantificationComment", null,
+            locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1087,8 +1567,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(messageSource
-        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.quantificationComment.TMT", null,
+            locale)));
     assertTrue(content.contains(formatMultiline(submission.getQuantificationComment())));
   }
 
@@ -1103,8 +1584,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"quantification\""));
     assertTrue(content.contains("class=\"quantificationComment\""));
-    assertTrue(content.contains(messageSource
-        .getMessage("submission.print.submission.quantificationComment.TMT", null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.quantificationComment.TMT", null,
+            locale)));
     assertFalse(content.contains("null"));
   }
 
@@ -1126,15 +1608,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
     PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
-    assertTrue(
-        content
-            .contains(
-                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[]{phoneNumber.getNumber(),
-                        Optional.ofNullable(phoneNumber.getExtension())
-                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension()},
-                    locale)));
+    assertTrue(content.contains(messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+        new Object[]{phoneNumber.getNumber(),
+            Optional.ofNullable(phoneNumber.getExtension()).map(ex -> ex.isEmpty() ? 0 : 1).orElse(
+                0), phoneNumber.getExtension()}, locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1171,16 +1648,19 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"sample-volume\""));
     assertTrue(content.contains("class=\"separation\""));
     assertNotNull(submission.getSeparation());
-    assertTrue(content.contains(messageSource
-        .getMessage(GEL_SEPARATION_PREFIX + submission.getSeparation().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(GEL_SEPARATION_PREFIX + submission.getSeparation().name(), null,
+            locale)));
     assertTrue(content.contains("class=\"thickness\""));
     assertNotNull(submission.getThickness());
-    assertTrue(content.contains(messageSource
-        .getMessage(GEL_THICKNESS_PREFIX + submission.getThickness().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(GEL_THICKNESS_PREFIX + submission.getThickness().name(), null,
+            locale)));
     assertTrue(content.contains("class=\"coloration\""));
     assertNotNull(submission.getColoration());
-    assertTrue(content.contains(messageSource
-        .getMessage(GEL_COLORATION_PREFIX + submission.getColoration().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(GEL_COLORATION_PREFIX + submission.getColoration().name(), null,
+            locale)));
     assertFalse(content.contains("class=\"otherColoration\""));
     assertTrue(content.contains("class=\"developmentTime\""));
     assertNotNull(submission.getDevelopmentTime());
@@ -1202,16 +1682,18 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"storageTemperature\""));
     assertTrue(content.contains("class=\"digestion\""));
     assertNotNull(submission.getDigestion());
-    assertTrue(content.contains(messageSource.getMessage(
-        PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + submission.getDigestion().name(),
+            null, locale)));
     assertFalse(content.contains("class=\"usedDigestion\""));
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertFalse(content.contains("class=\"injectionType\""));
     assertFalse(content.contains("class=\"source\""));
     assertTrue(content.contains("class=\"proteinContent\""));
     assertNotNull(submission.getProteinContent());
-    assertTrue(content.contains(messageSource
-        .getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(PROTEIN_CONTENT_PREFIX + submission.getProteinContent().name(),
+            null, locale)));
     assertTrue(content.contains("class=\"instrument\""));
     assertNotNull(submission.getInstrument());
     assertTrue(content.contains(messageSource.getMessage(
@@ -1223,8 +1705,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"identificationLink\""));
     assertTrue(content.contains("class=\"quantification\""));
     assertNotNull(submission.getQuantification());
-    assertTrue(content.contains(messageSource
-        .getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(QUANTIFICATION_PREFIX + submission.getQuantification().name(),
+            null, locale)));
     assertFalse(content.contains("class=\"quantificationComment\""));
     assertFalse(content.contains("class=\"highResolution\""));
     assertFalse(content.contains("class=\"solvent\""));
@@ -1376,15 +1859,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
     PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
-    assertTrue(
-        content
-            .contains(
-                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[]{phoneNumber.getNumber(),
-                        Optional.ofNullable(phoneNumber.getExtension())
-                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension()},
-                    locale)));
+    assertTrue(content.contains(messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+        new Object[]{phoneNumber.getNumber(),
+            Optional.ofNullable(phoneNumber.getExtension()).map(ex -> ex.isEmpty() ? 0 : 1).orElse(
+                0), phoneNumber.getExtension()}, locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1551,8 +2029,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"highResolution\""));
-    assertTrue(content.contains(messageSource
-        .getMessage("submission.print.submission.highResolution.false", null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage("submission.print.submission.highResolution.false", null,
+            locale)));
   }
 
   @Test
@@ -1576,8 +2055,8 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
 
     String content = service.print(submission, locale);
     assertTrue(content.contains("class=\"solvent\""));
-    assertFalse(content
-        .contains(messageSource.getMessage(SOLVENT_PREFIX + Solvent.OTHER.name(), null, locale)));
+    assertFalse(content.contains(
+        messageSource.getMessage(SOLVENT_PREFIX + Solvent.OTHER.name(), null, locale)));
     for (Solvent solvent : Solvent.values()) {
       assertEquals(submission.getSolvents().stream().anyMatch(ss -> ss == solvent),
           content.contains(
@@ -1619,15 +2098,10 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertTrue(content.contains(submission.getUser().getName()));
     assertTrue(content.contains("class=\"user-phone\""));
     PhoneNumber phoneNumber = submission.getUser().getPhoneNumbers().get(0);
-    assertTrue(
-        content
-            .contains(
-                messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
-                    new Object[]{phoneNumber.getNumber(),
-                        Optional.ofNullable(phoneNumber.getExtension())
-                            .map(ex -> ex.isEmpty() ? 0 : 1).orElse(0),
-                        phoneNumber.getExtension()},
-                    locale)));
+    assertTrue(content.contains(messageSource.getMessage(PHONE_NUMBER_PREFIX + "value",
+        new Object[]{phoneNumber.getNumber(),
+            Optional.ofNullable(phoneNumber.getExtension()).map(ex -> ex.isEmpty() ? 0 : 1).orElse(
+                0), phoneNumber.getExtension()}, locale)));
     assertTrue(content.contains("class=\"laboratory-name\""));
     assertTrue(content.contains(submission.getLaboratory().getName()));
     assertTrue(content.contains("class=\"laboratory-director\""));
@@ -1684,8 +2158,9 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
     assertFalse(content.contains("class=\"otherDigestion\""));
     assertTrue(content.contains("class=\"injectionType\""));
     assertNotNull(submission.getInjectionType());
-    assertTrue(content.contains(messageSource
-        .getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null, locale)));
+    assertTrue(content.contains(
+        messageSource.getMessage(INJECTION_TYPE_PREFIX + submission.getInjectionType().name(), null,
+            locale)));
     assertTrue(content.contains("class=\"source\""));
     assertNotNull(submission.getSource());
     assertTrue(content.contains(messageSource.getMessage(

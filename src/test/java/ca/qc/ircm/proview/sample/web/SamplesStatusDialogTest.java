@@ -107,10 +107,10 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
         i -> i.getArgument(0) != null ? repository.findById(i.getArgument(0)) : Optional.empty());
     UI.getCurrent().setLocale(locale);
     SubmissionsView view = navigate(SubmissionsView.class);
-    @SuppressWarnings("unchecked")
-    Grid<Submission> submissions = test(view).find(Grid.class).id(SubmissionsView.SUBMISSIONS);
+    @SuppressWarnings("unchecked") Grid<Submission> submissions = test(view).find(Grid.class)
+        .id(SubmissionsView.SUBMISSIONS);
     submissions.setItems(repository.findAll());
-    test(submissions).clickRow(18, new MetaKeys().shift());
+    test(submissions).clickRow(1, new MetaKeys().shift());
     dialog = $(SamplesStatusDialog.class).id(ID);
     samples = sampleRepository.findAll();
   }
@@ -196,9 +196,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     for (int i = 0; i < samples.size(); i++) {
       SubmissionSample sample = samples.get(i);
       assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
-      @SuppressWarnings("unchecked")
-      ComboBox<SampleStatus> statusBox =
-          test(test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
+      @SuppressWarnings("unchecked") ComboBox<SampleStatus> statusBox = test(
+          test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
       assertEquals(sample.getStatus(), statusBox.getValue(), i + ", " + sample);
       assertTrue(statusBox.hasClassName(STATUS));
       assertTrue(statusBox.isRequiredIndicatorVisible());
@@ -214,8 +213,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
 
   @Test
   public void samples_NameColumnComparator() {
-    Comparator<SubmissionSample> nameComparator =
-        test(dialog.samples).getColumn(NAME).getComparator(SortDirection.ASCENDING);
+    Comparator<SubmissionSample> nameComparator = test(dialog.samples).getColumn(NAME)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, nameComparator.compare(new SubmissionSample("éê"), new SubmissionSample("ee")));
     assertTrue(nameComparator.compare(new SubmissionSample("a"), new SubmissionSample("e")) < 0);
     assertTrue(nameComparator.compare(new SubmissionSample("a"), new SubmissionSample("é")) < 0);
@@ -292,8 +291,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(0);
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.status(sample));
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.status(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
@@ -311,8 +310,8 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
     List<BinderValidationStatus<SubmissionSample>> statuses = dialog.validateSamples();
     BinderValidationStatus<SubmissionSample> status = statuses.get(1);
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.status(sample));
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.status(sample));
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
