@@ -43,6 +43,7 @@ server:
 vaadin:
   productionMode: false
   closeIdleSessions: true
+  allowed-packages: 'ca.qc.ircm.proview'
   license:
     assume: false
     paths:
