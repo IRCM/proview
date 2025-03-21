@@ -120,8 +120,8 @@ public class ForgotPasswordViewTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = view.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, view.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        view.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -139,8 +139,8 @@ public class ForgotPasswordViewTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = view.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, view.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        view.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)),
@@ -179,7 +179,7 @@ public class ForgotPasswordViewTest extends SpringUIUnitTest {
     forgotPassword.setId(34925L);
     forgotPassword.setConfirmNumber("feafet23ts");
     String url = webContext.getChangeForgottenPasswordUrl(forgotPassword, locale);
-    assertEquals("/" + UseForgotPasswordView.VIEW_NAME + "/" + forgotPassword.getId()
+    assertEquals(UseForgotPasswordView.VIEW_NAME + "/" + forgotPassword.getId()
         + UseForgotPasswordView.SEPARATOR + forgotPassword.getConfirmNumber(), url);
     assertTrue($(SigninView.class).exists());
     Notification notification = $(Notification.class).first();
