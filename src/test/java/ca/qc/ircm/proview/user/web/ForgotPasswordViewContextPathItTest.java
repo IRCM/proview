@@ -1,7 +1,5 @@
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.ForgotPasswordView.VIEW_NAME;
@@ -9,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.mail.MailConfiguration;
 import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
@@ -26,7 +23,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import java.util.List;
-import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
@@ -40,15 +36,14 @@ import org.springframework.test.context.DynamicPropertySource;
  * Integration tests for {@link ForgotPasswordView}.
  */
 @TestBenchTestAnnotations
-public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
+public class ForgotPasswordViewContextPathItTest extends AbstractTestBenchTestCase {
 
   @RegisterExtension
   static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
   private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
   private static final String SERVICE_PREFIX = messagePrefix(ForgotPasswordService.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
-  @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewItTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(
+      ForgotPasswordViewContextPathItTest.class);
   @Autowired
   private ForgotPasswordRepository repository;
   @Autowired
@@ -66,28 +61,6 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
 
   private void open() {
     openView(VIEW_NAME);
-  }
-
-  @Test
-  public void title() {
-    open();
-
-    Locale locale = currentLocale();
-    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
-        locale);
-    assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
-        getDriver().getTitle());
-  }
-
-  @Test
-  public void fieldsExistence() {
-    open();
-    ForgotPasswordViewElement view = $(ForgotPasswordViewElement.class).waitForFirst();
-    assertTrue(optional(view::header).isPresent());
-    assertTrue(optional(view::message).isPresent());
-    assertTrue(optional(view::email).isPresent());
-    assertTrue(optional(view::save).isPresent());
   }
 
   @Test

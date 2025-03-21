@@ -165,6 +165,8 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
+  mail:
+    host: localhost
 
 main:
   serverUrl: http://localhost:${local.server.port}
