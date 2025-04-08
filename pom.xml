@@ -57,7 +57,7 @@
     <guava.version>33.3.1-jre</guava.version>
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>2.1</generate-property-names.version>
-    <querydsl.version>5.0.0</querydsl.version>
+    <openfeign.querydsl.version>5.6.1</openfeign.querydsl.version>
     <selenium.version>4.27.0</selenium.version>
     <greenmail.version>2.0.1</greenmail.version>
     <testbench.skip>false</testbench.skip>
@@ -100,6 +100,13 @@
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-bom</artifactId>
         <version>${vaadin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign.querydsl</groupId>
+        <artifactId>querydsl-bom</artifactId>
+        <version>${openfeign.querydsl.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -198,13 +205,9 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.querydsl</groupId>
-      <artifactId>querydsl-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.querydsl</groupId>
+      <groupId>io.github.openfeign.querydsl</groupId>
       <artifactId>querydsl-jpa</artifactId>
-      <version>${querydsl.version}</version>
+      <version>${openfeign.querydsl.version}</version>
       <classifier>jakarta</classifier>
     </dependency>
     <dependency>
@@ -340,9 +343,9 @@
           </executions>
           <dependencies>
             <dependency>
-              <groupId>com.querydsl</groupId>
+              <groupId>io.github.openfeign.querydsl</groupId>
               <artifactId>querydsl-apt</artifactId>
-              <version>${querydsl.version}</version>
+              <version>${openfeign.querydsl.version}</version>
               <classifier>jakarta</classifier>
             </dependency>
           </dependencies>
