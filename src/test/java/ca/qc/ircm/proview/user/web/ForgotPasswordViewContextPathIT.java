@@ -36,14 +36,14 @@ import org.springframework.test.context.DynamicPropertySource;
  * Integration tests for {@link ForgotPasswordView}.
  */
 @TestBenchTestAnnotations
-public class ForgotPasswordViewContextPathItTest extends AbstractTestBenchTestCase {
+public class ForgotPasswordViewContextPathIT extends AbstractTestBenchTestCase {
 
   @RegisterExtension
   static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
   private static final String MESSAGES_PREFIX = messagePrefix(ForgotPasswordView.class);
   private static final String SERVICE_PREFIX = messagePrefix(ForgotPasswordService.class);
   private static final Logger logger = LoggerFactory.getLogger(
-      ForgotPasswordViewContextPathItTest.class);
+      ForgotPasswordViewContextPathIT.class);
   @Autowired
   private ForgotPasswordRepository repository;
   @Autowired

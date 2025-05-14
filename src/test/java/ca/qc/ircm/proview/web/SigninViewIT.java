@@ -27,7 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  * Integration tests for {@link SigninView}.
  */
 @TestBenchTestAnnotations
-public class SigninViewItTest extends AbstractTestBenchTestCase {
+public class SigninViewIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -45,8 +45,8 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     open();
 
     Locale locale = currentLocale();
-    String applicationName =
-        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
+        locale);
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
@@ -69,8 +69,8 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
-    waitUntil(driver -> driver != null && driver.getCurrentUrl() != null
-        && driver.getCurrentUrl().endsWith("?" + FAIL));
+    waitUntil(driver -> driver != null && driver.getCurrentUrl() != null && driver.getCurrentUrl()
+        .endsWith("?" + FAIL));
     assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());
@@ -104,8 +104,7 @@ public class SigninViewItTest extends AbstractTestBenchTestCase {
         throw new IllegalStateException("Sleep was interrupted", e);
       }
     }
-    assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
             new Object[]{configuration.lockDuration().getSeconds() / 60}, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());

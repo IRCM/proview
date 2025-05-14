@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SignoutViewItTest extends AbstractTestBenchTestCase {
+public class SignoutViewIT extends AbstractTestBenchTestCase {
 
   @Test
   @WithAnonymousUser

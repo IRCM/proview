@@ -29,7 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UsersViewItTest extends AbstractTestBenchTestCase {
+public class UsersViewIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

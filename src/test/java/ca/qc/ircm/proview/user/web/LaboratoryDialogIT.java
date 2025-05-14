@@ -23,7 +23,7 @@ import org.springframework.test.context.transaction.TestTransaction;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class LaboratoryDialogItTest extends AbstractTestBenchTestCase {
+public class LaboratoryDialogIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   @Autowired

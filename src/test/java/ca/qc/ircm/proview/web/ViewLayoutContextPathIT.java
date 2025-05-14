@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 @TestBenchTestAnnotations
 @ActiveProfiles({"integration-test", "context-path"})
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ViewLayoutContextPathItTest extends AbstractTestBenchTestCase {
+public class ViewLayoutContextPathIT extends AbstractTestBenchTestCase {
 
   private void open() {
     openView(VIEW_NAME);

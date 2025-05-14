@@ -40,7 +40,7 @@ import org.springframework.test.context.DynamicPropertySource;
  * Integration tests for {@link ForgotPasswordView}.
  */
 @TestBenchTestAnnotations
-public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
+public class ForgotPasswordViewIT extends AbstractTestBenchTestCase {
 
   @RegisterExtension
   static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP);
@@ -48,7 +48,7 @@ public class ForgotPasswordViewItTest extends AbstractTestBenchTestCase {
   private static final String SERVICE_PREFIX = messagePrefix(ForgotPasswordService.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewItTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(ForgotPasswordViewIT.class);
   @Autowired
   private ForgotPasswordRepository repository;
   @Autowired

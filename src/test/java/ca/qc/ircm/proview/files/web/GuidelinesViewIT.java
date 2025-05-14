@@ -36,7 +36,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
+public class GuidelinesViewIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -66,8 +66,8 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
     open();
 
     Locale locale = currentLocale();
-    String applicationName =
-        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
+        locale);
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
@@ -93,12 +93,12 @@ public class GuidelinesViewItTest extends AbstractTestBenchTestCase {
   public void download() throws Throwable {
     open();
     Files.createDirectories(downloadHome);
-    Guideline guideline =
-        guidelinesConfiguration.categories(currentLocale()).get(0).getGuidelines().get(0);
+    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).getGuidelines()
+        .get(0);
     Path downloaded = downloadHome.resolve(guideline.getPath().getFileName().toString());
     Files.deleteIfExists(downloaded);
-    Path source =
-        Paths.get(Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
+    Path source = Paths.get(
+        Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
     Files.createDirectories(guideline.getPath().getParent());
     Files.copy(source, guideline.getPath(), StandardCopyOption.REPLACE_EXISTING);
 

@@ -28,7 +28,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewItTest extends AbstractTestBenchTestCase {
+public class HistoryViewIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
@@ -70,8 +70,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     open();
 
     Locale locale = currentLocale();
-    String applicationName =
-        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
+        locale);
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
@@ -115,7 +115,8 @@ public class HistoryViewItTest extends AbstractTestBenchTestCase {
     view.view().click();
     TreatmentDialogElement dialog = view.treatmentDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(messageSource.getMessage(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name(),
-        null, currentLocale()), dialog.header().getText());
+    assertEquals(
+        messageSource.getMessage(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name(), null,
+            currentLocale()), dialog.header().getText());
   }
 }

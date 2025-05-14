@@ -26,12 +26,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
+public class SubmissionDialogIT extends AbstractTestBenchTestCase {
 
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionDialogItTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionDialogIT.class);
   @Autowired
   private SubmissionRepository repository;
   @Autowired
@@ -51,8 +51,9 @@ public class SubmissionDialogItTest extends AbstractTestBenchTestCase {
 
   private void setFields(SubmissionDialogElement dialog) {
     Locale locale = this.currentLocale();
-    dialog.instrument().selectByText(messageSource
-        .getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null, locale));
+    dialog.instrument().selectByText(
+        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null,
+            locale));
     dialog.dataAvailableDate().setDate(dataAvailableDate);
   }
 

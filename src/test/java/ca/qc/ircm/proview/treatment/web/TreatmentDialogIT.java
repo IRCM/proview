@@ -1,4 +1,4 @@
-package ca.qc.ircm.proview.msanalysis.web;
+package ca.qc.ircm.proview.treatment.web;
 
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,30 +11,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
- * Integration tests for {@link MsAnalysisDialog}.
+ * Integration tests for {@link TreatmentDialog}.
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class MsAnalysisDialogItTest extends AbstractTestBenchTestCase {
+public class TreatmentDialogIT extends AbstractTestBenchTestCase {
 
   private void open() {
     openView(VIEW_NAME, "1");
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
-    view.activities().select(5);
+    view.activities().select(3);
     view.view().click();
-    $(MsAnalysisDialogElement.class).waitForFirst();
+    $(TreatmentDialogElement.class).waitForFirst();
   }
 
   @Test
   public void fieldsExistence() {
     open();
-    MsAnalysisDialogElement dialog = $(MsAnalysisDialogElement.class).waitForFirst();
+    TreatmentDialogElement dialog = $(TreatmentDialogElement.class).waitForFirst();
     assertTrue(optional(dialog::header).isPresent());
     assertFalse(optional(dialog::deleted).isPresent());
-    assertTrue(optional(dialog::instrument).isPresent());
-    assertTrue(optional(dialog::source).isPresent());
+    assertFalse(optional(dialog::protocol).isPresent());
+    assertTrue(optional(dialog::fractionationType).isPresent());
     assertTrue(optional(dialog::date).isPresent());
-    assertTrue(optional(dialog::acquisitionsHeader).isPresent());
-    assertTrue(optional(dialog::acquisitions).isPresent());
+    assertTrue(optional(dialog::samplesHeader).isPresent());
+    assertTrue(optional(dialog::samples).isPresent());
   }
 }

@@ -33,14 +33,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
+public class SubmissionsViewIT extends AbstractTestBenchTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
-  private static final String SAMPLES_STATUS_DIALOG_PREFIX =
-      messagePrefix(SamplesStatusDialog.class);
+  private static final String SAMPLES_STATUS_DIALOG_PREFIX = messagePrefix(
+      SamplesStatusDialog.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
-  private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewItTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewIT.class);
   @Autowired
   private SubmissionRepository repository;
   @Autowired
@@ -65,8 +65,8 @@ public class SubmissionsViewItTest extends AbstractTestBenchTestCase {
     open();
 
     Locale locale = currentLocale();
-    String applicationName =
-        messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null, locale);
+    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
+        locale);
     assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());

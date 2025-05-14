@@ -23,7 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
+public class SamplesStatusDialogIT extends AbstractTestBenchTestCase {
 
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @Autowired
@@ -52,10 +52,12 @@ public class SamplesStatusDialogItTest extends AbstractTestBenchTestCase {
   public void save() {
     SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
-    dialog.samples().status(0).selectByText(messageSource
-        .getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.ANALYSED.name(), null, locale));
-    dialog.samples().status(1).selectByText(messageSource
-        .getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.DIGESTED.name(), null, locale));
+    dialog.samples().status(0).selectByText(
+        messageSource.getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.ANALYSED.name(), null,
+            locale));
+    dialog.samples().status(1).selectByText(
+        messageSource.getMessage(SAMPLE_STATUS_PREFIX + SampleStatus.DIGESTED.name(), null,
+            locale));
     dialog.save().click();
     assertFalse(dialog.isOpen());
     assertEquals(SampleStatus.ANALYSED, repository.findById(640L).orElseThrow().getStatus());

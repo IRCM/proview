@@ -302,16 +302,12 @@
           <configuration>
             <excludes>
               <exclude>ca/qc/ircm/proview/test/**/*.java</exclude>
-              <exclude>ca/qc/ircm/proview/**/*ItTest.java</exclude>
             </excludes>
           </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
           <configuration>
-            <includes>
-              <include>ca/qc/ircm/proview/**/*ItTest.java</include>
-            </includes>
             <systemPropertyVariables>
               <testbench.skip>${testbench.skip}</testbench.skip>
               <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}
