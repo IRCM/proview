@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.ViewLayoutElement;
-import org.junit.jupiter.api.Test;
+import com.vaadin.testbench.BrowserTest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 @TestBenchTestAnnotations
 @ActiveProfiles({"integration-test", "context-path"})
 @WithUserDetails("proview@ircm.qc.ca")
-public class UsersViewContextPathIT extends AbstractTestBenchTestCase {
+public class UsersViewContextPathIT extends AbstractBrowserTestCase {
 
   @Value("${spring.application.name}")
   private String applicationName;
@@ -28,7 +28,7 @@ public class UsersViewContextPathIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME);
   }
 
-  @Test
+  @BrowserTest
   public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();

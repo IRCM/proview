@@ -5,7 +5,6 @@ import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UserView.SAVED;
 import static ca.qc.ircm.proview.user.web.UserView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
@@ -22,11 +21,12 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
+import com.vaadin.testbench.BrowserTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserViewIT extends AbstractTestBenchTestCase {
+public class UserViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -73,7 +73,7 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME, Objects.toString(id, ""));
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -81,7 +81,7 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void security_User() {
     open();
@@ -89,7 +89,7 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     $(AccessDeniedViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void security_Manager() {
     open();
@@ -97,19 +97,19 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     $(UserViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
@@ -117,7 +117,7 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::save).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void update() {
     open(2L);
     UserViewElement view = $(UserViewElement.class).waitForFirst();
@@ -140,34 +140,35 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     view.userForm().extension().setValue(extension);
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
         notification.getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    assertEquals(name, user.getName());
+    Assertions.assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
-    assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
+    Assertions.assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
+    Assertions.assertEquals(Locale.CANADA_FRENCH, user.getLocale());
+    Assertions.assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
     entityManager.refresh(user.getLaboratory());
-    assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(1, user.getPhoneNumbers().size());
-    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    Assertions.assertEquals(1, user.getPhoneNumbers().size());
+    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    assertEquals(addressLine, user.getAddress().getLine());
-    assertEquals(town, user.getAddress().getTown());
-    assertEquals(state, user.getAddress().getState());
-    assertEquals(country, user.getAddress().getCountry());
-    assertEquals(postalCode, user.getAddress().getPostalCode());
+    Assertions.assertEquals(addressLine, user.getAddress().getLine());
+    Assertions.assertEquals(town, user.getAddress().getTown());
+    Assertions.assertEquals(state, user.getAddress().getState());
+    Assertions.assertEquals(country, user.getAddress().getCountry());
+    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
     $(UsersViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void add() {
     open();
     UserViewElement view = $(UserViewElement.class).waitForFirst();
@@ -190,12 +191,13 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     view.userForm().extension().setValue(extension);
     view.save().click();
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
         notification.getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    assertEquals(name, user.getName());
+    Assertions.assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
@@ -204,17 +206,17 @@ public class UserViewIT extends AbstractTestBenchTestCase {
     assertTrue(user.getRegisterTime().isAfter(LocalDateTime.now().minusSeconds(60)));
     assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
     entityManager.refresh(user.getLaboratory());
-    assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals(1, user.getPhoneNumbers().size());
-    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    Assertions.assertEquals(1, user.getPhoneNumbers().size());
+    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    assertEquals(addressLine, user.getAddress().getLine());
-    assertEquals(town, user.getAddress().getTown());
-    assertEquals(state, user.getAddress().getState());
-    assertEquals(country, user.getAddress().getCountry());
-    assertEquals(postalCode, user.getAddress().getPostalCode());
+    Assertions.assertEquals(addressLine, user.getAddress().getLine());
+    Assertions.assertEquals(town, user.getAddress().getTown());
+    Assertions.assertEquals(state, user.getAddress().getState());
+    Assertions.assertEquals(country, user.getAddress().getCountry());
+    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
     $(UsersViewElement.class).waitForFirst();
   }
 }

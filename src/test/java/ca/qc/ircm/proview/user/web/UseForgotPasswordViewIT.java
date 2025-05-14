@@ -6,12 +6,11 @@ import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SAVED;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.SEPARATOR;
 import static ca.qc.ircm.proview.user.web.UseForgotPasswordView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordRepository;
@@ -19,9 +18,10 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
+import com.vaadin.testbench.BrowserTest;
 import jakarta.persistence.EntityManager;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * Integration tests for {@link UseForgotPasswordView}.
  */
 @TestBenchTestAnnotations
-public class UseForgotPasswordViewIT extends AbstractTestBenchTestCase {
+public class UseForgotPasswordViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -56,19 +56,19 @@ public class UseForgotPasswordViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME, id + SEPARATOR + confirm);
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).waitForFirst();
@@ -79,7 +79,7 @@ public class UseForgotPasswordViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::save).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void save() {
     open();
     UseForgotPasswordViewElement view = $(UseForgotPasswordViewElement.class).waitForFirst();
@@ -89,7 +89,8 @@ public class UseForgotPasswordViewIT extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, null, currentLocale()),
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, null, currentLocale()),
         notification.getText());
     ForgotPassword forgotPassword = repository.findById(id).orElseThrow();
     entityManager.refresh(forgotPassword);

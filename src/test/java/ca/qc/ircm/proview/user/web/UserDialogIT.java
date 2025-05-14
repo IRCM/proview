@@ -2,24 +2,24 @@ package ca.qc.ircm.proview.user.web;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import com.vaadin.testbench.BrowserTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -31,7 +31,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserDialogIT extends AbstractTestBenchTestCase {
+public class UserDialogIT extends AbstractBrowserTestCase {
 
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
@@ -62,7 +62,7 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME);
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -90,7 +90,7 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     assertTrue(optional(dialog::cancel).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void update() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -121,31 +121,31 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    assertEquals(name, user.getName());
+    Assertions.assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
-    assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
+    Assertions.assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
+    Assertions.assertEquals(Locale.CANADA_FRENCH, user.getLocale());
+    Assertions.assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
     entityManager.refresh(user.getLaboratory());
-    assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals("Translational Proteomics", user.getLaboratory().getName());
-    assertEquals(1, user.getPhoneNumbers().size());
-    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    Assertions.assertEquals("Translational Proteomics", user.getLaboratory().getName());
+    Assertions.assertEquals(1, user.getPhoneNumbers().size());
+    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    assertEquals(addressLine, user.getAddress().getLine());
-    assertEquals(town, user.getAddress().getTown());
-    assertEquals(state, user.getAddress().getState());
-    assertEquals(country, user.getAddress().getCountry());
-    assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(rows, view.users().getRowCount());
-    assertEquals(email, view.users().email(1));
+    Assertions.assertEquals(addressLine, user.getAddress().getLine());
+    Assertions.assertEquals(town, user.getAddress().getTown());
+    Assertions.assertEquals(state, user.getAddress().getState());
+    Assertions.assertEquals(country, user.getAddress().getCountry());
+    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
+    Assertions.assertEquals(rows, view.users().getRowCount());
+    Assertions.assertEquals(email, view.users().email(1));
   }
 
-  @Test
+  @BrowserTest
   public void update_Cancel() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -174,10 +174,10 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
     assertFalse(repository.findByEmail(email).isPresent());
-    assertEquals(rows, view.users().getRowCount());
+    Assertions.assertEquals(rows, view.users().getRowCount());
   }
 
-  @Test
+  @BrowserTest
   public void add() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -207,7 +207,7 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    assertEquals(name, user.getName());
+    Assertions.assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
@@ -216,22 +216,22 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     assertTrue(user.getRegisterTime().isAfter(LocalDateTime.now().minusSeconds(60)));
     assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
     entityManager.refresh(user.getLaboratory());
-    assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    assertEquals("Translational Proteomics", user.getLaboratory().getName());
-    assertEquals(1, user.getPhoneNumbers().size());
-    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    Assertions.assertEquals("Translational Proteomics", user.getLaboratory().getName());
+    Assertions.assertEquals(1, user.getPhoneNumbers().size());
+    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    assertEquals(addressLine, user.getAddress().getLine());
-    assertEquals(town, user.getAddress().getTown());
-    assertEquals(state, user.getAddress().getState());
-    assertEquals(country, user.getAddress().getCountry());
-    assertEquals(postalCode, user.getAddress().getPostalCode());
-    assertEquals(rows + 1, view.users().getRowCount());
+    Assertions.assertEquals(addressLine, user.getAddress().getLine());
+    Assertions.assertEquals(town, user.getAddress().getTown());
+    Assertions.assertEquals(state, user.getAddress().getState());
+    Assertions.assertEquals(country, user.getAddress().getCountry());
+    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
+    Assertions.assertEquals(rows + 1, view.users().getRowCount());
   }
 
-  @Test
+  @BrowserTest
   public void add_Cancel() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -259,6 +259,6 @@ public class UserDialogIT extends AbstractTestBenchTestCase {
     dialog.cancel().click();
     waitUntil(driver -> !dialog.isOpen());
     assertFalse(repository.findByEmail(email).isPresent());
-    assertEquals(rows, view.users().getRowCount());
+    Assertions.assertEquals(rows, view.users().getRowCount());
   }
 }

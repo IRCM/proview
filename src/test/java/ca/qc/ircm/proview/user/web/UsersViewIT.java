@@ -4,20 +4,20 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UsersView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import ca.qc.ircm.proview.web.ViewLayoutElement;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -29,7 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UsersViewIT extends AbstractTestBenchTestCase {
+public class UsersViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -42,7 +42,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME);
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -50,7 +50,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void security_User() {
     open();
@@ -58,7 +58,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     $(AccessDeniedViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void security_Manager() {
     open();
@@ -66,26 +66,26 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     $(UsersViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void security_Admin() {
     open();
 
     $(UsersViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -97,7 +97,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::viewLaboratory).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void edit() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -108,7 +108,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     assertTrue(view.dialog().isOpen());
   }
 
-  @Test
+  @BrowserTest
   public void add() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -118,7 +118,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     assertTrue(view.dialog().isOpen());
   }
 
-  @Test
+  @BrowserTest
   public void switchUser() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();
@@ -132,7 +132,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     assertFalse(optional(viewLayout::users).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @Disabled("Admins are allowed to switch to another admin right now")
   public void switchUser_Fail() {
     open();
@@ -144,7 +144,7 @@ public class UsersViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::switchFailed).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void view_Laboratory() {
     open();
     UsersViewElement view = $(UsersViewElement.class).waitForFirst();

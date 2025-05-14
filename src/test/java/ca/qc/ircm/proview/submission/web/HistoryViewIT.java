@@ -4,20 +4,20 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.HistoryView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialog;
 import ca.qc.ircm.proview.msanalysis.web.MsAnalysisDialogElement;
 import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialogElement;
 import ca.qc.ircm.proview.web.SigninViewElement;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -28,7 +28,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewIT extends AbstractTestBenchTestCase {
+public class HistoryViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
@@ -41,7 +41,7 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME, "1");
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -49,7 +49,7 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void security_User() {
     open();
@@ -57,7 +57,7 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     $(AccessDeniedViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void security_Manager() {
     open();
@@ -65,26 +65,26 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     $(AccessDeniedViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
     assertTrue(optional(view::activities).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void dialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
@@ -92,10 +92,10 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     view.view().click();
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
-    assertEquals("G100429", dialog.header().getText());
+    Assertions.assertEquals("G100429", dialog.header().getText());
   }
 
-  @Test
+  @BrowserTest
   public void msAnalysisDialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
@@ -103,11 +103,12 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     view.view().click();
     MsAnalysisDialogElement dialog = view.msAnalysisDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(messageSource.getMessage(MS_ANALYSIS_DIALOG_PREFIX + MsAnalysisDialog.HEADER, null,
-        currentLocale()), dialog.header().getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(MS_ANALYSIS_DIALOG_PREFIX + MsAnalysisDialog.HEADER, null,
+            currentLocale()), dialog.header().getText());
   }
 
-  @Test
+  @BrowserTest
   public void treatmentDialog() {
     open();
     HistoryViewElement view = $(HistoryViewElement.class).waitForFirst();
@@ -115,7 +116,7 @@ public class HistoryViewIT extends AbstractTestBenchTestCase {
     view.view().click();
     TreatmentDialogElement dialog = view.treatmentDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name(), null,
             currentLocale()), dialog.header().getText());
   }

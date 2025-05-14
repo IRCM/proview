@@ -3,19 +3,19 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.web.ContactView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.files.web.GuidelinesView;
 import ca.qc.ircm.proview.files.web.GuidelinesViewElement;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.user.web.ProfileViewElement;
 import ca.qc.ircm.proview.user.web.UsersViewElement;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -24,13 +24,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ViewLayoutIT extends AbstractTestBenchTestCase {
+public class ViewLayoutIT extends AbstractBrowserTestCase {
 
   private void open() {
     openView(VIEW_NAME);
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -38,7 +38,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence_User() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -55,7 +55,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::guidelines).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void fieldsExistence_Manager() {
     open();
@@ -73,7 +73,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::guidelines).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() {
     open();
@@ -91,7 +91,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::guidelines).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Runas() {
     open();
@@ -114,7 +114,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::guidelines).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void submissions() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -122,7 +122,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(SubmissionsViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void profile() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -130,7 +130,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(ProfileViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void users() {
     open();
@@ -139,7 +139,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(UsersViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void exitSwitchUser() {
     open();
@@ -157,7 +157,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     assertTrue(optional(viewAfterExitSwitchUser::users).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void signout() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -165,18 +165,18 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void changeLanguage() {
     open();
     final Locale before = currentLocale();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
     view.changeLanguage().click();
     $(ContactViewElement.class).waitForFirst();
-    assertEquals(ENGLISH.equals(before) ? FRENCH : ENGLISH, currentLocale());
-    assertEquals(viewUrl(VIEW_NAME), getDriver().getCurrentUrl());
+    Assertions.assertEquals(ENGLISH.equals(before) ? FRENCH : ENGLISH, currentLocale());
+    Assertions.assertEquals(viewUrl(VIEW_NAME), getDriver().getCurrentUrl());
   }
 
-  @Test
+  @BrowserTest
   public void contact() {
     openView(GuidelinesView.VIEW_NAME);
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
@@ -184,7 +184,7 @@ public class ViewLayoutIT extends AbstractTestBenchTestCase {
     $(ContactViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void guidelines() {
     open();
     ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();

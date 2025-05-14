@@ -32,3 +32,4 @@ frontend-*
 /src/main/bundles/prod.bundle
 /tsconfig.json
 /types.d.ts
+/error-screenshots

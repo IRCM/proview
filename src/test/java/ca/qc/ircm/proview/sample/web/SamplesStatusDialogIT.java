@@ -2,17 +2,17 @@ package ca.qc.ircm.proview.sample.web;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.sample.SampleStatus;
 import ca.qc.ircm.proview.sample.SubmissionSampleRepository;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,7 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SamplesStatusDialogIT extends AbstractTestBenchTestCase {
+public class SamplesStatusDialogIT extends AbstractBrowserTestCase {
 
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @Autowired
@@ -38,7 +38,7 @@ public class SamplesStatusDialogIT extends AbstractTestBenchTestCase {
     return view.statusDialog();
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     SamplesStatusDialogElement dialog = open();
     assertTrue(optional(dialog::header).isPresent());
@@ -48,7 +48,7 @@ public class SamplesStatusDialogIT extends AbstractTestBenchTestCase {
     assertTrue(optional(dialog::cancel).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void save() {
     SamplesStatusDialogElement dialog = open();
     Locale locale = currentLocale();
@@ -60,12 +60,15 @@ public class SamplesStatusDialogIT extends AbstractTestBenchTestCase {
             locale));
     dialog.save().click();
     assertFalse(dialog.isOpen());
-    assertEquals(SampleStatus.ANALYSED, repository.findById(640L).orElseThrow().getStatus());
-    assertEquals(SampleStatus.DIGESTED, repository.findById(641L).orElseThrow().getStatus());
-    assertEquals(SampleStatus.WAITING, repository.findById(642L).orElseThrow().getStatus());
+    Assertions.assertEquals(SampleStatus.ANALYSED,
+        repository.findById(640L).orElseThrow().getStatus());
+    Assertions.assertEquals(SampleStatus.DIGESTED,
+        repository.findById(641L).orElseThrow().getStatus());
+    Assertions.assertEquals(SampleStatus.WAITING,
+        repository.findById(642L).orElseThrow().getStatus());
   }
 
-  @Test
+  @BrowserTest
   public void cancel() {
     SamplesStatusDialogElement dialog = open();
     dialog.cancel().click();

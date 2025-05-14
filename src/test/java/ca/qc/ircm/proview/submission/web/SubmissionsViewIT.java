@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,12 +12,13 @@ import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewIT extends AbstractTestBenchTestCase {
+public class SubmissionsViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SAMPLES_STATUS_DIALOG_PREFIX = messagePrefix(
@@ -52,7 +52,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME);
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -60,19 +60,19 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
@@ -82,7 +82,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     assertFalse(optional(view::history).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() {
     open();
@@ -93,7 +93,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::history).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void hide() {
     open();
@@ -107,7 +107,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     assertTrue(submission.isHidden());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void show() {
     open();
@@ -124,7 +124,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     assertFalse(submission.isHidden());
   }
 
-  @Test
+  @BrowserTest
   public void view() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
@@ -134,10 +134,10 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
 
     SubmissionDialogElement dialog = view.dialog();
     assertTrue(dialog.isOpen());
-    assertEquals("POLR3B-Flag", dialog.header().getText());
+    Assertions.assertEquals("POLR3B-Flag", dialog.header().getText());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void statusDialog() {
     open();
@@ -147,11 +147,12 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-        new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+            new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void history_Grid() {
     open();
@@ -160,10 +161,10 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     view.submissions().experimentCell(0).click(0, 0, Keys.ALT);
 
     $(HistoryViewElement.class).waitForFirst();
-    assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    Assertions.assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 
-  @Test
+  @BrowserTest
   public void add() {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
@@ -173,7 +174,7 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     $(SubmissionViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus() {
     open();
@@ -184,11 +185,12 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
 
     SamplesStatusDialogElement dialog = view.statusDialog();
     assertTrue(dialog.isOpen());
-    assertEquals(messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-        new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+            new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void history() {
     open();
@@ -198,6 +200,6 @@ public class SubmissionsViewIT extends AbstractTestBenchTestCase {
     view.history().click();
 
     $(HistoryViewElement.class).waitForFirst();
-    assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    Assertions.assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 }

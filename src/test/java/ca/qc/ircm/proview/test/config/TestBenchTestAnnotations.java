@@ -5,6 +5,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,21 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration-test")
-@TestExecutionListeners(
-    value = {VaadinLicenseExecutionListener.class,
-        FixSecurityContextHolderStrategyExecutionListener.class,
-        TestBenchTestExecutionListener.class, TestBenchSecurityFilter.class},
-    mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
+@TestExecutionListeners(value = {VaadinLicenseExecutionListener.class,
+    FixSecurityContextHolderStrategyExecutionListener.class, TestBenchTestExecutionListener.class,
+    TestBenchSecurityFilter.class}, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @Headless
+@Execution(ExecutionMode.SAME_THREAD)
 @Transactional
 @Sql({"/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
     "/sample-data.sql", "/activity-data.sql", "/analysis-data.sql", "/database-after-insert.sql"})
 public @interface TestBenchTestAnnotations {
 
-  /**
-   * Returns true if ScreenshotOnFailureRule is used, false otherwise.
-   *
-   * @return true if ScreenshotOnFailureRule is used, false otherwise
-   */
-  boolean useScreenshotRule() default false;
 }

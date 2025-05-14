@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.submission.web.HistoryViewElement;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import org.junit.jupiter.api.Test;
+import com.vaadin.testbench.BrowserTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class TreatmentDialogIT extends AbstractTestBenchTestCase {
+public class TreatmentDialogIT extends AbstractBrowserTestCase {
 
   private void open() {
     openView(VIEW_NAME, "1");
@@ -25,7 +25,7 @@ public class TreatmentDialogIT extends AbstractTestBenchTestCase {
     $(TreatmentDialogElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     TreatmentDialogElement dialog = $(TreatmentDialogElement.class).waitForFirst();

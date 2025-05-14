@@ -2,18 +2,18 @@ package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import com.vaadin.testbench.BrowserTest;
 import java.time.LocalDate;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionDialogIT extends AbstractTestBenchTestCase {
+public class SubmissionDialogIT extends AbstractBrowserTestCase {
 
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
       MassDetectionInstrument.class);
@@ -57,7 +57,7 @@ public class SubmissionDialogIT extends AbstractTestBenchTestCase {
     dialog.dataAvailableDate().setDate(dataAvailableDate);
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence_User() {
     SubmissionDialogElement dialog = openDialog(0);
     assertTrue(optional(dialog::header).isPresent());
@@ -69,7 +69,7 @@ public class SubmissionDialogIT extends AbstractTestBenchTestCase {
     assertTrue(optional(dialog::edit).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() {
     SubmissionDialogElement dialog = openDialog(0);
@@ -82,7 +82,7 @@ public class SubmissionDialogIT extends AbstractTestBenchTestCase {
     assertTrue(optional(dialog::edit).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void update() {
     SubmissionDialogElement dialog = openDialog(0);
@@ -92,27 +92,28 @@ public class SubmissionDialogIT extends AbstractTestBenchTestCase {
     dialog.clickSave();
     assertFalse(dialog.isOpen());
     Submission submission = repository.findById(164L).orElseThrow();
-    assertEquals(instrument, submission.getInstrument());
-    assertEquals(dataAvailableDate, submission.getDataAvailableDate());
+    Assertions.assertEquals(instrument, submission.getInstrument());
+    Assertions.assertEquals(dataAvailableDate, submission.getDataAvailableDate());
   }
 
-  @Test
+  @BrowserTest
   public void print() {
     SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickPrint();
 
     $(PrintSubmissionViewElement.class).waitForFirst();
-    assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    Assertions.assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"),
+        getDriver().getCurrentUrl());
   }
 
-  @Test
+  @BrowserTest
   public void edit() {
     SubmissionDialogElement dialog = openDialog(0);
 
     dialog.clickEdit();
 
     $(SubmissionViewElement.class).waitForFirst();
-    assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    Assertions.assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 }

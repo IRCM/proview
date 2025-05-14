@@ -4,15 +4,15 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.web.SigninViewElement;
+import com.vaadin.testbench.BrowserTest;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionViewIT extends AbstractTestBenchTestCase {
+public class PrintSubmissionViewIT extends AbstractBrowserTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -38,7 +38,7 @@ public class PrintSubmissionViewIT extends AbstractTestBenchTestCase {
     openView(VIEW_NAME, "164");
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -46,26 +46,26 @@ public class PrintSubmissionViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void url() {
     open();
     $(PrintSubmissionViewElement.class).waitForFirst();
-    assertEquals(viewUrl(VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    Assertions.assertEquals(viewUrl(VIEW_NAME, "164"), getDriver().getCurrentUrl());
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence_User() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();
@@ -75,7 +75,7 @@ public class PrintSubmissionViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::printSubmission).isPresent());
   }
 
-  @Test
+  @BrowserTest
   @WithUserDetails("proview@ircm.qc.ca")
   public void fieldsExistence_Admin() {
     open();
@@ -86,7 +86,7 @@ public class PrintSubmissionViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::printSubmission).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void submissionsView() {
     open();
     PrintSubmissionViewElement view = $(PrintSubmissionViewElement.class).waitForFirst();

@@ -8,7 +8,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,13 +27,14 @@ import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractTestBenchTestCase;
+import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
 import ca.qc.ircm.proview.test.config.Download;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninViewElement;
 import com.vaadin.flow.component.html.testbench.AnchorElement;
 import com.vaadin.flow.component.notification.testbench.NotificationElement;
+import com.vaadin.testbench.BrowserTest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionViewIT extends AbstractTestBenchTestCase {
+public class SubmissionViewIT extends AbstractBrowserTestCase {
 
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
@@ -249,7 +249,7 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
             locale));
   }
 
-  @Test
+  @BrowserTest
   @WithAnonymousUser
   public void security_Anonymous() {
     open();
@@ -257,19 +257,19 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     $(SigninViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void title() {
     open();
 
     Locale locale = currentLocale();
     String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
         locale);
-    assertEquals(
+    Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
         getDriver().getTitle());
   }
 
-  @Test
+  @BrowserTest
   public void fieldsExistence() {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
@@ -289,7 +289,7 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     assertTrue(optional(view::save).isPresent());
   }
 
-  @Test
+  @BrowserTest
   public void save_LcmsmsSolution() throws Throwable {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
@@ -300,53 +300,57 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-        currentLocale()), notification.getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
+            currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    assertEquals(experiment, submission.getExperiment());
-    assertEquals(goal, submission.getGoal());
-    assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(protein, submission.getProtein());
-    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    Assertions.assertEquals(experiment, submission.getExperiment());
+    Assertions.assertEquals(goal, submission.getGoal());
+    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
+    Assertions.assertEquals(protein, submission.getProtein());
+    Assertions.assertEquals(postTranslationModification,
+        submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    assertEquals(samplesCount, submission.getSamples().size());
+    Assertions.assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      assertEquals(sampleType, submission.getSamples().get(i).getType());
-      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
-      assertEquals(quantity, submission.getSamples().get(i).getQuantity());
-      assertEquals(volume, submission.getSamples().get(i).getVolume());
+      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      Assertions.assertEquals(sampleType, submission.getSamples().get(i).getType());
+      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      Assertions.assertEquals(quantity, submission.getSamples().get(i).getQuantity());
+      Assertions.assertEquals(volume, submission.getSamples().get(i).getVolume());
     }
-    assertEquals(digestion, submission.getDigestion());
+    Assertions.assertEquals(digestion, submission.getDigestion());
     switch (digestion) {
       case DIGESTED:
-        assertEquals(usedDigestion, submission.getUsedDigestion());
+        Assertions.assertEquals(usedDigestion, submission.getUsedDigestion());
         break;
       case OTHER:
-        assertEquals(otherDigestion, submission.getOtherDigestion());
+        Assertions.assertEquals(otherDigestion, submission.getOtherDigestion());
         break;
       default:
     }
-    assertEquals(proteinContent, submission.getProteinContent());
-    assertEquals(instrument, submission.getInstrument());
-    assertEquals(identification, submission.getIdentification());
+    Assertions.assertEquals(proteinContent, submission.getProteinContent());
+    Assertions.assertEquals(instrument, submission.getInstrument());
+    Assertions.assertEquals(identification, submission.getIdentification());
     if (identification == ProteinIdentification.OTHER) {
-      assertEquals(identificationLink, submission.getIdentificationLink());
+      Assertions.assertEquals(identificationLink, submission.getIdentificationLink());
     }
-    assertEquals(quantification, submission.getQuantification());
+    Assertions.assertEquals(quantification, submission.getQuantification());
     if (quantification == Quantification.SILAC || quantification == Quantification.TMT) {
-      assertEquals(quantificationComment, submission.getQuantificationComment());
+      Assertions.assertEquals(quantificationComment, submission.getQuantificationComment());
     }
-    assertEquals(comment, submission.getComment());
-    assertEquals(2, submission.getFiles().size());
-    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
+    Assertions.assertEquals(comment, submission.getComment());
+    Assertions.assertEquals(2, submission.getFiles().size());
+    Assertions.assertEquals(file1.getFileName().toString(),
+        submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
+    Assertions.assertEquals(file2.getFileName().toString(),
+        submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
     $(SubmissionsViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void save_LcmsmsGel() throws Throwable {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
@@ -357,59 +361,63 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-        currentLocale()), notification.getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
+            currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    assertEquals(experiment, submission.getExperiment());
-    assertEquals(goal, submission.getGoal());
-    assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(protein, submission.getProtein());
-    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    Assertions.assertEquals(experiment, submission.getExperiment());
+    Assertions.assertEquals(goal, submission.getGoal());
+    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
+    Assertions.assertEquals(protein, submission.getProtein());
+    Assertions.assertEquals(postTranslationModification,
+        submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    assertEquals(samplesCount, submission.getSamples().size());
+    Assertions.assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      assertEquals(SampleType.GEL, submission.getSamples().get(i).getType());
-      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      Assertions.assertEquals(SampleType.GEL, submission.getSamples().get(i).getType());
+      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
     }
-    assertEquals(separation, submission.getSeparation());
-    assertEquals(thickness, submission.getThickness());
-    assertEquals(coloration, submission.getColoration());
-    assertEquals(otherColoration, submission.getOtherColoration());
-    assertEquals(developmentTime, submission.getDevelopmentTime());
-    assertEquals(destained, submission.isDecoloration());
-    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity());
-    assertEquals(proteinQuantity, submission.getProteinQuantity());
-    assertEquals(digestion, submission.getDigestion());
+    Assertions.assertEquals(separation, submission.getSeparation());
+    Assertions.assertEquals(thickness, submission.getThickness());
+    Assertions.assertEquals(coloration, submission.getColoration());
+    Assertions.assertEquals(otherColoration, submission.getOtherColoration());
+    Assertions.assertEquals(developmentTime, submission.getDevelopmentTime());
+    Assertions.assertEquals(destained, submission.isDecoloration());
+    Assertions.assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity());
+    Assertions.assertEquals(proteinQuantity, submission.getProteinQuantity());
+    Assertions.assertEquals(digestion, submission.getDigestion());
     switch (digestion) {
       case DIGESTED:
-        assertEquals(usedDigestion, submission.getUsedDigestion());
+        Assertions.assertEquals(usedDigestion, submission.getUsedDigestion());
         break;
       case OTHER:
-        assertEquals(otherDigestion, submission.getOtherDigestion());
+        Assertions.assertEquals(otherDigestion, submission.getOtherDigestion());
         break;
       default:
     }
-    assertEquals(proteinContent, submission.getProteinContent());
-    assertEquals(instrument, submission.getInstrument());
-    assertEquals(identification, submission.getIdentification());
+    Assertions.assertEquals(proteinContent, submission.getProteinContent());
+    Assertions.assertEquals(instrument, submission.getInstrument());
+    Assertions.assertEquals(identification, submission.getIdentification());
     if (identification == ProteinIdentification.OTHER) {
-      assertEquals(identificationLink, submission.getIdentificationLink());
+      Assertions.assertEquals(identificationLink, submission.getIdentificationLink());
     }
-    assertEquals(quantification, submission.getQuantification());
+    Assertions.assertEquals(quantification, submission.getQuantification());
     if (quantification == Quantification.SILAC || quantification == Quantification.TMT) {
-      assertEquals(quantificationComment, submission.getQuantificationComment());
+      Assertions.assertEquals(quantificationComment, submission.getQuantificationComment());
     }
-    assertEquals(comment, submission.getComment());
-    assertEquals(2, submission.getFiles().size());
-    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
+    Assertions.assertEquals(comment, submission.getComment());
+    Assertions.assertEquals(2, submission.getFiles().size());
+    Assertions.assertEquals(file1.getFileName().toString(),
+        submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
+    Assertions.assertEquals(file2.getFileName().toString(),
+        submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
     $(SubmissionsViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void save_SmallMolecule() throws Throwable {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
@@ -420,40 +428,43 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{sampleName1},
-        currentLocale()), notification.getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{sampleName1},
+            currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1))
         .orElseThrow();
-    assertEquals(sampleName1, submission.getExperiment());
-    assertEquals(solvent, submission.getSolutionSolvent());
-    assertEquals(formula, submission.getFormula());
+    Assertions.assertEquals(sampleName1, submission.getExperiment());
+    Assertions.assertEquals(solvent, submission.getSolutionSolvent());
+    Assertions.assertEquals(formula, submission.getFormula());
     assertNotNull(submission.getMonoisotopicMass());
-    assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
+    Assertions.assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
     assertNotNull(submission.getAverageMass());
-    assertEquals(averageMass, submission.getAverageMass(), 0.0001);
-    assertEquals(toxicity, submission.getToxicity());
-    assertEquals(lightSensitive, submission.isLightSensitive());
-    assertEquals(storageTemperature, submission.getStorageTemperature());
-    assertEquals(highResolution, submission.isHighResolution());
-    assertEquals(solvents.size(), submission.getSolvents().size());
+    Assertions.assertEquals(averageMass, submission.getAverageMass(), 0.0001);
+    Assertions.assertEquals(toxicity, submission.getToxicity());
+    Assertions.assertEquals(lightSensitive, submission.isLightSensitive());
+    Assertions.assertEquals(storageTemperature, submission.getStorageTemperature());
+    Assertions.assertEquals(highResolution, submission.isHighResolution());
+    Assertions.assertEquals(solvents.size(), submission.getSolvents().size());
     for (Solvent solvent : solvents) {
       assertTrue(submission.getSolvents().contains(solvent));
     }
-    assertEquals(otherSolvent, submission.getOtherSolvent());
+    Assertions.assertEquals(otherSolvent, submission.getOtherSolvent());
     assertNotNull(submission.getSamples());
-    assertEquals(1, submission.getSamples().size());
-    assertEquals(sampleType, submission.getSamples().get(0).getType());
-    assertEquals(sampleName1, submission.getSamples().get(0).getName());
-    assertEquals(comment, submission.getComment());
-    assertEquals(2, submission.getFiles().size());
-    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
+    Assertions.assertEquals(1, submission.getSamples().size());
+    Assertions.assertEquals(sampleType, submission.getSamples().get(0).getType());
+    Assertions.assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    Assertions.assertEquals(comment, submission.getComment());
+    Assertions.assertEquals(2, submission.getFiles().size());
+    Assertions.assertEquals(file1.getFileName().toString(),
+        submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
+    Assertions.assertEquals(file2.getFileName().toString(),
+        submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
     $(SubmissionsViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   public void save_IntactProtein() throws Throwable {
     open();
     SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
@@ -464,36 +475,40 @@ public class SubmissionViewIT extends AbstractTestBenchTestCase {
     view.save().click();
 
     NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-        currentLocale()), notification.getText());
+    Assertions.assertEquals(
+        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
+            currentLocale()), notification.getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    assertEquals(experiment, submission.getExperiment());
-    assertEquals(goal, submission.getGoal());
-    assertEquals(taxonomy, submission.getTaxonomy());
-    assertEquals(protein, submission.getProtein());
-    assertEquals(postTranslationModification, submission.getPostTranslationModification());
+    Assertions.assertEquals(experiment, submission.getExperiment());
+    Assertions.assertEquals(goal, submission.getGoal());
+    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
+    Assertions.assertEquals(protein, submission.getProtein());
+    Assertions.assertEquals(postTranslationModification,
+        submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    assertEquals(samplesCount, submission.getSamples().size());
+    Assertions.assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      assertEquals(sampleType, submission.getSamples().get(i).getType());
-      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
-      assertEquals(quantity, submission.getSamples().get(i).getQuantity());
-      assertEquals(volume, submission.getSamples().get(i).getVolume());
+      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      Assertions.assertEquals(sampleType, submission.getSamples().get(i).getType());
+      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      Assertions.assertEquals(quantity, submission.getSamples().get(i).getQuantity());
+      Assertions.assertEquals(volume, submission.getSamples().get(i).getVolume());
     }
-    assertEquals(injection, submission.getInjectionType());
-    assertEquals(source, submission.getSource());
-    assertEquals(instrument, submission.getInstrument());
-    assertEquals(comment, submission.getComment());
-    assertEquals(2, submission.getFiles().size());
-    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
+    Assertions.assertEquals(injection, submission.getInjectionType());
+    Assertions.assertEquals(source, submission.getSource());
+    Assertions.assertEquals(instrument, submission.getInstrument());
+    Assertions.assertEquals(comment, submission.getComment());
+    Assertions.assertEquals(2, submission.getFiles().size());
+    Assertions.assertEquals(file1.getFileName().toString(),
+        submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
+    Assertions.assertEquals(file2.getFileName().toString(),
+        submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
     $(SubmissionsViewElement.class).waitForFirst();
   }
 
-  @Test
+  @BrowserTest
   @Download
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void downloadFile() throws Throwable {
