@@ -61,7 +61,6 @@
     <selenium.version>4.27.0</selenium.version>
     <greenmail.version>2.0.1</greenmail.version>
     <testbench.skip>false</testbench.skip>
-    <testbench.maxAttempts>3</testbench.maxAttempts>
     <testbench.driver>org.openqa.selenium.chrome.ChromeDriver</testbench.driver>
     <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
@@ -305,8 +304,6 @@
           <configuration>
             <systemPropertyVariables>
               <testbench.skip>${testbench.skip}</testbench.skip>
-              <com.vaadin.testbench.Parameters.maxAttempts>${testbench.maxAttempts}
-              </com.vaadin.testbench.Parameters.maxAttempts>
             </systemPropertyVariables>
             <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
           </configuration>
