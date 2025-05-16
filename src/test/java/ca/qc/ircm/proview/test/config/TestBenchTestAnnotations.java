@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @TestExecutionListeners(value = {VaadinLicenseExecutionListener.class,
     FixSecurityContextHolderStrategyExecutionListener.class,
     TestBenchSecurityFilter.class}, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
-@Headless
 @Execution(ExecutionMode.SAME_THREAD)
 @Transactional
 @Sql({"/drop-schema.sql", "/schema-h2.sql", "/database-before-insert.sql", "/user-data.sql",
