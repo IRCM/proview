@@ -166,15 +166,16 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.lcmsmsSubmissionForm.goal.setValue(submission.getGoal());
         view.lcmsmsSubmissionForm.taxonomy.setValue(submission.getTaxonomy());
         view.lcmsmsSubmissionForm.protein.setValue(submission.getProtein());
-        view.lcmsmsSubmissionForm.molecularWeight
-            .setValue(String.valueOf(sample.getMolecularWeight()));
-        view.lcmsmsSubmissionForm.postTranslationModification
-            .setValue(submission.getPostTranslationModification());
+        view.lcmsmsSubmissionForm.molecularWeight.setValue(
+            String.valueOf(sample.getMolecularWeight()));
+        view.lcmsmsSubmissionForm.postTranslationModification.setValue(
+            submission.getPostTranslationModification());
         view.lcmsmsSubmissionForm.sampleType.setValue(sample.getType());
-        view.lcmsmsSubmissionForm.samplesCount
-            .setValue(String.valueOf(submission.getSamples().size()));
-        view.lcmsmsSubmissionForm.samplesNames.setValue(submission.getSamples().stream()
-            .map(Sample::getName).collect(Collectors.joining(", ")));
+        view.lcmsmsSubmissionForm.samplesCount.setValue(
+            String.valueOf(submission.getSamples().size()));
+        view.lcmsmsSubmissionForm.samplesNames.setValue(
+            submission.getSamples().stream().map(Sample::getName)
+                .collect(Collectors.joining(", ")));
         view.lcmsmsSubmissionForm.quantity.setValue(sample.getQuantity());
         view.lcmsmsSubmissionForm.volume.setValue(sample.getVolume());
         view.lcmsmsSubmissionForm.separation.setValue(submission.getSeparation());
@@ -183,8 +184,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.lcmsmsSubmissionForm.otherColoration.setValue(submission.getOtherColoration());
         view.lcmsmsSubmissionForm.developmentTime.setValue(submission.getDevelopmentTime());
         view.lcmsmsSubmissionForm.destained.setValue(submission.isDecoloration());
-        view.lcmsmsSubmissionForm.weightMarkerQuantity
-            .setValue(String.valueOf(submission.getWeightMarkerQuantity()));
+        view.lcmsmsSubmissionForm.weightMarkerQuantity.setValue(
+            String.valueOf(submission.getWeightMarkerQuantity()));
         view.lcmsmsSubmissionForm.proteinQuantity.setValue(submission.getProteinQuantity());
         view.lcmsmsSubmissionForm.digestion.setValue(submission.getDigestion());
         view.lcmsmsSubmissionForm.usedDigestion.setValue(submission.getUsedDigestion());
@@ -194,8 +195,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.lcmsmsSubmissionForm.identification.setValue(submission.getIdentification());
         view.lcmsmsSubmissionForm.identificationLink.setValue(submission.getIdentificationLink());
         view.lcmsmsSubmissionForm.quantification.setValue(submission.getQuantification());
-        view.lcmsmsSubmissionForm.quantificationComment
-            .setValue(submission.getQuantificationComment());
+        view.lcmsmsSubmissionForm.quantificationComment.setValue(
+            submission.getQuantificationComment());
       }
       case INTACT_PROTEIN -> {
         SubmissionSample sample = submission.getSamples().get(0);
@@ -203,15 +204,16 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.intactProteinSubmissionForm.goal.setValue(submission.getGoal());
         view.intactProteinSubmissionForm.taxonomy.setValue(submission.getTaxonomy());
         view.intactProteinSubmissionForm.protein.setValue(submission.getProtein());
-        view.intactProteinSubmissionForm.molecularWeight
-            .setValue(String.valueOf(sample.getMolecularWeight()));
-        view.intactProteinSubmissionForm.postTranslationModification
-            .setValue(submission.getPostTranslationModification());
+        view.intactProteinSubmissionForm.molecularWeight.setValue(
+            String.valueOf(sample.getMolecularWeight()));
+        view.intactProteinSubmissionForm.postTranslationModification.setValue(
+            submission.getPostTranslationModification());
         view.intactProteinSubmissionForm.sampleType.setValue(sample.getType());
-        view.intactProteinSubmissionForm.samplesCount
-            .setValue(String.valueOf(submission.getSamples().size()));
-        view.intactProteinSubmissionForm.samplesNames.setValue(submission.getSamples().stream()
-            .map(Sample::getName).collect(Collectors.joining(", ")));
+        view.intactProteinSubmissionForm.samplesCount.setValue(
+            String.valueOf(submission.getSamples().size()));
+        view.intactProteinSubmissionForm.samplesNames.setValue(
+            submission.getSamples().stream().map(Sample::getName)
+                .collect(Collectors.joining(", ")));
         view.intactProteinSubmissionForm.quantity.setValue(sample.getQuantity());
         view.intactProteinSubmissionForm.volume.setValue(sample.getVolume());
         view.intactProteinSubmissionForm.injection.setValue(submission.getInjectionType());
@@ -224,14 +226,14 @@ public class SubmissionViewTest extends SpringUIUnitTest {
         view.smallMoleculeSubmissionForm.sampleName.setValue(sample.getName());
         view.smallMoleculeSubmissionForm.solvent.setValue(submission.getSolutionSolvent());
         view.smallMoleculeSubmissionForm.formula.setValue(submission.getFormula());
-        view.smallMoleculeSubmissionForm.monoisotopicMass
-            .setValue(String.valueOf(submission.getMonoisotopicMass()));
-        view.smallMoleculeSubmissionForm.averageMass
-            .setValue(String.valueOf(submission.getAverageMass()));
+        view.smallMoleculeSubmissionForm.monoisotopicMass.setValue(
+            String.valueOf(submission.getMonoisotopicMass()));
+        view.smallMoleculeSubmissionForm.averageMass.setValue(
+            String.valueOf(submission.getAverageMass()));
         view.smallMoleculeSubmissionForm.toxicity.setValue(submission.getToxicity());
         view.smallMoleculeSubmissionForm.lightSensitive.setValue(submission.isLightSensitive());
-        view.smallMoleculeSubmissionForm.storageTemperature
-            .setValue(submission.getStorageTemperature());
+        view.smallMoleculeSubmissionForm.storageTemperature.setValue(
+            submission.getStorageTemperature());
         view.smallMoleculeSubmissionForm.highResolution.setValue(submission.isHighResolution());
         view.smallMoleculeSubmissionForm.solvents.setValue(new HashSet<>(submission.getSolvents()));
         view.smallMoleculeSubmissionForm.otherSolvent.setValue(submission.getOtherSolvent());
@@ -305,9 +307,9 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   private Submission smallMoleculeSubmission() {
     Submission submission = new Submission();
     submission.setService(SMALL_MOLECULE);
-    List<SubmissionSample> samples =
-        IntStream.range(0, 1).mapToObj(i -> new SubmissionSample("my sample " + (i + 1)))
-            .peek(sa -> sa.setType(SampleType.SOLUTION)).collect(Collectors.toList());
+    List<SubmissionSample> samples = IntStream.range(0, 1)
+        .mapToObj(i -> new SubmissionSample("my sample " + (i + 1)))
+        .peek(sa -> sa.setType(SampleType.SOLUTION)).collect(Collectors.toList());
     submission.setSamples(samples);
     submission.setSolutionSolvent("ethanol");
     submission.setFormula("ch3oh");
@@ -380,7 +382,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void services() {
-    assertEquals(3, view.service.getComponentCount());
+    assertEquals(3, view.service.getTabCount());
     assertEquals(view.lcmsms, view.service.getTabAt(0));
     assertEquals(view.smallMolecule, view.service.getTabAt(1));
     assertEquals(view.intactProtein, view.service.getTabAt(2));
@@ -444,8 +446,8 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void files_FilenameColumnComparator() {
-    Comparator<SubmissionFile> filenameComparator =
-        test(view.files).getColumn(FILENAME).getComparator(SortDirection.ASCENDING);
+    Comparator<SubmissionFile> filenameComparator = test(view.files).getColumn(FILENAME)
+        .getComparator(SortDirection.ASCENDING);
     assertEquals(0, filenameComparator.compare(new SubmissionFile("éê"), new SubmissionFile("ee")));
     assertTrue(filenameComparator.compare(new SubmissionFile("a"), new SubmissionFile("e")) < 0);
     assertTrue(filenameComparator.compare(new SubmissionFile("a"), new SubmissionFile("é")) < 0);

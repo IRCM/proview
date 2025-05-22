@@ -44,7 +44,7 @@ public class ViewLayoutElement extends VerticalLayoutElement {
    * Opens side navigation. If side navigation is already open, this method does nothing.
    */
   private void openSideNav() {
-    if (!"true".equals(drawerToggle().getAttribute("aria-expanded"))) {
+    if (!"true".equals(drawerToggle().getDomAttribute("aria-expanded"))) {
       drawerToggle().click();
     }
   }

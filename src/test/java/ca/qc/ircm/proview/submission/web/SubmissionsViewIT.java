@@ -100,7 +100,7 @@ public class SubmissionsViewIT extends AbstractBrowserTestCase {
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
 
     view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
+    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
     Submission submission = repository.findById(164L).orElseThrow();
@@ -113,11 +113,11 @@ public class SubmissionsViewIT extends AbstractBrowserTestCase {
     open();
     SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
     view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
+    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
         .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
 
     view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getAttribute("theme")
+    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
         .equals(ButtonVariant.LUMO_SUCCESS.getVariantName()));
 
     Submission submission = repository.findById(164L).orElseThrow();
