@@ -105,7 +105,7 @@ public class SubmissionsView extends VerticalLayout implements HasDynamicTitle,
   public static final String SAMPLES_SPAN = "<span .title='${item.samplesTitle}'>${item.samplesValue}</span>";
   public static final String STATUS_SPAN = "<span .title='${item.statusTitle}'>${item.statusValue}</span>";
   public static final String HIDDEN_BUTTON =
-      "<vaadin-button class='" + HIDDEN + "' .theme='${item.hiddenTheme}' @click='${toggleHidden}'>"
+      "<vaadin-button class='" + HIDDEN + "' theme='${item.hiddenTheme}' @click='${toggleHidden}'>"
           + "<vaadin-icon .icon='${item.hiddenIcon}' slot='prefix'></vaadin-icon>"
           + "${item.hiddenValue}" + "</vaadin-button>";
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
