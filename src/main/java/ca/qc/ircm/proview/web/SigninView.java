@@ -38,8 +38,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = SigninView.VIEW_NAME)
 @AnonymousAllowed
-public class SigninView extends LoginOverlay
-    implements LocaleChangeObserver, HasDynamicTitle, AfterNavigationObserver, BeforeEnterObserver {
+public class SigninView extends LoginOverlay implements LocaleChangeObserver, HasDynamicTitle,
+    AfterNavigationObserver, BeforeEnterObserver {
 
   public static final String VIEW_NAME = "signin";
   public static final String ID = "signin-view";
@@ -92,6 +92,13 @@ public class SigninView extends LoginOverlay
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    updateMessages();
+  }
+
+  private void updateMessages() {
+    if (error == null) {
+      error = FAIL;
+    }
     i18n = LoginI18n.createDefault();
     i18n.setHeader(new LoginI18n.Header());
     i18n.getHeader().setTitle(getTranslation(MESSAGES_PREFIX + HEADER));
@@ -104,9 +111,6 @@ public class SigninView extends LoginOverlay
     i18n.getForm().setPassword(getTranslation(USER_PREFIX + HASHED_PASSWORD));
     i18n.getForm().setForgotPassword(getTranslation(MESSAGES_PREFIX + FORGOT_PASSWORD));
     i18n.setErrorMessage(new ErrorMessage());
-    if (error == null) {
-      error = FAIL;
-    }
     i18n.getErrorMessage().setTitle(getTranslation(MESSAGES_PREFIX + property(error, TITLE)));
     i18n.getErrorMessage().setMessage(
         getTranslation(MESSAGES_PREFIX + error, configuration.lockDuration().getSeconds() / 60));
@@ -132,6 +136,7 @@ public class SigninView extends LoginOverlay
       error = FAIL;
       setError(true);
     }
+    updateMessages();
   }
 
   void fireForgotPasswordEvent() {
