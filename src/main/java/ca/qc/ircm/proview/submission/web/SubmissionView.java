@@ -51,7 +51,6 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -65,11 +64,9 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.streams.UploadHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -80,7 +77,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
-import org.springframework.util.FileCopyUtils;
 
 /**
  * Submission view.
@@ -111,8 +107,9 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
   protected Tab smallMolecule = new Tab();
   protected Tab intactProtein = new Tab();
   protected TextArea comment = new TextArea();
-  protected MultiFileMemoryBuffer uploadBuffer = new MultiFileMemoryBuffer();
-  protected Upload upload = new Upload(uploadBuffer);
+  protected UploadHandler uploadFileHandler = UploadHandler.inMemory(
+      (metadata, fileContent) -> addFile(metadata.fileName(), fileContent));
+  protected Upload upload = new Upload(uploadFileHandler);
   protected Grid<SubmissionFile> files = new Grid<>();
   protected Column<SubmissionFile> filename;
   protected Column<SubmissionFile> remove;
@@ -168,8 +165,6 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     upload.setMaxFileSize(MAXIMUM_FILES_SIZE);
     upload.setMaxFiles(MAXIMUM_FILES_COUNT);
     upload.setMinHeight("2.5em");
-    upload.addSucceededListener(
-        event -> addFile(event.getFileName(), uploadBuffer.getInputStream(event.getFileName())));
     files.setId(FILES);
     files.setHeight("15em");
     files.setWidth("45em");
@@ -240,18 +235,11 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     return Service.LC_MS_MS;
   }
 
-  void addFile(String filename, InputStream input) {
+  void addFile(String filename, byte[] fileContent) {
     logger.debug("received file {}", filename);
     SubmissionFile file = new SubmissionFile();
     file.setFilename(filename);
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    try {
-      FileCopyUtils.copy(input, output);
-    } catch (IOException e) {
-      showNotification(getTranslation(MESSAGES_PREFIX + FILES_IOEXCEPTION, filename));
-      return;
-    }
-    file.setContent(output.toByteArray());
+    file.setContent(fileContent);
     if (filesDataProvider.getItems().size() >= MAXIMUM_FILES_COUNT) {
       showNotification(getTranslation(MESSAGES_PREFIX + FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT));
       return;

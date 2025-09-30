@@ -14,7 +14,6 @@ import static ca.qc.ircm.proview.submission.SubmissionFileProperties.FILENAME;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.COMMENT;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.FILES;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.SERVICE;
-import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_IOEXCEPTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.FILES_OVER_MAXIMUM;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.HEADER;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.ID;
@@ -22,7 +21,6 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_COU
 import static ca.qc.ircm.proview.submission.web.SubmissionView.MAXIMUM_FILES_SIZE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.REMOVE;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
-import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.fireEvent;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.items;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateEquals;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
@@ -38,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,16 +72,11 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.upload.SucceededEvent;
-import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -240,8 +232,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
       }
     }
     view.comment.setValue(comment);
-    files.forEach(
-        file -> view.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent())));
+    files.forEach(file -> view.addFile(file.getFilename(), file.getContent()));
   }
 
   private Submission lcmsmsSubmission() {
@@ -396,21 +387,18 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void upload_File() {
-    view.uploadBuffer = mock(MultiFileMemoryBuffer.class);
     int filesize = 84325;
     byte[] content = new byte[filesize];
     random.nextBytes(content);
-    ByteArrayInputStream input = new ByteArrayInputStream(content);
-    when(view.uploadBuffer.getInputStream(any())).thenReturn(input);
     String filename = "test_file.txt";
     String mimeType = "text/plain";
-    SucceededEvent event = new SucceededEvent(view.upload, filename, mimeType, filesize);
-    fireEvent(view.upload, event);
+
+    test(view.upload).upload(filename, mimeType, content);
+
     Optional<SubmissionFile> newFile = view.files.getListDataView().getItems()
         .filter(sf -> sf.getFilename().equals(filename)).findFirst();
     assertTrue(newFile.isPresent());
     assertArrayEquals(content, newFile.get().getContent());
-    verify(view.uploadBuffer).getInputStream(filename);
   }
 
   @Test
@@ -465,7 +453,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   public void addFile() {
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     SubmissionFile file = files.get(0);
-    view.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent()));
+    view.addFile(file.getFilename(), file.getContent());
     List<SubmissionFile> files = items(view.files);
     assertEquals(1, files.size());
     assertEquals(file.getFilename(), files.get(0).getFilename());
@@ -474,31 +462,12 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   }
 
   @Test
-  public void addFile_IoException() {
-    view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
-    SubmissionFile file = files.get(0);
-    InputStream input = new InputStream() {
-      @Override
-      public int read() throws IOException {
-        throw new IOException("test");
-      }
-    };
-    view.addFile(file.getFilename(), input);
-    Notification notification = $(Notification.class).first();
-    assertEquals(view.getTranslation(MESSAGES_PREFIX + FILES_IOEXCEPTION, file.getFilename()),
-        test(notification).getText());
-    assertTrue(items(view.files).isEmpty());
-    verify(filesDataProviderListener, never()).onDataChange(any());
-  }
-
-  @Test
   public void addFile_OverMaximumCount() {
     SubmissionFile file = files.get(0);
-    IntStream.range(0, MAXIMUM_FILES_COUNT).forEach(
-        i -> view.addFile(file.getFilename() + i, new ByteArrayInputStream(file.getContent())));
+    IntStream.range(0, MAXIMUM_FILES_COUNT)
+        .forEach(i -> view.addFile(file.getFilename() + i, file.getContent()));
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
-    view.addFile(file.getFilename() + MAXIMUM_FILES_COUNT,
-        new ByteArrayInputStream(file.getContent()));
+    view.addFile(file.getFilename() + MAXIMUM_FILES_COUNT, file.getContent());
     Notification notification = $(Notification.class).first();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT),
         test(notification).getText());
@@ -512,8 +481,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
 
   @Test
   public void removeFile_New() {
-    files.forEach(
-        file -> view.addFile(file.getFilename(), new ByteArrayInputStream(file.getContent())));
+    files.forEach(file -> view.addFile(file.getFilename(), file.getContent()));
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     view.removeFile(items(view.files).get(0));
     List<SubmissionFile> files = items(view.files);
