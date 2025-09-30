@@ -12,18 +12,28 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * {@link DaoAuthenticationProvider} that also validates password using {@link LdapService}.
  */
 public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider {
 
-  private static final Logger logger =
-      LoggerFactory.getLogger(DaoAuthenticationProviderWithLdap.class);
+  private static final Logger logger = LoggerFactory.getLogger(
+      DaoAuthenticationProviderWithLdap.class);
   private UserRepository userRepository;
   private LdapService ldapService;
   private SecurityConfiguration securityConfiguration;
   private LdapConfiguration ldapConfiguration;
+
+  /**
+   * Creates instance of {@link DaoAuthenticationProviderWithLdap}.
+   *
+   * @param userDetailsService {@link UserDetailsService}
+   */
+  public DaoAuthenticationProviderWithLdap(UserDetailsService userDetailsService) {
+    super(userDetailsService);
+  }
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -67,9 +77,8 @@ public class DaoAuthenticationProviderWithLdap extends DaoAuthenticationProvider
   private boolean accountLocked(User user) {
     return user.getSignAttempts() > 0
         && user.getSignAttempts() % securityConfiguration.lockAttemps() == 0
-        && user.getLastSignAttempt() != null
-        && user.getLastSignAttempt().plusMinutes(securityConfiguration.lockDuration().toMinutes())
-        .isAfter(LocalDateTime.now());
+        && user.getLastSignAttempt() != null && user.getLastSignAttempt()
+        .plusMinutes(securityConfiguration.lockDuration().toMinutes()).isAfter(LocalDateTime.now());
   }
 
   private boolean isLdapPasswordValid(UserDetails userDetails, String password) {

@@ -68,8 +68,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     configuration.passwords().forEach(pv -> encoders.put(String.valueOf(pv.version()),
         new ShiroPasswordEncoder(pv.algorithm(), pv.iterations())));
 
-    DelegatingPasswordEncoder passworEncoder =
-        new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION, encoders);
+    DelegatingPasswordEncoder passworEncoder = new DelegatingPasswordEncoder(PASSWORD_ENCRYPTION,
+        encoders);
     passworEncoder.setDefaultPasswordEncoderForMatches(defaultPasswordEncoder);
 
     return passworEncoder;
@@ -82,9 +82,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
    */
   @Bean
   public DaoAuthenticationProviderWithLdap authenticationProvider() {
-    DaoAuthenticationProviderWithLdap authenticationProvider =
-        new DaoAuthenticationProviderWithLdap();
-    authenticationProvider.setUserDetailsService(userDetailsService);
+    DaoAuthenticationProviderWithLdap authenticationProvider = new DaoAuthenticationProviderWithLdap(
+        userDetailsService);
     authenticationProvider.setPasswordEncoder(passwordEncoder());
     authenticationProvider.setUserRepository(userRepository);
     authenticationProvider.setLdapService(ldapService);
@@ -95,8 +94,7 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
 
   @Bean
   public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-    DefaultMethodSecurityExpressionHandler expressionHandler =
-        new DefaultMethodSecurityExpressionHandler();
+    DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
     expressionHandler.setPermissionEvaluator(permissionEvaluator);
     return expressionHandler;
   }
@@ -111,8 +109,7 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     final Map<String, String> failureUrlMap = new HashMap<>();
     failureUrlMap.put(LockedException.class.getName(), SIGNIN_LOCKED_URL);
     failureUrlMap.put(DisabledException.class.getName(), SIGNIN_DISABLED_URL);
-    ExceptionMappingAuthenticationFailureHandler authenticationFailureHandler =
-        new ExceptionMappingAuthenticationFailureHandler();
+    ExceptionMappingAuthenticationFailureHandler authenticationFailureHandler = new ExceptionMappingAuthenticationFailureHandler();
     authenticationFailureHandler.setDefaultFailureUrl(SIGNIN_DEFAULT_FAILURE_URL);
     authenticationFailureHandler.setExceptionMappings(failureUrlMap);
     return authenticationFailureHandler;
