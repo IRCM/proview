@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,10 +23,16 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.AbstractStreamResource;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.StreamResourceRegistry.ElementStreamResource;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadResponse;
+import com.vaadin.flow.server.streams.InputStreamDownloadCallback;
+import com.vaadin.flow.server.streams.InputStreamDownloadHandler;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,6 +46,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.util.FileCopyUtils;
 
 /**
  * Tests for {@link PrintSubmission}.
@@ -80,6 +88,15 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     assertEquals(new Html(content).getElement().getOuterHTML(), html.getElement().getOuterHTML());
   }
 
+  private void copyInputStreamDownloadHandlerStream(InputStreamDownloadHandler downloadHandler,
+      OutputStream output) throws IOException, NoSuchFieldException, IllegalAccessException {
+    Field field = InputStreamDownloadHandler.class.getDeclaredField("callback");
+    field.setAccessible(true);
+    InputStreamDownloadCallback callback = (InputStreamDownloadCallback) field.get(downloadHandler);
+    DownloadResponse response = callback.complete(mock());
+    FileCopyUtils.copy(response.getInputStream(), output);
+  }
+
   @Test
   public void printContent_ReplaceHref() throws Throwable {
     String content = "<div><a href=\"files-0\">abc.txt</a><a href=\"files-1\">def.txt</a></div>";
@@ -94,12 +111,14 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     Matcher matcher = pattern.matcher(html.getElement().getOuterHTML());
     assertTrue(matcher.find());
     String uri = matcher.group(1);
-    Optional<AbstractStreamResource> optionalResource =
-        VaadinSession.getCurrent().getResourceRegistry().getResource(new URI(uri));
+    Optional<AbstractStreamResource> optionalResource = VaadinSession.getCurrent()
+        .getResourceRegistry().getResource(new URI(uri));
     assertTrue(optionalResource.isPresent());
-    assertInstanceOf(StreamResource.class, optionalResource.get());
-    StreamResource resource = (StreamResource) optionalResource.get();
-    resource.getWriter().accept(output, VaadinSession.getCurrent());
+    assertInstanceOf(ElementStreamResource.class, optionalResource.get());
+    assertInstanceOf(InputStreamDownloadHandler.class,
+        ((ElementStreamResource) optionalResource.get()).getElementRequestHandler());
+    InputStreamDownloadHandler downloadHandler = (InputStreamDownloadHandler) ((ElementStreamResource) optionalResource.get()).getElementRequestHandler();
+    copyInputStreamDownloadHandlerStream((InputStreamDownloadHandler) downloadHandler, output);
     byte[] file1Content = Files.readAllBytes(
         Path.of(Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI()));
     assertArrayEquals(file1Content, output.toByteArray());
@@ -108,9 +127,11 @@ public class PrintSubmissionTest extends SpringUIUnitTest {
     uri = matcher.group(1);
     optionalResource = VaadinSession.getCurrent().getResourceRegistry().getResource(new URI(uri));
     assertTrue(optionalResource.isPresent());
-    assertInstanceOf(StreamResource.class, optionalResource.get());
-    resource = (StreamResource) optionalResource.get();
-    resource.getWriter().accept(output, VaadinSession.getCurrent());
+    assertInstanceOf(ElementStreamResource.class, optionalResource.get());
+    assertInstanceOf(InputStreamDownloadHandler.class,
+        ((ElementStreamResource) optionalResource.get()).getElementRequestHandler());
+    downloadHandler = (InputStreamDownloadHandler) ((ElementStreamResource) optionalResource.get()).getElementRequestHandler();
+    copyInputStreamDownloadHandlerStream((InputStreamDownloadHandler) downloadHandler, output);
     byte[] file2Content = Files.readAllBytes(
         Path.of(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI()));
     assertArrayEquals(file2Content, output.toByteArray());

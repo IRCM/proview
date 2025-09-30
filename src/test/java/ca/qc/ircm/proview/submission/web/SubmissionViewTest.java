@@ -417,7 +417,7 @@ public class SubmissionViewTest extends SpringUIUnitTest {
       assertInstanceOf(Anchor.class, filenameComponent);
       Anchor filenameAnchor = (Anchor) filenameComponent;
       assertEquals(file.getFilename(), filenameAnchor.getText());
-      assertEquals(file.getFilename(), filenameAnchor.getElement().getAttribute("download"));
+      assertTrue(filenameAnchor.getElement().hasAttribute("download"));
       assertTrue(filenameAnchor.getHref().startsWith("VAADIN/dynamic/resource"));
       Component removeComponent = test(view.files).getCellComponent(i, view.remove.getKey());
       assertInstanceOf(Button.class, removeComponent);

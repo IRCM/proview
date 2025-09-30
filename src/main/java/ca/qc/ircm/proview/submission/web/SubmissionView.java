@@ -34,7 +34,6 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.user.UserRole;
-import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.ViewLayoutChild;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
@@ -63,10 +62,12 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.server.streams.UploadHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
+import java.io.ByteArrayInputStream;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -185,8 +186,9 @@ public class SubmissionView extends VerticalLayout implements HasDynamicTitle,
     Anchor link = new Anchor();
     link.getElement().setAttribute("download", file.getFilename());
     link.setText(file.getFilename());
-    link.setHref(new StreamResource(file.getFilename(),
-        new ByteArrayStreamResourceWriter(file.getContent())));
+    link.setHref(DownloadHandler.fromInputStream(
+        event -> new DownloadResponse(new ByteArrayInputStream(file.getContent()),
+            file.getFilename(), null, file.getContent().length)));
     return link;
   }
 

@@ -5,18 +5,19 @@ import static ca.qc.ircm.proview.SpotbugsJustifications.CHILD_COMPONENT_EI_EXPOS
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionFile;
 import ca.qc.ircm.proview.submission.SubmissionService;
-import ca.qc.ircm.proview.web.ByteArrayStreamResourceWriter;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.server.StreamRegistration;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
 import java.io.Serial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +65,10 @@ public class PrintSubmission extends VerticalLayout implements LocaleChangeObser
       if (!html.isEmpty()) {
         for (int i = 0; i < submission.getFiles().size(); i++) {
           SubmissionFile file = submission.getFiles().get(i);
-          StreamRegistration streamRegistration =
-              VaadinSession.getCurrent().getResourceRegistry().registerResource(new StreamResource(
-                  file.getFilename(), new ByteArrayStreamResourceWriter(file.getContent())));
+          StreamRegistration streamRegistration = VaadinSession.getCurrent().getResourceRegistry()
+              .registerResource(DownloadHandler.fromInputStream(
+                  event -> new DownloadResponse(new ByteArrayInputStream(file.getContent()),
+                      file.getFilename(), null, file.getContent().length)));
           html = html.replace("href=\"files-" + i + "\"",
               "href=\"" + streamRegistration.getResourceUri() + "\"");
           addDetachListener(e -> streamRegistration.unregister());

@@ -1,7 +1,6 @@
 package ca.qc.ircm.proview.files.web;
 
 import ca.qc.ircm.proview.files.Category;
-import ca.qc.ircm.proview.web.PathStreamResourceWriter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
@@ -10,7 +9,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.streams.DownloadHandler;
 import java.io.Serial;
 
 /**
@@ -37,8 +36,7 @@ public class CategoryComponent extends VerticalLayout {
       Anchor link = new Anchor();
       Span text = new Span();
       text.setText(guide.getName());
-      link.setHref(new StreamResource(guide.getPath().getFileName().toString(),
-          new PathStreamResourceWriter(guide.getPath().toFile())));
+      link.setHref(DownloadHandler.forFile(guide.getPath().toFile()));
       link.add(addIcon(VaadinIcon.DOWNLOAD.create(), text));
       add(link);
     });
