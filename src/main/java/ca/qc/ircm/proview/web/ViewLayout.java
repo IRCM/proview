@@ -18,7 +18,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -43,7 +42,6 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 /**
  * Main layout.
  */
-@JsModule("./styles/shared-styles.js")
 public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeObserver,
     BeforeLeaveObserver, AfterNavigationObserver, UrlComponent {
 
@@ -156,8 +154,8 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
   @Override
   public void afterNavigation(AfterNavigationEvent event) {
     users.setVisible(authenticatedUser.isAuthorized(UsersView.class));
-    exitSwitchUser
-        .setVisible(authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
+    exitSwitchUser.setVisible(
+        authenticatedUser.hasRole(SwitchUserFilter.ROLE_PREVIOUS_ADMINISTRATOR));
     Optional<SideNavItem> currentNav = selectedSideNavItem();
     currentNav.ifPresent(item -> {
       if (header.getText().isEmpty()) {

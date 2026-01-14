@@ -1,0 +1,7 @@
+html {
+  --vaadin-app-layout-drawer-width: 13em;
+}
+
+vaadin-button.right {
+  margin-left: auto;
+}
