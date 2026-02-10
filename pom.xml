@@ -52,7 +52,7 @@
   <properties>
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <java.version>17</java.version>
-    <shiro.version>1.13.0</shiro.version>
+    <shiro.version>2.1.0</shiro.version>
     <vaadin.version>24.9.8</vaadin.version>
     <guava.version>33.3.1-jre</guava.version>
     <spotbugs.version>4.7.1</spotbugs.version>
