@@ -2,8 +2,8 @@ package ca.qc.ircm.proview.test;
 
 import ca.qc.ircm.proview.Main;
 import java.util.Random;
-import org.apache.shiro.codec.Base64;
-import org.apache.shiro.codec.Hex;
+import org.apache.shiro.lang.codec.Base64;
+import org.apache.shiro.lang.codec.Hex;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;

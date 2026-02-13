@@ -1,8 +1,8 @@
 package ca.qc.ircm.proview.security;
 
 import java.security.SecureRandom;
-import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.lang.codec.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
