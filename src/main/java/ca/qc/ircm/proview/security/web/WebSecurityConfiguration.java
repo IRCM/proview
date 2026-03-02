@@ -10,25 +10,27 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
-import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategyConfiguration;
+import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
 import jakarta.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
@@ -36,9 +38,10 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 /**
  * Security configuration.
  */
-@EnableWebSecurity
 @Configuration
-public class WebSecurityConfiguration extends VaadinWebSecurity {
+@EnableWebSecurity
+@Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
+public class WebSecurityConfiguration {
 
   public static final String SIGNIN_PROCESSING_URL = "/" + SigninView.VIEW_NAME;
   public static final String SIGNOUT_URL = "/signout";
@@ -118,18 +121,17 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
   /**
    * Require login to access internal pages and configure login form.
    */
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.with(VaadinSecurityConfigurer.vaadin(), configurer -> {
+      configurer.loginView(SigninView.class);
+    });
+
     // Configure the login page.
     http.formLogin(login -> login.failureHandler(authenticationFailureHandler()));
     // Remember me
     http.rememberMe(
         rememberMe -> rememberMe.alwaysRemember(true).key(configuration.rememberMeKey()));
-
-    super.configure(http);
-
-    // Configure the login page.
-    setLoginView(http, SigninView.class);
 
     // Used for TestBench.
     try {
@@ -139,14 +141,8 @@ public class WebSecurityConfiguration extends VaadinWebSecurity {
     } catch (ClassNotFoundException e) {
       // Ignore, not running unit tests.
     }
-  }
 
-  /**
-   * Allows access to static resources, bypassing Spring security.
-   */
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    super.configure(web);
+    return http.build();
   }
 
   @Autowired
