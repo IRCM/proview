@@ -874,7 +874,6 @@ public class SubmissionServiceTest extends AbstractServiceTestCase {
         Bound.inclusive(LocalDate.of(2014, 10, 17)));
 
     List<Submission> submissions = service.all(filter, Pageable.unpaged()).toList();
-    System.out.println(submissions);
 
     assertEquals(2, submissions.size());
     assertTrue(find(submissions, 35).isPresent());
