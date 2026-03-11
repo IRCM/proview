@@ -3,6 +3,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.text.Strings.styleName;
+import static ca.qc.ircm.proview.user.UserRole.USER;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.web.GuidelinesView;
@@ -31,6 +32,7 @@ import com.vaadin.flow.router.BeforeLeaveEvent;
 import com.vaadin.flow.router.BeforeLeaveObserver;
 import com.vaadin.flow.router.RouterLayout;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
 import java.io.Serial;
 import java.util.Locale;
 import java.util.Optional;
@@ -42,6 +44,7 @@ import org.springframework.security.web.authentication.switchuser.SwitchUserFilt
 /**
  * Main layout.
  */
+@RolesAllowed(USER)
 public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeObserver,
     BeforeLeaveObserver, AfterNavigationObserver, UrlComponent {
 
