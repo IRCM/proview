@@ -69,8 +69,7 @@ public class SigninViewIT extends AbstractBrowserTestCase {
     view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
     view.getPasswordField().setValue("notright");
     view.getSubmitButton().click();
-    waitUntil(driver -> driver != null && driver.getCurrentUrl() != null && driver.getCurrentUrl()
-        .endsWith("?" + FAIL));
+    view = $(SigninViewElement.class).waitForFirst();
     Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
         view.getErrorMessage());
     assertNotNull(getDriver().getCurrentUrl());
@@ -84,6 +83,7 @@ public class SigninViewIT extends AbstractBrowserTestCase {
     view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
     view.getPasswordField().setValue("password");
     view.getSubmitButton().click();
+    view = $(SigninViewElement.class).waitForFirst();
     Assertions.assertEquals(
         messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
         view.getErrorMessage());
@@ -94,8 +94,9 @@ public class SigninViewIT extends AbstractBrowserTestCase {
   @BrowserTest
   public void sign_Locked() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
+    SigninViewElement view;
     for (int i = 0; i < 6; i++) {
+      view = $(SigninViewElement.class).waitForFirst();
       view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
       view.getPasswordField().setValue("notright");
       view.getSubmitButton().click();
@@ -105,6 +106,7 @@ public class SigninViewIT extends AbstractBrowserTestCase {
         throw new IllegalStateException("Sleep was interrupted", e);
       }
     }
+    view = $(SigninViewElement.class).waitForFirst();
     Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
             new Object[]{configuration.lockDuration().getSeconds() / 60}, currentLocale()),
         view.getErrorMessage());
