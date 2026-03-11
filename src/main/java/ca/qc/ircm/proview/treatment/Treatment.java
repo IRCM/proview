@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import java.io.Serial;
@@ -33,9 +34,8 @@ import org.springframework.lang.Nullable;
 @Entity
 @Table(name = Treatment.TABLE_NAME)
 @GeneratePropertyNames
-@SuppressFBWarnings(
-    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-    justification = ENTITY_EI_EXPOSE_REP)
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP",
+    "EI_EXPOSE_REP2"}, justification = ENTITY_EI_EXPOSE_REP)
 public class Treatment implements Data, Serializable {
 
   public static final String TABLE_NAME = "treatment";
@@ -93,6 +93,7 @@ public class Treatment implements Data, Serializable {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "treatment_id", nullable = false)
   @OrderColumn(name = "listIndex")
+  @OrderBy("listIndex ASC")
   private List<TreatedSample> treatedSamples;
 
   public Treatment() {

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.9</version>
+    <version>4.0.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>ca.qc.ircm.proteomique</groupId>
@@ -53,12 +53,13 @@
     <start-class>ca.qc.ircm.proview.Main</start-class>
     <java.version>21</java.version>
     <shiro.version>2.1.0</shiro.version>
-    <vaadin.version>24.9.8</vaadin.version>
+    <vaadin.version>25.0.6</vaadin.version>
     <guava.version>33.3.1-jre</guava.version>
     <spotbugs.version>4.7.1</spotbugs.version>
     <generate-property-names.version>2.2</generate-property-names.version>
     <openfeign.querydsl.version>5.6.1</openfeign.querydsl.version>
     <selenium.version>4.27.0</selenium.version>
+    <commons-io.version>2.21.0</commons-io.version>
     <greenmail.version>2.0.1</greenmail.version>
     <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
@@ -116,6 +117,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
@@ -165,7 +171,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -220,6 +226,11 @@
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-dev</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
@@ -227,6 +238,11 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.spotbugs</groupId>
