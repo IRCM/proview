@@ -10,6 +10,7 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.spring.security.NavigationAccessControlConfigurer;
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
 import jakarta.servlet.Filter;
 import java.util.HashMap;
@@ -140,6 +141,15 @@ public class WebSecurityConfiguration {
     }
 
     return http.build();
+  }
+
+  /**
+   * Access control for views.
+   */
+  @Bean
+  protected static NavigationAccessControlConfigurer navigationAccessControlConfigurer() {
+    return new NavigationAccessControlConfigurer().withNavigationAccessChecker(
+        new RememberMeFixAnnotatedViewAccessChecker());
   }
 
   @Autowired
