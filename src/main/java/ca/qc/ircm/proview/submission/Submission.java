@@ -32,6 +32,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -50,9 +51,8 @@ import org.springframework.lang.Nullable;
 @Entity
 @Table(name = Submission.TABLE_NAME)
 @GeneratePropertyNames
-@SuppressFBWarnings(
-    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-    justification = ENTITY_EI_EXPOSE_REP)
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP",
+    "EI_EXPOSE_REP2"}, justification = ENTITY_EI_EXPOSE_REP)
 public class Submission implements Data, Named, LaboratoryData, Serializable {
 
   public static final String TABLE_NAME = "submission";
@@ -347,6 +347,7 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
+  @OrderBy("listIndex ASC")
   private List<SubmissionSample> samples;
   /**
    * Additional files related to submission.

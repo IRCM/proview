@@ -197,17 +197,20 @@ public class SubmissionService {
     submission.setLaboratory(laboratory);
     submission.setUser(user);
     submission.setSubmissionDate(LocalDateTime.now());
-    submission.getSamples().forEach(sample -> {
+    for (int i = 0; i < submission.getSamples().size(); i++) {
+      SubmissionSample sample = submission.getSamples().get(i);
+      sample.setListIndex(i);
       sample.setSubmission(submission);
       sample.setStatus(SampleStatus.WAITING);
-    });
+    }
     if (submission.getService() == SMALL_MOLECULE && !submission.getSamples().isEmpty()) {
       submission.setExperiment(submission.getSamples().get(0).getName());
     }
 
     repository.save(submission);
 
-    logger.info("Submission {} added to database", submission);
+    logger.info("Submission {} with samples {} added to database", submission,
+        submission.getSamples());
 
     // Send email to admin users to inform them of the submission.
     try {
@@ -276,6 +279,9 @@ public class SubmissionService {
       sample.setStatus(SampleStatus.WAITING);
     });
     validateUpdateSubmission(submission);
+    for (int i = 0; i < submission.getSamples().size(); i++) {
+      submission.getSamples().get(i).setListIndex(i);
+    }
     if (!authenticatedUser.hasRole(UserRole.ADMIN) && anyStatusGreaterOrEquals(submission,
         SampleStatus.RECEIVED)) {
       submission = repository.findById(submission.getId()).orElseThrow();
