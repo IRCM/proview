@@ -29,4 +29,9 @@ public interface UrlComponent {
     String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
     return contextPath + "/" + getUrl(view, parameter);
   }
+
+  default String prependContextPath(String url) {
+    String contextPath = VaadinServlet.getCurrent().getServletContext().getContextPath();
+    return contextPath + "/" + url;
+  }
 }

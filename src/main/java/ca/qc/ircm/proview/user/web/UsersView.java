@@ -17,18 +17,15 @@ import static ca.qc.ircm.proview.user.UserRole.MANAGER;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.security.AuthenticatedUser;
-import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ErrorNotification;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.ViewLayout;
 import ca.qc.ircm.proview.web.component.NotificationComponent;
 import ca.qc.ircm.proview.web.component.UrlComponent;
 import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -47,7 +44,6 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 import java.io.Serial;
@@ -74,8 +70,6 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   public static final String USERS = "users";
   public static final String USERS_REQUIRED = property(USERS, REQUIRED);
   public static final String SWITCH_USER = "switchUser";
-  public static final String SWITCH_USER_FORM = "switchUserform";
-  public static final String SWITCH_USERNAME = "switchUsername";
   public static final String SWITCH_FAILED = "switchFailed";
   public static final String ADD = "add";
   public static final String VIEW_LABORATORY = "viewLaboratory";
@@ -107,19 +101,16 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
   private final transient ObjectFactory<LaboratoryDialog> laboratoryDialogFactory;
   private final transient UserService service;
   private final transient LaboratoryService laboratoryService;
-  private final transient SwitchUserService switchUserService;
   private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
   protected UsersView(ObjectFactory<UserDialog> dialogFactory,
       ObjectFactory<LaboratoryDialog> laboratoryDialogFactory, UserService service,
-      LaboratoryService laboratoryService, SwitchUserService switchUserService,
-      AuthenticatedUser authenticatedUser) {
+      LaboratoryService laboratoryService, AuthenticatedUser authenticatedUser) {
     this.dialogFactory = dialogFactory;
     this.laboratoryDialogFactory = laboratoryDialogFactory;
     this.service = service;
     this.laboratoryService = laboratoryService;
-    this.switchUserService = switchUserService;
     this.authenticatedUser = authenticatedUser;
   }
 
@@ -326,8 +317,10 @@ public class UsersView extends VerticalLayout implements LocaleChangeObserver, H
     if (user == null) {
       new ErrorNotification(getTranslation(MESSAGES_PREFIX + USERS_REQUIRED)).open();
     } else {
-      switchUserService.switchUser(user, VaadinServletRequest.getCurrent());
-      UI.getCurrent().getPage().setLocation(getUrlWithContextPath(MainView.class));
+      logger.debug("Switching to user {}, authenticated user is {}", user,
+          authenticatedUser.getUser());
+      getUI().ifPresent(ui -> ui.getPage()
+          .setLocation(prependContextPath("impersonate?username=" + user.getEmail())));
     }
   }
 

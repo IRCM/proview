@@ -69,7 +69,6 @@ import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.Location;
-import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Comparator;
 import java.util.List;
@@ -592,7 +591,9 @@ public class UsersViewTest extends SpringUIUnitTest {
   public void switchUser_NoSelection() {
     view.switchUser();
 
-    verify(switchUserService, never()).switchUser(any(), any());
+    assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
+            && ((String) i.getInvocation().getParameters().getFirst()).startsWith("/impersonate")));
     assertTrue($(UsersView.class).exists());
     Notification error = $(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
@@ -606,10 +607,11 @@ public class UsersViewTest extends SpringUIUnitTest {
     view.users.select(user);
 
     test(view.switchUser).click();
-    verify(switchUserService).switchUser(user, VaadinServletRequest.getCurrent());
     assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
-        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
-            .getParameters().isEmpty() && i.getInvocation().getParameters().get(0).equals("/")));
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
+            && ("/impersonate?username=christopher.anderson@ircm.qc.ca").equals(
+            i.getInvocation().getParameters().getFirst()) && "_self".equals(
+            i.getInvocation().getParameters().get(1))));
     assertFalse($(Notification.class).exists());
   }
 

@@ -1,6 +1,7 @@
 package ca.qc.ircm.proview.security.web;
 
 import static ca.qc.ircm.proview.UsedBy.SPRING;
+import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern;
 
 import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.security.DaoAuthenticationProviderWithLdap;
@@ -9,6 +10,7 @@ import ca.qc.ircm.proview.security.LdapService;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.security.ShiroPasswordEncoder;
 import ca.qc.ircm.proview.user.UserRepository;
+import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.spring.security.NavigationAccessControlConfigurer;
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
@@ -18,6 +20,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -25,6 +28,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -32,6 +36,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.switchuser.SwitchUserFilter;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 /**
@@ -117,6 +122,23 @@ public class WebSecurityConfiguration {
   }
 
   /**
+   * SwitchUserFilter to allow admins to impersonate other users.
+   *
+   * @param strategy SecurityContextHolderStrategy
+   * @return SwitchUserFilter to allow admins to impersonate other users
+   */
+  @Bean
+  public SwitchUserFilter switchUserFilter(SecurityContextHolderStrategy strategy) {
+    SwitchUserFilter filter = new SwitchUserFilter();
+    filter.setSecurityContextHolderStrategy(strategy);
+    filter.setUserDetailsService(userDetailsService);
+    filter.setSwitchUserMatcher(pathPattern(HttpMethod.GET, "/impersonate"));
+    filter.setExitUserMatcher(pathPattern(HttpMethod.GET, "/impersonate/exit"));
+    filter.setTargetUrl("/" + MainView.VIEW_NAME);
+    return filter;
+  }
+
+  /**
    * Require login to access internal pages and configure login form.
    */
   @Bean
@@ -130,6 +152,11 @@ public class WebSecurityConfiguration {
     // Remember me
     http.rememberMe(
         rememberMe -> rememberMe.alwaysRemember(true).key(configuration.rememberMeKey()));
+    // Authorize impersonation for admin/impersonated admin
+    http.authorizeHttpRequests(
+        auth -> auth.requestMatchers("/impersonate").hasAnyRole("ADMIN", "PREVIOUS_ADMINISTRATOR"));
+    http.authorizeHttpRequests(
+        auth -> auth.requestMatchers("/impersonate/exit").hasRole("PREVIOUS_ADMINISTRATOR"));
 
     // Used for TestBench.
     try {

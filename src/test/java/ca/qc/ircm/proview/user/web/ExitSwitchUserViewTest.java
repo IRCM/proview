@@ -1,21 +1,13 @@
 package ca.qc.ircm.proview.user.web;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
 
-import ca.qc.ircm.proview.security.AuthenticatedUser;
-import ca.qc.ircm.proview.security.SwitchUserService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Tests for {@link ExitSwitchUserView}.
@@ -24,30 +16,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class ExitSwitchUserViewTest extends SpringUIUnitTest {
 
-  private ExitSwitchUserView view;
-  @MockitoBean
-  private SwitchUserService switchUserService;
-  @Autowired
-  private AuthenticatedUser authenticatedUser;
-  @Mock
-  private BeforeEnterEvent event;
-
-  /**
-   * Before test.
-   */
-  @BeforeEach
-  public void beforeTest() {
-    view = new ExitSwitchUserView(switchUserService, authenticatedUser);
-  }
-
   @Test
-  public void beforeEnter() {
-    view.beforeEnter(event);
+  @WithMockUser(username = "christopher.anderson@ircm.qc.ca", roles = {"USER",
+      "PREVIOUS_ADMINISTRATOR"})
+  public void exitSwitchUser() {
+    navigate(ExitSwitchUserView.class);
 
-    verify(switchUserService).exitSwitchUser(VaadinServletRequest.getCurrent());
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
-            && !i.getInvocation().getParameters().isEmpty()
-            && i.getInvocation().getParameters().get(0).equals("/")));
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
+            .getParameters().isEmpty() && i.getInvocation().getParameters().getFirst()
+            .equals("/impersonate/exit")));
   }
 }

@@ -42,6 +42,12 @@ public class UrlComponentTest extends SpringUIUnitTest {
     assertEquals("/" + UseForgotPasswordView.VIEW_NAME + "/test/sub", url);
   }
 
+  @Test
+  public void prependContextPath() {
+    String url = urlComponent.prependContextPath("test/sub");
+    assertEquals("/test/sub", url);
+  }
+
   private static class UrlComponentForTest implements UrlComponent {
 
   }

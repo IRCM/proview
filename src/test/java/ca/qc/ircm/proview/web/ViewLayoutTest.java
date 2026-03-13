@@ -85,9 +85,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   private void assertNoExecuteJs() {
-    assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains(EXIT_SWITCH_USER_FORM)
-            || i.getInvocation().getExpression().contains(SIGNOUT_URL)));
+    assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains(EXIT_SWITCH_USER_FORM) || i.getInvocation()
+            .getExpression().contains(SIGNOUT_URL)));
   }
 
   @Test
@@ -223,20 +223,18 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
-  @WithUserDetails("proview@ircm.qc.ca")
+  @WithMockUser(username = "christopher.anderson@ircm.qc.ca", roles = {"USER",
+      "PREVIOUS_ADMINISTRATOR"})
   public void sideNav_SelectExitSwitchUser() {
-    switchUserService.switchUser(userRepository.findById(10L).orElseThrow(),
-        VaadinServletRequest.getCurrent());
     navigate(ContactView.class);
     view = $(ViewLayout.class).first();
 
     test(view.sideNav).clickItem(view.exitSwitchUser.getLabel());
 
-    verify(switchUserService).exitSwitchUser(VaadinServletRequest.getCurrent());
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
-            && !i.getInvocation().getParameters().isEmpty()
-            && i.getInvocation().getParameters().get(0).equals("/")));
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
+            .getParameters().isEmpty() && i.getInvocation().getParameters().getFirst()
+            .equals("/impersonate/exit")));
   }
 
   @Test
@@ -246,10 +244,9 @@ public class ViewLayoutTest extends SpringUIUnitTest {
     assertThrows(IllegalStateException.class,
         () -> VaadinServletRequest.getCurrent().getWrappedSession(false).getAttributeNames());
 
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
-            && !i.getInvocation().getParameters().isEmpty()
-            && i.getInvocation().getParameters().get(0).equals("/")));
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
+            .getParameters().isEmpty() && i.getInvocation().getParameters().get(0).equals("/")));
   }
 
   @Test
@@ -337,9 +334,8 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   }
 
   @Test
-  @WithMockUser(
-      username = "christopher.anderson@ircm.qc.ca",
-      roles = {"USER", "PREVIOUS_ADMINISTRATOR"})
+  @WithMockUser(username = "christopher.anderson@ircm.qc.ca", roles = {"USER",
+      "PREVIOUS_ADMINISTRATOR"})
   public void sideNav_SwitchedUserVisibility() {
     assertFalse(view.users.isVisible());
     assertTrue(view.exitSwitchUser.isVisible());

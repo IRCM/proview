@@ -3,15 +3,10 @@ package ca.qc.ircm.proview.user.web;
 import static ca.qc.ircm.proview.security.SwitchUserService.ROLE_PREVIOUS_ADMINISTRATOR;
 
 import ca.qc.ircm.proview.security.AuthenticatedUser;
-import ca.qc.ircm.proview.security.SwitchUserService;
-import ca.qc.ircm.proview.web.MainView;
 import ca.qc.ircm.proview.web.component.UrlComponent;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinServletRequest;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,25 +17,28 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Route(value = ExitSwitchUserView.VIEW_NAME)
 @RolesAllowed({ROLE_PREVIOUS_ADMINISTRATOR})
-public class ExitSwitchUserView extends VerticalLayout implements BeforeEnterObserver,
-    UrlComponent {
+public class ExitSwitchUserView extends VerticalLayout implements UrlComponent {
 
   public static final String VIEW_NAME = "exitSwitchUser";
   private static final Logger logger = LoggerFactory.getLogger(ExitSwitchUserView.class);
-  private final transient SwitchUserService switchUserService;
   private final transient AuthenticatedUser authenticatedUser;
 
   @Autowired
-  protected ExitSwitchUserView(SwitchUserService switchUserService,
-      AuthenticatedUser authenticatedUser) {
-    this.switchUserService = switchUserService;
+  protected ExitSwitchUserView(AuthenticatedUser authenticatedUser) {
     this.authenticatedUser = authenticatedUser;
   }
 
-  @Override
-  public void beforeEnter(BeforeEnterEvent event) {
+  /**
+   * Initializes exit switch user view.
+   */
+  @PostConstruct
+  protected void init() {
+    logger.debug("Exit switch user view");
+    addAttachListener(event -> exitSwitchUser());
+  }
+
+  private void exitSwitchUser() {
     logger.debug("Exit switch user {}", authenticatedUser.getUser());
-    switchUserService.exitSwitchUser(VaadinServletRequest.getCurrent());
-    UI.getCurrent().getPage().setLocation(getUrlWithContextPath(MainView.class));
+    getUI().ifPresent(ui -> ui.getPage().setLocation(prependContextPath("impersonate/exit")));
   }
 }
