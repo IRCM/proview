@@ -17,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import java.io.Serial;
@@ -80,7 +79,6 @@ public class MsAnalysis implements Data, Serializable {
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "msanalysis_id", nullable = false)
   @OrderColumn(name = "listIndex")
-  @OrderBy("listIndex ASC")
   private List<Acquisition> acquisitions;
 
   public MsAnalysis() {

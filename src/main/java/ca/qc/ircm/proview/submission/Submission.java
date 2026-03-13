@@ -32,7 +32,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -347,7 +346,6 @@ public class Submission implements Data, Named, LaboratoryData, Serializable {
    */
   @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderColumn(name = "listIndex")
-  @OrderBy("listIndex ASC")
   private List<SubmissionSample> samples;
   /**
    * Additional files related to submission.

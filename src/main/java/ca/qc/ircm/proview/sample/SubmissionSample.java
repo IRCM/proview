@@ -1,12 +1,10 @@
 package ca.qc.ircm.proview.sample;
 
 import static ca.qc.ircm.proview.SpotbugsJustifications.ENTITY_EI_EXPOSE_REP;
-import static ca.qc.ircm.proview.UsedBy.HIBERNATE;
 import static jakarta.persistence.EnumType.ORDINAL;
 
 import ca.qc.ircm.processing.GeneratePropertyNames;
 import ca.qc.ircm.proview.Named;
-import ca.qc.ircm.proview.UsedBy;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryData;
@@ -28,9 +26,8 @@ import org.springframework.lang.Nullable;
 @Entity
 @DiscriminatorValue("SUBMISSION")
 @GeneratePropertyNames
-@SuppressFBWarnings(
-    value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-    justification = ENTITY_EI_EXPOSE_REP)
+@SuppressFBWarnings(value = {"EI_EXPOSE_REP",
+    "EI_EXPOSE_REP2"}, justification = ENTITY_EI_EXPOSE_REP)
 public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   @Serial
@@ -54,11 +51,6 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
   @Column
   @Min(0)
   private Double molecularWeight;
-  /**
-   * Used by Hibernate.
-   */
-  @Column(nullable = false)
-  private int listIndex;
   /**
    * Submission of this sample.
    */
@@ -127,14 +119,5 @@ public class SubmissionSample extends Sample implements LaboratoryData, Named {
 
   public void setMolecularWeight(@Nullable Double molecularWeight) {
     this.molecularWeight = molecularWeight;
-  }
-
-  public int getListIndex() {
-    return listIndex;
-  }
-
-  @UsedBy(HIBERNATE)
-  public void setListIndex(int listIndex) {
-    this.listIndex = listIndex;
   }
 }
