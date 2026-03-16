@@ -75,7 +75,6 @@ public class SigninView extends LoginOverlay implements LocaleChangeObserver, Ha
   void init() {
     logger.debug("signin view");
     setId(ID);
-    addLoginListener(e -> setError(false));
     setForgotPasswordButtonVisible(true);
     setAction(VIEW_NAME);
     setOpened(true);
