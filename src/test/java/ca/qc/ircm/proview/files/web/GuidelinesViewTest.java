@@ -10,6 +10,7 @@ import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChild;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.findChildren;
 import static ca.qc.ircm.proview.test.utils.VaadinTestUtils.validateIcon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.files.Category;
@@ -26,6 +27,7 @@ import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,21 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     view = navigate(GuidelinesView.class);
+  }
+
+  @Test
+  public void fieldsExistence() {
+    List<Category> categories = guidelinesConfiguration.categories(locale);
+    List<CategoryComponent> categoriesComponents = test(view).find(CategoryComponent.class).all();
+    Assertions.assertEquals(categories.size(), categoriesComponents.size());
+    for (int i = 0; i < categories.size(); i++) {
+      Category category = categories.get(i);
+      CategoryComponent categoryComponent = categoriesComponents.get(i);
+      assertTrue(test(categoryComponent.header).isUsable());
+      List<Anchor> anchors = test(categoryComponent).find(Anchor.class).all();
+      Assertions.assertEquals(category.getGuidelines().size(), anchors.size());
+      anchors.forEach(anchor -> assertTrue(test(anchor).isUsable()));
+    }
   }
 
   @Test
@@ -110,8 +127,8 @@ public class GuidelinesViewTest extends SpringUIUnitTest {
       for (int j = 0; j < category.getGuidelines().size(); j++) {
         Guideline guideline = category.getGuidelines().get(j);
         Anchor anchor = anchors.get(j);
-        String guidelinePath =
-            UrlEscapers.urlFragmentEscaper().escape(guideline.getPath().getFileName().toString());
+        String guidelinePath = UrlEscapers.urlFragmentEscaper()
+            .escape(guideline.getPath().getFileName().toString());
         assertEquals(guidelinePath, Paths.get(anchor.getHref()).getFileName().toString());
       }
     }
