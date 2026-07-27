@@ -126,6 +126,14 @@ public class SamplesStatusDialogTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(dialog.samples).isUsable());
+    assertTrue(test(dialog.allStatus).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.cancel).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertEquals(id(SAMPLES), dialog.samples.getId().orElse(""));
