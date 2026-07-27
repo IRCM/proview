@@ -64,10 +64,10 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
   private static final String MESSAGES_PREFIX = messagePrefix(MsAnalysisDialog.class);
   private static final String MS_ANALYSIS_PREFIX = messagePrefix(MsAnalysis.class);
   private static final String ACQUISITION_PREFIX = messagePrefix(Acquisition.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
-  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
-      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX = messagePrefix(
+      MassDetectionInstrumentSource.class);
   private MsAnalysisDialog dialog;
   @MockitoBean
   private MsAnalysisService service;
@@ -86,8 +86,8 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     when(service.get(anyLong())).then(i -> repository.findById(i.getArgument(0)));
     UI.getCurrent().setLocale(locale);
     HistoryView view = navigate(HistoryView.class, 32L);
-    @SuppressWarnings("unchecked")
-    Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
+    @SuppressWarnings("unchecked") Grid<Activity> activities = test(view).find(Grid.class)
+        .id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(1);
     dialog = $(MsAnalysisDialog.class).id(ID);
     acquisitions = acquisitionRepository.findAll();
@@ -95,6 +95,16 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
   private int indexOfColumn(String property) {
     return test(dialog.acquisitions).getColumnPosition(property);
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertFalse(test(dialog.deleted).isUsable());
+    assertTrue(test(dialog.instrument).isUsable());
+    assertTrue(test(dialog.source).isUsable());
+    assertTrue(test(dialog.date).isUsable());
+    assertTrue(test(dialog.acquisitionsHeader).isUsable());
+    assertTrue(test(dialog.acquisitions).isUsable());
   }
 
   @Test
@@ -218,15 +228,12 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
 
     verify(service).get(1L);
     assertFalse(dialog.deleted.isVisible());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
-            dialog.getTranslation(
-                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SOURCE, dialog.getTranslation(
+            MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
@@ -242,16 +249,13 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     dialog.setMsAnalysisId(12L);
 
     verify(service, times(2)).get(12L);
-    assertTrue(dialog.deleted.isVisible());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+    assertTrue(test(dialog.deleted).isUsable());
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
-            dialog.getTranslation(
-                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SOURCE, dialog.getTranslation(
+            MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
@@ -268,15 +272,12 @@ public class MsAnalysisDialogTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
 
     assertFalse(dialog.deleted.isVisible());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + MASS_DETECTION_INSTRUMENT,
             dialog.getTranslation(
                 MASS_DETECTION_INSTRUMENT_PREFIX + msAnalysis.getMassDetectionInstrument().name())),
         dialog.instrument.getText());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + SOURCE,
-            dialog.getTranslation(
-                MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SOURCE, dialog.getTranslation(
+            MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + msAnalysis.getSource().name())),
         dialog.source.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
