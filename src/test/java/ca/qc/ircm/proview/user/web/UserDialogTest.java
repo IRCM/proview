@@ -76,6 +76,28 @@ public class UserDialogTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(dialog.form.email).isUsable());
+    assertTrue(test(dialog.form.name).isUsable());
+    assertTrue(test(dialog.form.admin).isUsable());
+    assertTrue(test(dialog.form.manager).isUsable());
+    assertTrue(test(dialog.form.password).isUsable());
+    assertTrue(test(dialog.form.confirmPassword).isUsable());
+    assertTrue(test(dialog.form.laboratory).isUsable());
+    assertTrue(test(dialog.form.createNewLaboratory).isUsable());
+    assertTrue(test(dialog.form.addressLine).isUsable());
+    assertTrue(test(dialog.form.town).isUsable());
+    assertTrue(test(dialog.form.state).isUsable());
+    assertTrue(test(dialog.form.country).isUsable());
+    assertTrue(test(dialog.form.postalCode).isUsable());
+    assertTrue(test(dialog.form.phoneType).isUsable());
+    assertTrue(test(dialog.form.number).isUsable());
+    assertTrue(test(dialog.form.extension).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.cancel).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertEquals(id(SAVE), dialog.save.getId().orElse(""));

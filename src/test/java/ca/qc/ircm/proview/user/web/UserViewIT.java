@@ -1,34 +1,29 @@
 package ca.qc.ircm.proview.user.web;
 
-import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.user.web.UserView.SAVED;
 import static ca.qc.ircm.proview.user.web.UserView.VIEW_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.web.AccessDeniedViewElement;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.security.web.AccessDeniedView;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
-import ca.qc.ircm.proview.web.SigninViewElement;
-import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import com.vaadin.testbench.BrowserTest;
+import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Objects;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -36,12 +31,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Integration tests for {@link UserView}.
  */
-@TestBenchTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserViewIT extends AbstractBrowserTestCase {
+public class UserViewIT extends SpringUIUnitTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @Autowired
   private UserRepository repository;
@@ -51,8 +45,6 @@ public class UserViewIT extends AbstractBrowserTestCase {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private EntityManager entityManager;
-  @Autowired
-  private MessageSource messageSource;
   private final String email = "test@ircm.qc.ca";
   private final String name = "Test User";
   private final String password = "test_password";
@@ -65,139 +57,96 @@ public class UserViewIT extends AbstractBrowserTestCase {
   private final String number = "514-555-1234";
   private final String extension = "443";
 
-  private void open() {
-    openView(VIEW_NAME);
-  }
-
-  private void open(Long id) {
-    openView(VIEW_NAME, Objects.toString(id, ""));
-  }
-
-  @BrowserTest
+  @Test
   @WithAnonymousUser
   public void security_Anonymous() {
-    open();
-
-    $(SigninViewElement.class).waitForFirst();
+    navigate(VIEW_NAME, SigninView.class);
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void security_User() {
-    open();
-
-    $(AccessDeniedViewElement.class).waitForFirst();
+    navigate(VIEW_NAME, AccessDeniedView.class);
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void security_Manager() {
-    open();
-
-    $(UserViewElement.class).waitForFirst();
+    navigate(UserView.class);
   }
 
-  @BrowserTest
-  public void title() {
-    open();
-
-    Locale locale = currentLocale();
-    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
-        locale);
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
-        getDriver().getTitle());
-  }
-
-  @BrowserTest
-  public void fieldsExistence() {
-    open();
-    UserViewElement view = $(UserViewElement.class).waitForFirst();
-    assertTrue(optional(view::userForm).isPresent());
-    assertTrue(optional(view::save).isPresent());
-  }
-
-  @BrowserTest
+  @Test
   public void update() {
-    open(2L);
-    UserViewElement view = $(UserViewElement.class).waitForFirst();
-    final Locale locale = currentLocale();
+    UserView view = navigate(UserView.class, 2L);
 
-    view.userForm().email().setValue(email);
-    view.userForm().name().setValue(name);
-    view.userForm().password().setValue(password);
-    view.userForm().confirmPassword().setValue(password);
+    test(view.form.email).setValue(email);
+    test(view.form.name).setValue(name);
+    test(view.form.password).setValue(password);
+    test(view.form.confirmPassword).setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
-    view.userForm().laboratory().selectByText(laboratory.getName());
-    view.userForm().address().setValue(addressLine);
-    view.userForm().town().setValue(town);
-    view.userForm().state().setValue(state);
-    view.userForm().country().setValue(country);
-    view.userForm().postalCode().setValue(postalCode);
-    view.userForm().phoneType().selectByText(
-        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
-    view.userForm().number().setValue(number);
-    view.userForm().extension().setValue(extension);
-    view.save().click();
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
-        notification.getText());
+    test(view.form.laboratory).selectItem(laboratory.getName());
+    test(view.form.addressLine).setValue(addressLine);
+    test(view.form.town).setValue(town);
+    test(view.form.state).setValue(state);
+    test(view.form.country).setValue(country);
+    test(view.form.postalCode).setValue(postalCode);
+    test(view.form.phoneType).selectItem(
+        view.getTranslation(PHONE_NUMBER_TYPE_PREFIX + phoneType.name()));
+    test(view.form.number).setValue(number);
+    test(view.form.extension).setValue(extension);
+    test(view.save).click();
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, name), test(notification).getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    Assertions.assertEquals(name, user.getName());
+    assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
-    Assertions.assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
-    Assertions.assertEquals(Locale.CANADA_FRENCH, user.getLocale());
-    Assertions.assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
-    entityManager.refresh(user.getLaboratory());
-    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    Assertions.assertEquals(1, user.getPhoneNumbers().size());
-    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertEquals(LocalDateTime.of(2019, 5, 11, 13, 43, 51), user.getLastSignAttempt());
+    assertEquals(Locale.CANADA_FRENCH, user.getLocale());
+    assertEquals(LocalDateTime.of(2008, 8, 11, 13, 43, 51), user.getRegisterTime());
+    assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    assertEquals(1, user.getPhoneNumbers().size());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    Assertions.assertEquals(addressLine, user.getAddress().getLine());
-    Assertions.assertEquals(town, user.getAddress().getTown());
-    Assertions.assertEquals(state, user.getAddress().getState());
-    Assertions.assertEquals(country, user.getAddress().getCountry());
-    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
-    $(UsersViewElement.class).waitForFirst();
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    $(UsersView.class).single();
   }
 
-  @BrowserTest
+  @Test
   public void add() {
-    open();
-    UserViewElement view = $(UserViewElement.class).waitForFirst();
-    final Locale locale = currentLocale();
+    UserView view = navigate(UserView.class);
 
-    view.userForm().email().setValue(email);
-    view.userForm().name().setValue(name);
-    view.userForm().password().setValue(password);
-    view.userForm().confirmPassword().setValue(password);
+    test(view.form.email).setValue(email);
+    test(view.form.name).setValue(name);
+    test(view.form.password).setValue(password);
+    test(view.form.confirmPassword).setValue(password);
     Laboratory laboratory = laboratoryRepository.findById(2L).orElseThrow();
-    view.userForm().laboratory().selectByText(laboratory.getName());
-    view.userForm().address().setValue(addressLine);
-    view.userForm().town().setValue(town);
-    view.userForm().state().setValue(state);
-    view.userForm().country().setValue(country);
-    view.userForm().postalCode().setValue(postalCode);
-    view.userForm().phoneType().selectByText(
-        messageSource.getMessage(PHONE_NUMBER_TYPE_PREFIX + phoneType.name(), null, locale));
-    view.userForm().number().setValue(number);
-    view.userForm().extension().setValue(extension);
-    view.save().click();
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{name}, locale),
-        notification.getText());
+    test(view.form.laboratory).selectItem(laboratory.getName());
+    test(view.form.addressLine).setValue(addressLine);
+    test(view.form.town).setValue(town);
+    test(view.form.state).setValue(state);
+    test(view.form.country).setValue(country);
+    test(view.form.postalCode).setValue(postalCode);
+    test(view.form.phoneType).selectItem(
+        view.getTranslation(PHONE_NUMBER_TYPE_PREFIX + phoneType.name()));
+    test(view.form.number).setValue(number);
+    test(view.form.extension).setValue(extension);
+    test(view.save).click();
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, name), test(notification).getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
     assertNotEquals(0, user.getId());
-    Assertions.assertEquals(name, user.getName());
+    assertEquals(name, user.getName());
     assertTrue(passwordEncoder.matches(password, user.getHashedPassword()));
     assertNull(user.getPasswordVersion());
     assertNull(user.getSalt());
@@ -205,18 +154,17 @@ public class UserViewIT extends AbstractBrowserTestCase {
     assertNull(user.getLocale());
     assertTrue(user.getRegisterTime().isAfter(LocalDateTime.now().minusSeconds(60)));
     assertTrue(user.getRegisterTime().isBefore(LocalDateTime.now().plusSeconds(60)));
-    entityManager.refresh(user.getLaboratory());
-    Assertions.assertEquals(laboratory.getId(), user.getLaboratory().getId());
-    Assertions.assertEquals(1, user.getPhoneNumbers().size());
-    Assertions.assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
-    Assertions.assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
-    Assertions.assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
+    assertEquals(laboratory.getId(), user.getLaboratory().getId());
+    assertEquals(1, user.getPhoneNumbers().size());
+    assertEquals(phoneType, user.getPhoneNumbers().get(0).getType());
+    assertEquals(number, user.getPhoneNumbers().get(0).getNumber());
+    assertEquals(extension, user.getPhoneNumbers().get(0).getExtension());
     assertNotNull(user.getAddress());
-    Assertions.assertEquals(addressLine, user.getAddress().getLine());
-    Assertions.assertEquals(town, user.getAddress().getTown());
-    Assertions.assertEquals(state, user.getAddress().getState());
-    Assertions.assertEquals(country, user.getAddress().getCountry());
-    Assertions.assertEquals(postalCode, user.getAddress().getPostalCode());
-    $(UsersViewElement.class).waitForFirst();
+    assertEquals(addressLine, user.getAddress().getLine());
+    assertEquals(town, user.getAddress().getTown());
+    assertEquals(state, user.getAddress().getState());
+    assertEquals(country, user.getAddress().getCountry());
+    assertEquals(postalCode, user.getAddress().getPostalCode());
+    $(UsersView.class).single();
   }
 }

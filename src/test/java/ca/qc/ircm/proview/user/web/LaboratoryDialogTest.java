@@ -84,6 +84,13 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(dialog.name).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.cancel).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertEquals(id(NAME), dialog.name.getId().orElse(""));
@@ -161,8 +168,8 @@ public class LaboratoryDialogTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Laboratory> status = dialog.validate();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, dialog.name);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        dialog.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),

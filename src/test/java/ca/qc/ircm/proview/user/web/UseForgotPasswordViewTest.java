@@ -80,6 +80,29 @@ public class UseForgotPasswordViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    when(service.get(anyLong(), any())).thenReturn(Optional.of(forgotPassword));
+    long id = 34925;
+    String confirmNumber = "feafet23ts";
+    String parameter = id + SEPARATOR + confirmNumber;
+    view = navigate(UseForgotPasswordView.class, parameter);
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.message).isUsable());
+    assertTrue(test(view.password).isUsable());
+    assertTrue(test(view.confirmPassword).isUsable());
+    assertTrue(test(view.save).isUsable());
+  }
+
+  @Test
+  public void fieldsExistence_Invalid() {
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.message).isUsable());
+    assertFalse(test(view.password).isUsable());
+    assertFalse(test(view.confirmPassword).isUsable());
+    assertFalse(test(view.save).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(HEADER, view.header.getId().orElse(""));

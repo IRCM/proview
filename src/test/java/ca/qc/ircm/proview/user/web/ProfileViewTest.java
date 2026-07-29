@@ -64,6 +64,24 @@ public class ProfileViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.form).isUsable());
+    assertTrue(test(view.form.email).isUsable());
+    assertTrue(test(view.form.name).isUsable());
+    assertTrue(test(view.form.password).isUsable());
+    assertTrue(test(view.form.confirmPassword).isUsable());
+    assertTrue(test(view.form.addressLine).isUsable());
+    assertTrue(test(view.form.town).isUsable());
+    assertTrue(test(view.form.state).isUsable());
+    assertTrue(test(view.form.country).isUsable());
+    assertTrue(test(view.form.postalCode).isUsable());
+    assertTrue(test(view.form.phoneType).isUsable());
+    assertTrue(test(view.form.number).isUsable());
+    assertTrue(test(view.form.extension).isUsable());
+    assertTrue(test(view.save).isUsable());
+  }
+
+  @Test
   public void formUser() {
     assertEquals(10L, view.form.getUser().getId());
   }
