@@ -80,7 +80,6 @@ import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -227,8 +226,7 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     standards.setId(id(STANDARDS));
     sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(SampleType.values());
-    sampleType.setRenderer(
-        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
+    sampleType.setItemLabelGenerator(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name()));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     samplesCount.setId(id(SAMPLES_COUNT));
@@ -258,8 +256,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
     otherDigestion.setId(id(OTHER_DIGESTION));
     proteinContent.setId(id(PROTEIN_CONTENT));
     proteinContent.setItems(ProteinContent.values());
-    proteinContent.setRenderer(
-        new TextRenderer<>(value -> getTranslation(PROTEIN_CONTENT_PREFIX + value.name())));
+    proteinContent.setItemLabelGenerator(
+        value -> getTranslation(PROTEIN_CONTENT_PREFIX + value.name()));
     proteinContent.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());
@@ -267,8 +265,8 @@ public class LcmsmsSubmissionForm extends FormLayout implements LocaleChangeObse
         value -> getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + value.name()));
     identification.setId(id(IDENTIFICATION));
     identification.setItems(ProteinIdentification.availables());
-    identification.setRenderer(
-        new TextRenderer<>(value -> getTranslation(PROTEIN_IDENTIFICATION_PREFIX + value.name())));
+    identification.setItemLabelGenerator(
+        value -> getTranslation(PROTEIN_IDENTIFICATION_PREFIX + value.name()));
     identification.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     identification.addValueChangeListener(e -> identificationChanged());
     identificationLink.setId(id(IDENTIFICATION_LINK));

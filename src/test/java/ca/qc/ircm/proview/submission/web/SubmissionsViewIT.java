@@ -1,205 +1,143 @@
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.sample.web.SamplesStatusDialog;
-import ca.qc.ircm.proview.sample.web.SamplesStatusDialogElement;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.SigninViewElement;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.web.SigninView;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.testbench.BrowserTest;
-import java.util.Locale;
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.Keys;
+import com.vaadin.testbench.unit.MetaKeys;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Integration tests for {@link SubmissionsView}.
  */
-@TestBenchTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewIT extends AbstractBrowserTestCase {
+public class SubmissionsViewIT extends SpringUIUnitTest {
 
-  private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SAMPLES_STATUS_DIALOG_PREFIX = messagePrefix(
       SamplesStatusDialog.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionsViewIT.class);
   @Autowired
   private SubmissionRepository repository;
-  @Autowired
-  private MessageSource messageSource;
-  @Value("${spring.application.name}")
-  private String applicationName;
 
-  private void open() {
-    openView(VIEW_NAME);
-  }
-
-  @BrowserTest
+  @Test
   @WithAnonymousUser
   public void security_Anonymous() {
-    open();
-
-    $(SigninViewElement.class).waitForFirst();
+    navigate(VIEW_NAME, SigninView.class);
   }
 
-  @BrowserTest
-  public void title() {
-    open();
-
-    Locale locale = currentLocale();
-    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
-        locale);
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
-        getDriver().getTitle());
-  }
-
-  @BrowserTest
-  public void fieldsExistence() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(view::submissions).isPresent());
-    assertTrue(optional(view::add).isPresent());
-    assertFalse(optional(view::editStatus).isPresent());
-    assertFalse(optional(view::history).isPresent());
-  }
-
-  @BrowserTest
-  @WithUserDetails("proview@ircm.qc.ca")
-  public void fieldsExistence_Admin() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    assertTrue(optional(view::submissions).isPresent());
-    assertTrue(optional(view::add).isPresent());
-    assertTrue(optional(view::editStatus).isPresent());
-    assertTrue(optional(view::history).isPresent());
-  }
-
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void hide() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
-        .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
+    test(view.submissions).invokeLitRendererFunction(0, view.hidden.getKey(), "toggleHidden");
 
+    assertEquals(ButtonVariant.LUMO_ERROR.getVariantName(),
+        test(view.submissions).getLitRendererPropertyValue(0, view.hidden.getKey(), "hiddenTheme",
+            String.class));
     Submission submission = repository.findById(164L).orElseThrow();
     assertTrue(submission.isHidden());
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void show() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
-        .equals(ButtonVariant.LUMO_ERROR.getVariantName()));
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().visible(0).click();
-    waitUntil(driver -> view.submissions().visible(0).getDomAttribute("theme")
-        .equals(ButtonVariant.LUMO_SUCCESS.getVariantName()));
+    test(view.submissions).invokeLitRendererFunction(0, view.hidden.getKey(), "toggleHidden");
+    test(view.submissions).invokeLitRendererFunction(0, view.hidden.getKey(), "toggleHidden");
 
+    assertEquals(ButtonVariant.LUMO_SUCCESS.getVariantName(),
+        test(view.submissions).getLitRendererPropertyValue(0, view.hidden.getKey(), "hiddenTheme",
+            String.class));
     Submission submission = repository.findById(164L).orElseThrow();
     assertFalse(submission.isHidden());
   }
 
-  @BrowserTest
+  @Test
   public void view() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().select(0);
-    view.view().click();
+    test(view.submissions).select(0);
+    test(view.view).click();
 
-    SubmissionDialogElement dialog = view.dialog();
-    assertTrue(dialog.isOpen());
-    Assertions.assertEquals("POLR3B-Flag", dialog.header().getText());
+    SubmissionDialog dialog = $(SubmissionDialog.class).single();
+    assertTrue(dialog.isOpened());
+    assertEquals("POLR3B-Flag", dialog.getHeaderTitle());
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void statusDialog() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().experimentCell(0).click(0, 0, Keys.SHIFT);
+    test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    SamplesStatusDialogElement dialog = view.statusDialog();
-    assertTrue(dialog.isOpen());
-    Assertions.assertEquals(
-        messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-            new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    assertTrue(dialog.isOpened());
+    assertEquals(view.getTranslation(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+        "POLR3B-Flag"), dialog.getHeaderTitle());
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void history_Grid() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().experimentCell(0).click(0, 0, Keys.ALT);
+    test(view.submissions).clickRow(0, new MetaKeys().alt());
 
-    $(HistoryViewElement.class).waitForFirst();
-    Assertions.assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    HistoryView historyView = $(HistoryView.class).single();
+    assertEquals(164, historyView.getSubmissionId());
   }
 
-  @BrowserTest
+  @Test
   public void add() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.add().click();
+    test(view.add).click();
 
-    $(SubmissionViewElement.class).waitForFirst();
+    $(SubmissionView.class).single();
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void editStatus() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().experimentCell(0).click();
-    view.editStatus().click();
+    test(view.submissions).select(0);
+    test(view.editStatus).click();
 
-    SamplesStatusDialogElement dialog = view.statusDialog();
-    assertTrue(dialog.isOpen());
-    Assertions.assertEquals(
-        messageSource.getMessage(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
-            new Object[]{"POLR3B-Flag"}, currentLocale()), dialog.header().getText());
+    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    assertTrue(dialog.isOpened());
+    assertEquals(view.getTranslation(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
+        "POLR3B-Flag"), dialog.getHeaderTitle());
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void history() {
-    open();
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
+    SubmissionsView view = navigate(SubmissionsView.class);
 
-    view.submissions().experimentCell(0).click();
-    view.history().click();
+    test(view.submissions).select(0);
+    test(view.history).click();
 
-    $(HistoryViewElement.class).waitForFirst();
-    Assertions.assertEquals(viewUrl(HistoryView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    HistoryView historyView = $(HistoryView.class).single();
+    assertEquals(164, historyView.getSubmissionId());
   }
 }

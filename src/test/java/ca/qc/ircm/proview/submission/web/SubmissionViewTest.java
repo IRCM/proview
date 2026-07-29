@@ -317,6 +317,23 @@ public class SubmissionViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.service).isUsable());
+    assertTrue(test(view.lcmsms).isUsable());
+    test(view.service).select(view.lcmsms.getLabel());
+    assertTrue(test(view.lcmsmsSubmissionForm).isUsable());
+    test(view.service).select(view.smallMolecule.getLabel());
+    assertTrue(test(view.smallMoleculeSubmissionForm).isUsable());
+    assertTrue(test(view.intactProtein).isUsable());
+    test(view.service).select(view.intactProtein.getLabel());
+    assertTrue(test(view.intactProteinSubmissionForm).isUsable());
+    assertTrue(test(view.comment).isUsable());
+    assertTrue(test(view.upload).isUsable());
+    assertTrue(test(view.files).isUsable());
+    assertTrue(test(view.save).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(SERVICE, view.service.getId().orElse(""));

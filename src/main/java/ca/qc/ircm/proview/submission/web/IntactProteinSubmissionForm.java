@@ -56,7 +56,6 @@ import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -164,8 +163,7 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     volume.setId(id(VOLUME));
     sampleType.setId(id(SAMPLES_TYPE));
     sampleType.setItems(DRY, SOLUTION);
-    sampleType.setRenderer(
-        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
+    sampleType.setItemLabelGenerator(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name()));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     samplesCount.setId(id(SAMPLES_COUNT));
@@ -173,13 +171,12 @@ public class IntactProteinSubmissionForm extends FormLayout implements LocaleCha
     samplesNames.setMinHeight("10em");
     injection.setId(id(INJECTION_TYPE));
     injection.setItems(InjectionType.values());
-    injection.setRenderer(
-        new TextRenderer<>(value -> getTranslation(INJECTION_TYPE_PREFIX + value.name())));
+    injection.setItemLabelGenerator(value -> getTranslation(INJECTION_TYPE_PREFIX + value.name()));
     injection.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     source.setId(id(SOURCE));
     source.setItems(MassDetectionInstrumentSource.availables());
-    source.setRenderer(new TextRenderer<>(
-        value -> getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name())));
+    source.setItemLabelGenerator(
+        value -> getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + value.name()));
     source.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     instrument.setId(id(INSTRUMENT));
     instrument.setItems(MassDetectionInstrument.userChoices());

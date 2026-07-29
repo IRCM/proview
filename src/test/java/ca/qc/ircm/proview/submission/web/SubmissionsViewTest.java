@@ -188,6 +188,27 @@ public class SubmissionsViewTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.add).isUsable());
+    view.submissions.setItems(submissions);
+    test(view.submissions).select(0);
+    assertFalse(test(view.editStatus).isUsable());
+    assertFalse(test(view.history).isUsable());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() {
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.add).isUsable());
+    view.submissions.setItems(submissions);
+    test(view.submissions).select(0);
+    assertTrue(test(view.editStatus).isUsable());
+    assertTrue(test(view.history).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(SUBMISSIONS, view.submissions.getId().orElse(""));

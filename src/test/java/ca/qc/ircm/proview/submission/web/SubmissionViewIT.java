@@ -1,17 +1,15 @@
 package ca.qc.ircm.proview.submission.web;
 
-import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.TITLE;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.submission.SubmissionProperties.HIGH_RESOLUTION;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.SAVED;
 import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static ca.qc.ircm.proview.text.Strings.property;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.msanalysis.InjectionType;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrumentSource;
@@ -27,39 +25,34 @@ import ca.qc.ircm.proview.submission.Quantification;
 import ca.qc.ircm.proview.submission.StorageTemperature;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
-import ca.qc.ircm.proview.web.SigninViewElement;
-import com.vaadin.flow.component.notification.testbench.NotificationElement;
-import com.vaadin.testbench.BrowserTest;
+import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Integration tests for {@link SubmissionView}.
  */
-@TestBenchTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionViewIT extends AbstractBrowserTestCase {
+public class SubmissionViewIT extends SpringUIUnitTest {
 
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
@@ -82,8 +75,6 @@ public class SubmissionViewIT extends AbstractBrowserTestCase {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewIT.class);
   @Autowired
   private SubmissionRepository repository;
-  @Autowired
-  private MessageSource messageSource;
   private final String experiment = "my experiment";
   private final String goal = "my goal";
   private final String taxonomy = "my taxon";
@@ -132,372 +123,307 @@ public class SubmissionViewIT extends AbstractBrowserTestCase {
   private Path file1;
   private Path file2;
 
-  private void open() {
-    openView(VIEW_NAME);
-  }
-
   @BeforeEach
   public void beforeTest() throws Throwable {
     file1 = Paths.get(Objects.requireNonNull(getClass().getResource("/gelimages1.png")).toURI());
     file2 = Paths.get(Objects.requireNonNull(getClass().getResource("/structure1.png")).toURI());
   }
 
-  @BrowserTest
+  @Test
   @WithAnonymousUser
   public void security_Anonymous() {
-    open();
-
-    $(SigninViewElement.class).waitForFirst();
+    navigate(VIEW_NAME, SigninView.class);
   }
 
-  @BrowserTest
-  public void title() {
-    open();
-
-    Locale locale = currentLocale();
-    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
-        locale);
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
-        getDriver().getTitle());
+  private void setFields(SubmissionView view) {
+    test(view.comment).setValue(comment);
+    test(view.upload).upload(file1.toFile());
+    test(view.upload).upload(file2.toFile());
   }
 
-  @BrowserTest
-  public void fieldsExistence() {
-    open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    assertTrue(optional(view::service).isPresent());
-    assertTrue(optional(view::lcmsms).isPresent());
-    view.lcmsms().click();
-    assertTrue(optional(view::lcmsmsSubmissionForm).isPresent());
-    assertTrue(optional(view::smallMolecule).isPresent());
-    view.smallMolecule().click();
-    assertTrue(optional(view::smallMoleculeSubmissionForm).isPresent());
-    assertTrue(optional(view::intactProtein).isPresent());
-    view.intactProtein().click();
-    assertTrue(optional(view::intactProteinSubmissionForm).isPresent());
-    assertTrue(optional(view::comment).isPresent());
-    assertTrue(optional(view::upload).isPresent());
-    assertTrue(optional(view::files).isPresent());
-    assertTrue(optional(view::save).isPresent());
-  }
-
-  private void setFields(SubmissionViewElement view) {
-    view.comment().setValue(comment);
-    view.upload().upload(file1.toFile());
-    view.upload().upload(file2.toFile());
-  }
-
-  private void setFields(LcmsmsSubmissionFormElement form, SampleType sampleType) {
-    Locale locale = currentLocale();
-    form.experiment().setValue(experiment);
-    form.goal().setValue(goal);
-    form.taxonomy().setValue(taxonomy);
-    form.protein().setValue(protein);
-    form.molecularWeight().setValue(String.valueOf(molecularWeight));
-    form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(
-        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
-    form.samplesCount().setValue(String.valueOf(samplesCount));
-    form.samplesNames().setValue(sampleNamesString);
+  private void setFields(LcmsmsSubmissionForm form, SampleType sampleType) {
+    test(form.experiment).setValue(experiment);
+    test(form.goal).setValue(goal);
+    test(form.taxonomy).setValue(taxonomy);
+    test(form.protein).setValue(protein);
+    test(form.molecularWeight).setValue(String.valueOf(molecularWeight));
+    test(form.postTranslationModification).setValue(postTranslationModification);
+    test(form.sampleType).selectItem(form.getTranslation(SAMPLE_TYPE_PREFIX + sampleType.name()));
+    test(form.samplesCount).setValue(String.valueOf(samplesCount));
+    test(form.samplesNames).setValue(sampleNamesString);
     if (sampleType != SampleType.GEL) {
-      form.quantity().setValue(quantity);
-      form.volume().setValue(volume);
+      test(form.quantity).setValue(quantity);
+      test(form.volume).setValue(volume);
     } else {
-      form.separation().selectByText(
-          messageSource.getMessage(GEL_SEPARATION_PREFIX + separation.name(), null, locale));
-      form.thickness().selectByText(
-          messageSource.getMessage(GEL_THICKNESS_PREFIX + thickness.name(), null, locale));
-      form.coloration().selectByText(
-          messageSource.getMessage(GEL_COLORATION_PREFIX + coloration.name(), null, locale));
-      form.otherColoration().setValue(otherColoration);
-      form.developmentTime().setValue(developmentTime);
-      form.destained().setChecked(destained);
-      form.weightMarkerQuantity().setValue(String.valueOf(weightMarkerQuantity));
-      form.proteinQuantity().setValue(proteinQuantity);
+      test(form.separation).selectItem(
+          form.getTranslation(GEL_SEPARATION_PREFIX + separation.name()));
+      test(form.thickness).selectItem(form.getTranslation(GEL_THICKNESS_PREFIX + thickness.name()));
+      test(form.coloration).selectItem(
+          form.getTranslation(GEL_COLORATION_PREFIX + coloration.name()));
+      test(form.otherColoration).setValue(otherColoration);
+      test(form.developmentTime).setValue(developmentTime);
+      if (form.destained.getValue() != destained) {
+        test(form.destained).click();
+      }
+      test(form.weightMarkerQuantity).setValue(String.valueOf(weightMarkerQuantity));
+      test(form.proteinQuantity).setValue(proteinQuantity);
     }
-    form.digestion().selectByText(
-        messageSource.getMessage(PROTEOLYTIC_DIGESTION_PREFIX + digestion.name(), null, locale));
-    form.usedDigestion().setValue(usedDigestion);
-    form.otherDigestion().setValue(otherDigestion);
-    form.proteinContent().selectByText(
-        messageSource.getMessage(PROTEIN_CONTENT_PREFIX + proteinContent.name(), null, locale));
-    form.instrument().selectByText(
-        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null,
-            locale));
-    form.identification().selectByText(
-        messageSource.getMessage(PROTEIN_IDENTIFICATION_PREFIX + identification.name(), null,
-            locale));
-    form.identificationLink().setValue(identificationLink);
-    form.quantification().selectByText(
-        messageSource.getMessage(QUANTIFICATION_PREFIX + quantification.name(), null, locale));
-    form.quantificationComment().setValue(quantificationComment);
+    test(form.digestion).selectItem(
+        form.getTranslation(PROTEOLYTIC_DIGESTION_PREFIX + digestion.name()));
+    if (digestion == ProteolyticDigestion.DIGESTED) {
+      test(form.usedDigestion).setValue(usedDigestion);
+    } else if (digestion == ProteolyticDigestion.OTHER) {
+      test(form.otherDigestion).setValue(otherDigestion);
+    }
+    test(form.proteinContent).selectItem(
+        form.getTranslation(PROTEIN_CONTENT_PREFIX + proteinContent.name()));
+    test(form.instrument).selectItem(
+        form.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()));
+    test(form.identification).selectItem(
+        form.getTranslation(PROTEIN_IDENTIFICATION_PREFIX + identification.name()));
+    test(form.identificationLink).setValue(identificationLink);
+    test(form.quantification).selectItem(
+        form.getTranslation(QUANTIFICATION_PREFIX + quantification.name()));
+    test(form.quantificationComment).setValue(quantificationComment);
   }
 
-  private void setFields(SmallMoleculeSubmissionFormElement form) {
-    Locale locale = currentLocale();
-    form.sampleType().selectByText(
-        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
-    form.sampleName().setValue(sampleName1);
-    form.solvent().setValue(solvent);
-    form.formula().setValue(formula);
-    form.monoisotopicMass().setValue(String.valueOf(monoisotopicMass));
-    form.averageMass().setValue(String.valueOf(averageMass));
-    form.toxicity().setValue(toxicity);
-    form.lightSensitive().setChecked(lightSensitive);
-    form.storageTemperature().selectByText(
-        messageSource.getMessage(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name(), null,
-            locale));
-    form.highResolution().selectByText(
-        messageSource.getMessage(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, highResolution),
-            null, locale));
-    Stream.of(Solvent.values()).forEach(solvent -> form.solvents()
-        .deselectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
-    solvents.forEach(solvent -> form.solvents()
-        .selectByText(messageSource.getMessage(SOLVENT_PREFIX + solvent.name(), null, locale)));
-    form.otherSolvent().setValue(otherSolvent);
+  private void setFields(SmallMoleculeSubmissionForm form) {
+    test(form.sampleType).selectItem(form.getTranslation(SAMPLE_TYPE_PREFIX + sampleType.name()));
+    test(form.sampleName).setValue(sampleName1);
+    test(form.solvent).setValue(solvent);
+    test(form.formula).setValue(formula);
+    test(form.monoisotopicMass).setValue(String.valueOf(monoisotopicMass));
+    test(form.averageMass).setValue(String.valueOf(averageMass));
+    test(form.toxicity).setValue(toxicity);
+    if (form.lightSensitive.getValue() != lightSensitive) {
+      test(form.lightSensitive).click();
+    }
+    test(form.storageTemperature).selectItem(
+        form.getTranslation(STORAGE_TEMPERATURE_PREFIX + storageTemperature.name()));
+    test(form.highResolution).selectItem(
+        form.getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, highResolution)));
+    test(form.solvents).deselectAll();
+    solvents.forEach(solvent -> test(form.solvents).selectItem(
+        form.getTranslation(SOLVENT_PREFIX + solvent.name())));
+    test(form.otherSolvent).setValue(otherSolvent);
   }
 
-  private void setFields(IntactProteinSubmissionFormElement form) {
-    Locale locale = currentLocale();
-    form.experiment().setValue(experiment);
-    form.goal().setValue(goal);
-    form.taxonomy().setValue(taxonomy);
-    form.protein().setValue(protein);
-    form.molecularWeight().setValue(String.valueOf(molecularWeight));
-    form.postTranslationModification().setValue(postTranslationModification);
-    form.sampleType().selectByText(
-        messageSource.getMessage(SAMPLE_TYPE_PREFIX + sampleType.name(), null, locale));
-    form.samplesCount().setValue(String.valueOf(samplesCount));
-    form.samplesNames().setValue(sampleNamesString);
-    form.quantity().setValue(quantity);
-    form.volume().setValue(volume);
-    form.injection().selectByText(
-        messageSource.getMessage(INJECTION_TYPE_PREFIX + injection.name(), null, locale));
-    form.source().selectByText(
-        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + source.name(), null,
-            locale));
-    form.instrument().selectByText(
-        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null,
-            locale));
+  private void setFields(IntactProteinSubmissionForm form) {
+    test(form.experiment).setValue(experiment);
+    test(form.goal).setValue(goal);
+    test(form.taxonomy).setValue(taxonomy);
+    test(form.protein).setValue(protein);
+    test(form.molecularWeight).setValue(String.valueOf(molecularWeight));
+    test(form.postTranslationModification).setValue(postTranslationModification);
+    test(form.sampleType).selectItem(form.getTranslation(SAMPLE_TYPE_PREFIX + sampleType.name()));
+    test(form.samplesCount).setValue(String.valueOf(samplesCount));
+    test(form.samplesNames).setValue(sampleNamesString);
+    test(form.quantity).setValue(quantity);
+    test(form.volume).setValue(volume);
+    test(form.injection).selectItem(form.getTranslation(INJECTION_TYPE_PREFIX + injection.name()));
+    test(form.source).selectItem(
+        form.getTranslation(MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX + source.name()));
+    test(form.instrument).selectItem(
+        form.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()));
   }
 
-  @BrowserTest
+  @Test
   public void save_LcmsmsSolution() throws Throwable {
-    open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    view.lcmsms().click();
-    setFields(view.lcmsmsSubmissionForm(), sampleType);
+    SubmissionView view = navigate(SubmissionView.class);
+    test(view.service).select(view.lcmsms.getLabel());
+    setFields(view.lcmsmsSubmissionForm, sampleType);
     setFields(view);
 
-    view.save().click();
+    test(view.save).click();
 
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-            currentLocale()), notification.getText());
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
+        test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    Assertions.assertEquals(experiment, submission.getExperiment());
-    Assertions.assertEquals(goal, submission.getGoal());
-    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
-    Assertions.assertEquals(protein, submission.getProtein());
-    Assertions.assertEquals(postTranslationModification,
-        submission.getPostTranslationModification());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(goal, submission.getGoal());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(protein, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    Assertions.assertEquals(samplesCount, submission.getSamples().size());
+    assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      Assertions.assertEquals(sampleType, submission.getSamples().get(i).getType());
-      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
-      Assertions.assertEquals(quantity, submission.getSamples().get(i).getQuantity());
-      Assertions.assertEquals(volume, submission.getSamples().get(i).getVolume());
+      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      assertEquals(sampleType, submission.getSamples().get(i).getType());
+      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      assertEquals(quantity, submission.getSamples().get(i).getQuantity());
+      assertEquals(volume, submission.getSamples().get(i).getVolume());
     }
-    Assertions.assertEquals(digestion, submission.getDigestion());
+    assertEquals(digestion, submission.getDigestion());
     switch (digestion) {
       case DIGESTED:
-        Assertions.assertEquals(usedDigestion, submission.getUsedDigestion());
+        assertEquals(usedDigestion, submission.getUsedDigestion());
         break;
       case OTHER:
-        Assertions.assertEquals(otherDigestion, submission.getOtherDigestion());
+        assertEquals(otherDigestion, submission.getOtherDigestion());
         break;
       default:
     }
-    Assertions.assertEquals(proteinContent, submission.getProteinContent());
-    Assertions.assertEquals(instrument, submission.getInstrument());
-    Assertions.assertEquals(identification, submission.getIdentification());
+    assertEquals(proteinContent, submission.getProteinContent());
+    assertEquals(instrument, submission.getInstrument());
+    assertEquals(identification, submission.getIdentification());
     if (identification == ProteinIdentification.OTHER) {
-      Assertions.assertEquals(identificationLink, submission.getIdentificationLink());
+      assertEquals(identificationLink, submission.getIdentificationLink());
     }
-    Assertions.assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantification, submission.getQuantification());
     if (quantification == Quantification.SILAC || quantification == Quantification.TMT) {
-      Assertions.assertEquals(quantificationComment, submission.getQuantificationComment());
+      assertEquals(quantificationComment, submission.getQuantificationComment());
     }
-    Assertions.assertEquals(comment, submission.getComment());
-    Assertions.assertEquals(2, submission.getFiles().size());
-    Assertions.assertEquals(file1.getFileName().toString(),
-        submission.getFiles().get(0).getFilename());
+    assertEquals(comment, submission.getComment());
+    assertEquals(2, submission.getFiles().size());
+    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    Assertions.assertEquals(file2.getFileName().toString(),
-        submission.getFiles().get(1).getFilename());
+    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsViewElement.class).waitForFirst();
+    $(SubmissionsView.class).single();
   }
 
-  @BrowserTest
+  @Test
   public void save_LcmsmsGel() throws Throwable {
-    open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    view.lcmsms().click();
-    setFields(view.lcmsmsSubmissionForm(), SampleType.GEL);
+    SubmissionView view = navigate(SubmissionView.class);
+    test(view.service).select(view.lcmsms.getLabel());
+    setFields(view.lcmsmsSubmissionForm, SampleType.GEL);
     setFields(view);
 
-    view.save().click();
+    test(view.save).click();
 
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-            currentLocale()), notification.getText());
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
+        test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    Assertions.assertEquals(experiment, submission.getExperiment());
-    Assertions.assertEquals(goal, submission.getGoal());
-    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
-    Assertions.assertEquals(protein, submission.getProtein());
-    Assertions.assertEquals(postTranslationModification,
-        submission.getPostTranslationModification());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(goal, submission.getGoal());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(protein, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    Assertions.assertEquals(samplesCount, submission.getSamples().size());
+    assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      Assertions.assertEquals(SampleType.GEL, submission.getSamples().get(i).getType());
-      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      assertEquals(SampleType.GEL, submission.getSamples().get(i).getType());
+      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
     }
-    Assertions.assertEquals(separation, submission.getSeparation());
-    Assertions.assertEquals(thickness, submission.getThickness());
-    Assertions.assertEquals(coloration, submission.getColoration());
-    Assertions.assertEquals(otherColoration, submission.getOtherColoration());
-    Assertions.assertEquals(developmentTime, submission.getDevelopmentTime());
-    Assertions.assertEquals(destained, submission.isDecoloration());
-    Assertions.assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity());
-    Assertions.assertEquals(proteinQuantity, submission.getProteinQuantity());
-    Assertions.assertEquals(digestion, submission.getDigestion());
+    assertEquals(separation, submission.getSeparation());
+    assertEquals(thickness, submission.getThickness());
+    assertEquals(coloration, submission.getColoration());
+    assertEquals(otherColoration, submission.getOtherColoration());
+    assertEquals(developmentTime, submission.getDevelopmentTime());
+    assertEquals(destained, submission.isDecoloration());
+    assertEquals(weightMarkerQuantity, submission.getWeightMarkerQuantity());
+    assertEquals(proteinQuantity, submission.getProteinQuantity());
+    assertEquals(digestion, submission.getDigestion());
     switch (digestion) {
       case DIGESTED:
-        Assertions.assertEquals(usedDigestion, submission.getUsedDigestion());
+        assertEquals(usedDigestion, submission.getUsedDigestion());
         break;
       case OTHER:
-        Assertions.assertEquals(otherDigestion, submission.getOtherDigestion());
+        assertEquals(otherDigestion, submission.getOtherDigestion());
         break;
       default:
     }
-    Assertions.assertEquals(proteinContent, submission.getProteinContent());
-    Assertions.assertEquals(instrument, submission.getInstrument());
-    Assertions.assertEquals(identification, submission.getIdentification());
+    assertEquals(proteinContent, submission.getProteinContent());
+    assertEquals(instrument, submission.getInstrument());
+    assertEquals(identification, submission.getIdentification());
     if (identification == ProteinIdentification.OTHER) {
-      Assertions.assertEquals(identificationLink, submission.getIdentificationLink());
+      assertEquals(identificationLink, submission.getIdentificationLink());
     }
-    Assertions.assertEquals(quantification, submission.getQuantification());
+    assertEquals(quantification, submission.getQuantification());
     if (quantification == Quantification.SILAC || quantification == Quantification.TMT) {
-      Assertions.assertEquals(quantificationComment, submission.getQuantificationComment());
+      assertEquals(quantificationComment, submission.getQuantificationComment());
     }
-    Assertions.assertEquals(comment, submission.getComment());
-    Assertions.assertEquals(2, submission.getFiles().size());
-    Assertions.assertEquals(file1.getFileName().toString(),
-        submission.getFiles().get(0).getFilename());
+    assertEquals(comment, submission.getComment());
+    assertEquals(2, submission.getFiles().size());
+    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    Assertions.assertEquals(file2.getFileName().toString(),
-        submission.getFiles().get(1).getFilename());
+    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsViewElement.class).waitForFirst();
+    $(SubmissionsView.class).single();
   }
 
-  @BrowserTest
+  @Test
   public void save_SmallMolecule() throws Throwable {
-    open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    view.smallMolecule().click();
-    setFields(view.smallMoleculeSubmissionForm());
+    SubmissionView view = navigate(SubmissionView.class);
+    test(view.service).select(view.smallMolecule.getLabel());
+    setFields(view.smallMoleculeSubmissionForm);
     setFields(view);
 
-    view.save().click();
+    test(view.save).click();
 
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{sampleName1},
-            currentLocale()), notification.getText());
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, sampleName1),
+        test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1))
         .orElseThrow();
-    Assertions.assertEquals(sampleName1, submission.getExperiment());
-    Assertions.assertEquals(solvent, submission.getSolutionSolvent());
-    Assertions.assertEquals(formula, submission.getFormula());
+    assertEquals(sampleName1, submission.getExperiment());
+    assertEquals(solvent, submission.getSolutionSolvent());
+    assertEquals(formula, submission.getFormula());
     assertNotNull(submission.getMonoisotopicMass());
-    Assertions.assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
+    assertEquals(monoisotopicMass, submission.getMonoisotopicMass(), 0.0001);
     assertNotNull(submission.getAverageMass());
-    Assertions.assertEquals(averageMass, submission.getAverageMass(), 0.0001);
-    Assertions.assertEquals(toxicity, submission.getToxicity());
-    Assertions.assertEquals(lightSensitive, submission.isLightSensitive());
-    Assertions.assertEquals(storageTemperature, submission.getStorageTemperature());
-    Assertions.assertEquals(highResolution, submission.isHighResolution());
-    Assertions.assertEquals(solvents.size(), submission.getSolvents().size());
+    assertEquals(averageMass, submission.getAverageMass(), 0.0001);
+    assertEquals(toxicity, submission.getToxicity());
+    assertEquals(lightSensitive, submission.isLightSensitive());
+    assertEquals(storageTemperature, submission.getStorageTemperature());
+    assertEquals(highResolution, submission.isHighResolution());
+    assertEquals(solvents.size(), submission.getSolvents().size());
     for (Solvent solvent : solvents) {
       assertTrue(submission.getSolvents().contains(solvent));
     }
-    Assertions.assertEquals(otherSolvent, submission.getOtherSolvent());
+    assertEquals(otherSolvent, submission.getOtherSolvent());
     assertNotNull(submission.getSamples());
-    Assertions.assertEquals(1, submission.getSamples().size());
-    Assertions.assertEquals(sampleType, submission.getSamples().get(0).getType());
-    Assertions.assertEquals(sampleName1, submission.getSamples().get(0).getName());
-    Assertions.assertEquals(comment, submission.getComment());
-    Assertions.assertEquals(2, submission.getFiles().size());
-    Assertions.assertEquals(file1.getFileName().toString(),
-        submission.getFiles().get(0).getFilename());
+    assertEquals(1, submission.getSamples().size());
+    assertEquals(sampleType, submission.getSamples().get(0).getType());
+    assertEquals(sampleName1, submission.getSamples().get(0).getName());
+    assertEquals(comment, submission.getComment());
+    assertEquals(2, submission.getFiles().size());
+    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    Assertions.assertEquals(file2.getFileName().toString(),
-        submission.getFiles().get(1).getFilename());
+    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsViewElement.class).waitForFirst();
+    $(SubmissionsView.class).single();
   }
 
-  @BrowserTest
+  @Test
   public void save_IntactProtein() throws Throwable {
-    open();
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    view.intactProtein().click();
-    setFields(view.intactProteinSubmissionForm());
+    SubmissionView view = navigate(SubmissionView.class);
+    test(view.service).select(view.intactProtein.getLabel());
+    setFields(view.intactProteinSubmissionForm);
     setFields(view);
 
-    view.save().click();
+    test(view.save).click();
 
-    NotificationElement notification = $(NotificationElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + SAVED, new Object[]{experiment},
-            currentLocale()), notification.getText());
+    Notification notification = $(Notification.class).single();
+    assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
+        test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
-    Assertions.assertEquals(experiment, submission.getExperiment());
-    Assertions.assertEquals(goal, submission.getGoal());
-    Assertions.assertEquals(taxonomy, submission.getTaxonomy());
-    Assertions.assertEquals(protein, submission.getProtein());
-    Assertions.assertEquals(postTranslationModification,
-        submission.getPostTranslationModification());
+    assertEquals(experiment, submission.getExperiment());
+    assertEquals(goal, submission.getGoal());
+    assertEquals(taxonomy, submission.getTaxonomy());
+    assertEquals(protein, submission.getProtein());
+    assertEquals(postTranslationModification, submission.getPostTranslationModification());
     assertNotNull(submission.getSamples());
-    Assertions.assertEquals(samplesCount, submission.getSamples().size());
+    assertEquals(samplesCount, submission.getSamples().size());
     for (int i = 0; i < samplesCount; i++) {
-      Assertions.assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
-      Assertions.assertEquals(sampleType, submission.getSamples().get(i).getType());
-      Assertions.assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
-      Assertions.assertEquals(quantity, submission.getSamples().get(i).getQuantity());
-      Assertions.assertEquals(volume, submission.getSamples().get(i).getVolume());
+      assertEquals(molecularWeight, submission.getSamples().get(i).getMolecularWeight());
+      assertEquals(sampleType, submission.getSamples().get(i).getType());
+      assertEquals(sampleNames.get(i), submission.getSamples().get(i).getName());
+      assertEquals(quantity, submission.getSamples().get(i).getQuantity());
+      assertEquals(volume, submission.getSamples().get(i).getVolume());
     }
-    Assertions.assertEquals(injection, submission.getInjectionType());
-    Assertions.assertEquals(source, submission.getSource());
-    Assertions.assertEquals(instrument, submission.getInstrument());
-    Assertions.assertEquals(comment, submission.getComment());
-    Assertions.assertEquals(2, submission.getFiles().size());
-    Assertions.assertEquals(file1.getFileName().toString(),
-        submission.getFiles().get(0).getFilename());
+    assertEquals(injection, submission.getInjectionType());
+    assertEquals(source, submission.getSource());
+    assertEquals(instrument, submission.getInstrument());
+    assertEquals(comment, submission.getComment());
+    assertEquals(2, submission.getFiles().size());
+    assertEquals(file1.getFileName().toString(), submission.getFiles().get(0).getFilename());
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
-    Assertions.assertEquals(file2.getFileName().toString(),
-        submission.getFiles().get(1).getFilename());
+    assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsViewElement.class).waitForFirst();
+    $(SubmissionsView.class).single();
   }
 }

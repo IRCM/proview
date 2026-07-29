@@ -105,6 +105,29 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   }
 
   @Test
+  public void fieldsExistence_User() {
+    assertTrue(test(dialog.printContent).isUsable());
+    assertFalse(test(dialog.instrument).isUsable());
+    assertFalse(test(dialog.dataAvailableDate).isUsable());
+    assertFalse(test(dialog.save).isUsable());
+    assertTrue(test(dialog.print).isUsable());
+    assertFalse(test(dialog.edit).isUsable());
+    dialog.setSubmissionId(164L);
+    assertTrue(test(dialog.edit).isUsable());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() {
+    assertTrue(test(dialog.printContent).isUsable());
+    assertTrue(test(dialog.instrument).isUsable());
+    assertTrue(test(dialog.dataAvailableDate).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.print).isUsable());
+    assertTrue(test(dialog.edit).isUsable());
+  }
+
+  @Test
   public void styles() {
     assertEquals(ID, dialog.getId().orElse(""));
     assertEquals(id(INSTRUMENT), dialog.instrument.getId().orElse(""));
