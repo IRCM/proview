@@ -42,7 +42,10 @@ public class ViewLayoutComponent extends SeleniumComponent {
     if (!"true".equals(drawerToggle.getAttribute("aria-expanded"))) {
       drawerToggle.click();
     }
-    return d -> d.findElement(By.cssSelector("vaadin-drawer-toggle[aria-expanded='true']"));
+    return d -> {
+      d.findElement(By.id(styleName(PROFILE, NAV)));
+      return d.findElement(By.cssSelector("vaadin-drawer-toggle[aria-expanded='true']"));
+    };
   }
 
   public WebElement submissions() {

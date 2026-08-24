@@ -94,7 +94,6 @@ public class ViewLayout extends AppLayout implements RouterLayout, LocaleChangeO
     addToDrawer(applicationName, sideNav);
     addToNavbar(drawerToggle, header, changeLanguage);
     setPrimarySection(Section.DRAWER);
-    drawerToggle.addClickListener(event -> logger.debug("Drawer toggle clicked"));
     applicationName.setId(styleName(APPLICATION_NAME));
     applicationName.getStyle().set("font-size", "var(--lumo-font-size-l)")
         .set("line-height", "var(--lumo-size-l)")

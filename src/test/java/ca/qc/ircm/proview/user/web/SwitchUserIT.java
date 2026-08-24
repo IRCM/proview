@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
+import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.web.ViewLayoutElement;
-import com.vaadin.testbench.BrowserTest;
+import ca.qc.ircm.proview.web.ViewLayoutComponent;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
@@ -17,36 +17,39 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SwitchUserIT extends AbstractBrowserTestCase {
+public class SwitchUserIT extends AbstractSeleniumTestCase {
 
-  @BrowserTest
+  @Test
   public void switchUser() {
     openView(VIEW_NAME);
-    UsersViewElement view = $(UsersViewElement.class).waitForFirst();
+    UsersViewComponent view = waitUntil(UsersViewComponent.find());
     view.users().select(5);
 
     view.switchUser().click();
 
-    $(SubmissionsViewElement.class).waitForFirst();
-    ViewLayoutElement viewLayout = $(ViewLayoutElement.class).waitForFirst();
-    assertTrue(optional(viewLayout::exitSwitchUser).isPresent());
-    assertFalse(optional(viewLayout::users).isPresent());
+    waitUntil(SubmissionsViewComponent.find());
+    ViewLayoutComponent layout = waitUntil(ViewLayoutComponent.find());
+    assertTrue(optional(layout::exitSwitchUser).isPresent());
+    assertFalse(optional(layout::users).isPresent());
   }
 
-  @BrowserTest
+  @Test
   public void exitSwitchUser() {
     openView(SubmissionsView.VIEW_NAME);
-    $(ViewLayoutElement.class).waitForFirst().users().click();
-    UsersViewElement usersView = $(UsersViewElement.class).waitForFirst();
-    usersView.users().select(2);
-    usersView.switchUser().click();
-    $(SubmissionsViewElement.class).waitForFirst();
-    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
-    view.profile().click();
+    ViewLayoutComponent layout = waitUntil(ViewLayoutComponent.find());
+    waitUntil(layout.openDrawer());
+    layout.users().click();
+    UsersViewComponent view = waitUntil(UsersViewComponent.find());
+    view.users().select(2);
+    view.switchUser().click();
+    waitUntil(SubmissionsViewComponent.find());
+    layout = waitUntil(ViewLayoutComponent.find());
+    waitUntil(layout.openDrawer());
+    layout.profile().click();
     openView(ExitSwitchUserView.VIEW_NAME);
-    $(SubmissionsViewElement.class).waitForFirst();
-    ViewLayoutElement viewReload = $(ViewLayoutElement.class).waitForFirst();
-    assertFalse(optional(viewReload::exitSwitchUser).isPresent());
-    assertTrue(optional(viewReload::users).isPresent());
+    waitUntil(SubmissionsViewComponent.find());
+    layout = waitUntil(ViewLayoutComponent.find());
+    assertFalse(optional(layout::exitSwitchUser).isPresent());
+    assertTrue(optional(layout::users).isPresent());
   }
 }
