@@ -12,6 +12,7 @@ import static ca.qc.ircm.proview.web.ViewLayout.SUBMISSIONS;
 import static ca.qc.ircm.proview.web.ViewLayout.USERS;
 
 import ca.qc.ircm.proview.test.config.SeleniumComponent;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -35,6 +36,7 @@ public class ViewLayoutComponent extends SeleniumComponent {
     return d -> new ViewLayoutComponent(d.findElement(By.id(ID)));
   }
 
+  @CheckReturnValue
   public Function<WebDriver, WebElement> openDrawer() {
     WebElement drawerToggle = element.findElement(By.cssSelector("vaadin-drawer-toggle"));
     if (!"true".equals(drawerToggle.getAttribute("aria-expanded"))) {
