@@ -6,15 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
-import ca.qc.ircm.proview.test.config.AbstractLocalBrowserTestCase;
+import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import com.vaadin.flow.component.html.testbench.AnchorElement;
-import com.vaadin.testbench.BrowserTest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -23,7 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class GuidelinesViewLocalIT extends AbstractLocalBrowserTestCase {
+public class GuidelinesViewLocalIT extends AbstractSeleniumTestCase {
 
   @Autowired
   private GuidelinesConfiguration guidelinesConfiguration;
@@ -32,12 +32,12 @@ public class GuidelinesViewLocalIT extends AbstractLocalBrowserTestCase {
     openView(VIEW_NAME);
   }
 
-  @BrowserTest
+  @Test
   public void download() throws Throwable {
     open();
     Files.createDirectories(downloadHome);
-    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).get(0).getGuidelines()
-        .get(0);
+    Guideline guideline = guidelinesConfiguration.categories(currentLocale()).getFirst()
+        .getGuidelines().getFirst();
     Path downloaded = downloadHome.resolve(guideline.getPath().getFileName().toString());
     Files.deleteIfExists(downloaded);
     Path source = Paths.get(
@@ -47,8 +47,8 @@ public class GuidelinesViewLocalIT extends AbstractLocalBrowserTestCase {
 
     open();
 
-    GuidelinesViewElement view = $(GuidelinesViewElement.class).waitForFirst();
-    AnchorElement guidelineElement = view.categories().get(0).guidelines().get(0);
+    GuidelinesViewComponent view = waitUntil(GuidelinesViewComponent.find());
+    WebElement guidelineElement = view.guidelines().getFirst();
     guidelineElement.click();
     // Wait for file to download.
     Thread.sleep(2000);
