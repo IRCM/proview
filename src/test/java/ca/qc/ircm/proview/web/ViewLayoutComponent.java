@@ -37,14 +37,15 @@ public class ViewLayoutComponent extends SeleniumComponent {
   }
 
   @CheckReturnValue
-  public Function<WebDriver, WebElement> openDrawer() {
+  public Function<WebDriver, ViewLayoutComponent> openDrawer() {
     WebElement drawerToggle = element.findElement(By.cssSelector("vaadin-drawer-toggle"));
     if (!"true".equals(drawerToggle.getAttribute("aria-expanded"))) {
       drawerToggle.click();
     }
     return d -> {
       d.findElement(By.id(styleName(PROFILE, NAV)));
-      return d.findElement(By.cssSelector("vaadin-drawer-toggle[aria-expanded='true']"));
+      d.findElement(By.cssSelector("vaadin-drawer-toggle[aria-expanded='true']"));
+      return ViewLayoutComponent.find().apply(d);
     };
   }
 

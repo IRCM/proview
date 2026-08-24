@@ -37,14 +37,14 @@ public class SwitchUserIT extends AbstractSeleniumTestCase {
   public void exitSwitchUser() {
     openView(SubmissionsView.VIEW_NAME);
     ViewLayoutComponent layout = waitUntil(ViewLayoutComponent.find());
-    waitUntil(layout.openDrawer());
+    layout = waitUntil(layout.openDrawer());
     layout.users().click();
     UsersViewComponent view = waitUntil(UsersViewComponent.find());
     view.users().select(2);
     view.switchUser().click();
     waitUntil(SubmissionsViewComponent.find());
     layout = waitUntil(ViewLayoutComponent.find());
-    waitUntil(layout.openDrawer());
+    layout = waitUntil(layout.openDrawer());
     layout.profile().click();
     openView(ExitSwitchUserView.VIEW_NAME);
     waitUntil(SubmissionsViewComponent.find());

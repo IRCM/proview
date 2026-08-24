@@ -32,7 +32,7 @@ public class SignoutContextPathIT extends AbstractSeleniumTestCase {
   public void signout_sidenav() {
     open();
     ViewLayoutComponent view = waitUntil(ViewLayoutComponent.find());
-    waitUntil(view.openDrawer());
+    view = waitUntil(view.openDrawer());
     view.signout().click();
     waitUntil(SigninViewComponent.find());
   }

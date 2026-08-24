@@ -45,7 +45,7 @@ public class SignoutIT extends AbstractSeleniumTestCase {
   public void signout_sidenav() {
     openView(SubmissionsView.VIEW_NAME);
     ViewLayoutComponent view = waitUntil(ViewLayoutComponent.find());
-    waitUntil(view.openDrawer());
+    view = waitUntil(view.openDrawer());
     view.signout().click();
     waitUntil(SigninViewComponent.find());
   }
@@ -61,7 +61,7 @@ public class SignoutIT extends AbstractSeleniumTestCase {
     waitUntil(SubmissionsViewComponent.find());
     assertNotNull(driver.manage().getCookieNamed("remember-me"));
     ViewLayoutComponent layout = waitUntil(ViewLayoutComponent.find());
-    waitUntil(layout.openDrawer());
+    layout = waitUntil(layout.openDrawer());
     layout.signout().click();
     waitUntil(SigninViewComponent.find());
     assertNull(driver.manage().getCookieNamed("remember-me"));
