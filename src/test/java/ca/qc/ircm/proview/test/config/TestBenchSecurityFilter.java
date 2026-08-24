@@ -69,11 +69,15 @@ public class TestBenchSecurityFilter extends GenericFilterBean implements TestEx
   public void beforeTestMethod(TestContext testContext) {
     authentication = SecurityContextHolder.getContext().getAuthentication();
     logger.trace("saving authentication {}", authentication);
-    copyAuthenticationOnFilter = isTestBenchTest(testContext);
+    copyAuthenticationOnFilter = isTestBenchTest(testContext) || isSeleniumTest(testContext);
   }
 
   private boolean isTestBenchTest(TestContext testContext) {
     return BrowserTestBase.class.isAssignableFrom(testContext.getTestClass());
+  }
+
+  private boolean isSeleniumTest(TestContext testContext) {
+    return AbstractSeleniumTestCase.class.isAssignableFrom(testContext.getTestClass());
   }
 
   @Override

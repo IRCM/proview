@@ -5,16 +5,19 @@ import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
+import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.user.web.ForgotPasswordViewElement;
-import com.vaadin.testbench.BrowserTest;
-import org.junit.jupiter.api.Assertions;
+import ca.qc.ircm.proview.user.web.ForgotPasswordViewComponent;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -25,7 +28,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithAnonymousUser
-public class SigninIT extends AbstractBrowserTestCase {
+public class SigninIT extends AbstractSeleniumTestCase {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
   @Autowired
@@ -37,94 +40,107 @@ public class SigninIT extends AbstractBrowserTestCase {
     openView(VIEW_NAME);
   }
 
-  @BrowserTest
+  @Test
   public void sign_Fail_invalid_username() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("not.exists@ircm.qc.ca");
-    view.getPasswordField().setValue("notright");
-    view.getSubmitButton().click();
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("not.exists@ircm.qc.ca");
+    view.password().sendKeys("notright");
+    view.signin().click();
+    waitUntil(d -> Optional.ofNullable(d.getCurrentUrl()).orElse("")
+        .startsWith(viewUrl(VIEW_NAME) + "?"));
+    view = waitUntil(SigninViewComponent.find());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
+        view.errorMessageDescription().getText());
+    assertNotNull(driver.getCurrentUrl());
+    assertEquals(viewUrl(VIEW_NAME) + "?" + FAIL, driver.getCurrentUrl());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 
-  @BrowserTest
+  @Test
   public void sign_Fail_invalid_password() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("notright");
-    view.getSubmitButton().click();
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("christopher.anderson@ircm.qc.ca");
+    view.password().sendKeys("notright");
+    view.signin().click();
+    waitUntil(d -> Optional.ofNullable(d.getCurrentUrl()).orElse("")
+        .startsWith(viewUrl(VIEW_NAME) + "?"));
+    view = waitUntil(SigninViewComponent.find());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
+        view.errorMessageDescription().getText());
+    assertNotNull(driver.getCurrentUrl());
+    assertEquals(viewUrl(VIEW_NAME) + "?" + FAIL, driver.getCurrentUrl());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 
-  @BrowserTest
+  @Test
   public void sign_Disabled() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("robert.stlouis@ircm.qc.ca");
+    view.password().sendKeys("password");
+    view.signin().click();
+    waitUntil(d -> Optional.ofNullable(d.getCurrentUrl()).orElse("")
+        .startsWith(viewUrl(VIEW_NAME) + "?"));
+    view = waitUntil(SigninViewComponent.find());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
+        view.errorMessageDescription().getText());
+    assertNotNull(driver.getCurrentUrl());
+    assertEquals(viewUrl(VIEW_NAME) + "?" + DISABLED, driver.getCurrentUrl());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 
-  @BrowserTest
+  @Test
   public void sign_Locked() {
     open();
-    SigninViewElement view;
+    SigninViewComponent view;
     for (int i = 0; i < 6; i++) {
-      view = $(SigninViewElement.class).waitForFirst();
-      view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-      view.getPasswordField().setValue("notright");
-      view.getSubmitButton().click();
+      view = waitUntil(SigninViewComponent.find());
+      view.username().sendKeys("christopher.anderson@ircm.qc.ca");
+      view.password().sendKeys("notright");
+      view.signin().click();
       try {
         Thread.sleep(1000); // Wait for page to load.
       } catch (InterruptedException e) {
         throw new IllegalStateException("Sleep was interrupted", e);
       }
     }
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
+    view = waitUntil(SigninViewComponent.find());
+    assertEquals(messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
             new Object[]{configuration.lockDuration().getSeconds() / 60}, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+        view.errorMessageDescription().getText());
+    assertNotNull(driver.getCurrentUrl());
+    assertEquals(viewUrl(VIEW_NAME) + "?" + LOCKED, driver.getCurrentUrl());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 
-  @BrowserTest
+  @Test
   public void sign() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    $(SubmissionsViewElement.class).waitForFirst();
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("christopher.anderson@ircm.qc.ca");
+    view.password().sendKeys("password");
+    view.signin().click();
+    waitUntil(SubmissionsViewComponent.find());
+    Cookie rememberMeCookie = driver.manage().getCookieNamed("remember-me");
+    assertNotNull(rememberMeCookie);
+    assertEquals("/", rememberMeCookie.getPath());
+    assertNotEquals("pass1", rememberMeCookie.getValue());
   }
 
-  @BrowserTest
+  @Test
   public void forgotPassword() {
     open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getForgotPasswordButton().click();
-    $(ForgotPasswordViewElement.class).waitForFirst();
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.forgotPassword().click();
+    waitUntil(ForgotPasswordViewComponent.find());
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void already_User() {
     open();
-    $(SubmissionsViewElement.class).waitForFirst();
+    waitUntil(SubmissionsViewComponent.find());
   }
 }

@@ -4,11 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
+import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
+import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
 import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import com.vaadin.testbench.BrowserTest;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -17,54 +16,54 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @TestBenchTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SignoutIT extends AbstractBrowserTestCase {
+public class SignoutIT extends AbstractSeleniumTestCase {
 
-  @BrowserTest
+  @Test
   public void signout() {
     openView(SubmissionsView.VIEW_NAME);
-    $(ViewLayoutElement.class).waitForFirst();
+    waitUntil(ViewLayoutComponent.find());
     openView(SignoutView.VIEW_NAME);
-    $(SigninViewElement.class).waitForFirst();
+    waitUntil(SigninViewComponent.find());
   }
 
-  @BrowserTest
+  @Test
   @WithAnonymousUser
   public void signout_clear_rememberme() {
     openView(SigninView.VIEW_NAME);
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    $(SubmissionsViewElement.class).waitForFirst();
-    assertNotNull(getDriver().manage().getCookieNamed("remember-me"));
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("christopher.anderson@ircm.qc.ca");
+    view.password().sendKeys("password");
+    view.signin().click();
+    waitUntil(SubmissionsViewComponent.find());
+    assertNotNull(driver.manage().getCookieNamed("remember-me"));
     openView(SignoutView.VIEW_NAME);
-    $(SigninViewElement.class).waitForFirst();
-    assertNull(getDriver().manage().getCookieNamed("remember-me"));
+    waitUntil(SigninViewComponent.find());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 
-  @BrowserTest
+  @Test
   public void signout_sidenav() {
     openView(SubmissionsView.VIEW_NAME);
-    ViewLayoutElement view = $(ViewLayoutElement.class).waitForFirst();
+    ViewLayoutComponent view = waitUntil(ViewLayoutComponent.find());
+    waitUntil(view.openDrawer());
     view.signout().click();
-    $(SigninViewElement.class).waitForFirst();
+    waitUntil(SigninViewComponent.find());
   }
 
-  @BrowserTest
+  @Test
   @WithAnonymousUser
-  @Disabled("ViewLayoutElement is not responsive in this test for some reason")
   public void signout_sidenav_clear_rememberme() {
-    // TODO Fix this test.
     openView(SigninView.VIEW_NAME);
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    $(SubmissionsViewElement.class).waitForFirst();
-    assertNotNull(getDriver().manage().getCookieNamed("remember-me"));
-    ViewLayoutElement layout = $(ViewLayoutElement.class).waitForFirst();
+    SigninViewComponent view = waitUntil(SigninViewComponent.find());
+    view.username().sendKeys("christopher.anderson@ircm.qc.ca");
+    view.password().sendKeys("password");
+    view.signin().click();
+    waitUntil(SubmissionsViewComponent.find());
+    assertNotNull(driver.manage().getCookieNamed("remember-me"));
+    ViewLayoutComponent layout = waitUntil(ViewLayoutComponent.find());
+    waitUntil(layout.openDrawer());
     layout.signout().click();
-    $(SigninViewElement.class).waitForFirst();
-    assertNull(getDriver().manage().getCookieNamed("remember-me"));
+    waitUntil(SigninViewComponent.find());
+    assertNull(driver.manage().getCookieNamed("remember-me"));
   }
 }
