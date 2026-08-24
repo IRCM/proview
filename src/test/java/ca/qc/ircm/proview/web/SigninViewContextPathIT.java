@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResultAssert;
@@ -32,9 +33,10 @@ import org.springframework.test.web.servlet.assertj.MvcTestResultAssert;
  * Integration tests for {@link SigninView}.
  */
 @ServiceTestAnnotations
+@ActiveProfiles({"test", "context-path"})
 @AutoConfigureMockMvc
 @WithAnonymousUser
-public class SigninViewIT extends SpringUIUnitTest {
+public class SigninViewContextPathIT extends SpringUIUnitTest {
 
   @Autowired
   private MockMvcTester mvc;

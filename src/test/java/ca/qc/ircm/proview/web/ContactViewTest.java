@@ -18,6 +18,7 @@ import static ca.qc.ircm.proview.web.ContactView.PHONE;
 import static ca.qc.ircm.proview.web.ContactView.PROTEOMIC;
 import static ca.qc.ircm.proview.web.ContactView.WEBSITE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
@@ -49,6 +50,18 @@ public class ContactViewTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     view = navigate(ContactView.class);
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.proteomicHeader).isUsable());
+    assertTrue(test(view.proteomicName).isUsable());
+    assertTrue(test(view.proteomicAddress).isUsable());
+    assertTrue(test(view.proteomicPhone).isUsable());
+    assertTrue(test(view.websiteHeader).isUsable());
+    assertTrue(test(view.websiteName).isUsable());
+    assertTrue(test(view.websiteAddress).isUsable());
+    assertTrue(test(view.websitePhone).isUsable());
   }
 
   @Test
