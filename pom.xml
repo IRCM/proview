@@ -137,14 +137,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-testbench-junit6</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Required for vaadin-testbench-unit -->
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-charts-flow</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -488,8 +482,6 @@
               <artifactId>maven-failsafe-plugin</artifactId>
               <configuration>
                 <systemPropertyVariables>
-                  <com.vaadin.testbench.Parameters.headless>true
-                  </com.vaadin.testbench.Parameters.headless>
                   <selenium.headless>true</selenium.headless>
                 </systemPropertyVariables>
               </configuration>

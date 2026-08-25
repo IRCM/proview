@@ -1,6 +1,5 @@
 package ca.qc.ircm.proview.test.config;
 
-import com.vaadin.testbench.TestBench;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Configuration for {@link TestBench} tests.
+ * Configuration for Selenium tests.
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
