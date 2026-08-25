@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.security.AuthenticatedUser;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -20,7 +20,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SignoutViewTest extends SpringUIUnitTest {
+public class SignoutViewTest extends SpringBrowserlessTest {
 
   private SignoutView view;
   @Autowired
@@ -43,9 +43,8 @@ public class SignoutViewTest extends SpringUIUnitTest {
     assertThrows(IllegalStateException.class,
         () -> VaadinServletRequest.getCurrent().getWrappedSession(false).getAttributeNames());
 
-    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream()
-        .anyMatch(i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
-            && !i.getInvocation().getParameters().isEmpty()
-            && i.getInvocation().getParameters().get(0).equals("/")));
+    assertTrue(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
+        i -> i.getInvocation().getExpression().contains("window.open($0, $1)") && !i.getInvocation()
+            .getParameters().isEmpty() && i.getInvocation().getParameters().get(0).equals("/")));
   }
 }

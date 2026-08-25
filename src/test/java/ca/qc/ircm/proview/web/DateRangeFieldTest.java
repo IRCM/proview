@@ -23,6 +23,7 @@ import ca.qc.ircm.proview.submission.SubmissionProperties;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.DateRangeField.Dates;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.customfield.CustomFieldVariant;
 import com.vaadin.flow.component.datepicker.DatePickerVariant;
@@ -30,7 +31,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
@@ -45,7 +45,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class DateRangeFieldTest extends SpringUIUnitTest {
+public class DateRangeFieldTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(DateRangeField.class);
   private DateRangeField dateRange;

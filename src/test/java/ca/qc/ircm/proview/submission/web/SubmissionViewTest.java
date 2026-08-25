@@ -64,6 +64,7 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -75,7 +76,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -103,7 +103,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionViewTest extends SpringUIUnitTest {
+public class SubmissionViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -314,6 +314,23 @@ public class SubmissionViewTest extends SpringUIUnitTest {
     submission.setOtherSolvent("acetone");
     submission.setComment(comment);
     return submission;
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.service).isUsable());
+    assertTrue(test(view.lcmsms).isUsable());
+    test(view.service).select(view.lcmsms.getLabel());
+    assertTrue(test(view.lcmsmsSubmissionForm).isUsable());
+    test(view.service).select(view.smallMolecule.getLabel());
+    assertTrue(test(view.smallMoleculeSubmissionForm).isUsable());
+    assertTrue(test(view.intactProtein).isUsable());
+    test(view.service).select(view.intactProtein.getLabel());
+    assertTrue(test(view.intactProteinSubmissionForm).isUsable());
+    assertTrue(test(view.comment).isUsable());
+    assertTrue(test(view.upload).isUsable());
+    assertTrue(test(view.files).isUsable());
+    assertTrue(test(view.save).isUsable());
   }
 
   @Test

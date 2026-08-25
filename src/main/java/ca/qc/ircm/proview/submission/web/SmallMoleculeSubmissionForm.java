@@ -44,7 +44,6 @@ import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -127,8 +126,7 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     add(submissionFields, sampleFields, analysisFields);
     sampleType.setId(id(SAMPLE_TYPE));
     sampleType.setItems(DRY, SOLUTION);
-    sampleType.setRenderer(
-        new TextRenderer<>(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name())));
+    sampleType.setItemLabelGenerator(value -> getTranslation(SAMPLE_TYPE_PREFIX + value.name()));
     sampleType.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     sampleType.addValueChangeListener(e -> sampleTypeChanged());
     sampleName.setId(id(SAMPLE_NAME));
@@ -140,13 +138,13 @@ public class SmallMoleculeSubmissionForm extends FormLayout implements LocaleCha
     lightSensitive.setId(id(LIGHT_SENSITIVE));
     storageTemperature.setId(id(STORAGE_TEMPERATURE));
     storageTemperature.setItems(StorageTemperature.values());
-    storageTemperature.setRenderer(
-        new TextRenderer<>(value -> getTranslation(STORAGE_TEMPERATURE_PREFIX + value.name())));
+    storageTemperature.setItemLabelGenerator(
+        value -> getTranslation(STORAGE_TEMPERATURE_PREFIX + value.name()));
     storageTemperature.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     highResolution.setId(id(HIGH_RESOLUTION));
     highResolution.setItems(false, true);
-    highResolution.setRenderer(new TextRenderer<>(
-        value -> getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, value))));
+    highResolution.setItemLabelGenerator(
+        value -> getTranslation(SUBMISSION_PREFIX + property(HIGH_RESOLUTION, value)));
     highResolution.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
     solvents.setId(id(SOLVENTS));
     solvents.setItems(Solvent.values());

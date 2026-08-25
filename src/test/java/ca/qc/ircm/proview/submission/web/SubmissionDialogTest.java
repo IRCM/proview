@@ -34,11 +34,11 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +56,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionDialogTest extends SpringUIUnitTest {
+public class SubmissionDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionDialog.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -102,6 +102,29 @@ public class SubmissionDialogTest extends SpringUIUnitTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void init_Admin() {
     assertTrue(dialog.submissionForm.isVisible());
+  }
+
+  @Test
+  public void fieldsExistence_User() {
+    assertTrue(test(dialog.printContent).isUsable());
+    assertFalse(test(dialog.instrument).isUsable());
+    assertFalse(test(dialog.dataAvailableDate).isUsable());
+    assertFalse(test(dialog.save).isUsable());
+    assertTrue(test(dialog.print).isUsable());
+    assertFalse(test(dialog.edit).isUsable());
+    dialog.setSubmissionId(164L);
+    assertTrue(test(dialog.edit).isUsable());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() {
+    assertTrue(test(dialog.printContent).isUsable());
+    assertTrue(test(dialog.instrument).isUsable());
+    assertTrue(test(dialog.dataAvailableDate).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.print).isUsable());
+    assertTrue(test(dialog.edit).isUsable());
   }
 
   @Test

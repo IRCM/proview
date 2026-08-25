@@ -4,14 +4,14 @@ import static ca.qc.ircm.proview.submission.web.SubmissionView.VIEW_NAME;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ca.qc.ircm.proview.test.config.AbstractLocalBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import com.vaadin.flow.component.html.testbench.AnchorElement;
-import com.vaadin.testbench.BrowserTest;
+import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
+import ca.qc.ircm.proview.test.config.SeleniumTestAnnotations;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -19,14 +19,14 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Integration tests for {@link SubmissionView}.
  */
-@TestBenchTestAnnotations
+@SeleniumTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionViewLocalIT extends AbstractLocalBrowserTestCase {
+public class SubmissionViewLocalIT extends AbstractSeleniumTestCase {
 
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(SubmissionViewLocalIT.class);
 
-  @BrowserTest
+  @Test
   @WithUserDetails("benoit.coulombe@ircm.qc.ca")
   public void downloadFile() throws Throwable {
     Files.createDirectories(downloadHome);
@@ -35,8 +35,9 @@ public class SubmissionViewLocalIT extends AbstractLocalBrowserTestCase {
     Path source = Paths.get(
         Objects.requireNonNull(getClass().getResource("/submissionfile1.txt")).toURI());
     openView(VIEW_NAME, "1");
-    SubmissionViewElement view = $(SubmissionViewElement.class).waitForFirst();
-    AnchorElement filename = view.files().filename(0);
+    SubmissionViewComponent view = waitUntil(SubmissionViewComponent.find());
+    WebElement filename = view.files().filename(0);
+    scrollIntoView(filename);
     filename.click();
 
     // Wait for file to download.

@@ -23,11 +23,11 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.DefaultAddressConfiguration;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ProfileViewTest extends SpringUIUnitTest {
+public class ProfileViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(ProfileView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -61,6 +61,24 @@ public class ProfileViewTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     view = navigate(ProfileView.class);
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.form).isUsable());
+    assertTrue(test(view.form.email).isUsable());
+    assertTrue(test(view.form.name).isUsable());
+    assertTrue(test(view.form.password).isUsable());
+    assertTrue(test(view.form.confirmPassword).isUsable());
+    assertTrue(test(view.form.addressLine).isUsable());
+    assertTrue(test(view.form.town).isUsable());
+    assertTrue(test(view.form.state).isUsable());
+    assertTrue(test(view.form.country).isUsable());
+    assertTrue(test(view.form.postalCode).isUsable());
+    assertTrue(test(view.form.phoneType).isUsable());
+    assertTrue(test(view.form.number).isUsable());
+    assertTrue(test(view.form.extension).isUsable());
+    assertTrue(test(view.save).isUsable());
   }
 
   @Test

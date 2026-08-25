@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.web.UseForgotPasswordView;
 import ca.qc.ircm.proview.web.ContactView;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class UrlComponentTest extends SpringUIUnitTest {
+public class UrlComponentTest extends SpringBrowserlessTest {
 
   private final UrlComponentForTest urlComponent = new UrlComponentForTest();
 

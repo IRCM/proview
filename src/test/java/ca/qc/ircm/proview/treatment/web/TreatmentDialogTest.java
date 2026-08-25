@@ -42,10 +42,10 @@ import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentRepository;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.TreatmentType;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -63,7 +63,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class TreatmentDialogTest extends SpringUIUnitTest {
+public class TreatmentDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
   private static final String TREATMENT_PREFIX = messagePrefix(Treatment.class);
@@ -90,14 +90,36 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     treatedSamples = treatedSampleRepository.findAll();
     HistoryView view = navigate(HistoryView.class, 147L);
-    @SuppressWarnings("unchecked")
-    Grid<Activity> activities = test(view).find(Grid.class).id(HistoryView.ACTIVITIES);
+    @SuppressWarnings("unchecked") Grid<Activity> activities = test(view).find(Grid.class)
+        .id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(3);
     dialog = $(TreatmentDialog.class).first();
   }
 
   private int indexOfColumn(String property) {
     return test(dialog.samples).getColumnPosition(property);
+  }
+
+  @Test
+  public void fieldsExistence_Fractionation() {
+    dialog.setTreatmentId(324);
+    assertTrue(test(dialog.deleted).isUsable());
+    assertFalse(test(dialog.protocol).isUsable());
+    assertTrue(test(dialog.fractionationType).isUsable());
+    assertTrue(test(dialog.date).isUsable());
+    assertTrue(test(dialog.samplesHeader).isUsable());
+    assertTrue(test(dialog.samples).isUsable());
+  }
+
+  @Test
+  public void fieldsExistence_Digestion() {
+    dialog.setTreatmentId(321);
+    assertFalse(test(dialog.deleted).isUsable());
+    assertTrue(test(dialog.protocol).isUsable());
+    assertFalse(test(dialog.fractionationType).isUsable());
+    assertTrue(test(dialog.date).isUsable());
+    assertTrue(test(dialog.samplesHeader).isUsable());
+    assertTrue(test(dialog.samples).isUsable());
   }
 
   @Test
@@ -224,8 +246,7 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
           test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
       assertEquals(Objects.toString(treatedSample.getQuantity(), ""),
           test(dialog.samples).getCellText(i, indexOfColumn(QUANTITY)));
-      assertEquals(
-          Optional.ofNullable(treatedSample.getDestinationContainer())
+      assertEquals(Optional.ofNullable(treatedSample.getDestinationContainer())
               .map(SampleContainer::getFullName).orElse(""),
           test(dialog.samples).getCellText(i, indexOfColumn(DESTINATION_CONTAINER)));
       assertEquals(Objects.toString(treatedSample.getNumber(), ""),
@@ -278,10 +299,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertNotNull(treatment.getFractionationType());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
-            dialog.getTranslation(
-                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
+            dialog.getTranslation(FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,
@@ -309,10 +328,8 @@ public class TreatmentDialogTest extends SpringUIUnitTest {
     assertFalse(dialog.protocol.isVisible());
     assertTrue(dialog.fractionationType.isVisible());
     assertNotNull(treatment.getFractionationType());
-    assertEquals(
-        dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
-            dialog.getTranslation(
-                FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
+    assertEquals(dialog.getTranslation(MESSAGES_PREFIX + FRACTIONATION_TYPE,
+            dialog.getTranslation(FRACTIONATION_TYPE_PREFIX + treatment.getFractionationType().name())),
         dialog.fractionationType.getText());
     DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + INSERT_TIME,

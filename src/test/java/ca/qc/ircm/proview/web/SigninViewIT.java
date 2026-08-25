@@ -1,141 +1,135 @@
 package ca.qc.ircm.proview.web;
 
-import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
-import static ca.qc.ircm.proview.Constants.TITLE;
-import static ca.qc.ircm.proview.Constants.messagePrefix;
 import static ca.qc.ircm.proview.web.SigninView.DISABLED;
 import static ca.qc.ircm.proview.web.SigninView.FAIL;
 import static ca.qc.ircm.proview.web.SigninView.LOCKED;
 import static ca.qc.ircm.proview.web.SigninView.VIEW_NAME;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 
-import ca.qc.ircm.proview.Constants;
-import ca.qc.ircm.proview.security.SecurityConfiguration;
-import ca.qc.ircm.proview.submission.web.SubmissionsViewElement;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import ca.qc.ircm.proview.user.web.ForgotPasswordViewElement;
-import com.vaadin.testbench.BrowserTest;
-import java.util.Locale;
-import org.junit.jupiter.api.Assertions;
+import ca.qc.ircm.proview.submission.web.SubmissionsView;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import com.vaadin.browserless.SpringBrowserlessTest;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.login.AbstractLogin.LoginEvent;
+import java.util.function.Supplier;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.assertj.MvcTestResultAssert;
 
 /**
  * Integration tests for {@link SigninView}.
  */
-@TestBenchTestAnnotations
-public class SigninViewIT extends AbstractBrowserTestCase {
+@ServiceTestAnnotations
+@AutoConfigureMockMvc
+@WithAnonymousUser
+public class SigninViewIT extends SpringBrowserlessTest {
 
-  private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
-  private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   @Autowired
-  private transient SecurityConfiguration configuration;
-  @Autowired
-  private MessageSource messageSource;
+  private MockMvcTester mvc;
 
-  private void open() {
-    openView(VIEW_NAME);
+  @Test
+  public void sign_send_to_spring() {
+    String username = "christopher.anderson@ircm.qc.ca";
+    String password = "password";
+    SigninView view = navigate(SigninView.class);
+    assertEquals(VIEW_NAME, view.getAction());
+    ComponentEventListener<LoginEvent> listener = mock();
+    ArgumentCaptor<LoginEvent> captor = ArgumentCaptor.forClass(LoginEvent.class);
+    view.addLoginListener(listener);
+    test(view).login(username, password);
+    verify(listener).onComponentEvent(captor.capture());
+    LoginEvent event = captor.getValue();
+    assertEquals(username, event.getUsername());
+    assertEquals(password, event.getPassword());
   }
 
-  @BrowserTest
-  public void title() {
-    open();
-
-    Locale locale = currentLocale();
-    String applicationName = messageSource.getMessage(CONSTANTS_PREFIX + APPLICATION_NAME, null,
-        locale);
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + TITLE, new Object[]{applicationName}, locale),
-        getDriver().getTitle());
+  @Test
+  public void sign_spring() {
+    RequestBuilder requestBuilder = formLogin("/" + VIEW_NAME).user(
+        "christopher.anderson@ircm.qc.ca").password("password");
+    MvcTestResultAssert resultAssert = mvc.perform(requestBuilder).assertThat();
+    resultAssert.doesNotHaveFailed();
+    resultAssert.hasRedirectedUrl("/");
+    resultAssert.cookies().containsCookie("remember-me");
+    resultAssert.cookies().hasCookieSatisfying("remember-me",
+        cookie -> assertNotEquals("password", cookie.getValue()));
+    resultAssert.cookies().hasPath("remember-me", "/");
   }
 
-  @BrowserTest
-  public void fieldsExistence() {
-    open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    assertTrue(optional(view::getUsernameField).isPresent());
-    assertTrue(optional(view::getPasswordField).isPresent());
-    assertTrue(optional(view::getSubmitButton).isPresent());
-    assertTrue(optional(view::getForgotPasswordButton).isPresent());
+  @Test
+  public void sign_Fail_invalid_username() {
+    RequestBuilder requestBuilder = formLogin("/" + VIEW_NAME).user("not.exists@ircm.qc.ca")
+        .password("notright");
+    MvcTestResultAssert resultAssert = mvc.perform(requestBuilder).assertThat();
+    resultAssert.doesNotHaveFailed();
+    resultAssert.hasRedirectedUrl("/" + VIEW_NAME + "?" + FAIL);
+    resultAssert.cookies()
+        .hasCookieSatisfying("remember-me", cookie -> assertNull(cookie.getValue()));
   }
 
-  @BrowserTest
-  public void sign_Fail() {
-    open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("notright");
-    view.getSubmitButton().click();
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + FAIL, null, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+  @Test
+  public void sign_Fail_invalid_password() {
+    RequestBuilder requestBuilder = formLogin("/" + VIEW_NAME).user(
+        "christopher.anderson@ircm.qc.ca").password("notright");
+    MvcTestResultAssert resultAssert = mvc.perform(requestBuilder).assertThat();
+    resultAssert.doesNotHaveFailed();
+    resultAssert.hasRedirectedUrl("/" + VIEW_NAME + "?" + FAIL);
+    resultAssert.cookies()
+        .hasCookieSatisfying("remember-me", cookie -> assertNull(cookie.getValue()));
   }
 
-  @BrowserTest
+  @Test
   public void sign_Disabled() {
-    open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("robert.stlouis@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(
-        messageSource.getMessage(MESSAGES_PREFIX + DISABLED, null, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+    RequestBuilder requestBuilder = formLogin("/" + VIEW_NAME).user("robert.stlouis@ircm.qc.ca")
+        .password("password");
+    MvcTestResultAssert resultAssert = mvc.perform(requestBuilder).assertThat();
+    resultAssert.doesNotHaveFailed();
+    resultAssert.hasRedirectedUrl("/" + VIEW_NAME + "?" + DISABLED);
+    resultAssert.cookies()
+        .hasCookieSatisfying("remember-me", cookie -> assertNull(cookie.getValue()));
   }
 
-  @BrowserTest
+  @Test
   public void sign_Locked() {
-    open();
-    SigninViewElement view;
+    Supplier<RequestBuilder> requestBuilder = () -> formLogin("/" + VIEW_NAME).user(
+        "christopher.anderson@ircm.qc.ca").password("notright");
     for (int i = 0; i < 6; i++) {
-      view = $(SigninViewElement.class).waitForFirst();
-      view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-      view.getPasswordField().setValue("notright");
-      view.getSubmitButton().click();
+      mvc.perform(requestBuilder.get());
       try {
         Thread.sleep(1000); // Wait for page to load.
       } catch (InterruptedException e) {
         throw new IllegalStateException("Sleep was interrupted", e);
       }
     }
-    view = $(SigninViewElement.class).waitForFirst();
-    Assertions.assertEquals(messageSource.getMessage(MESSAGES_PREFIX + LOCKED,
-            new Object[]{configuration.lockDuration().getSeconds() / 60}, currentLocale()),
-        view.getErrorMessage());
-    assertNotNull(getDriver().getCurrentUrl());
-    assertTrue(getDriver().getCurrentUrl().startsWith(viewUrl(VIEW_NAME) + "?"));
+    MvcTestResultAssert resultAssert = mvc.perform(requestBuilder.get()).assertThat();
+    resultAssert.doesNotHaveFailed();
+    resultAssert.hasRedirectedUrl("/" + VIEW_NAME + "?" + LOCKED);
+    resultAssert.cookies()
+        .hasCookieSatisfying("remember-me", cookie -> assertNull(cookie.getValue()));
   }
 
-  @BrowserTest
-  public void sign() {
-    open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getUsernameField().setValue("christopher.anderson@ircm.qc.ca");
-    view.getPasswordField().setValue("password");
-    view.getSubmitButton().click();
-    $(SubmissionsViewElement.class).waitForFirst();
-  }
-
-  @BrowserTest
+  @Test
   public void forgotPassword() {
-    open();
-    SigninViewElement view = $(SigninViewElement.class).waitForFirst();
-    view.getForgotPasswordButton().click();
-    $(ForgotPasswordViewElement.class).waitForFirst();
+    SigninView view = navigate(SigninView.class);
+    test(view).forgotPassword();
+    $(ForgotPasswordView.class).single();
   }
 
-  @BrowserTest
+  @Test
   @WithUserDetails("christopher.anderson@ircm.qc.ca")
   public void already_User() {
-    open();
-    $(SubmissionsViewElement.class).waitForFirst();
+    navigate(VIEW_NAME, SubmissionsView.class);
   }
 }

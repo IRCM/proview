@@ -9,6 +9,9 @@ import ca.qc.ircm.proview.user.UserAuthority;
 import ca.qc.ircm.proview.user.UserRepository;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SpringDataUserDetailsService implements UserDetailsService {
 
+  private static final Logger logger = LoggerFactory.getLogger(SpringDataUserDetailsService.class);
   private final UserRepository userRepository;
 
   @Autowired
@@ -38,8 +42,8 @@ public class SpringDataUserDetailsService implements UserDetailsService {
     } else {
       Collection<GrantedAuthority> authorities = new ArrayList<>();
       authorities.add(new SimpleGrantedAuthority(USER));
-      authorities
-          .add(new SimpleGrantedAuthority(UserAuthority.laboratoryMember(user.getLaboratory())));
+      authorities.add(
+          new SimpleGrantedAuthority(UserAuthority.laboratoryMember(user.getLaboratory())));
       if (user.isAdmin()) {
         authorities.add(new SimpleGrantedAuthority(ADMIN));
       }
@@ -51,11 +55,12 @@ public class SpringDataUserDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority(FORCE_CHANGE_PASSWORD));
       }
       */
+      String hashedPassword = Objects.requireNonNullElse(user.getHashedPassword(), "");
       if (user.getPasswordVersion() != null) {
-        user.setHashedPassword("{" + user.getPasswordVersion() + "}" + user.getHashedPassword()
-            + ShiroPasswordEncoder.SEPARATOR + user.getSalt());
+        hashedPassword = "{" + user.getPasswordVersion() + "}" + user.getHashedPassword()
+            + ShiroPasswordEncoder.SEPARATOR + user.getSalt();
       }
-      return new UserDetailsWithId(user, authorities);
+      return new UserDetailsWithId(user, hashedPassword, authorities);
     }
   }
 }

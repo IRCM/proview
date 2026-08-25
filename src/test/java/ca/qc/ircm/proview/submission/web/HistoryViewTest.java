@@ -56,6 +56,7 @@ import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -66,7 +67,6 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.NotFoundException;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +89,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewTest extends SpringUIUnitTest {
+public class HistoryViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);
@@ -131,13 +131,18 @@ public class HistoryViewTest extends SpringUIUnitTest {
     UI.getCurrent().setLocale(locale);
     activities = repository.findAll();
     when(service.all(any())).thenReturn(activities);
-    when(submissionService.get(anyLong()))
-        .thenAnswer(i -> submissionRepository.findById(i.getArgument(0)));
+    when(submissionService.get(anyLong())).thenAnswer(
+        i -> submissionRepository.findById(i.getArgument(0)));
     view = navigate(HistoryView.class, 1L);
   }
 
   private int indexOfColumn(String property) {
     return test(view.activities).getColumnPosition(property);
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertTrue(test(view.activities).isUsable());
   }
 
   @Test
@@ -225,8 +230,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
   public void activities_ColumnsValueProvider() {
     Map<Activity, String> descriptions = IntStream.range(0, activities.size()).boxed()
         .collect(Collectors.toMap(in -> activities.get(in), in -> "description " + in));
-    when(service.description(any(), any()))
-        .thenAnswer(i -> Optional.of(descriptions.get(i.<Activity>getArgument(0))));
+    when(service.description(any(), any())).thenAnswer(
+        i -> Optional.of(descriptions.get(i.<Activity>getArgument(0))));
     view.setParameter(mock(BeforeEvent.class), 1L);
     for (int i = 0; i < activities.size(); i++) {
       Activity activity = activities.get(i);
@@ -236,8 +241,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
           test(view.activities).getCellText(i, indexOfColumn(ACTION_TYPE)));
       assertEquals(DateTimeFormatter.ISO_DATE_TIME.format(activity.getTimestamp()),
           test(view.activities).getCellText(i, indexOfColumn(TIMESTAMP)));
-      Renderer<Activity> descriptionRawRenderer =
-          test(view.activities).getColumn(DESCRIPTION).getRenderer();
+      Renderer<Activity> descriptionRawRenderer = test(view.activities).getColumn(DESCRIPTION)
+          .getRenderer();
       assertInstanceOf(LitRenderer.class, descriptionRawRenderer);
       LitRenderer<Activity> descriptionRenderer = (LitRenderer<Activity>) descriptionRawRenderer;
       assertEquals(DESCRIPTION_SPAN, rendererTemplate(descriptionRenderer));
@@ -248,8 +253,8 @@ public class HistoryViewTest extends SpringUIUnitTest {
       assertEquals(descriptions.get(activity),
           descriptionRenderer.getValueProviders().get("descriptionTitle").apply(activity));
       verify(service, times(2)).description(activity, locale);
-      Renderer<Activity> explanationRawRenderer =
-          test(view.activities).getColumn(EXPLANATION).getRenderer();
+      Renderer<Activity> explanationRawRenderer = test(view.activities).getColumn(EXPLANATION)
+          .getRenderer();
       assertInstanceOf(LitRenderer.class, explanationRawRenderer);
       LitRenderer<Activity> explanationRenderer = (LitRenderer<Activity>) explanationRawRenderer;
       assertEquals(EXPLANATION_SPAN, rendererTemplate(explanationRenderer));

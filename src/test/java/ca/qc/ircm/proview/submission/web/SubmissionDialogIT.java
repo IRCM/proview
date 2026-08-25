@@ -1,32 +1,27 @@
 package ca.qc.ircm.proview.submission.web;
 
 import static ca.qc.ircm.proview.Constants.messagePrefix;
-import static ca.qc.ircm.proview.submission.web.SubmissionsView.VIEW_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
-import ca.qc.ircm.proview.test.config.AbstractBrowserTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
-import com.vaadin.testbench.BrowserTest;
+import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import java.time.LocalDate;
-import java.util.Locale;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 /**
  * Integration tests for {@link SubmissionDialog}.
  */
-@TestBenchTestAnnotations
+@ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionDialogIT extends AbstractBrowserTestCase {
+public class SubmissionDialogIT extends SpringBrowserlessTest {
 
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
       MassDetectionInstrument.class);
@@ -34,86 +29,53 @@ public class SubmissionDialogIT extends AbstractBrowserTestCase {
   private static final Logger logger = LoggerFactory.getLogger(SubmissionDialogIT.class);
   @Autowired
   private SubmissionRepository repository;
-  @Autowired
-  private MessageSource messageSource;
-  @Value("${spring.application.name}")
-  private String applicationName;
   private final MassDetectionInstrument instrument = MassDetectionInstrument.Q_EXACTIVE;
   private final LocalDate dataAvailableDate = LocalDate.now().minusDays(1);
 
-  private SubmissionDialogElement openDialog(int row) {
-    openView(VIEW_NAME);
-    SubmissionsViewElement view = $(SubmissionsViewElement.class).waitForFirst();
-    view.submissions().select(row);
-    view.view().click();
-    return view.dialog();
+  private SubmissionDialog openDialog(int row) {
+    SubmissionsView view = navigate(SubmissionsView.class);
+    test(view.submissions).select(row);
+    test(view.view).click();
+    return $(SubmissionDialog.class).single();
   }
 
-  private void setFields(SubmissionDialogElement dialog) {
-    Locale locale = this.currentLocale();
-    dialog.instrument().selectByText(
-        messageSource.getMessage(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name(), null,
-            locale));
-    dialog.dataAvailableDate().setDate(dataAvailableDate);
+  private void setFields(SubmissionDialog dialog) {
+    test(dialog.instrument).selectItem(
+        dialog.getTranslation(MASS_DETECTION_INSTRUMENT_PREFIX + instrument.name()));
+    test(dialog.dataAvailableDate).setValue(dataAvailableDate);
   }
 
-  @BrowserTest
-  public void fieldsExistence_User() {
-    SubmissionDialogElement dialog = openDialog(0);
-    assertTrue(optional(dialog::header).isPresent());
-    assertTrue(optional(dialog::printSubmission).isPresent());
-    assertFalse(optional(dialog::instrument).isPresent());
-    assertFalse(optional(dialog::dataAvailableDate).isPresent());
-    assertFalse(optional(dialog::save).isPresent());
-    assertTrue(optional(dialog::print).isPresent());
-    assertTrue(optional(dialog::edit).isPresent());
-  }
-
-  @BrowserTest
-  @WithUserDetails("proview@ircm.qc.ca")
-  public void fieldsExistence_Admin() {
-    SubmissionDialogElement dialog = openDialog(0);
-    assertTrue(optional(dialog::header).isPresent());
-    assertTrue(optional(dialog::printSubmission).isPresent());
-    assertTrue(optional(dialog::instrument).isPresent());
-    assertTrue(optional(dialog::dataAvailableDate).isPresent());
-    assertTrue(optional(dialog::save).isPresent());
-    assertTrue(optional(dialog::print).isPresent());
-    assertTrue(optional(dialog::edit).isPresent());
-  }
-
-  @BrowserTest
+  @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void update() {
-    SubmissionDialogElement dialog = openDialog(0);
+    SubmissionDialog dialog = openDialog(0);
 
     setFields(dialog);
 
-    dialog.clickSave();
-    assertFalse(dialog.isOpen());
+    test(dialog.save).click();
+    assertFalse(dialog.isOpened());
     Submission submission = repository.findById(164L).orElseThrow();
-    Assertions.assertEquals(instrument, submission.getInstrument());
-    Assertions.assertEquals(dataAvailableDate, submission.getDataAvailableDate());
+    assertEquals(instrument, submission.getInstrument());
+    assertEquals(dataAvailableDate, submission.getDataAvailableDate());
   }
 
-  @BrowserTest
+  @Test
   public void print() {
-    SubmissionDialogElement dialog = openDialog(0);
+    SubmissionDialog dialog = openDialog(0);
 
-    dialog.clickPrint();
+    test(dialog.print).click();
 
-    $(PrintSubmissionViewElement.class).waitForFirst();
-    Assertions.assertEquals(viewUrl(PrintSubmissionView.VIEW_NAME, "164"),
-        getDriver().getCurrentUrl());
+    PrintSubmissionView printView = $(PrintSubmissionView.class).single();
+    assertEquals(164, printView.printContent.getSubmission().getId());
   }
 
-  @BrowserTest
+  @Test
   public void edit() {
-    SubmissionDialogElement dialog = openDialog(0);
+    SubmissionDialog dialog = openDialog(0);
 
-    dialog.clickEdit();
+    test(dialog.edit).click();
 
-    $(SubmissionViewElement.class).waitForFirst();
-    Assertions.assertEquals(viewUrl(SubmissionView.VIEW_NAME, "164"), getDriver().getCurrentUrl());
+    SubmissionView submissionView = $(SubmissionView.class).single();
+    assertEquals(164, submissionView.getSubmission().getId());
   }
 }

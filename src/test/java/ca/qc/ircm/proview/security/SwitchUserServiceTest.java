@@ -16,7 +16,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SwitchUserServiceTest extends SpringUIUnitTest {
+public class SwitchUserServiceTest extends SpringBrowserlessTest {
 
   @Autowired
   private SwitchUserService service;
@@ -65,11 +65,10 @@ public class SwitchUserServiceTest extends SpringUIUnitTest {
 
   private org.springframework.security.core.userdetails.User userDetails(User user,
       String... roles) {
-    Collection<GrantedAuthority> authorities =
-        Stream.of(roles).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    org.springframework.security.core.userdetails.User userDetails =
-        new org.springframework.security.core.userdetails.User(user.getEmail(),
-            user.getHashedPassword(), authorities);
+    Collection<GrantedAuthority> authorities = Stream.of(roles).map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+    org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
+        user.getEmail(), user.getHashedPassword(), authorities);
     return userDetails;
   }
 
@@ -82,21 +81,20 @@ public class SwitchUserServiceTest extends SpringUIUnitTest {
     UserDetailsWithId userDetails = (UserDetailsWithId) authentication.getPrincipal();
     assertEquals(10L, userDetails.getId());
     assertEquals("christopher.anderson@ircm.qc.ca", userDetails.getUsername());
-    assertEquals(user.getHashedPassword(), userDetails.getPassword());
+    assertEquals(
+        "{" + user.getPasswordVersion() + "}" + user.getHashedPassword() + "/" + user.getSalt(),
+        userDetails.getPassword());
     assertTrue(authentication.getAuthorities().contains(new SimpleGrantedAuthority(USER)));
-    Optional<SwitchUserGrantedAuthority> optionalSwitchUserGrantedAuthority =
-        authentication.getAuthorities().stream()
-            .filter(authority -> authority instanceof SwitchUserGrantedAuthority)
-            .map(authority -> (SwitchUserGrantedAuthority) authority).findFirst();
+    Optional<SwitchUserGrantedAuthority> optionalSwitchUserGrantedAuthority = authentication.getAuthorities()
+        .stream().filter(authority -> authority instanceof SwitchUserGrantedAuthority)
+        .map(authority -> (SwitchUserGrantedAuthority) authority).findFirst();
     assertTrue(optionalSwitchUserGrantedAuthority.isPresent());
-    SwitchUserGrantedAuthority switchUserGrantedAuthority =
-        optionalSwitchUserGrantedAuthority.get();
+    SwitchUserGrantedAuthority switchUserGrantedAuthority = optionalSwitchUserGrantedAuthority.get();
     assertEquals(ROLE_PREVIOUS_ADMINISTRATOR, switchUserGrantedAuthority.getAuthority());
     assertNotNull(switchUserGrantedAuthority.getSource());
     Authentication previousAuthentication = switchUserGrantedAuthority.getSource();
     assertInstanceOf(UserDetailsWithId.class, previousAuthentication.getPrincipal());
-    UserDetailsWithId previousUserDetails =
-        (UserDetailsWithId) previousAuthentication.getPrincipal();
+    UserDetailsWithId previousUserDetails = (UserDetailsWithId) previousAuthentication.getPrincipal();
     assertEquals(1L, previousUserDetails.getId());
     assertEquals("proview@ircm.qc.ca", previousUserDetails.getUsername());
     assertTrue(previousAuthentication.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN)));

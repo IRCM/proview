@@ -4,7 +4,6 @@ import static ca.qc.ircm.proview.Constants.APPLICATION_NAME;
 import static ca.qc.ircm.proview.Constants.ENGLISH;
 import static ca.qc.ircm.proview.Constants.FRENCH;
 import static ca.qc.ircm.proview.Constants.messagePrefix;
-import static ca.qc.ircm.proview.security.web.WebSecurityConfiguration.SIGNOUT_URL;
 import static ca.qc.ircm.proview.text.Strings.styleName;
 import static ca.qc.ircm.proview.web.ViewLayout.CHANGE_LANGUAGE;
 import static ca.qc.ircm.proview.web.ViewLayout.CONTACT;
@@ -40,10 +39,10 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ViewLayoutTest extends SpringUIUnitTest {
+public class ViewLayoutTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -87,7 +86,71 @@ public class ViewLayoutTest extends SpringUIUnitTest {
   private void assertNoExecuteJs() {
     assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
         i -> i.getInvocation().getExpression().contains(EXIT_SWITCH_USER_FORM) || i.getInvocation()
-            .getExpression().contains(SIGNOUT_URL)));
+            .getExpression().contains(SignoutView.VIEW_NAME)));
+  }
+
+  @Test
+  public void fieldsExistence_User() {
+    assertTrue(test(view.applicationName).isUsable());
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.drawerToggle).isUsable());
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.profile).isUsable());
+    assertFalse(test(view.users).isUsable());
+    assertFalse(test(view.exitSwitchUser).isUsable());
+    assertTrue(test(view.signout).isUsable());
+    assertTrue(test(view.changeLanguage).isUsable());
+    assertTrue(test(view.contact).isUsable());
+    assertTrue(test(view.guidelines).isUsable());
+  }
+
+  @Test
+  @WithUserDetails("benoit.coulombe@ircm.qc.ca")
+  public void fieldsExistence_Manager() {
+    assertTrue(test(view.applicationName).isUsable());
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.drawerToggle).isUsable());
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.profile).isUsable());
+    assertTrue(test(view.users).isUsable());
+    assertFalse(test(view.exitSwitchUser).isUsable());
+    assertTrue(test(view.signout).isUsable());
+    assertTrue(test(view.changeLanguage).isUsable());
+    assertTrue(test(view.contact).isUsable());
+    assertTrue(test(view.guidelines).isUsable());
+  }
+
+  @Test
+  @WithUserDetails("proview@ircm.qc.ca")
+  public void fieldsExistence_Admin() {
+    assertTrue(test(view.applicationName).isUsable());
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.drawerToggle).isUsable());
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.profile).isUsable());
+    assertTrue(test(view.users).isUsable());
+    assertFalse(test(view.exitSwitchUser).isUsable());
+    assertTrue(test(view.signout).isUsable());
+    assertTrue(test(view.changeLanguage).isUsable());
+    assertTrue(test(view.contact).isUsable());
+    assertTrue(test(view.guidelines).isUsable());
+  }
+
+  @Test
+  @WithMockUser(username = "christopher.anderson@ircm.qc.ca", roles = {"USER",
+      "PREVIOUS_ADMINISTRATOR"})
+  public void fieldsExistence_Runas() {
+    assertTrue(test(view.applicationName).isUsable());
+    assertTrue(test(view.header).isUsable());
+    assertTrue(test(view.drawerToggle).isUsable());
+    assertTrue(test(view.submissions).isUsable());
+    assertTrue(test(view.profile).isUsable());
+    assertFalse(test(view.users).isUsable());
+    assertTrue(test(view.exitSwitchUser).isUsable());
+    assertTrue(test(view.signout).isUsable());
+    assertTrue(test(view.changeLanguage).isUsable());
+    assertTrue(test(view.contact).isUsable());
+    assertTrue(test(view.guidelines).isUsable());
   }
 
   @Test

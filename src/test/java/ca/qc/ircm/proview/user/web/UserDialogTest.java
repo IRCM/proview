@@ -27,11 +27,11 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.SavedEvent;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserDialogTest extends SpringUIUnitTest {
+public class UserDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserDialog.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
@@ -73,6 +73,28 @@ public class UserDialogTest extends SpringUIUnitTest {
     view.users.setItems(repository.findAll());
     test(view.users).doubleClickRow(0);
     dialog = $(UserDialog.class).first();
+  }
+
+  @Test
+  public void fieldsExistence() {
+    assertTrue(test(dialog.form.email).isUsable());
+    assertTrue(test(dialog.form.name).isUsable());
+    assertTrue(test(dialog.form.admin).isUsable());
+    assertTrue(test(dialog.form.manager).isUsable());
+    assertTrue(test(dialog.form.password).isUsable());
+    assertTrue(test(dialog.form.confirmPassword).isUsable());
+    assertTrue(test(dialog.form.laboratory).isUsable());
+    assertTrue(test(dialog.form.createNewLaboratory).isUsable());
+    assertTrue(test(dialog.form.addressLine).isUsable());
+    assertTrue(test(dialog.form.town).isUsable());
+    assertTrue(test(dialog.form.state).isUsable());
+    assertTrue(test(dialog.form.country).isUsable());
+    assertTrue(test(dialog.form.postalCode).isUsable());
+    assertTrue(test(dialog.form.phoneType).isUsable());
+    assertTrue(test(dialog.form.number).isUsable());
+    assertTrue(test(dialog.form.extension).isUsable());
+    assertTrue(test(dialog.save).isUsable());
+    assertTrue(test(dialog.cancel).isUsable());
   }
 
   @Test
