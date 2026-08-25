@@ -44,12 +44,6 @@ vaadin:
   productionMode: false
   closeIdleSessions: true
   allowed-packages: 'ca.qc.ircm.proview'
-  license:
-    assume: false
-    paths:
-      - '${user.home}/.vaadin/offlineKey'
-      - '${user.home}/.vaadin/proKey'
-      - '${user.home}/.vaadin/userKey'
 
 security:
   lockAttemps: 5
