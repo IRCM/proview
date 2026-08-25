@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration-test")
-@TestExecutionListeners(value = {FixSecurityContextHolderStrategyExecutionListener.class,
+@TestExecutionListeners(value = {SkipSeleniumTestExecutionListener.class,
+    FixSecurityContextHolderStrategyExecutionListener.class,
     SeleniumSecurityFilter.class}, mergeMode = MergeMode.MERGE_WITH_DEFAULTS)
 @Execution(ExecutionMode.SAME_THREAD)
 @Transactional
