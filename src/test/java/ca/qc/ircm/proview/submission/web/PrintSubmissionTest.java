@@ -20,6 +20,7 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.AbstractStreamResource;
@@ -28,7 +29,6 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.server.streams.InputStreamDownloadCallback;
 import com.vaadin.flow.server.streams.InputStreamDownloadHandler;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -53,7 +53,7 @@ import org.springframework.util.FileCopyUtils;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionTest extends SpringUIUnitTest {
+public class PrintSubmissionTest extends SpringBrowserlessTest {
 
   private PrintSubmission component;
   @MockitoBean

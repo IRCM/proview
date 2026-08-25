@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.submission.web.PrintSubmissionView.VIEW_NAME;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionViewIT extends SpringUIUnitTest {
+public class PrintSubmissionViewIT extends SpringBrowserlessTest {
 
   @SuppressWarnings("unused")
   private static final Logger logger = LoggerFactory.getLogger(PrintSubmissionViewIT.class);

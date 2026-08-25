@@ -11,11 +11,11 @@ import static org.mockito.Mockito.when;
 import ca.qc.ircm.proview.files.Category;
 import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class CategoryComponentTest extends SpringUIUnitTest {
+public class CategoryComponentTest extends SpringBrowserlessTest {
 
   private CategoryComponent component;
   @Mock
@@ -49,12 +49,12 @@ public class CategoryComponentTest extends SpringUIUnitTest {
     when(category.getGuidelines()).thenReturn(guidelines);
     guidelines.add(guideline1);
     when(guideline1.getName()).thenReturn("test guideline 1");
-    when(guideline1.getPath())
-        .thenReturn(Paths.get(System.getProperty("user.home"), "guideline1.pdf"));
+    when(guideline1.getPath()).thenReturn(
+        Paths.get(System.getProperty("user.home"), "guideline1.pdf"));
     guidelines.add(guideline2);
     when(guideline2.getName()).thenReturn("test guideline 2");
-    when(guideline2.getPath())
-        .thenReturn(Paths.get(System.getProperty("user.home"), "guideline2.pdf"));
+    when(guideline2.getPath()).thenReturn(
+        Paths.get(System.getProperty("user.home"), "guideline2.pdf"));
     component = new CategoryComponent(category);
   }
 

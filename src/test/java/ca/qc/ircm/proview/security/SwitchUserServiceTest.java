@@ -16,7 +16,7 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserRole;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SwitchUserServiceTest extends SpringUIUnitTest {
+public class SwitchUserServiceTest extends SpringBrowserlessTest {
 
   @Autowired
   private SwitchUserService service;

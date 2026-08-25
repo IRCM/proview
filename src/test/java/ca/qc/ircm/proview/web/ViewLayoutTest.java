@@ -39,10 +39,10 @@ import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.web.ProfileView;
 import ca.qc.ircm.proview.user.web.UsersView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.AfterNavigationListener;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ViewLayoutTest extends SpringUIUnitTest {
+public class ViewLayoutTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(ViewLayout.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

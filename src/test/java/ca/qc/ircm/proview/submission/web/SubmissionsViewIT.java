@@ -11,9 +11,9 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.browserless.MetaKeys;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.testbench.unit.MetaKeys;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewIT extends SpringUIUnitTest {
+public class SubmissionsViewIT extends SpringBrowserlessTest {
 
   private static final String SAMPLES_STATUS_DIALOG_PREFIX = messagePrefix(
       SamplesStatusDialog.class);

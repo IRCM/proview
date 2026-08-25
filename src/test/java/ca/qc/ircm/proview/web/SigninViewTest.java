@@ -28,11 +28,11 @@ import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.Location;
 import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +48,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
  */
 @ServiceTestAnnotations
 @WithAnonymousUser
-public class SigninViewTest extends SpringUIUnitTest {
+public class SigninViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SigninView.class);
   private static final String USER_PREFIX = messagePrefix(User.class);

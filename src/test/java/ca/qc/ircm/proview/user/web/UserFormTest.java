@@ -52,10 +52,10 @@ import ca.qc.ircm.proview.user.PhoneNumber;
 import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class UserFormTest extends SpringUIUnitTest {
+public class UserFormTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserForm.class);
   private static final String USER_PREFIX = messagePrefix(User.class);
@@ -689,8 +689,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = form.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -704,8 +704,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = form.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.email);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.email);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)),
@@ -720,8 +720,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = form.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.name);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.name);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -736,8 +736,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Passwords> status = form.validatePasswords();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.password);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -760,8 +760,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Passwords> status = form.validatePasswords();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.confirmPassword);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.confirmPassword);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -784,8 +784,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Passwords> status = form.validatePasswords();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.password);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.password);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(PASSWORDS_PREFIX + NOT_MATCH)),
@@ -801,8 +801,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = form.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -818,8 +818,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<User> status = form.validateUser();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.laboratory);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.laboratory);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -836,8 +836,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Laboratory> status = form.validateLaboratory();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.newLaboratoryName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.newLaboratoryName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -851,8 +851,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Address> status = form.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.addressLine);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.addressLine);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -866,8 +866,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Address> status = form.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.town);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.town);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -881,8 +881,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Address> status = form.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.state);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.state);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -896,8 +896,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Address> status = form.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.country);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.country);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -911,8 +911,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<Address> status = form.validateAddress();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.postalCode);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.postalCode);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -926,8 +926,8 @@ public class UserFormTest extends SpringUIUnitTest {
 
     BinderValidationStatus<PhoneNumber> status = form.validatePhoneNumber();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.number);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.number);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());

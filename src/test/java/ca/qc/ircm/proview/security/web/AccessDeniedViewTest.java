@@ -15,8 +15,8 @@ import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.web.UsersView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class AccessDeniedViewTest extends SpringUIUnitTest {
+public class AccessDeniedViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(AccessDeniedView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

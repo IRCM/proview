@@ -44,11 +44,11 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,7 +69,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
+public class SmallMoleculeSubmissionFormTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SmallMoleculeSubmissionForm.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);
@@ -112,8 +112,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     sample.setType(SampleType.DRY);
     newSubmission.getSamples().add(sample);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE))
-        .select(view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
+    test(test(view).find(Tabs.class).id(SERVICE)).select(
+        view.getTranslation(SERVICE_PREFIX + SMALL_MOLECULE.name()));
     form = test(view).find(SmallMoleculeSubmissionForm.class).id(SmallMoleculeSubmissionForm.ID);
   }
 
@@ -324,8 +324,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.sampleType);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -340,8 +340,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.sampleName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.sampleName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -356,8 +356,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.sampleName);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.sampleName);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + ALREADY_EXISTS, sampleName)),
@@ -373,8 +373,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.solvent);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.solvent);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -401,8 +401,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.formula);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.formula);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -417,8 +417,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.monoisotopicMass);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.monoisotopicMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -433,8 +433,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.monoisotopicMass);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.monoisotopicMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
@@ -450,8 +450,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.averageMass);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.averageMass);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
@@ -467,8 +467,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.storageTemperature);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.storageTemperature);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -483,8 +483,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.highResolution);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.highResolution);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -499,8 +499,8 @@ public class SmallMoleculeSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.solvents);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.solvents);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());

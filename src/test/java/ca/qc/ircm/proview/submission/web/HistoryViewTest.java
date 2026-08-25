@@ -56,6 +56,7 @@ import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.ErrorNotification;
 import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.FooterRow;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -66,7 +67,6 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.NotFoundException;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +89,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewTest extends SpringUIUnitTest {
+public class HistoryViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(HistoryView.class);
   private static final String ACTIVITY_PREFIX = messagePrefix(Activity.class);

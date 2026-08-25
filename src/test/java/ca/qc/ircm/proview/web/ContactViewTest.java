@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.qc.ircm.proview.Constants;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ContactViewTest extends SpringUIUnitTest {
+public class ContactViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(ContactView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

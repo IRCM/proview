@@ -8,7 +8,7 @@ import ca.qc.ircm.proview.msanalysis.MassDetectionInstrument;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionDialogIT extends SpringUIUnitTest {
+public class SubmissionDialogIT extends SpringBrowserlessTest {
 
   private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
       MassDetectionInstrument.class);

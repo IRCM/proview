@@ -13,8 +13,8 @@ import ca.qc.ircm.proview.user.ForgotPasswordRepository;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
  */
 @ServiceTestAnnotations
 @WithAnonymousUser
-public class UseForgotPasswordViewIT extends SpringUIUnitTest {
+public class UseForgotPasswordViewIT extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
   @SuppressWarnings("unused")

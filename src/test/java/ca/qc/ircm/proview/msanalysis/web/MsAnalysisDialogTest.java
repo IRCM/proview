@@ -39,10 +39,10 @@ import ca.qc.ircm.proview.msanalysis.MsAnalysisRepository;
 import ca.qc.ircm.proview.msanalysis.MsAnalysisService;
 import ca.qc.ircm.proview.submission.web.HistoryView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +59,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class MsAnalysisDialogTest extends SpringUIUnitTest {
+public class MsAnalysisDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(MsAnalysisDialog.class);
   private static final String MS_ANALYSIS_PREFIX = messagePrefix(MsAnalysis.class);

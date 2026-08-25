@@ -10,7 +10,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.TreatmentType;
 import ca.qc.ircm.proview.treatment.web.TreatmentDialog;
 import ca.qc.ircm.proview.web.SigninView;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class HistoryViewIT extends SpringUIUnitTest {
+public class HistoryViewIT extends SpringBrowserlessTest {
 
   private static final String TREATMENT_TYPE_PREFIX = messagePrefix(TreatmentType.class);
   private static final String MS_ANALYSIS_DIALOG_PREFIX = messagePrefix(MsAnalysisDialog.class);

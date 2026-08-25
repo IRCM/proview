@@ -42,10 +42,10 @@ import ca.qc.ircm.proview.treatment.Treatment;
 import ca.qc.ircm.proview.treatment.TreatmentRepository;
 import ca.qc.ircm.proview.treatment.TreatmentService;
 import ca.qc.ircm.proview.treatment.TreatmentType;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -63,7 +63,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class TreatmentDialogTest extends SpringUIUnitTest {
+public class TreatmentDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(TreatmentDialog.class);
   private static final String TREATMENT_PREFIX = messagePrefix(Treatment.class);

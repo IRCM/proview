@@ -18,12 +18,12 @@ import ca.qc.ircm.proview.files.Guideline;
 import ca.qc.ircm.proview.files.GuidelinesConfiguration;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import com.google.common.net.UrlEscapers;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +38,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class GuidelinesViewTest extends SpringUIUnitTest {
+public class GuidelinesViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(GuidelinesView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

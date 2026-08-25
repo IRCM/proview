@@ -2,7 +2,7 @@ package ca.qc.ircm.proview.files.web;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SigninView;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class GuidelinesViewIT extends SpringUIUnitTest {
+public class GuidelinesViewIT extends SpringBrowserlessTest {
 
   @Test
   @WithAnonymousUser

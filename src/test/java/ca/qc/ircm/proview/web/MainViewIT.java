@@ -4,7 +4,7 @@ import static ca.qc.ircm.proview.web.MainView.VIEW_NAME;
 
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class MainViewIT extends SpringUIUnitTest {
+public class MainViewIT extends SpringBrowserlessTest {
 
   @Test
   @WithAnonymousUser

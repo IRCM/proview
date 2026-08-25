@@ -17,8 +17,8 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -33,7 +33,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserViewIT extends SpringUIUnitTest {
+public class UserViewIT extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);

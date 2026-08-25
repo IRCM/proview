@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.web.ContactView.VIEW_NAME;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -13,7 +13,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class ContactViewIT extends SpringUIUnitTest {
+public class ContactViewIT extends SpringBrowserlessTest {
 
   @Test
   @WithAnonymousUser

@@ -14,9 +14,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.web.ForgotPasswordView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.login.AbstractLogin.LoginEvent;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.assertj.MvcTestResultAssert;
 @ServiceTestAnnotations
 @AutoConfigureMockMvc
 @WithAnonymousUser
-public class SigninViewIT extends SpringUIUnitTest {
+public class SigninViewIT extends SpringBrowserlessTest {
 
   @Autowired
   private MockMvcTester mvc;

@@ -51,11 +51,11 @@ import ca.qc.ircm.proview.submission.Service;
 import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +72,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
+public class IntactProteinSubmissionFormTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(IntactProteinSubmissionForm.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);
@@ -80,10 +80,10 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   private static final String SUBMISSION_SAMPLE_PREFIX = messagePrefix(SubmissionSample.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
   private static final String INJECTION_TYPE_PREFIX = messagePrefix(InjectionType.class);
-  private static final String MASS_DETECTION_INSTRUMENT_PREFIX =
-      messagePrefix(MassDetectionInstrument.class);
-  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX =
-      messagePrefix(MassDetectionInstrumentSource.class);
+  private static final String MASS_DETECTION_INSTRUMENT_PREFIX = messagePrefix(
+      MassDetectionInstrument.class);
+  private static final String MASS_DETECTION_INSTRUMENT_SOURCE_PREFIX = messagePrefix(
+      MassDetectionInstrumentSource.class);
   private static final String SAMPLE_TYPE_PREFIX = messagePrefix(SampleType.class);
   private static final String SERVICE_PREFIX = messagePrefix(Service.class);
   private IntactProteinSubmissionForm form;
@@ -118,8 +118,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     SubmissionView view = navigate(SubmissionView.class);
-    test(test(view).find(Tabs.class).id(SERVICE))
-        .select(view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
+    test(test(view).find(Tabs.class).id(SERVICE)).select(
+        view.getTranslation(SERVICE_PREFIX + INTACT_PROTEIN.name()));
     form = test(view).find(IntactProteinSubmissionForm.class).id(ID);
   }
 
@@ -334,8 +334,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.experiment);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.experiment);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -349,8 +349,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.taxonomy);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.taxonomy);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -374,8 +374,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.molecularWeight);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.molecularWeight);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_NUMBER)),
@@ -390,8 +390,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.sampleType);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.sampleType);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -405,8 +405,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -420,8 +420,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesCount);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesCount);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + INVALID_INTEGER)),
@@ -520,8 +520,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -535,13 +535,12 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(
-        Optional
-            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(Optional.of(
+            form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -553,13 +552,12 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(
-        Optional
-            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(Optional.of(
+            form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -586,8 +584,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(
@@ -603,13 +601,12 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(
-        Optional
-            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
+    assertEquals(Optional.of(
+            form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 1, samplesCount)),
         error.getMessage());
   }
 
@@ -621,13 +618,12 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
-    assertEquals(
-        Optional
-            .of(form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
+    assertEquals(Optional.of(
+            form.getTranslation(MESSAGES_PREFIX + SAMPLES_NAMES_WRONG_COUNT, 3, samplesCount)),
         error.getMessage());
   }
 
@@ -639,8 +635,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<IntactProteinSubmissionForm.Samples> status = form.validateSamples();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.samplesNames);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.samplesNames);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(
@@ -670,8 +666,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.quantity);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.quantity);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -685,8 +681,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<SubmissionSample> status = form.validateFirstSample();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.volume);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.volume);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -711,8 +707,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.injection);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.injection);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
@@ -726,8 +722,8 @@ public class IntactProteinSubmissionFormTest extends SpringUIUnitTest {
     assertFalse(form.isValid());
     BinderValidationStatus<Submission> status = form.validateSubmission();
     assertFalse(status.isOk());
-    Optional<BindingValidationStatus<?>> optionalError =
-        findValidationStatusByField(status, form.source);
+    Optional<BindingValidationStatus<?>> optionalError = findValidationStatusByField(status,
+        form.source);
     assertTrue(optionalError.isPresent());
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(form.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());

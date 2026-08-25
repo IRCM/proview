@@ -28,8 +28,8 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.treatment.Solvent;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,7 +49,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionViewIT extends SpringUIUnitTest {
+public class SubmissionViewIT extends SpringBrowserlessTest {
 
   private static final QSubmission qsubmission = QSubmission.submission;
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionView.class);

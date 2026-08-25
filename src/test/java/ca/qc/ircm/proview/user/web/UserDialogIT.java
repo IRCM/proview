@@ -17,7 +17,7 @@ import ca.qc.ircm.proview.user.PhoneNumberType;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -33,7 +33,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserDialogIT extends SpringUIUnitTest {
+public class UserDialogIT extends SpringBrowserlessTest {
 
   private static final String PHONE_NUMBER_TYPE_PREFIX = messagePrefix(PhoneNumberType.class);
   @MockitoSpyBean

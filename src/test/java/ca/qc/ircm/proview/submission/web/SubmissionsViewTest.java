@@ -71,6 +71,8 @@ import ca.qc.ircm.proview.user.UserPreferenceService;
 import ca.qc.ircm.proview.user.UserProperties;
 import ca.qc.ircm.proview.web.ContactView;
 import ca.qc.ircm.proview.web.ErrorNotification;
+import com.vaadin.browserless.MetaKeys;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -88,8 +90,6 @@ import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.testbench.unit.MetaKeys;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -117,7 +117,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class SubmissionsViewTest extends SpringUIUnitTest {
+public class SubmissionsViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SubmissionsView.class);
   private static final String SUBMISSION_PREFIX = messagePrefix(Submission.class);

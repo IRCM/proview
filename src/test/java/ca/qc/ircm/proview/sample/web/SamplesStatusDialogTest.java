@@ -43,6 +43,8 @@ import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.SavedEvent;
+import com.vaadin.browserless.MetaKeys;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -54,8 +56,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.testbench.unit.MetaKeys;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -75,7 +75,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SamplesStatusDialogTest extends SpringUIUnitTest {
+public class SamplesStatusDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(SamplesStatusDialog.class);
   private static final String SAMPLE_PREFIX = messagePrefix(Sample.class);

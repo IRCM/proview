@@ -54,6 +54,7 @@ import ca.qc.ircm.proview.user.UserFilter;
 import ca.qc.ircm.proview.user.UserRepository;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ErrorNotification;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -69,7 +70,6 @@ import com.vaadin.flow.data.selection.SelectionModel;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.Location;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -88,7 +88,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UsersViewTest extends SpringUIUnitTest {
+public class UsersViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UsersView.class);
   private static final String USER_PREFIX = messagePrefix(User.class);

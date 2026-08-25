@@ -3,9 +3,9 @@ package ca.qc.ircm.proview.web.component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 
@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class NotificationComponentTest extends SpringUIUnitTest {
+public class NotificationComponentTest extends SpringBrowserlessTest {
 
   private final NotificationComponentForTest notificationComponent = new NotificationComponentForTest();
 

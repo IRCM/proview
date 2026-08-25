@@ -34,6 +34,7 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.ForgotPassword;
 import ca.qc.ircm.proview.user.ForgotPasswordService;
 import ca.qc.ircm.proview.web.SigninView;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -42,7 +43,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +56,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithAnonymousUser
-public class UseForgotPasswordViewTest extends SpringUIUnitTest {
+public class UseForgotPasswordViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UseForgotPasswordView.class);
   private static final String PASSWORDS_PREFIX = messagePrefix(Passwords.class);

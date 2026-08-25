@@ -29,6 +29,7 @@ import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.web.SavedEvent;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -36,7 +37,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class LaboratoryDialogTest extends SpringUIUnitTest {
+public class LaboratoryDialogTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   private static final String LABORATORY_PREFIX = messagePrefix(Laboratory.class);

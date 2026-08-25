@@ -10,8 +10,8 @@ import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.user.Laboratory;
 import ca.qc.ircm.proview.user.LaboratoryRepository;
 import ca.qc.ircm.proview.user.LaboratoryService;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +25,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class LaboratoryDialogIT extends SpringUIUnitTest {
+public class LaboratoryDialogIT extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(LaboratoryDialog.class);
   @MockitoSpyBean

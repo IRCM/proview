@@ -12,10 +12,10 @@ import ca.qc.ircm.proview.submission.Submission;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
+import com.vaadin.browserless.MetaKeys;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.testbench.unit.MetaKeys;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +29,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class SamplesStatusDialogIT extends SpringUIUnitTest {
+public class SamplesStatusDialogIT extends SpringBrowserlessTest {
 
   private static final String SAMPLE_STATUS_PREFIX = messagePrefix(SampleStatus.class);
   @MockitoSpyBean

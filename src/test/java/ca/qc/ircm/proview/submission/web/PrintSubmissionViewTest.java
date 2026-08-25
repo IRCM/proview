@@ -27,11 +27,11 @@ import ca.qc.ircm.proview.submission.SubmissionRepository;
 import ca.qc.ircm.proview.submission.SubmissionService;
 import ca.qc.ircm.proview.test.config.ServiceTestAnnotations;
 import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.NotFoundException;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
-public class PrintSubmissionViewTest extends SpringUIUnitTest {
+public class PrintSubmissionViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(PrintSubmissionView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);

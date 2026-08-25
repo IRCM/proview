@@ -26,13 +26,13 @@ import ca.qc.ircm.proview.user.LaboratoryService;
 import ca.qc.ircm.proview.user.User;
 import ca.qc.ircm.proview.user.UserService;
 import ca.qc.ircm.proview.web.ViewLayout;
+import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.testbench.unit.SpringUIUnitTest;
 import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
  */
 @ServiceTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
-public class UserViewTest extends SpringUIUnitTest {
+public class UserViewTest extends SpringBrowserlessTest {
 
   private static final String MESSAGES_PREFIX = messagePrefix(UserView.class);
   private static final String CONSTANTS_PREFIX = messagePrefix(Constants.class);
