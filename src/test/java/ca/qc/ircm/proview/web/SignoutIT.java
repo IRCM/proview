@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
 import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.SeleniumTestAnnotations;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -14,7 +14,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Integration tests for {@link SignoutView}.
  */
-@TestBenchTestAnnotations
+@SeleniumTestAnnotations
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SignoutIT extends AbstractSeleniumTestCase {
 

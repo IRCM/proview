@@ -159,7 +159,10 @@ public class WebSecurityConfiguration {
 
     // Used for TestBench.
     try {
-      Class<?> clazz = Class.forName("ca.qc.ircm.proview.test.config.TestBenchSecurityFilter");
+      Class<?> clazz = Class.forName("ca.qc.ircm.proview.test.config.SeleniumSecurityFilter");
+      http.addFilterBefore((Filter) clazz.getDeclaredConstructor().newInstance(),
+          SecurityContextHolderFilter.class);
+      clazz = Class.forName("ca.qc.ircm.proview.test.config.TestBenchSecurityFilter");
       http.addFilterBefore((Filter) clazz.getDeclaredConstructor().newInstance(),
           SecurityContextHolderFilter.class);
     } catch (ClassNotFoundException e) {

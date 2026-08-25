@@ -3,7 +3,7 @@ package ca.qc.ircm.proview.web;
 import static ca.qc.ircm.proview.web.ContactView.VIEW_NAME;
 
 import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.SeleniumTestAnnotations;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * Integration tests for {@link ViewLayout}.
  */
-@TestBenchTestAnnotations
+@SeleniumTestAnnotations
 @ActiveProfiles({"integration-test", "context-path"})
 @WithUserDetails("christopher.anderson@ircm.qc.ca")
 public class SignoutContextPathIT extends AbstractSeleniumTestCase {

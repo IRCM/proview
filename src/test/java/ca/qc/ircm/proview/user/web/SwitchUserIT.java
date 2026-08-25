@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.qc.ircm.proview.submission.web.SubmissionsView;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
 import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.SeleniumTestAnnotations;
 import ca.qc.ircm.proview.web.ViewLayoutComponent;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -15,7 +15,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Integration tests for {@link UsersView}.
  */
-@TestBenchTestAnnotations
+@SeleniumTestAnnotations
 @WithUserDetails("proview@ircm.qc.ca")
 public class SwitchUserIT extends AbstractSeleniumTestCase {
 

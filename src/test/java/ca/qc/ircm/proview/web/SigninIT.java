@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import ca.qc.ircm.proview.security.SecurityConfiguration;
 import ca.qc.ircm.proview.submission.web.SubmissionsViewComponent;
 import ca.qc.ircm.proview.test.config.AbstractSeleniumTestCase;
-import ca.qc.ircm.proview.test.config.TestBenchTestAnnotations;
+import ca.qc.ircm.proview.test.config.SeleniumTestAnnotations;
 import ca.qc.ircm.proview.user.web.ForgotPasswordViewComponent;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 /**
  * Integration tests for {@link SigninView}.
  */
-@TestBenchTestAnnotations
+@SeleniumTestAnnotations
 @WithAnonymousUser
 public class SigninIT extends AbstractSeleniumTestCase {
 
