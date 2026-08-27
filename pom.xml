@@ -61,8 +61,8 @@
     <openfeign.querydsl.version>6.12</openfeign.querydsl.version>
     <commons-io.version>2.21.0</commons-io.version>
     <greenmail.version>2.0.1</greenmail.version>
-    <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
-    <maven-project-info-reports-plugin.version>3.4.2</maven-project-info-reports-plugin.version>
+    <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
+    <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
     <spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
     <migrations-maven-plugin.version>1.1.3</migrations-maven-plugin.version>
   </properties>
