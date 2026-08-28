@@ -22,7 +22,7 @@ public class NotificationComponentTest extends SpringBrowserlessTest {
   public void showNotification_Text() {
     notificationComponent.showNotification("abc");
 
-    Notification notification = $(Notification.class).last();
+    Notification notification = find(Notification.class).last();
     assertEquals("abc", test(notification).getText());
     assertEquals(NotificationComponent.DEFAULT_DURATION, notification.getDuration());
     assertEquals(Position.BOTTOM_START, notification.getPosition());
@@ -32,7 +32,7 @@ public class NotificationComponentTest extends SpringBrowserlessTest {
   public void showNotification_TextDuration() {
     notificationComponent.showNotification("abc", 100);
 
-    Notification notification = $(Notification.class).last();
+    Notification notification = find(Notification.class).last();
     assertEquals("abc", test(notification).getText());
     assertEquals(100, notification.getDuration());
     assertEquals(Position.BOTTOM_START, notification.getPosition());
@@ -42,7 +42,7 @@ public class NotificationComponentTest extends SpringBrowserlessTest {
   public void showNotification_TextDurationPosition() {
     notificationComponent.showNotification("abc", 100, Position.TOP_END);
 
-    Notification notification = $(Notification.class).last();
+    Notification notification = find(Notification.class).last();
     assertEquals("abc", test(notification).getText());
     assertEquals(100, notification.getDuration());
     assertEquals(Position.TOP_END, notification.getPosition());

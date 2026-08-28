@@ -48,7 +48,7 @@ public class UsersViewIT extends SpringBrowserlessTest {
 
     test(view.edit).click();
 
-    UserDialog dialog = $(UserDialog.class).single();
+    UserDialog dialog = find(UserDialog.class).single();
     assertEquals(1, dialog.getUserId());
   }
 
@@ -58,7 +58,7 @@ public class UsersViewIT extends SpringBrowserlessTest {
 
     test(view.add).click();
 
-    $(UserDialog.class).single();
+    find(UserDialog.class).single();
   }
 
   @Test
@@ -68,6 +68,6 @@ public class UsersViewIT extends SpringBrowserlessTest {
 
     test(view.viewLaboratory).click();
 
-    $(LaboratoryDialog.class).single();
+    find(LaboratoryDialog.class).single();
   }
 }

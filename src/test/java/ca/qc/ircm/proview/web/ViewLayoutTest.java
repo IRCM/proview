@@ -80,7 +80,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     navigate(SubmissionsView.class);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
   }
 
   private void assertNoExecuteJs() {
@@ -220,7 +220,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   @Test
   public void sideNav_SelectSubmissions() {
     navigate(ContactView.class);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
     UI.getCurrent().addAfterNavigationListener(navigationListener);
 
     test(view.sideNav).clickItem(view.submissions.getLabel());
@@ -228,7 +228,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.submissions, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SUBMISSIONS), view.header.getText());
-    assertTrue($(SubmissionsView.class).exists());
+    assertTrue(find(SubmissionsView.class).exists());
     assertNoExecuteJs();
   }
 
@@ -241,7 +241,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.profile, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + PROFILE), view.header.getText());
-    assertTrue($(ProfileView.class).exists());
+    assertTrue(find(ProfileView.class).exists());
     assertNoExecuteJs();
   }
 
@@ -255,7 +255,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.users, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS), view.header.getText());
-    assertTrue($(UsersView.class).exists());
+    assertTrue(find(UsersView.class).exists());
     assertNoExecuteJs();
   }
 
@@ -268,7 +268,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.contact, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + CONTACT), view.header.getText());
-    assertTrue($(ContactView.class).exists());
+    assertTrue(find(ContactView.class).exists());
     assertNoExecuteJs();
   }
 
@@ -281,7 +281,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
     verify(navigationListener).afterNavigation(any());
     assertEquals(view.guidelines, view.selectedSideNavItem().orElseThrow());
     assertEquals(view.getTranslation(MESSAGES_PREFIX + GUIDELINES), view.header.getText());
-    assertTrue($(GuidelinesView.class).exists());
+    assertTrue(find(GuidelinesView.class).exists());
     assertNoExecuteJs();
   }
 
@@ -290,7 +290,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
       "PREVIOUS_ADMINISTRATOR"})
   public void sideNav_SelectExitSwitchUser() {
     navigate(ContactView.class);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
 
     test(view.sideNav).clickItem(view.exitSwitchUser.getLabel());
 
@@ -334,7 +334,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void sideNav_ChangeLanguage_ToFrenchFromUsers() {
     navigate(UsersView.class);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
 
     test(view.changeLanguage).click();
 
@@ -345,7 +345,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   @Test
   public void sideNav_AddSubmission() {
     navigate(SubmissionView.class);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
 
     assertFalse(view.selectedSideNavItem().isPresent());
     assertEquals(
@@ -356,7 +356,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   @Test
   public void sideNav_EditSubmission() {
     navigate(SubmissionView.class, 35L);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
 
     assertFalse(view.selectedSideNavItem().isPresent());
     Submission submission = submissionRepository.findById(35L).orElseThrow();
@@ -368,7 +368,7 @@ public class ViewLayoutTest extends SpringBrowserlessTest {
   @WithUserDetails("proview@ircm.qc.ca")
   public void sideNav_History() {
     navigate(HistoryView.class, 35L);
-    view = $(ViewLayout.class).first();
+    view = find(ViewLayout.class).first();
 
     assertFalse(view.selectedSideNavItem().isPresent());
     Submission submission = submissionRepository.findById(35L).orElseThrow();

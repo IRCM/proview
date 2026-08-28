@@ -80,7 +80,7 @@ public class ProfileViewIT extends SpringBrowserlessTest {
     test(view.form.number).setValue(number);
     test(view.form.extension).setValue(extension);
     test(view.save).click();
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED), test(notification).getText());
     User user = repository.findById(10L).orElseThrow();
     entityManager.refresh(user);
@@ -104,6 +104,6 @@ public class ProfileViewIT extends SpringBrowserlessTest {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    $(ProfileView.class).single();
+    find(ProfileView.class).single();
   }
 }

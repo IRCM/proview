@@ -386,7 +386,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(0);
     test(view.users).doubleClickRow(0);
 
-    UserDialog dialog = $(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).first();
     assertEquals(user.getId(), dialog.getUserId());
     verify(service).get(1L);
   }
@@ -398,7 +398,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(0);
     doubleClickItem(view.users, user, view.laboratory);
 
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
     assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
     verify(laboratoryService).get(user.getLaboratory().getId());
   }
@@ -408,7 +408,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
     test(view.users).doubleClickRow(1);
 
-    UserDialog dialog = $(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).first();
     test(dialog.save).click();
     verify(service, times(2)).all();
   }
@@ -420,7 +420,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(1);
     doubleClickItem(view.users, user, view.laboratory);
 
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
     test(dialog.save).click();
     verify(service, times(2)).all();
   }
@@ -552,7 +552,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
   public void add() {
     test(view.add).click();
 
-    UserDialog dialog = $(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).first();
     assertEquals(0, dialog.getUserId());
   }
 
@@ -570,8 +570,8 @@ public class UsersViewTest extends SpringBrowserlessTest {
     view.edit();
 
     verify(service, never()).get(anyLong());
-    assertTrue($(UsersView.class).exists());
-    Notification error = $(Notification.class).first();
+    assertTrue(find(UsersView.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -583,7 +583,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     view.users.select(user);
 
     test(view.edit).click();
-    UserDialog dialog = $(UserDialog.class).last();
+    UserDialog dialog = find(UserDialog.class).last();
     assertEquals(user.getId(), dialog.getUserId());
     verify(service).get(user.getId());
   }
@@ -604,8 +604,8 @@ public class UsersViewTest extends SpringBrowserlessTest {
     assertFalse(UI.getCurrent().getInternals().dumpPendingJavaScriptInvocations().stream().anyMatch(
         i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
             && ((String) i.getInvocation().getParameters().getFirst()).startsWith("/impersonate")));
-    assertTrue($(UsersView.class).exists());
-    Notification error = $(Notification.class).first();
+    assertTrue(find(UsersView.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -622,7 +622,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
             && ("/impersonate?username=christopher.anderson@ircm.qc.ca").equals(
             i.getInvocation().getParameters().getFirst()) && "_self".equals(
             i.getInvocation().getParameters().get(1))));
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
   }
 
   @Test
@@ -639,8 +639,8 @@ public class UsersViewTest extends SpringBrowserlessTest {
     view.viewLaboratory();
 
     verify(laboratoryService, never()).get(anyLong());
-    assertFalse($(LaboratoryDialog.class).exists());
-    Notification error = $(Notification.class).first();
+    assertFalse(find(LaboratoryDialog.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -656,9 +656,9 @@ public class UsersViewTest extends SpringBrowserlessTest {
     test(view.viewLaboratory).click();
 
     verify(laboratoryService).get(user.getLaboratory().getId());
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
     assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
   }
 
   @Test
@@ -691,7 +691,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
 
     view.afterNavigation(event);
 
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
   }
 
   @Test
@@ -702,7 +702,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
 
     view.afterNavigation(event);
 
-    Notification notification = $(Notification.class).first();
+    Notification notification = find(Notification.class).first();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SWITCH_FAILED),
         test(notification).getText());
   }

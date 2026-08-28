@@ -49,7 +49,7 @@ public class HistoryViewIT extends SpringBrowserlessTest {
     HistoryView view = navigate(HistoryView.class, 1L);
     test(view.activities).select(6);
     test(view.view).click();
-    SubmissionDialog dialog = $(SubmissionDialog.class).single();
+    SubmissionDialog dialog = find(SubmissionDialog.class).single();
     assertTrue(dialog.isOpened());
     Assertions.assertEquals("G100429", dialog.getHeaderTitle());
   }
@@ -59,7 +59,7 @@ public class HistoryViewIT extends SpringBrowserlessTest {
     HistoryView view = navigate(HistoryView.class, 1L);
     test(view.activities).select(5);
     test(view.view).click();
-    MsAnalysisDialog dialog = $(MsAnalysisDialog.class).single();
+    MsAnalysisDialog dialog = find(MsAnalysisDialog.class).single();
     assertTrue(dialog.isOpened());
     Assertions.assertEquals(
         dialog.getTranslation(MS_ANALYSIS_DIALOG_PREFIX + MsAnalysisDialog.HEADER),
@@ -71,7 +71,7 @@ public class HistoryViewIT extends SpringBrowserlessTest {
     HistoryView view = navigate(HistoryView.class, 1L);
     test(view.activities).select(0);
     test(view.view).click();
-    TreatmentDialog dialog = $(TreatmentDialog.class).single();
+    TreatmentDialog dialog = find(TreatmentDialog.class).single();
     assertTrue(dialog.isOpened());
     Assertions.assertEquals(
         dialog.getTranslation(TREATMENT_TYPE_PREFIX + TreatmentType.TRANSFER.name()),

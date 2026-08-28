@@ -54,12 +54,12 @@ public class LaboratoryDialogIT extends SpringBrowserlessTest {
     UsersView view = navigate(UsersView.class);
     test(view.users).select(0);
     test(view.viewLaboratory).click();
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).single();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).single();
     fill(dialog);
 
     test(dialog.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     Assertions.assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
         test(notification).getText());
     Laboratory laboratory = repository.findById(1L).orElseThrow();
@@ -73,12 +73,12 @@ public class LaboratoryDialogIT extends SpringBrowserlessTest {
     UsersView view = navigate(UsersView.class);
     test(view.users).select(0);
     test(view.viewLaboratory).click();
-    LaboratoryDialog dialog = $(LaboratoryDialog.class).single();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).single();
     fill(dialog);
 
     test(dialog.cancel).click();
 
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
     Laboratory laboratory = repository.findById(1L).orElseThrow();
     Assertions.assertEquals("Admin", laboratory.getName());
     Assertions.assertEquals("Robot", laboratory.getDirector());

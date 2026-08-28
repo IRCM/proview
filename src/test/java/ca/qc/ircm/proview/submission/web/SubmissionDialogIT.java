@@ -36,7 +36,7 @@ public class SubmissionDialogIT extends SpringBrowserlessTest {
     SubmissionsView view = navigate(SubmissionsView.class);
     test(view.submissions).select(row);
     test(view.view).click();
-    return $(SubmissionDialog.class).single();
+    return find(SubmissionDialog.class).single();
   }
 
   private void setFields(SubmissionDialog dialog) {
@@ -65,7 +65,7 @@ public class SubmissionDialogIT extends SpringBrowserlessTest {
 
     test(dialog.print).click();
 
-    PrintSubmissionView printView = $(PrintSubmissionView.class).single();
+    PrintSubmissionView printView = find(PrintSubmissionView.class).single();
     assertEquals(164, printView.printContent.getSubmission().getId());
   }
 
@@ -75,7 +75,7 @@ public class SubmissionDialogIT extends SpringBrowserlessTest {
 
     test(dialog.edit).click();
 
-    SubmissionView submissionView = $(SubmissionView.class).single();
+    SubmissionView submissionView = find(SubmissionView.class).single();
     assertEquals(164, submissionView.getSubmission().getId());
   }
 }

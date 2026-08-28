@@ -134,8 +134,8 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
     BindingValidationStatus<?> error = optionalError.get();
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + REQUIRED)), error.getMessage());
     verify(service, never()).insert(any(), any());
-    assertTrue($(ForgotPasswordView.class).exists());
-    assertFalse($(Notification.class).exists());
+    assertTrue(find(ForgotPasswordView.class).exists());
+    assertFalse(find(Notification.class).exists());
   }
 
   @Test
@@ -154,8 +154,8 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
     assertEquals(Optional.of(view.getTranslation(CONSTANTS_PREFIX + INVALID_EMAIL)),
         error.getMessage());
     verify(service, never()).insert(any(), any());
-    assertTrue($(ForgotPasswordView.class).exists());
-    assertFalse($(Notification.class).exists());
+    assertTrue(find(ForgotPasswordView.class).exists());
+    assertFalse(find(Notification.class).exists());
   }
 
   @Test
@@ -167,8 +167,8 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
 
     verify(userService).exists(email);
     verify(service, never()).insert(any(), any());
-    assertTrue($(SigninView.class).exists());
-    Notification notification = $(Notification.class).first();
+    assertTrue(find(SigninView.class).exists());
+    Notification notification = find(Notification.class).first();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, email), test(notification).getText());
   }
 
@@ -189,8 +189,8 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
     String url = webContext.getChangeForgottenPasswordUrl(forgotPassword, locale);
     assertEquals(UseForgotPasswordView.VIEW_NAME + "/" + forgotPassword.getId()
         + UseForgotPasswordView.SEPARATOR + forgotPassword.getConfirmNumber(), url);
-    assertTrue($(SigninView.class).exists());
-    Notification notification = $(Notification.class).first();
+    assertTrue(find(SigninView.class).exists());
+    Notification notification = find(Notification.class).first();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, email), test(notification).getText());
   }
 }

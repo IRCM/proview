@@ -95,7 +95,7 @@ public class UserViewIT extends SpringBrowserlessTest {
     test(view.form.number).setValue(number);
     test(view.form.extension).setValue(extension);
     test(view.save).click();
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, name), test(notification).getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
@@ -118,7 +118,7 @@ public class UserViewIT extends SpringBrowserlessTest {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    $(UsersView.class).single();
+    find(UsersView.class).single();
   }
 
   @Test
@@ -141,7 +141,7 @@ public class UserViewIT extends SpringBrowserlessTest {
     test(view.form.number).setValue(number);
     test(view.form.extension).setValue(extension);
     test(view.save).click();
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, name), test(notification).getText());
     User user = repository.findByEmail(email).orElseThrow();
     assertNotNull(user);
@@ -165,6 +165,6 @@ public class UserViewIT extends SpringBrowserlessTest {
     assertEquals(state, user.getAddress().getState());
     assertEquals(country, user.getAddress().getCountry());
     assertEquals(postalCode, user.getAddress().getPostalCode());
-    $(UsersView.class).single();
+    find(UsersView.class).single();
   }
 }

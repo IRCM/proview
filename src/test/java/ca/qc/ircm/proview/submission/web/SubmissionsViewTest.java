@@ -875,8 +875,8 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     test(view.submissions).clickRow(0);
 
-    assertEquals(0, $(SubmissionDialog.class).all().size());
-    assertEquals(0, $(SamplesStatusDialog.class).all().size());
+    assertEquals(0, find(SubmissionDialog.class).all().size());
+    assertEquals(0, find(SamplesStatusDialog.class).all().size());
   }
 
   @Test
@@ -884,7 +884,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    assertFalse($(SamplesStatusDialog.class).exists());
+    assertFalse(find(SamplesStatusDialog.class).exists());
   }
 
   @Test
@@ -896,7 +896,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.submissions).clickRow(0, new MetaKeys().shift());
 
     verify(service).get(164L);
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).first();
     assertEquals(164L, dialog.getSubmissionId());
   }
 
@@ -905,7 +905,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
-    assertFalse($(SamplesStatusDialog.class).exists());
+    assertFalse(find(SamplesStatusDialog.class).exists());
   }
 
   @Test
@@ -917,7 +917,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.submissions).clickRow(0, new MetaKeys().ctrl());
 
     verify(service).get(164L);
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).first();
     assertEquals(164L, dialog.getSubmissionId());
   }
 
@@ -926,7 +926,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     test(view.submissions).clickRow(0, new MetaKeys().meta());
 
-    assertFalse($(SamplesStatusDialog.class).exists());
+    assertFalse(find(SamplesStatusDialog.class).exists());
   }
 
   @Test
@@ -938,7 +938,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.submissions).clickRow(0, new MetaKeys().meta());
 
     verify(service).get(164L);
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).first();
     assertEquals(164L, dialog.getSubmissionId());
   }
 
@@ -947,7 +947,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     test(view.submissions).clickRow(0, new MetaKeys().alt());
 
-    assertFalse($(HistoryView.class).exists());
+    assertFalse(find(HistoryView.class).exists());
   }
 
   @Test
@@ -959,7 +959,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.submissions).clickRow(0, new MetaKeys().alt());
 
     verify(service).get(164L);
-    HistoryView view = $(HistoryView.class).first();
+    HistoryView view = find(HistoryView.class).first();
     assertEquals(164L, view.getSubmissionId());
   }
 
@@ -971,7 +971,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.submissions).doubleClickRow(0);
 
     verify(service).get(164L);
-    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    SubmissionDialog dialog = find(SubmissionDialog.class).first();
     assertEquals(164L, dialog.getSubmissionId());
   }
 
@@ -1169,7 +1169,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
   public void add() {
     test(view.add).click();
 
-    SubmissionView view = $(SubmissionView.class).first();
+    SubmissionView view = find(SubmissionView.class).first();
     assertEquals(0, view.getSubmission().getId());
   }
 
@@ -1193,7 +1193,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.view).click();
 
     verify(service).get(32L);
-    SubmissionDialog dialog = $(SubmissionDialog.class).first();
+    SubmissionDialog dialog = find(SubmissionDialog.class).first();
     assertEquals(32L, dialog.getSubmissionId());
   }
 
@@ -1202,8 +1202,8 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     view.view();
 
-    assertFalse($(SamplesStatusDialog.class).exists());
-    Notification error = $(Notification.class).first();
+    assertFalse(find(SamplesStatusDialog.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());
@@ -1231,7 +1231,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.editStatus).click();
 
     verify(service).get(32L);
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).first();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).first();
     assertEquals(32L, dialog.getSubmissionId());
   }
 
@@ -1241,8 +1241,8 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     view.editStatus();
 
-    assertFalse($(SamplesStatusDialog.class).exists());
-    Notification error = $(Notification.class).first();
+    assertFalse(find(SamplesStatusDialog.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());
@@ -1270,7 +1270,7 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     test(view.history).click();
 
     verify(service).get(32L);
-    HistoryView view = $(HistoryView.class).first();
+    HistoryView view = find(HistoryView.class).first();
     assertEquals(32L, view.getSubmissionId());
   }
 
@@ -1280,8 +1280,8 @@ public class SubmissionsViewTest extends SpringBrowserlessTest {
     view.submissions.setItems(submissions);
     view.history();
 
-    assertFalse($(HistoryView.class).exists());
-    Notification error = $(Notification.class).first();
+    assertFalse(find(HistoryView.class).exists());
+    Notification error = find(Notification.class).first();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(SUBMISSIONS, REQUIRED)),
         ((ErrorNotification) error).getText());

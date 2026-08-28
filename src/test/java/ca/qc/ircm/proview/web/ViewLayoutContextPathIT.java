@@ -23,9 +23,9 @@ public class ViewLayoutContextPathIT extends SpringBrowserlessTest {
   public void changeLanguage() {
     navigate(ContactView.class);
     assertEquals(UI.getCurrent().getLocale(), ENGLISH);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.changeLanguage).click();
-    $(ContactView.class).single();
+    find(ContactView.class).single();
     assertEquals(UI.getCurrent().getLocale(), FRENCH);
   }
 }

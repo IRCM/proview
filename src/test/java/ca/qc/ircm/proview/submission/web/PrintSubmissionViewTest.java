@@ -87,7 +87,7 @@ public class PrintSubmissionViewTest extends SpringBrowserlessTest {
 
   @Test
   public void styles() {
-    assertFalse($(ViewLayout.class).exists());
+    assertFalse(find(ViewLayout.class).exists());
     assertEquals(ID, view.getId().orElse(""));
     assertEquals(SUBMISSIONS_VIEW, view.submissionsView.getId().orElse(""));
     validateIcon(VaadinIcon.ARROW_BACKWARD.create(), view.submissionsView.getIcon());
@@ -118,7 +118,7 @@ public class PrintSubmissionViewTest extends SpringBrowserlessTest {
   @Test
   public void submissionsView() {
     test(view.submissionsView).click();
-    assertTrue($(SubmissionsView.class).exists());
+    assertTrue(find(SubmissionsView.class).exists());
   }
 
   @Test

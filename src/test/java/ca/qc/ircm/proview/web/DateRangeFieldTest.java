@@ -58,7 +58,7 @@ public class DateRangeFieldTest extends SpringBrowserlessTest {
   public void beforeTest() {
     UI.getCurrent().setLocale(locale);
     navigate(SubmissionsView.class);
-    @SuppressWarnings("unchecked") Grid<Submission> submissions = $(Grid.class).first();
+    @SuppressWarnings("unchecked") Grid<Submission> submissions = find(Grid.class).first();
     HeaderRow filtersRow = submissions.getHeaderRows().get(1);
     dateRange = test(
         filtersRow.getCell(submissions.getColumnByKey(SubmissionProperties.DATA_AVAILABLE_DATE))

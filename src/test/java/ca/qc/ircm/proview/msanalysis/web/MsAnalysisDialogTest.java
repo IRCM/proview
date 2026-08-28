@@ -89,7 +89,7 @@ public class MsAnalysisDialogTest extends SpringBrowserlessTest {
     @SuppressWarnings("unchecked") Grid<Activity> activities = test(view).find(Grid.class)
         .id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(1);
-    dialog = $(MsAnalysisDialog.class).id(ID);
+    dialog = find(MsAnalysisDialog.class).id(ID);
     acquisitions = acquisitionRepository.findAll();
   }
 

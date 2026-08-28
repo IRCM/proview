@@ -85,7 +85,7 @@ public class SubmissionDialogTest extends SpringBrowserlessTest {
     SubmissionsView view = navigate(SubmissionsView.class);
     view.submissions.setItems(repository.findAll());
     test(view.submissions).doubleClickRow(17);
-    dialog = $(SubmissionDialog.class).first();
+    dialog = find(SubmissionDialog.class).first();
   }
 
   private void setFields() {
@@ -238,7 +238,7 @@ public class SubmissionDialogTest extends SpringBrowserlessTest {
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.edit();
-    SubmissionView submissionView = $(SubmissionView.class).first();
+    SubmissionView submissionView = find(SubmissionView.class).first();
     assertNotNull(submissionView.getSubmission());
     assertEquals(164L, submissionView.getSubmission().getId());
     assertFalse(dialog.isOpened());
@@ -247,7 +247,7 @@ public class SubmissionDialogTest extends SpringBrowserlessTest {
   @Test
   public void edit_New() {
     dialog.edit();
-    $(SubmissionView.class).first();
+    find(SubmissionView.class).first();
     assertFalse(dialog.isOpened());
   }
 
@@ -257,7 +257,7 @@ public class SubmissionDialogTest extends SpringBrowserlessTest {
     when(service.get(anyLong())).thenReturn(Optional.of(submission));
     dialog.setSubmissionId(164L);
     dialog.print();
-    PrintSubmissionView printView = $(PrintSubmissionView.class).first();
+    PrintSubmissionView printView = find(PrintSubmissionView.class).first();
     assertNotNull(printView.printContent.getSubmission());
     assertEquals(164L, printView.printContent.getSubmission().getId());
     assertFalse(dialog.isOpened());

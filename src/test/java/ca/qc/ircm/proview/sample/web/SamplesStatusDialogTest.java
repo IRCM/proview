@@ -111,7 +111,7 @@ public class SamplesStatusDialogTest extends SpringBrowserlessTest {
         .id(SubmissionsView.SUBMISSIONS);
     submissions.setItems(repository.findAll());
     test(submissions).clickRow(1, new MetaKeys().shift());
-    dialog = $(SamplesStatusDialog.class).id(ID);
+    dialog = find(SamplesStatusDialog.class).id(ID);
     samples = sampleRepository.findAll();
   }
 
@@ -333,7 +333,7 @@ public class SamplesStatusDialogTest extends SpringBrowserlessTest {
     setFields();
     dialog.save.click();
     verify(sampleService).updateStatus(submission.getSamples());
-    Notification notification = $(Notification.class).first();
+    Notification notification = find(Notification.class).first();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, submission.getExperiment()),
         test(notification).getText());
     assertFalse(dialog.isOpened());

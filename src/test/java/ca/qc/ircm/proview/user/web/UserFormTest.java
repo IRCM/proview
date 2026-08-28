@@ -118,7 +118,7 @@ public class UserFormTest extends SpringBrowserlessTest {
     UI.getCurrent().setLocale(locale);
     laboratories = laboratoryRepository.findAll();
     navigate(ProfileView.class);
-    form = $(UserForm.class).first();
+    form = find(UserForm.class).first();
     entityManager.detach(form.getUser());
   }
 

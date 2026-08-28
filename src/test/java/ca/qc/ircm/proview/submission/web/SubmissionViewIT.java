@@ -236,7 +236,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
 
     test(view.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
         test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
@@ -280,7 +280,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 
   @Test
@@ -292,7 +292,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
 
     test(view.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
         test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
@@ -342,7 +342,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 
   @Test
@@ -354,7 +354,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
 
     test(view.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, sampleName1),
         test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(sampleName1))
@@ -385,7 +385,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 
   @Test
@@ -397,7 +397,7 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
 
     test(view.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, experiment),
         test(notification).getText());
     Submission submission = repository.findOne(qsubmission.experiment.eq(experiment)).orElseThrow();
@@ -424,6 +424,6 @@ public class SubmissionViewIT extends SpringBrowserlessTest {
     assertArrayEquals(Files.readAllBytes(file1), submission.getFiles().get(0).getContent());
     assertEquals(file2.getFileName().toString(), submission.getFiles().get(1).getFilename());
     assertArrayEquals(Files.readAllBytes(file2), submission.getFiles().get(1).getContent());
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 }

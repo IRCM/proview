@@ -68,7 +68,7 @@ public class PrintSubmissionTest extends SpringBrowserlessTest {
     when(service.get(anyLong())).thenReturn(repository.findById(164L));
     when(service.print(any(), any())).thenReturn("");
     navigate(PrintSubmissionView.class, 164L);
-    component = $(PrintSubmission.class).first();
+    component = find(PrintSubmission.class).first();
   }
 
   @Test

@@ -118,8 +118,8 @@ public class ProfileViewTest extends SpringBrowserlessTest {
 
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
-    assertTrue($(ProfileView.class).exists());
-    Notification notification = $(Notification.class).first();
+    assertTrue(find(ProfileView.class).exists());
+    Notification notification = find(Notification.class).first();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED), test(notification).getText());
   }
 

@@ -33,6 +33,6 @@ public class PrintSubmissionViewIT extends SpringBrowserlessTest {
 
     test(view.submissionsView).click();
 
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 }

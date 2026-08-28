@@ -77,7 +77,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
     test(view.submissions).select(0);
     test(view.view).click();
 
-    SubmissionDialog dialog = $(SubmissionDialog.class).single();
+    SubmissionDialog dialog = find(SubmissionDialog.class).single();
     assertTrue(dialog.isOpened());
     assertEquals("POLR3B-Flag", dialog.getHeaderTitle());
   }
@@ -89,7 +89,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
 
     test(view.submissions).clickRow(0, new MetaKeys().shift());
 
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).single();
     assertTrue(dialog.isOpened());
     assertEquals(view.getTranslation(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
         "POLR3B-Flag"), dialog.getHeaderTitle());
@@ -102,7 +102,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
 
     test(view.submissions).clickRow(0, new MetaKeys().alt());
 
-    HistoryView historyView = $(HistoryView.class).single();
+    HistoryView historyView = find(HistoryView.class).single();
     assertEquals(164, historyView.getSubmissionId());
   }
 
@@ -112,7 +112,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
 
     test(view.add).click();
 
-    $(SubmissionView.class).single();
+    find(SubmissionView.class).single();
   }
 
   @Test
@@ -123,7 +123,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
     test(view.submissions).select(0);
     test(view.editStatus).click();
 
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).single();
     assertTrue(dialog.isOpened());
     assertEquals(view.getTranslation(SAMPLES_STATUS_DIALOG_PREFIX + SamplesStatusDialog.HEADER,
         "POLR3B-Flag"), dialog.getHeaderTitle());
@@ -137,7 +137,7 @@ public class SubmissionsViewIT extends SpringBrowserlessTest {
     test(view.submissions).select(0);
     test(view.history).click();
 
-    HistoryView historyView = $(HistoryView.class).single();
+    HistoryView historyView = find(HistoryView.class).single();
     assertEquals(164, historyView.getSubmissionId());
   }
 }

@@ -74,7 +74,7 @@ public class UserDialogIT extends SpringBrowserlessTest {
     test(view.users).select(1);
     test(view.edit).click();
 
-    UserDialog dialog = $(UserDialog.class).single();
+    UserDialog dialog = find(UserDialog.class).single();
     test(dialog.form.email).setValue(email);
     test(dialog.form.name).setValue(name);
     test(dialog.form.password).setValue(password);
@@ -129,7 +129,7 @@ public class UserDialogIT extends SpringBrowserlessTest {
     test(view.users).select(0);
     test(view.edit).click();
 
-    UserDialog dialog = $(UserDialog.class).single();
+    UserDialog dialog = find(UserDialog.class).single();
     test(dialog.form.email).setValue(email);
     test(dialog.form.name).setValue(name);
     test(dialog.form.password).setValue(password);
@@ -159,7 +159,7 @@ public class UserDialogIT extends SpringBrowserlessTest {
 
     test(view.add).click();
 
-    UserDialog dialog = $(UserDialog.class).single();
+    UserDialog dialog = find(UserDialog.class).single();
     test(dialog.form.email).setValue(email);
     test(dialog.form.name).setValue(name);
     test(dialog.form.password).setValue(password);
@@ -211,7 +211,7 @@ public class UserDialogIT extends SpringBrowserlessTest {
 
     test(view.add).click();
 
-    UserDialog dialog = $(UserDialog.class).single();
+    UserDialog dialog = find(UserDialog.class).single();
     test(dialog.form.email).setValue(email);
     test(dialog.form.name).setValue(name);
     test(dialog.form.password).setValue(password);

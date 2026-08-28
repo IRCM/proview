@@ -68,12 +68,12 @@ public class ForgotPasswordViewContextPathIT extends SpringBrowserlessTest {
     test(view.email).setValue(email);
     test(view.save).click();
 
-    Notification notification = $(Notification.class).single();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, email), test(notification).getText());
     List<ForgotPassword> forgotPasswords = repository.findByUserEmail(email);
     assertEquals(4, forgotPasswords.size());
     ForgotPassword forgotPassword = forgotPasswords.get(forgotPasswords.size() - 1);
-    $(SigninView.class).single();
+    find(SigninView.class).single();
     MimeMessage[] messages = greenMail.getReceivedMessages();
     assertEquals(1, messages.length);
     MimeMessage message = messages[0];

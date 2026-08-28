@@ -32,51 +32,51 @@ public class ViewLayoutIT extends SpringBrowserlessTest {
   @Test
   public void submissions() {
     navigate(ContactView.class);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.sideNav).clickItem(view.submissions.getLabel());
-    $(SubmissionsView.class).single();
+    find(SubmissionsView.class).single();
   }
 
   @Test
   public void profile() {
     navigate(ContactView.class);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.sideNav).clickItem(view.profile.getLabel());
-    $(ProfileView.class).single();
+    find(ProfileView.class).single();
   }
 
   @Test
   @WithUserDetails("proview@ircm.qc.ca")
   public void users() {
     navigate(ContactView.class);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.sideNav).clickItem(view.users.getLabel());
-    $(UsersView.class).single();
+    find(UsersView.class).single();
   }
 
   @Test
   public void changeLanguage() {
     navigate(ContactView.class);
     assertEquals(UI.getCurrent().getLocale(), ENGLISH);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.changeLanguage).click();
-    $(ContactView.class).single();
+    find(ContactView.class).single();
     assertEquals(UI.getCurrent().getLocale(), FRENCH);
   }
 
   @Test
   public void contact() {
     navigate(GuidelinesView.class);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.sideNav).clickItem(view.contact.getLabel());
-    $(ContactView.class).single();
+    find(ContactView.class).single();
   }
 
   @Test
   public void guidelines() {
     navigate(ContactView.class);
-    ViewLayout view = $(ViewLayout.class).single();
+    ViewLayout view = find(ViewLayout.class).single();
     test(view.sideNav).clickItem(view.guidelines.getLabel());
-    $(GuidelinesView.class).single();
+    find(GuidelinesView.class).single();
   }
 }

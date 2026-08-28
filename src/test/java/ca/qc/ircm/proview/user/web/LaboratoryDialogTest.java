@@ -80,7 +80,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     UsersView view = navigate(UsersView.class);
     test(view.users).select(0);
     test(view.viewLaboratory).click();
-    dialog = $(LaboratoryDialog.class).first();
+    dialog = find(LaboratoryDialog.class).first();
   }
 
   @Test
@@ -175,7 +175,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     assertEquals(Optional.of(dialog.getTranslation(CONSTANTS_PREFIX + REQUIRED)),
         error.getMessage());
     verify(service, never()).save(any());
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
     assertTrue(dialog.isOpened());
     verify(savedListener, never()).onComponentEvent(any());
   }
@@ -194,7 +194,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals(name, laboratory.getName());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
-    Notification notification = $(Notification.class).first();
+    Notification notification = find(Notification.class).first();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
         test(notification).getText());
     assertFalse(dialog.isOpened());
@@ -210,7 +210,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     test(dialog.cancel).click();
 
     verify(service, never()).save(any());
-    assertFalse($(Notification.class).exists());
+    assertFalse(find(Notification.class).exists());
     assertFalse(dialog.isOpened());
     verify(savedListener, never()).onComponentEvent(any());
   }

@@ -54,7 +54,7 @@ public class SamplesStatusDialogIT extends SpringBrowserlessTest {
     @SuppressWarnings("unchecked") Grid<Submission> submissions = test(view).find(Grid.class)
         .id(SubmissionsView.SUBMISSIONS);
     test(submissions).clickRow(1, new MetaKeys().shift());
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).single();
     @SuppressWarnings("unchecked") ComboBox<SampleStatus> status1 = (ComboBox<SampleStatus>) test(
         dialog.samples).getCellComponent(0, STATUS);
     test(status1).selectItem(
@@ -81,7 +81,7 @@ public class SamplesStatusDialogIT extends SpringBrowserlessTest {
     @SuppressWarnings("unchecked") Grid<Submission> submissions = test(view).find(Grid.class)
         .id(SubmissionsView.SUBMISSIONS);
     test(submissions).clickRow(1, new MetaKeys().shift());
-    SamplesStatusDialog dialog = $(SamplesStatusDialog.class).single();
+    SamplesStatusDialog dialog = find(SamplesStatusDialog.class).single();
     test(dialog.cancel).click();
     assertFalse(dialog.isOpened());
   }

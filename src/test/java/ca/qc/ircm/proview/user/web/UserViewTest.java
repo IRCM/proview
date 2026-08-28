@@ -162,9 +162,9 @@ public class UserViewTest extends SpringBrowserlessTest {
 
     verify(view.form).isValid();
     verify(service).save(eq(user), eq(password));
-    Notification notification = $(Notification.class).last();
+    Notification notification = find(Notification.class).last();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, user.getName()),
         test(notification).getText());
-    assertTrue($(UsersView.class).exists());
+    assertTrue(find(UsersView.class).exists());
   }
 }
