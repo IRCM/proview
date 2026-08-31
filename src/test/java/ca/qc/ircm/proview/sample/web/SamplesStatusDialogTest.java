@@ -205,7 +205,7 @@ public class SamplesStatusDialogTest extends SpringBrowserlessTest {
       SubmissionSample sample = samples.get(i);
       assertEquals(sample.getName(), test(dialog.samples).getCellText(i, indexOfColumn(NAME)));
       @SuppressWarnings("unchecked") ComboBox<SampleStatus> statusBox = test(
-          test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).first();
+          test(dialog.samples).getCellComponent(i, STATUS)).find(ComboBox.class).single();
       assertEquals(sample.getStatus(), statusBox.getValue(), i + ", " + sample);
       assertTrue(statusBox.hasClassName(STATUS));
       assertTrue(statusBox.isRequiredIndicatorVisible());
@@ -333,7 +333,7 @@ public class SamplesStatusDialogTest extends SpringBrowserlessTest {
     setFields();
     dialog.save.click();
     verify(sampleService).updateStatus(submission.getSamples());
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, submission.getExperiment()),
         test(notification).getText());
     assertFalse(dialog.isOpened());

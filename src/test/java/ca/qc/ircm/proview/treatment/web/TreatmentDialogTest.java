@@ -93,7 +93,7 @@ public class TreatmentDialogTest extends SpringBrowserlessTest {
     @SuppressWarnings("unchecked") Grid<Activity> activities = test(view).find(Grid.class)
         .id(HistoryView.ACTIVITIES);
     test(activities).doubleClickRow(3);
-    dialog = find(TreatmentDialog.class).first();
+    dialog = find(TreatmentDialog.class).single();
   }
 
   private int indexOfColumn(String property) {

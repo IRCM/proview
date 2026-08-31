@@ -80,7 +80,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     UsersView view = navigate(UsersView.class);
     test(view.users).select(0);
     test(view.viewLaboratory).click();
-    dialog = find(LaboratoryDialog.class).first();
+    dialog = find(LaboratoryDialog.class).single();
   }
 
   @Test
@@ -194,7 +194,7 @@ public class LaboratoryDialogTest extends SpringBrowserlessTest {
     assertEquals((Long) 2L, laboratory.getId());
     assertEquals(name, laboratory.getName());
     assertEquals("Benoit Coulombe", laboratory.getDirector());
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(dialog.getTranslation(MESSAGES_PREFIX + SAVED, name),
         test(notification).getText());
     assertFalse(dialog.isOpened());

@@ -130,16 +130,17 @@ public class ContactViewTest extends SpringBrowserlessTest {
   @Test
   public void icons() {
     validateIcon(VaadinIcon.ENVELOPE.create(),
-        test(view.proteomicNameAnchor).find(Icon.class).first());
+        test(view.proteomicNameAnchor).find(Icon.class).single());
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        test(view.proteomicAddressAnchor).find(Icon.class).first());
+        test(view.proteomicAddressAnchor).find(Icon.class).single());
     validateIcon(VaadinIcon.PHONE.create(),
-        test(view.proteomicPhoneAnchor).find(Icon.class).first());
+        test(view.proteomicPhoneAnchor).find(Icon.class).single());
     validateIcon(VaadinIcon.ENVELOPE.create(),
-        test(view.websiteNameAnchor).find(Icon.class).first());
+        test(view.websiteNameAnchor).find(Icon.class).single());
     validateIcon(VaadinIcon.MAP_MARKER.create(),
-        test(view.websiteAddressAnchor).find(Icon.class).first());
-    validateIcon(VaadinIcon.PHONE.create(), test(view.websitePhoneAnchor).find(Icon.class).first());
+        test(view.websiteAddressAnchor).find(Icon.class).single());
+    validateIcon(VaadinIcon.PHONE.create(),
+        test(view.websitePhoneAnchor).find(Icon.class).single());
   }
 
   @Test

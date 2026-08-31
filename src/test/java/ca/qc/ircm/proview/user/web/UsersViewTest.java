@@ -386,7 +386,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(0);
     test(view.users).doubleClickRow(0);
 
-    UserDialog dialog = find(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).single();
     assertEquals(user.getId(), dialog.getUserId());
     verify(service).get(1L);
   }
@@ -398,7 +398,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(0);
     doubleClickItem(view.users, user, view.laboratory);
 
-    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).single();
     assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
     verify(laboratoryService).get(user.getLaboratory().getId());
   }
@@ -408,7 +408,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     when(service.get(any(Long.class))).thenAnswer(i -> repository.findById(i.getArgument(0)));
     test(view.users).doubleClickRow(1);
 
-    UserDialog dialog = find(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).single();
     test(dialog.save).click();
     verify(service, times(2)).all();
   }
@@ -420,7 +420,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     User user = users.get(1);
     doubleClickItem(view.users, user, view.laboratory);
 
-    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).single();
     test(dialog.save).click();
     verify(service, times(2)).all();
   }
@@ -552,7 +552,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
   public void add() {
     test(view.add).click();
 
-    UserDialog dialog = find(UserDialog.class).first();
+    UserDialog dialog = find(UserDialog.class).single();
     assertEquals(0, dialog.getUserId());
   }
 
@@ -571,7 +571,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
 
     verify(service, never()).get(anyLong());
     assertTrue(find(UsersView.class).exists());
-    Notification error = find(Notification.class).first();
+    Notification error = find(Notification.class).single();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -605,7 +605,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
         i -> i.getInvocation().getExpression().contains("window.open($0, $1)")
             && ((String) i.getInvocation().getParameters().getFirst()).startsWith("/impersonate")));
     assertTrue(find(UsersView.class).exists());
-    Notification error = find(Notification.class).first();
+    Notification error = find(Notification.class).single();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -640,7 +640,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
 
     verify(laboratoryService, never()).get(anyLong());
     assertFalse(find(LaboratoryDialog.class).exists());
-    Notification error = find(Notification.class).first();
+    Notification error = find(Notification.class).single();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + USERS_REQUIRED),
         ((ErrorNotification) error).getText());
@@ -656,7 +656,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
     test(view.viewLaboratory).click();
 
     verify(laboratoryService).get(user.getLaboratory().getId());
-    LaboratoryDialog dialog = find(LaboratoryDialog.class).first();
+    LaboratoryDialog dialog = find(LaboratoryDialog.class).single();
     assertEquals(user.getLaboratory().getId(), dialog.getLaboratoryId());
     assertFalse(find(Notification.class).exists());
   }
@@ -702,7 +702,7 @@ public class UsersViewTest extends SpringBrowserlessTest {
 
     view.afterNavigation(event);
 
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SWITCH_FAILED),
         test(notification).getText());
   }

@@ -287,7 +287,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     test(view.view).click();
 
     verify(submissionService).get(32L);
-    SubmissionDialog dialog = find(SubmissionDialog.class).first();
+    SubmissionDialog dialog = find(SubmissionDialog.class).single();
     assertEquals(32L, dialog.getSubmissionId());
   }
 
@@ -295,7 +295,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
   public void view_NoSelection() {
     view.view();
 
-    Notification error = find(Notification.class).first();
+    Notification error = find(Notification.class).single();
     assertInstanceOf(ErrorNotification.class, error);
     assertEquals(view.getTranslation(MESSAGES_PREFIX + property(ACTIVITIES, REQUIRED)),
         ((ErrorNotification) error).getText());
@@ -311,7 +311,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     test(view.activities).doubleClickRow(0);
 
     verify(submissionService).get(32L);
-    SubmissionDialog dialog = find(SubmissionDialog.class).first();
+    SubmissionDialog dialog = find(SubmissionDialog.class).single();
     assertEquals(32L, dialog.getSubmissionId());
   }
 
@@ -326,7 +326,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     test(view.activities).doubleClickRow(0);
 
     verify(submissionService).get(32L);
-    SubmissionDialog dialog = find(SubmissionDialog.class).first();
+    SubmissionDialog dialog = find(SubmissionDialog.class).single();
     assertEquals(32L, dialog.getSubmissionId());
   }
 
@@ -339,7 +339,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     test(view.activities).doubleClickRow(0);
 
     verify(msAnalysisService).get(12L);
-    MsAnalysisDialog dialog = find(MsAnalysisDialog.class).first();
+    MsAnalysisDialog dialog = find(MsAnalysisDialog.class).single();
     assertEquals(12L, dialog.getMsAnalysisId());
   }
 
@@ -352,7 +352,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     test(view.activities).doubleClickRow(0);
 
     verify(treatmentService).get(6L);
-    TreatmentDialog dialog = find(TreatmentDialog.class).first();
+    TreatmentDialog dialog = find(TreatmentDialog.class).single();
     assertEquals(6L, dialog.getTreatmentId());
   }
 
@@ -363,7 +363,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     when(service.record(activity)).thenReturn(Optional.of(plate));
     test(view.activities).doubleClickRow(0);
 
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Plate.class.getSimpleName()),
         test(notification).getText());
   }
@@ -375,7 +375,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     when(service.record(activity)).thenReturn(Optional.of(object));
     test(view.activities).doubleClickRow(0);
 
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Object.class.getSimpleName()),
         test(notification).getText());
   }
@@ -386,7 +386,7 @@ public class HistoryViewTest extends SpringBrowserlessTest {
     when(service.record(activity)).thenReturn(Optional.empty());
     test(view.activities).doubleClickRow(0);
 
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + VIEW_ERROR, Object.class.getSimpleName()),
         test(notification).getText());
   }

@@ -485,7 +485,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
         .forEach(i -> view.addFile(file.getFilename() + i, file.getContent()));
     view.files.getDataProvider().addDataProviderListener(filesDataProviderListener);
     view.addFile(file.getFilename() + MAXIMUM_FILES_COUNT, file.getContent());
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + FILES_OVER_MAXIMUM, MAXIMUM_FILES_COUNT),
         test(notification).getText());
     List<SubmissionFile> files = items(view.files);
@@ -607,7 +607,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(files.get(i).getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }
@@ -674,7 +674,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(expected.getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }
@@ -715,7 +715,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(files.get(i).getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }
@@ -764,7 +764,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(expected.getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }
@@ -809,7 +809,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(files.get(i).getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }
@@ -864,7 +864,7 @@ public class SubmissionViewTest extends SpringBrowserlessTest {
       assertArrayEquals(expected.getContent(), saved.getFiles().get(i).getContent());
     }
     find(SubmissionsView.class).id(SubmissionsView.ID);
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, saved.getExperiment()),
         test(notification).getText());
   }

@@ -72,7 +72,7 @@ public class UserDialogTest extends SpringBrowserlessTest {
     UsersView view = navigate(UsersView.class);
     view.users.setItems(repository.findAll());
     test(view.users).doubleClickRow(0);
-    dialog = find(UserDialog.class).first();
+    dialog = find(UserDialog.class).single();
   }
 
   @Test

@@ -168,7 +168,7 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
     verify(userService).exists(email);
     verify(service, never()).insert(any(), any());
     assertTrue(find(SigninView.class).exists());
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, email), test(notification).getText());
   }
 
@@ -190,7 +190,7 @@ public class ForgotPasswordViewTest extends SpringBrowserlessTest {
     assertEquals(UseForgotPasswordView.VIEW_NAME + "/" + forgotPassword.getId()
         + UseForgotPasswordView.SEPARATOR + forgotPassword.getConfirmNumber(), url);
     assertTrue(find(SigninView.class).exists());
-    Notification notification = find(Notification.class).first();
+    Notification notification = find(Notification.class).single();
     assertEquals(view.getTranslation(MESSAGES_PREFIX + SAVED, email), test(notification).getText());
   }
 }
