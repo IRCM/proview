@@ -13,7 +13,7 @@
   <name>ProView</name>
   <version>3.3-SNAPSHOT</version>
   <inceptionYear>2006</inceptionYear>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <description>LIMS managing sample analysis by mass spectrometry (MS)</description>
   <url>https://github.com/IRCM/proview</url>
   <organization>
